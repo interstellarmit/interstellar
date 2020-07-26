@@ -7,6 +7,8 @@ const Message = require("./models/message");
 const Page = require("./models/page");
 const School = require("./models/school");
 const socket = require("./server-socket");
+const { useReducer } = require("react");
+const lounge_calls = require("./lounge_calls");
 
 let expiryDate = new Date(2021, 1, 20); // expiry date for all classes this semester
 
@@ -35,24 +37,27 @@ createNewSchool = (req, res) => {
     });
     school.save().then(() => {
       let classes = req.body.classesString.split("\n");
-
-      let added_classes = 0;
-      classes.forEach((indiv_class) => {
-        let params = indiv_class.replace(/ /, "%%^^2%%").split("%%^^2%%"); // just splitting by the first space.. in a hacky way
-        let page = new Page({
-          name: params[0],
-          title: params[1],
-          pageType: "Class",
-          schoolId: req.user.schoolId,
-          adminIds: [req.user._id],
+      if (classes.length === 0) {
+        res.send({ created: true });
+      } else {
+        let added_classes = 0;
+        classes.forEach((indiv_class) => {
+          let params = indiv_class.replace(/ /, "%%^^2%%").split("%%^^2%%"); // just splitting by the first space.. in a hacky way
+          let page = new Page({
+            name: params[0],
+            title: params[1],
+            pageType: "Class",
+            schoolId: req.user.schoolId,
+            adminIds: [req.user._id],
+          });
+          page.save().then(() => {
+            added_classes += 1;
+            if (added_classes === classes.length) {
+              res.send({ created: true });
+            }
+          });
         });
-        page.save().then(() => {
-          added_classes += 1;
-          if (added_classes === classes.length) {
-            res.send({ created: true });
-          }
-        });
-      });
+      }
     });
   } else {
     res.send({ created: false });
@@ -176,8 +181,45 @@ else {users: [{userId: String, name: String}], page: Page}
 Description: If the user is in the page, returns the users, due dates that have him in "addedUserIds", quicklinks that have him in "addedUserIds", lounges, and Page. otherwise, just returns users and page. If pageId is "Home", return home stuff! (dueDates for all classes, quickLinks for all classes, lounges for all classes, users for all classes). Note: When returning user list, omit the people who have "visible" false.  (Note: group posts are not included here)
 */
 joinPage = (req, res) => {
-   
+  User.findById(req.user._id).then((user) => {
+    let pageArr = [req.body.pageId];
 
+    if (req.body.pageId === "Home") {
+      pageArr = user.pageIds;
+    }
+    Page.findById(req.body.pageId).then((page) => {
+      User.find({ pageIds: { $in: pageArr } }, (err, users) => {
+        let condensedUsers = users.map((singleUser) => {
+          return { userId: singleUser._id, name: singleUser.name };
+        });
+        if (user.pageIds.includes(req.body.pageId) || req.body.pageId === "Home") {
+          DDQL.find(
+            { pageId: { $in: pageArr }, $or: { addedUserIds: req.user._id, visibility: "Public" } },
+            (err, DDQLs) => {
+              Lounge.find({ pageId: { $in: pageArr } }, (err, lounges) => {
+                let returnValue = {
+                  users: condensedUsers,
+                  lounges: lounges,
+                  dueDates: DDQLs.filter((ddql) => {
+                    return ddql.objectType == "DueDate";
+                  }),
+                  quickLinks: DDQLs.filter((ddql) => {
+                    return ddql.objectType == "QuickLink";
+                  }),
+                };
+                if (req.body.pageId !== "Home") {
+                  returnValue.page = page;
+                }
+                res.send(returnValue);
+              });
+            }
+          );
+        } else {
+          res.send({ users: condensedUsers, page: page });
+        }
+      });
+    });
+  });
 };
 
 /*
@@ -190,7 +232,17 @@ Socket:
 Returns: {}
 Description: Removes you from the lounge, if you are in one (by calling removeSelfFromLounge). 
 */
-leavePage = (req, res) => {};
+leavePage = (req, res) => {
+  User.findById(req.user._id).then((user) => {
+    lounge_calls.removeSelfFromLounge(user.loungeId).then(() => {
+      user.loungeId = ""
+      user.save().then(() => {
+        res.send({})
+      })
+    })
+  })
+
+};
 
 module.exports = {
   createNewSchool,
