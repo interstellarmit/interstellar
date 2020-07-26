@@ -1,6 +1,14 @@
 const { OAuth2Client } = require("google-auth-library");
 const User = require("./models/user");
+const Comment = require("./models/comment");
+const DDQL = require("./models/DDQL");
+const GroupPost = require("./models/groupPost");
+const Lounge = require("./models/lounge");
+const Message = require("./models/message");
+const Page = require("./models/page");
+const School = require("./models/school");
 const socket = require("./server-socket");
+const { useReducer } = require("react");
 
 // create a new OAuth client used to verify google sign-in
 //    TODO: replace with your own CLIENT_ID
@@ -22,23 +30,38 @@ function getOrCreateUser(user) {
   // the "sub" field means "subject", which is a unique identifier for each user
   return User.findOne({ googleid: user.sub }).then((existingUser) => {
     if (existingUser) return existingUser;
-
-    const newUser = new User({
-      name: user.name,
-      googleid: user.sub,
-    });
-
-    return newUser.save();
+    let email_for_school = "MIT".toLowerCase()
+    School.findOne({name: email_for_school}).then((school) => {
+      const newUser = new User({
+        name: user.name,
+        googleid: user.sub,
+        schoolId: school._id
+      });
+  
+      return newUser.save();
+    })
+    
   });
 }
 
+/*
+login
+Input (req.body): {schoolName: String}
+Precondition: 
+Socket: 
+Returns: {user: User, allPages: [Page]}
+Description: Returns your user object, and all pages from their school (that aren't past expiry date). *Remove the password field from allPages*
+*/
 function login(req, res) {
   verify(req.body.token)
     .then((user) => getOrCreateUser(user))
     .then((user) => {
       // persist user in the session
       req.session.user = user;
-      res.send(user);
+      Page.find({schoolId: user.schoolId, expiryDate: { $lt: Date.now() }}, (err, pages) => {
+        res.send({user: user, allPages: pages});
+      })
+      
     })
     .catch((err) => {
       console.log(`Failed to log in: ${err}`);

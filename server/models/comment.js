@@ -1,15 +1,11 @@
 const mongoose = require("mongoose");
 
-const UserSchema = new mongoose.Schema({
+const CommentSchema = new mongoose.Schema({
   name: String,
   googleid: String,
-  schoolId: String, 
   email: String,
   password: String,
-  pageIds: {
-    type: [String],
-    default: []
-  },
+  pageIds: [String],
   visible: {
       type: Boolean, 
       default: true
@@ -18,12 +14,9 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
-  loungeId: {
-    type: String,  // blank indicates not in lounge
-    default: ""
-  }
+  loungeId: String  // blank indicates not in lounge
 
 });
 
 // compile model from schema
-module.exports = mongoose.model("user", UserSchema);
+module.exports = mongoose.model("comment", CommentSchema);
