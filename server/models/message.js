@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const MessageeSchema = new mongoose.Schema({
+const MessageSchema = new mongoose.Schema({
   text: String,
   timestamp: {
     type: Date,

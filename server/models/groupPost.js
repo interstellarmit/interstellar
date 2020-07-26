@@ -10,7 +10,7 @@ const GroupPostSchema = new mongoose.Schema({
   userId: String,
   pageId: String,
   labels: [String],
-  reacts: int,
+  reacts: Number,
 });
 
 // compile model from schema
