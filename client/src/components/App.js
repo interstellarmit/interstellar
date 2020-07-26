@@ -3,6 +3,7 @@ import { Router } from "@reach/router";
 import NotFound from "./pages/NotFound.js";
 import Skeleton from "./pages/Skeleton.js";
 import SideBar from "./modules/SideBar.js";
+import Public from "./pages/Public.js";
 
 import "../utilities.css";
 
@@ -23,12 +24,12 @@ class App extends Component {
   }
 
   componentDidMount() {
-    get("/api/whoami").then((user) => {
-      if (user._id) {
-        // they are registed in the database, and currently logged in.
-        this.setState({ userId: user._id });
-      }
-    });
+    // get("/api/whoami").then((user) => {
+    //   if (user._id) {
+    //     // they are registed in the database, and currently logged in.
+    //     this.setState({ userId: user._id });
+    //   }
+    // });
   }
 
   handleLogin = (res) => {
@@ -48,6 +49,7 @@ class App extends Component {
   render() {
     return (
       <>
+        <Public/>
         <SideBar/>
         <Router>
           <Skeleton

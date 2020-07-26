@@ -18,7 +18,7 @@ const Lounge = require("./models/lounge");
 const Message = require("./models/message");
 const Page = require("./models/page");
 const School = require("./models/school");
-// import authentication library
+// import all libraries
 const auth = require("./auth");
 const main_calls = require("./main_calls");
 const lounge_calls = require("./lounge_calls");
@@ -26,18 +26,56 @@ const DDQL_calls = require("./DDQL_calls");
 const forum_calls = require("./forum_calls");
 // api endpoints: all these paths will be prefixed with "/api/"
 const router = express.Router();
+const { check, validationResult} = require("express-validator/check");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 //initialize socket
 const socket = require("./server-socket");
 
-router.post("/login", auth.login);
+
+//signin/user stuff
+router.post(
+  "/signup",
+  [
+      check("name", "Please Enter a Valid Name")
+      .not()
+      .isEmpty(),
+      check("email", "Please enter a valid email").isEmail(),
+      check("password", "Please enter a valid password").isLength({
+          min: 6
+      })
+  ],
+  auth.signUp
+);
+
+router.post(
+  "/login",
+  [
+    check("email", "Please enter a valid email").isEmail(),
+    check("password", "Please enter a valid password").isLength({
+      min: 6
+    })
+  ],
+  auth.login
+);
+
+router.get("/me", auth.me, async (req, res) => {
+  try {
+    // request.user is getting fetched from Middleware after token authentication
+    const user = await User.findById(req.user.id);
+    res.json(user);
+  } catch (e) {
+    res.send({ message: "Error in Fetching user" });
+  }
+});
+
 router.post("/logout", auth.logout);
 router.get("/whoami", (req, res) => {
   if (!req.user) {
     // not logged in
     return res.send({});
   }
-
   res.send(req.user);
 });
 
