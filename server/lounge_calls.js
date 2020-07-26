@@ -8,6 +8,8 @@ const Page = require("./models/page");
 const School = require("./models/school");
 const socket = require("./server-socket");
 
+var Promise = require('promise');
+
 /*
 createNewLounge
 Input (req.body): {
@@ -30,7 +32,7 @@ Input (req.body): {
 }
 Precondition: User is on the page  and not in the lounge
 Socket: "userAddedToLounge", {loungeId: String, userId: String}
-Returns: {lounge: Lounge, users: [{userId: String, userName: String}]}
+Returns: {}
 Description: user added to lounge, emits socket telling people in page that someone joined lounge (and updates the userlist in lounge object). Updates loungeId in user object. Returns lounge and the list of users in lounge (giving names as well as userIds)
 */
 addSelfToLounge = (req, res) => {
@@ -44,13 +46,19 @@ Input (req.body): {
 }
 Precondition: User is in the lounge
 Socket: "userRemovedFromLounge", {loungeId: String, userId: String}
-Returns: Lounge
+Returns: {}
 Description: user removed from lounge, emits socket telling people in page that someone left lounge (and updates the userlist in lounge object). Updates loungeId in user object. 
 */
 removeSelfFromLounge = (req, res) => {
-
-
+	removeSelfFromLoungePromise(req.body.loungeId).then(() => {
+		res.send({})
+	})
 }
+
+removeSelfFromLoungePromise =  new Promise((resolve, reject) => {
+	// code for removing self from lounge goes here.. this is just to make it a promise
+	resolve();
+})
 
 /*
 message
