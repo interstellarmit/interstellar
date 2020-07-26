@@ -64,7 +64,10 @@ router.get("/me", auth.me, async (req, res) => {
   try {
     // request.user is getting fetched from Middleware after token authentication
     const user = await User.findById(req.user.id);
-    res.json(user);
+    Page.find({schoolId: user.schoolId, expiryDate: { $lt: Date.now() }}, (err, pages) => {
+      res.send({user: user, allPages: pages});
+    })
+    
   } catch (e) {
     res.send({ message: "Error in Fetching user" });
   }

@@ -63,21 +63,22 @@ async function signUp(req, res) {
 
   try {
       let user = await User.findOne({
-          email
+          email: email
       });
       if (user) {
           return res.status(400).json({
               msg: "User Already Exists"
           });
       }
+      let schoolEmail = encodeURI(email.split("@")[1].replace(/ /g, "_"));
+      let school = await School.findOne({email: schoolEmail});
+         user = new User({
+          name: name,
+          email: email,
+          schoolId: school ? school._id : "None"
+         })
 
-      user = new User({
-          name,
-          email,
-          password
-      });
-
-      const salt = await bcrypt.genSalt(10);
+         const salt = await bcrypt.genSalt(10);
       user.password = await bcrypt.hash(password, salt);
 
       await user.save();
@@ -100,6 +101,13 @@ async function signUp(req, res) {
               });
           }
       );
+           
+    
+          
+      	     
+  
+      
+      
   } catch (err) {
       console.log(err.message);
       res.status(500).send("Error in Saving");

@@ -16,7 +16,7 @@ let expiryDate = new Date(2021, 1, 20); // expiry date for all classes this seme
 createNewSchool
 Input (req.body): {
 	name: String,
-	email: String,
+	exampleEmail: String,
 	classesString: String
 }
 Precondition: req.user.isSiteAdmin, name is a valid URL string (if not, replace spaces with '_', and delete other characters)
@@ -29,7 +29,7 @@ createNewSchool = (req, res) => {
   if (req.user.isSiteAdmin) {
     let name = req.body.name;
     name = name.replace(/ /g, "_");
-    name = encodeURI(name);
+    name = encodeURI(name)
     let school = new School({
       name: name,
       email: req.body.email,
@@ -181,6 +181,7 @@ else {users: [{userId: String, name: String}], page: Page}
 Description: If the user is in the page, returns the users, due dates that have him in "addedUserIds", quicklinks that have him in "addedUserIds", lounges, and Page. otherwise, just returns users and page. If pageId is "Home", return home stuff! (dueDates for all classes, quickLinks for all classes, lounges for all classes, users for all classes). Note: When returning user list, omit the people who have "visible" false.  (Note: group posts are not included here)
 */
 joinPage = (req, res) => {
+  socket.join("Page: " + req.body.pageId)
   User.findById(req.user._id).then((user) => {
     let pageArr = [req.body.pageId];
 
@@ -233,12 +234,10 @@ Returns: {}
 Description: Removes you from the lounge, if you are in one (by calling removeSelfFromLounge). 
 */
 leavePage = (req, res) => {
+  socket.leave("Page: " + req.body.pageId)
   User.findById(req.user._id).then((user) => {
     lounge_calls.removeSelfFromLounge(user.loungeId).then(() => {
-      user.loungeId = ""
-      user.save().then(() => {
-        res.send({})
-      })
+      res.send({})
     })
   })
 

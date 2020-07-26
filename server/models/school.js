@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
 
 const SchoolSchema = new mongoose.Schema({
-    name: String,
-    email: String, 
+    name: String, // "MIT" or "Harvard"
+    email: String,  // "mit.edu" or "harvard.edu"
     adminIds: [String]
 });
 
