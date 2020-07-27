@@ -26,16 +26,18 @@ joinForum = (req, res) => {
 	User.findById(req.user._id).then((user) => {
 		if (user.pageIds.includes(req.body.pageId)) {
 			// return all GroupPosts + Comments
-			GroupPost.find({pageId: req.body.pageId}).then((posts) => {
-				groupPosts = posts.map((post) => {
-					Comment.find({postId: post._id}).then((comments) => {
-						return {post: post, comments: comments}
+			GroupPost.find({pageId: req.body.pageId}, (err, posts) => {
+				let groupPosts = []
+				if(posts.length === 0) res.send({success: true, groupPosts: []})
+				posts.forEach((post) => {
+					Comment.find({postId: post._id}, (err, comments) => {
+						groupPosts.push({post: post, comments: comments})
+						if(posts.length === groupPosts.length) {
+							res.send({success: true, groupPosts: groupPosts})
+						}
 					})
 				})
-				res.send({
-					groupPosts: groupPosts,
-					success: true
-				})
+				
 			})
 		}
 		else {
@@ -69,7 +71,7 @@ createNewGroupPost = (req, res) => {
 				labels: req.body.labels,
 				reacts: 0
 			})
-			page.save().then( () => {
+			post.save().then( () => {
 				res.send({
 					post: post,
 					created: true,
@@ -97,7 +99,7 @@ Description: Creates, saves, and returns comment
 createNewComment = (req, res) => {
 	User.findById(req.user._id).then((user) => {
 		// make sure User is in page
-		if (user.pageIds.includes(pageId)) {
+		if (user.pageIds.includes(req.body.pageId)) {
 			let comment = new Comment({
 				text: req.body.text,
 				userId: req.user._id,
@@ -108,12 +110,12 @@ createNewComment = (req, res) => {
 			comment.save().then(() => {
 				res.send({
 					comment: comment,
-					created: True
+					created: true
 				});
 			})
 		} else {
 			res.send({
-				created: False
+				created: false
 			});
 		}
 	})
@@ -146,22 +148,24 @@ updateGroupPost = (req, res)=> {
 	else {
 		// check if post exists
 		GroupPost.findById(req.body.postId).then((post) => {
-			if (post == null) {
+			if (!post) { // if post is null
 				res.send({ updated: false })
 			} 
 			else {
 				User.findById(req.user._id).then((user) => {
 					// check if user in page + poster
-					if (user.pageIds.includes(post.pageId) && post.userId === req.user._id) {
+					if (user.pageIds.includes(post.pageId) && (post.userId === req.user._id)) {
 						post.title = req.body.title || post.title
 						post.text = req.body.text || post.text
 						post.labels = req.body.labels || post.labels
 						post.reacts = req.body.reacts || post.reacts
-						post.save()
-						res.send({
-							post: post,
-							updated: true
+						post.save().then(() => {
+							res.send({
+								post: post,
+								updated: true
+							})
 						})
+						
 					} else {
 						res.send({ updated: false })
 					}
