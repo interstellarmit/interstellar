@@ -1,21 +1,14 @@
 const mongoose = require("mongoose");
 
 const CommentSchema = new mongoose.Schema({
-  name: String,
-  googleid: String,
-  email: String,
-  password: String,
-  pageIds: [String],
-  visible: {
-      type: Boolean, 
-      default: true
+  text: String, 
+  timestamp: {
+    type: Date,
+    default: Date.now
   },
-  isSiteAdmin: {
-    type: Boolean,
-    default: false
-  },
-  loungeId: String  // blank indicates not in lounge
-
+  userId: String, 
+  pageId: String,
+  postId: String
 });
 
 // compile model from schema
