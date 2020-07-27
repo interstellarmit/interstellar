@@ -195,7 +195,7 @@ joinPage = (req, res) => {
         });
         if (user.pageIds.includes(req.body.pageId) || req.body.pageId === "Home") {
           DDQL.find(
-            { pageId: { $in: pageArr }, $or: { addedUserIds: req.user._id, visibility: "Public" } },
+            { pageId: { $in: pageArr }, $or: { addedUserIds: req.user._id, visibility: "Public" }, deleted: false},
             (err, DDQLs) => {
               Lounge.find({ pageId: { $in: pageArr } }, (err, lounges) => {
                 let returnValue = {
