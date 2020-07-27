@@ -11,9 +11,19 @@ const DDQLSchema = new mongoose.Schema({
   pageId: String,
   visibility: String, // ("Public" or "Only Me"),
   creatorId: String,
-  addedUserIds: [String], //  (the users who added this duedate),
-  completedUserIds: [String], // (the users who completed this duedate)
-});
+  deleted: {
+    type: Boolean,
+    default: false
+  },
+  addedUserIds: {
+    type: [String], //  (the users who added this duedate),
+    default: []
+  },
+  completedUserIds: {
+    type: [String], // (the users who completed this duedate)
+    default: []
+  }
+  });
 
 // compile model from schema
 module.exports = mongoose.model("DDQL", DDQLSchema);
