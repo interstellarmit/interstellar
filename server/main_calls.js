@@ -29,7 +29,7 @@ createNewSchool = (req, res) => {
   if (req.user.isSiteAdmin) {
     let name = req.body.name;
     name = name.replace(/ /g, "_");
-    name = encodeURI(name)
+    name = encodeURI(name);
     let school = new School({
       name: name,
       email: req.body.email,
@@ -79,6 +79,8 @@ Socket:
 Returns: {created: Boolean}
 Description: Creates a new page, populating with given info. Sets self as admin. Initially unlocked. Returns true if the page is successfully created.
 */
+
+//!!! Make sure no other page has same name... not implemeenteed yet!
 createNewPage = (req, res) => {
   School.findById(req.user.schoolId).then((school) => {
     if (school.adminIds.includes(req.user._id) || req.user.isSiteAdmin) {
@@ -166,7 +168,8 @@ removeSelfFromPage = (req, res) => {
 /*
 joinPage
 Input (req.body): {
-	pageId: String,
+  schoolId: String
+	pageName: String,
 }
 Socket: 
 Returns: if user is in page {
@@ -178,24 +181,32 @@ page: Page
 
 else {users: [{userId: String, name: String}], page: Page}
 
-Description: If the user is in the page, returns the users, due dates that have him in "addedUserIds", quicklinks that have him in "addedUserIds", lounges, and Page. otherwise, just returns users and page. If pageId is "Home", return home stuff! (dueDates for all classes, quickLinks for all classes, lounges for all classes, users for all classes). Note: When returning user list, omit the people who have "visible" false.  (Note: group posts are not included here)
+Description: If the user is in the page, returns the users, due dates that have him in "addedUserIds", quicklinks that have him in "addedUserIds", lounges, and Page. otherwise, just returns users and page. If req.body.home is True, return home stuff! (dueDates for all classes, quickLinks for all classes, lounges for all classes, users for all classes). Note: When returning user list, omit the people who have "visible" false.  (Note: group posts are not included here)
 */
-joinPage = (req, res) => {
-  socket.join("Page: " + req.body.pageId)
-  User.findById(req.user._id).then((user) => {
-    let pageArr = [req.body.pageId];
 
-    if (req.body.pageId === "Home") {
-      pageArr = user.pageIds;
+joinPage = (req, res) => {
+  Page.findOne({ name: req.body.pageName, schoolId: req.body.schoolId }).then((page) => {
+    if(page) {
+      socket.join("Page: " + page._id);
     }
-    Page.findById(req.body.pageId).then((page) => {
+    User.findById(req.user._id).then((user) => {
+      let pageArr = [page._id];
+
+      if (req.body.home) {
+        pageArr = user.pageIds;
+      }
+
       User.find({ pageIds: { $in: pageArr } }, (err, users) => {
         let condensedUsers = users.map((singleUser) => {
           return { userId: singleUser._id, name: singleUser.name };
         });
-        if (user.pageIds.includes(req.body.pageId) || req.body.pageId === "Home") {
+        if (user.pageIds.includes(page._id) || page._id === "Home") {
           DDQL.find(
-            { pageId: { $in: pageArr }, $or: { addedUserIds: req.user._id, visibility: "Public" }, deleted: false},
+            {
+              pageId: { $in: pageArr },
+              $or: { addedUserIds: req.user._id, visibility: "Public" },
+              deleted: false,
+            },
             (err, DDQLs) => {
               Lounge.find({ pageId: { $in: pageArr } }, (err, lounges) => {
                 let returnValue = {
@@ -208,7 +219,7 @@ joinPage = (req, res) => {
                     return ddql.objectType == "QuickLink";
                   }),
                 };
-                if (req.body.pageId !== "Home") {
+                if (page._id !== "Home") {
                   returnValue.page = page;
                 }
                 res.send(returnValue);
@@ -226,7 +237,8 @@ joinPage = (req, res) => {
 /*
 leavePage
 Input (req.body): {
-	pageId: String,
+	schoolId: String
+	pageName: String,
 }
 Precondition: User is on the page 
 Socket: 
@@ -234,13 +246,18 @@ Returns: {}
 Description: Removes you from the lounge, if you are in one (by calling removeSelfFromLounge). 
 */
 leavePage = (req, res) => {
-  socket.leave("Page: " + req.body.pageId)
-  User.findById(req.user._id).then((user) => {
-    lounge_calls.removeSelfFromLounge(user.loungeId).then(() => {
-      res.send({})
-    })
-  })
-
+  if(req.body.home) {
+    res.send({})
+    return;
+  }
+  Page.findOne({ name: req.body.pageName, schoolId: req.body.schoolId }).then((page) => {
+    socket.leave("Page: " + page._id);
+    User.findById(req.user._id).then((user) => {
+      lounge_calls.removeSelfFromLounge(user.loungeId).then(() => {
+        res.send({});
+      });
+    });
+  });
 };
 
 module.exports = {

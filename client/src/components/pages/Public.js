@@ -20,26 +20,16 @@ class Public extends Component {
     return (
       <>
         <button onClick = {() => {
-          post('api/signup', {name: "Daniel Sun", email: "dansun@mit.edu", password: "hehexd"}).then((res)=> {
-            console.log(res)
-          })
+          this.props.signup()
         }}>Signup</button>
         <button onClick = {() => {
-          post('api/login', {name: "Daniel Sun", email: "dansun@mit.edu", password: "hehexd"}).then((res)=> {
-            console.log(res)
-            cookies.set('token', res.token, {path: '/'})
-          })
+          this.props.login()
         }}>Login</button>
         <button onClick = {() => {
-          get('api/me', {name: "Daniel Sun", email: "dansun@mit.edu", password: "hehexd"}, cookies.get('token')).then((res)=> {
-            console.log(res)
-          })
+          this.props.me()
         }}>Me</button>
         <button onClick = {() => {
-          post('api/logout', {name: "Daniel Sun", email: "dansun@mit.edu", password: "hehexd"}).then((res)=> {
-            cookies.set('token','',{path:"/"})
-            console.log(res)
-          })
+          this.props.logout()
         }}>Logout</button>
         <button onClick={()=> {
             console.log(cookies.get('token'))
