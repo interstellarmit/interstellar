@@ -25,6 +25,20 @@ class Page extends Component {
     props.updateSelectedPageName(selectedPage)
   }
 
+  addNewDDQL = (DDQL) => {
+    if(DDQL.objectType === "DueDate") {
+      let DDQLs = this.state.dueDates
+      DDQLs.push(DDQL) 
+      this.setState({dueDates: DDQLs})
+    } 
+    else {
+      let DDQLs = this.state.quickLinks
+      DDQLs.push(DDQL) 
+      this.setState({quickLinks: DDQLs})
+    }
+  }
+  
+
   componentDidMount() {
     post("/api/joinPage", {pageName: this.state.pageName, schoolId: this.props.schoolId}).then((data) => {
       console.log(data)
@@ -42,7 +56,7 @@ class Page extends Component {
 
   render() {
     if(!this.state.pageLoaded) {
-      return (<div>Loading</div>)
+      return (<Spin />)
     }
 
     let addClassButton = this.state.inPage ? 
@@ -76,14 +90,14 @@ class Page extends Component {
         <TabPage
           labels={["Dashboard", "Lounges", "Forum", "Info"]}
           routerLinks={["dashboard", "lounges", "forum", "info"]}
-          defaultRouterLink={this.state.inPage ? "dashboard" : "info"}
+          defaultRouterLink={this.state.inPage ? "info" : "info"}
           page={this.state.page}
         > 
         
           <DashboardTab />
           <LoungeTab />
           <ForumTab />
-          <InfoTab />
+          <InfoTab users={this.state.users} inPage={this.state.inPage} page={this.state.page} user={this.props.user} />
 
         </TabPage>
       </>
