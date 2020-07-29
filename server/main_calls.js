@@ -49,6 +49,7 @@ createNewSchool = (req, res) => {
             pageType: "Class",
             schoolId: req.user.schoolId,
             adminIds: [req.user._id],
+            expiryDate: expiryDate
           });
           page.save().then(() => {
             added_classes += 1;
@@ -185,29 +186,36 @@ Description: If the user is in the page, returns the users, due dates that have 
 */
 
 joinPage = (req, res) => {
+  console.log(req.body)
   Page.findOne({ name: req.body.pageName, schoolId: req.body.schoolId }).then((page) => {
     if(page) {
-      socket.join("Page: " + page._id);
+      socket.getSocketFromUserID(req.user._id).join("Page: " + page._id);
     }
     User.findById(req.user._id).then((user) => {
-      let pageArr = [page._id];
+      let pageArr = []
+      
 
       if (req.body.home) {
         pageArr = user.pageIds;
+      }
+      else {
+        pageArr = [page._id]
       }
 
       User.find({ pageIds: { $in: pageArr } }, (err, users) => {
         let condensedUsers = users.map((singleUser) => {
           return { userId: singleUser._id, name: singleUser.name };
         });
-        if (user.pageIds.includes(page._id) || page._id === "Home") {
+        if (req.body.home || user.pageIds.includes(page._id)) {
           DDQL.find(
             {
               pageId: { $in: pageArr },
-              $or: { addedUserIds: req.user._id, visibility: "Public" },
+              $or: [{ addedUserIds: req.user._id}, {visibility: "Public" }],
               deleted: false,
             },
             (err, DDQLs) => {
+             // console.log(err)
+              //console.log(DDQLs)
               Lounge.find({ pageId: { $in: pageArr } }, (err, lounges) => {
                 let returnValue = {
                   users: condensedUsers,
@@ -219,7 +227,7 @@ joinPage = (req, res) => {
                     return ddql.objectType == "QuickLink";
                   }),
                 };
-                if (page._id !== "Home") {
+                if (!req.body.home) {
                   returnValue.page = page;
                 }
                 res.send(returnValue);
@@ -251,7 +259,7 @@ leavePage = (req, res) => {
     return;
   }
   Page.findOne({ name: req.body.pageName, schoolId: req.body.schoolId }).then((page) => {
-    socket.leave("Page: " + page._id);
+    socket.getSocketFromUserID(req.user._id).leave("Page: " + page._id);
     User.findById(req.user._id).then((user) => {
       lounge_calls.removeSelfFromLounge(user.loungeId).then(() => {
         res.send({});

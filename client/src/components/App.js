@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { Router } from "@reach/router";
+
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom'
 import NotFound from "./pages/NotFound.js";
 import Skeleton from "./pages/Skeleton.js";
 import SideBar from "./modules/SideBar.js";
@@ -42,6 +43,7 @@ class App extends Component {
       (res) => {
         console.log(res);
         cookies.set("token", res.token, { path: "/" });
+        post("/api/initsocket", { socketid: socket.id });
       }
     );
   };
@@ -62,6 +64,7 @@ class App extends Component {
       console.log(res);
       this.setState({
         userId: res.user._id,
+        schoolId: res.user.schoolId,
         name: res.user.name,
         loungeId: res.user.loungeId,
         pageIds: res.user.pageIds,
@@ -108,7 +111,7 @@ class App extends Component {
   */
 
   render() {
-    if(!this.state.userId) {
+    if(this.state.userId === "") {
       return <Public login={this.login} logout={this.logout} me={this.me} signup={this.signup} />
     }
     if(this.state.redirectPage !== "") {
@@ -128,10 +131,12 @@ class App extends Component {
             </Col>
             <Col span={20}>
               <Router>
-                <Home path="/" schoolId={this.state.schoolId} updateSelectedPageName={this.updateSelectedPageName} />
+              <Switch>
+                <Home exact path="/" schoolId={this.state.schoolId} updateSelectedPageName={this.updateSelectedPageName} />
                 <Page path="/class/:selectedPage" schoolId={this.state.schoolId} updatePageIds={this.updatePageIds} updateSelectedPageName={this.updateSelectedPageName} />
                 <Page path="/group/:selectedPage" schoolId={this.state.schoolId} updatePageIds={this.updatePageIds} updateSelectedPageName={this.updateSelectedPageName} />
                 <NotFound default />
+             </Switch>
               </Router>
             </Col>
         </Row>

@@ -58,8 +58,8 @@ addSelfToLounge = (req, res) => {
 			if(user.pageIds.includes(lounge.pageId) && !lounge.userIds.includes(req.user._id)) {
 				lounge.userIds.push(req.user._id)
 				lounge.save().then(() => {
-					socket.to("Lounge: " + lounge._id).emit("userAddedToLounge", {loungeId: lounge._id, userId: req.user._id})
-					socket.join("Lounge: " + lounge._id)
+					socket.getSocketFromUserID(req.user._id).to("Lounge: " + lounge._id).emit("userAddedToLounge", {loungeId: lounge._id, userId: req.user._id})
+					socket.getSocketFromUserID(req.user._id).join("Lounge: " + lounge._id)
 					user.loungeId = req.body.loungeId
 					user.save().then(() => {
 						res.send({added: true})
@@ -99,8 +99,8 @@ removeSelfFromLoungePromise =  (loungeId) => {
 			if(lounge.userIds.includes(req.user._id)) {
 				lounge.userIds = lounge.userIds.filter((id) => {return id !== req.user._id})
 				lounge.save().then(() => {
-					socket.to("Lounge: " + lounge._id).emit("userRemovedFromLounge", {loungeId: lounge._id, userId: req.user._id})
-					socket.leave("Lounge: " + lounge._id)
+					socket.getSocketFromUserID(req.user._id).to("Lounge: " + lounge._id).emit("userRemovedFromLounge", {loungeId: lounge._id, userId: req.user._id})
+					socket.getSocketFromUserID(req.user._id).leave("Lounge: " + lounge._id)
 					user.loungeId = ""
 					user.save().then(() => {
 						resolve(true)

@@ -34,9 +34,20 @@ class Public extends Component {
         <button onClick={()=> {
             console.log(cookies.get('token'))
         }}>Cookie</button>
+        
+       
       </>
     );
   }
 }
 
 export default Public;
+/*
+ <button onClick={()=> {
+           post("api/createNewSchool", {name: "MIT", email: "mit.edu", classesString: 
+           "6.031 Software Development\n6.033 Computer Systems Engineering\n6.UAT Presenting Skills\n11.125 Education"}).then((created) => {
+             if(created.created) console.log("done");
+             else console.log("error")
+           })
+        }}>Add MIT</button>
+        */

@@ -25,7 +25,7 @@ Returns: {created: Boolean, DDQL: DDQL}
 Description: Creates the DDQL and returns it
 */
 createNewDDQL = (req, res) => {
-  User.findById(req.user.id).then((user) => {
+  User.findById(req.user._id).then((user) => {
     if (user.pageIds.includes(req.body.pageId)) {
       let ddql = new DDQL({
         title: req.body.title,
