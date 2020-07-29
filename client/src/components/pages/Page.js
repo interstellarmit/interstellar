@@ -6,7 +6,7 @@ import LoungeTab from "../modules/LoungeTab";
 import InfoTab from "../modules/InfoTab";
 import TabPage from "../modules/TabPage";
 import { Spin } from 'antd';
-
+import { Button } from 'antd';
 class Page extends Component {
   constructor(props) {
     super(props);
@@ -34,7 +34,8 @@ class Page extends Component {
         quickLinks: data.quickLinks,
         lounges: data.lounges,
         page: data.page,
-        pageLoaded: true  
+        pageLoaded: true,
+        inPage: data.inPage  
     })})
     // remember -- api calls go here!
   }
@@ -43,12 +44,39 @@ class Page extends Component {
     if(!this.state.pageLoaded) {
       return (<div>Loading</div>)
     }
+
+    let addClassButton = this.state.inPage ? 
+      <Button onClick={() => {
+        post("/api/removeSelfFromPage", {pageId: this.state.page._id}).then((data) => {
+          if(data.removed) {
+            this.props.updatePageIds(this.props.pageIds.filter((id)=>{return id!==this.state.page._id}))
+            this.setState({inPage: false})
+          }
+          else
+            console.log("error")
+
+        })
+      }}>Remove Class </Button> :
+        <Button onClick={() => {
+          post("/api/addSelfToPage", {pageId: this.state.page._id}).then((data) => {
+            if(data.added)  {
+              let newPageIds = this.props.pageIds
+              newPageIds.push(this.state.page._id)
+              this.props.updatePageIds(newPageIds)
+              this.setState({inPage: true})
+            }
+            else
+              console.log("error")
+
+          })
+        }}>Add Class</Button>
     return (
       <>
+        {addClassButton}
         <TabPage
           labels={["Dashboard", "Lounges", "Forum", "Info"]}
           routerLinks={["dashboard", "lounges", "forum", "info"]}
-          defaultRouterLink={"dashboard"}
+          defaultRouterLink={this.state.inPage ? "dashboard" : "info"}
           page={this.state.page}
         > 
         

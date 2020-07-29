@@ -38,7 +38,7 @@ let searchOptions = (
     <List 
         dataSource = {props.pageIds}
         renderItem = {(pageId) => {
-            let page = allPages.filter((page) => {
+            let page = props.allPages.filter((page) => {
                 return page._id === pageId
             })[0]
             let name = page.name
@@ -50,7 +50,7 @@ let searchOptions = (
                     props.redirectPage("/" + page.pageType.toLowerCase() + "/"+name)
                 }}
             >
-                {isSelected ? <b>name</b> : name}
+                {isSelected ? <b>{name}</b> : name}
             </List.Item>;
         }}
     />

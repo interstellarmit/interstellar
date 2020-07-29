@@ -152,10 +152,12 @@ Description: Removes user from the page
 removeSelfFromPage = (req, res) => {
   Page.findById(req.body.pageId).then((page) => {
     User.findById(req.user._id).then((user) => {
-      if (user.pageIds.includes(page._id)) {
+
+      if (user.pageIds.includes(req.body.pageId)) {
         user.pageIds = user.pageIds.filter((id) => {
-          return id !== page._id;
+          return id !== req.body.pageId;
         });
+
         user.save().then(() => {
           res.send({ removed: true });
         });
@@ -226,6 +228,7 @@ joinPage = (req, res) => {
                   quickLinks: DDQLs.filter((ddql) => {
                     return ddql.objectType == "QuickLink";
                   }),
+                  inPage: true
                 };
                 if (!req.body.home) {
                   returnValue.page = page;
@@ -235,7 +238,7 @@ joinPage = (req, res) => {
             }
           );
         } else {
-          res.send({ users: condensedUsers, page: page });
+          res.send({ users: condensedUsers, page: page, inPage: false });
         }
       });
     });

@@ -133,8 +133,8 @@ class App extends Component {
               <Router>
               <Switch>
                 <Home exact path="/" schoolId={this.state.schoolId} updateSelectedPageName={this.updateSelectedPageName} />
-                <Page path="/class/:selectedPage" schoolId={this.state.schoolId} updatePageIds={this.updatePageIds} updateSelectedPageName={this.updateSelectedPageName} />
-                <Page path="/group/:selectedPage" schoolId={this.state.schoolId} updatePageIds={this.updatePageIds} updateSelectedPageName={this.updateSelectedPageName} />
+                <Page path="/class/:selectedPage" schoolId={this.state.schoolId} pageIds={this.state.pageIds} updatePageIds={this.updatePageIds} updateSelectedPageName={this.updateSelectedPageName} />
+                <Page path="/group/:selectedPage" schoolId={this.state.schoolId} pageIds={this.state.pageIds} updatePageIds={this.updatePageIds} updateSelectedPageName={this.updateSelectedPageName} />
                 <NotFound default />
              </Switch>
               </Router>
