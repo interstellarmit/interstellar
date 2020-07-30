@@ -102,7 +102,7 @@ addOrCompleteDDQL = (req, res) => {
 			User.findById(req.user._id).then((user) => {
 				if(user.pageIds.includes(ddql.pageId)) {
 					let added = ddql.addedUserIds.includes(req.user._id)
-					let completeed = ddql.completedUserIds.includes(req.user._id)
+					let completed = ddql.completedUserIds.includes(req.user._id)
 					if(req.body.action==="add" && !added) {
 						ddql.addedUserIds.push(req.user._id)
 						ddql.save().then(()=>{
@@ -111,17 +111,19 @@ addOrCompleteDDQL = (req, res) => {
 					}
 					else if(req.body.action==="remove" && added) {
 						ddql.addedUserIds = ddql.addedUserIds.filter((id)=>{return id !==(req.user._id)})
+						ddql.completedUserIds = ddql.completedUserIds.filter((id)=>{return id !==(req.user._id)})
 						ddql.save().then(()=>{
 							res.send({done: true})
 						})
+					
 					}
-					else if(req.body.action==="complete" && !complete) {
+					else if(req.body.action==="complete" && !completed) {
 						ddql.completedUserIds.push(req.user._id)
 						ddql.save().then(()=>{
 							res.send({done: true})
 						})
 					}
-					else if(req.body.action==="uncomplete" && complete) {
+					else if(req.body.action==="uncomplete" && completed) {
 						ddql.completedUserIds = ddql.completedUserIds.filter((id)=>{return id !==(req.user._id)})
 						ddql.save().then(()=>{
 							res.send({done: true})
@@ -161,5 +163,5 @@ addOrCompleteDDQL = (req, res) => {
 module.exports = {
   createNewDDQL,
   editDDQL,
-  addOrCompleteDDQL,
+  addOrCompleteDDQL
 };

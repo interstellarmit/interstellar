@@ -25,18 +25,65 @@ class Page extends Component {
     props.updateSelectedPageName(selectedPage)
   }
 
-  addNewDDQL = (DDQL) => {
-    if(DDQL.objectType === "DueDate") {
-      let DDQLs = this.state.dueDates
-      DDQLs.push(DDQL) 
-      this.setState({dueDates: DDQLs})
-    } 
-    else {
-      let DDQLs = this.state.quickLinks
-      DDQLs.push(DDQL) 
-      this.setState({quickLinks: DDQLs})
-    }
+  /*
+createNewDDQL
+Input: {
+	title: String,
+	objectType: String ("DueDate" or "QuickLink")
+	dueDate: Date,
+	url: String,
+	pageId: String,
+	visibility: String ("Public" or "Only Me")
+}*/
+  createNewDDQL = (input, callback) => {
+    post("/api/createNewDDQL", Object.assign(input, {pageId: this.state.page._id})).then((data) => {
+      
+     if(!data.created) return
+      let DDQL = data.DDQL 
+      post("/api/addOrCompleteDDQL", {objectId: DDQL._id,
+        action: "add",
+        amount: "single" 
+      }).then((result) => {
+        if(result.done) {
+          if(DDQL.objectType === "DueDate") {
+            let DDQLs = this.state.dueDates
+            DDQL.addedUserIds = [this.props.user.userId]
+            DDQLs.push(DDQL) 
+            this.setState({dueDates: DDQLs})
+          } 
+          else {
+            let DDQLs = this.state.quickLinks
+            DDQL.addedUserIds = [this.props.user.userId]
+            DDQLs.push(DDQL) 
+            this.setState({quickLinks: DDQLs})
+          }
+          callback(DDQL._id)
+        }
+      })
+    
+
+    })
   }
+
+  editDDQL = (input) => {
+    post("/api/editDDQL", input).then((data) => {
+      if(data.edited) {
+        if(data.DDQL.objectType === "DueDate") {
+          let DDQLs = this.state.dueDates.filter((duedate) => {return duedate._id !== data.DDQL._id})
+          DDQLs.push(data.DDQL) 
+          this.setState({dueDates: DDQLs})
+        } 
+        else {
+          let DDQLs = this.state.quickLinks.filter((quicklink) => {return quicklink._id !== data.DDQL._id})
+          DDQLs.push(data.DDQL) 
+          this.setState({quickLinks: DDQLs})
+        }
+      }
+    })
+    
+  }
+
+   
   
 
   componentDidMount() {
@@ -94,7 +141,16 @@ class Page extends Component {
           page={this.state.page}
         > 
         
-          <DashboardTab />
+          <DashboardTab 
+            dueDates = {this.state.dueDates}
+            quickLinks = {this.state.quickLinks}
+            lounges = {this.state.lounges}
+            users = {this.state.users}
+            page = {this.state.page}
+            createNewDDQL = {this.createNewDDQL}
+            editDDQL = {this.editDDQL}
+            user={this.props.user}
+          />
           <LoungeTab />
           <ForumTab />
           <InfoTab users={this.state.users} inPage={this.state.inPage} page={this.state.page} user={this.props.user} />
