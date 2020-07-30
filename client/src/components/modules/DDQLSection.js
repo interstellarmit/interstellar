@@ -5,9 +5,9 @@ import QuickLink from "./QuickLink";
 import { List, Avatar, Button } from 'antd';
 import { get, post } from "../../utilities";
 export default function DDQLSection(props) {
-  let initialAdded = props.dueDates.concat(props.quickLinks).filter((ddql) => {return ddql.addedUserIds.includes(props.user.userId)}).map((ddql)=>{return ddql._id})
-  let initialCompleted = props.dueDates.concat(props.quickLinks).filter((ddql) => {
-    return ddql.completedUserIds.includes(props.user.userId)}).map((ddql)=>{return ddql._id})
+  let initialAdded = props.dataSource.filter((ddql) => {return ddql.addedUserIds.includes(props.user.userId)}).map((ddql)=>{return ddql._id})
+  let initialCompleted = props.dataSource.filter((ddql) => {
+    return (ddql.completedUserIds || []).includes(props.user.userId)}).map((ddql)=>{return ddql._id})
 
   const [addedDDQLs, setAddedDDQLs] = React.useState(initialAdded); // ids
   const [completedDDQLs, setCompletedDDQLs] = React.useState(initialCompleted); // ids
@@ -44,7 +44,7 @@ export default function DDQLSection(props) {
     });
   };
 
-  let dataSource = props.type==="DueDate" ? props.dueDates : props.quickLinks
+  let dataSource = props.dataSource
   let addedDataSource = dataSource.filter((ddql) => {
     return !ddql.deleted && addedDDQLs.includes(""+ddql._id)
   })
@@ -69,7 +69,7 @@ export default function DDQLSection(props) {
       <h3>{props.type} Section</h3>
       <Button onClick={()=>{
         setShowAddNewDueDate(true)
-      }}>Add New Due Date</Button>
+      }}>{"Add New "  + props.type }</Button>
       {addNewDueDate}
       <List
         dataSource={addedDataSource}

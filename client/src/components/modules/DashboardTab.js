@@ -7,14 +7,23 @@ export default function DashboardTab(props) {
     <>
       <h3>DashboardTab</h3>
       <DDQLSection 
-        dueDates = {props.dueDates}
-        quickLinks = {props.quickLinks}
+        dataSource = {props.dueDates}
         users = {props.users}
         page = {props.page}
         createNewDDQL = {props.createNewDDQL}
         editDDQL = {props.editDDQL}
         user={props.user}
         type = "DueDate"
+      />
+
+      <DDQLSection 
+        dataSource = {props.quickLinks}
+        users = {props.users}
+        page = {props.page}
+        createNewDDQL = {props.createNewDDQL}
+        editDDQL = {props.editDDQL}
+        user={props.user}
+        type = "QuickLink"
       />
     
     </>
