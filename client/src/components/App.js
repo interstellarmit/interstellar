@@ -132,9 +132,9 @@ class App extends Component {
             <Col span={20}>
               <Router>
               <Switch>
-                <Home exact path="/" schoolId={this.state.schoolId} updateSelectedPageName={this.updateSelectedPageName} />
-                <Page path="/class/:selectedPage" schoolId={this.state.schoolId} pageIds={this.state.pageIds} updatePageIds={this.updatePageIds} updateSelectedPageName={this.updateSelectedPageName} user={{userId: this.state.userId, name: this.state.name}} />
-                <Page path="/group/:selectedPage" schoolId={this.state.schoolId} pageIds={this.state.pageIds} updatePageIds={this.updatePageIds} updateSelectedPageName={this.updateSelectedPageName} user={{userId: this.state.userId, name: this.state.name}} />
+                <Home exact path="/" schoolId={this.state.schoolId} updateSelectedPageName={this.updateSelectedPageName} redirectPage={this.redirectPage} />
+                <Page path="/class/:selectedPage" schoolId={this.state.schoolId} pageIds={this.state.pageIds} updatePageIds={this.updatePageIds} updateSelectedPageName={this.updateSelectedPageName} user={{userId: this.state.userId, name: this.state.name}} redirectPage={this.redirectPage} />
+                <Page path="/group/:selectedPage" schoolId={this.state.schoolId} pageIds={this.state.pageIds} updatePageIds={this.updatePageIds} updateSelectedPageName={this.updateSelectedPageName} user={{userId: this.state.userId, name: this.state.name}} redirectPage={this.redirectPage} />
                 <NotFound default />
              </Switch>
               </Router>

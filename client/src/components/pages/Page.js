@@ -112,6 +112,7 @@ Input: {
           if(data.removed) {
             this.props.updatePageIds(this.props.pageIds.filter((id)=>{return id!==this.state.page._id}))
             this.setState({inPage: false})
+            this.props.redirectPage("/"+this.state.page.pageType.toLowerCase()+"/"+this.state.page.name + "/info")
           }
           else
             console.log("error")
@@ -125,6 +126,7 @@ Input: {
               newPageIds.push(this.state.page._id)
               this.props.updatePageIds(newPageIds)
               this.setState({inPage: true})
+              this.componentDidMount()
             }
             else
               console.log("error")
@@ -134,13 +136,14 @@ Input: {
     return (
       <>
         {addClassButton}
+        {this.state.inPage ? 
         <TabPage
           labels={["Dashboard", "Lounges", "Forum", "Info"]}
           routerLinks={["dashboard", "lounges", "forum", "info"]}
           defaultRouterLink={this.state.inPage ? "info" : "info"}
           page={this.state.page}
         > 
-        
+          
           <DashboardTab 
             dueDates = {this.state.dueDates}
             quickLinks = {this.state.quickLinks}
@@ -152,10 +155,20 @@ Input: {
             user={this.props.user}
           />
           <LoungeTab />
-          <ForumTab />
-          <InfoTab users={this.state.users} inPage={this.state.inPage} page={this.state.page} user={this.props.user} />
+          <ForumTab /> 
+          <InfoTab users={this.state.users} inPage={true} page={this.state.page} user={this.props.user} />)
+        </TabPage> 
+            :
+            <TabPage
+          labels={["Info"]}
+          routerLinks={["info"]}
+          defaultRouterLink={"info"}
+          page={this.state.page}
+        > 
+            <InfoTab users={this.state.users} inPage={false} page={this.state.page} user={this.props.user} />
 
         </TabPage>
+        }
       </>
     );
   }

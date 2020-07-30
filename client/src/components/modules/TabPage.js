@@ -26,7 +26,7 @@ export default function TabPage(props) {
         history.push("/"+props.page.pageType.toLowerCase()+"/"+props.page.name+"/"+key);
       }
     }>
-      {props.children.map((child, index) => {
+      {(Array.isArray(props.children)?props.children:[props.children]).map((child, index) => {
         return <TabPane tab={props.labels[index]} key={props.routerLinks[index]}>
         {child}
       </TabPane>
