@@ -71,6 +71,7 @@ async function signUp(req, res) {
           });
       }
 
+      
       user = new User({
           name,
           email,

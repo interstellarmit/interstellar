@@ -4,6 +4,11 @@ import NotFound from "./pages/NotFound.js";
 import Skeleton from "./pages/Skeleton.js";
 import SideBar from "./modules/SideBar.js";
 import Public from "./pages/Public.js";
+import Home from "./pages/Home.js";
+import Page from "./pages/Page.js";
+
+import Cookies from 'universal-cookie';
+const cookies = new Cookies()
 
 import "../utilities.css";
 
@@ -24,42 +29,60 @@ class App extends Component {
   }
 
   componentDidMount() {
-    // get("/api/whoami").then((user) => {
-    //   if (user._id) {
-    //     // they are registed in the database, and currently logged in.
-    //     this.setState({ userId: user._id });
-    //   }
-    // });
+    get("/api/whoami").then((user) => {
+      if (user._id) {
+        // they are registed in the database, and currently logged in.
+        console.log("SDKFKLSDJFLKS")
+        this.setState({ userId: user._id });
+      }
+    });
   }
 
-  handleLogin = (res) => {
-    console.log(`Logged in as ${res.profileObj.name}`);
-    const userToken = res.tokenObj.id_token;
-    post("/api/login", { token: userToken }).then((user) => {
-      this.setState({ userId: user._id });
-      post("/api/initsocket", { socketid: socket.id });
-    });
-  };
+  handleLogin = (body) => {
+    post('api/login', {name: "Daniel Sun", email: "dansun@mit.edu", password: "hehexd"}).then((res)=> {
+      console.log(res)
+      cookies.set('token', res.token, {path: '/'})
+      get('api/me', {}, res.token).then((user) => {
+        this.setState({userId: user._id})
+      })
+    })
+  }
 
   handleLogout = () => {
-    this.setState({ userId: undefined });
-    post("/api/logout");
+    post('api/logout', {name: "Daniel Sun", email: "dansun@mit.edu", password: "hehexd"}).then((res)=> {
+      cookies.set('token','',{path:"/"})
+      this.setState({userId: undefined})
+    })
   };
 
   render() {
+    let publicContent = 
+      <Public
+        path="/"
+        handleLogin={this.handleLogin}
+        userId={this.state.userId}
+      />
+
+    let privateContent = <>
+      <SideBar
+        handleLogout={this.handleLogout}
+      />
+      <Router>
+        <Home
+          exact path="/"
+          userId={this.state.userId}
+        />
+        <Page
+          path="/page"
+          userId={this.state.userId}
+        />
+        <NotFound default />
+      </Router>
+    </>
     return (
       <>
-        <Public/>
-        <SideBar/>
-        <Router>
-          <Skeleton
-            path="/"
-            handleLogin={this.handleLogin}
-            handleLogout={this.handleLogout}
-            userId={this.state.userId}
-          />
-          <NotFound default />
-        </Router>
+        <button onClick = {()=>{console.log(this.state)}}>logState</button>
+        {this.state.userId ? privateContent : publicContent}
       </>
     );
   }

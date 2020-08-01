@@ -2,10 +2,13 @@ const mongoose = require("mongoose");
 
 const UserSchema = new mongoose.Schema({
   name: String,
-  googleid: String,
   schoolId: String, 
   email: String,
   password: String,
+  isVerified: {
+    type: Boolean,
+    default: false,
+  },
   pageIds: {
     type: [String],
     default: []
