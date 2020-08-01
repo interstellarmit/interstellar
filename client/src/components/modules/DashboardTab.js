@@ -5,7 +5,6 @@ export default function DashboardTab(props) {
   
   return (
     <>
-      <h3>DashboardTab</h3>
       <DDQLSection 
         dataSource = {props.dueDates}
         users = {props.users}

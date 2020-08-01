@@ -2,13 +2,14 @@ import React, { Component, useState } from "react";
 import DueDate from "./DueDate";
 import AddNewDDQL from "./AddNewDDQL";
 import QuickLink from "./QuickLink";
-import { List, Avatar, Button } from 'antd';
+import { List, Avatar, Button, Space, Switch } from 'antd';
 import { get, post } from "../../utilities";
+import {PlusOutlined, MinusOutlined} from "@ant-design/icons"; 
 export default function DDQLSection(props) {
   let initialAdded = props.dataSource.filter((ddql) => {return ddql.addedUserIds.includes(props.user.userId)}).map((ddql)=>{return ddql._id})
   let initialCompleted = props.dataSource.filter((ddql) => {
     return (ddql.completedUserIds || []).includes(props.user.userId)}).map((ddql)=>{return ddql._id})
-
+  const [showCompleted, setShowCompleted] = React.useState(false)
   const [addedDDQLs, setAddedDDQLs] = React.useState(initialAdded); // ids
   const [completedDDQLs, setCompletedDDQLs] = React.useState(initialCompleted); // ids
   const [showAddNewDueDate, setShowAddNewDueDate] = React.useState(false)
@@ -66,13 +67,20 @@ export default function DDQLSection(props) {
 
   return (
     <>
-      <h3>{props.type} Section</h3>
+      <Space>
+      <h3>{props.type === "DueDate" ? "Due Dates" : "Quicklinks"}</h3>
       <Button onClick={()=>{
         setShowAddNewDueDate(true)
-      }}>{"Add New "  + props.type }</Button>
+      }}><PlusOutlined /></Button>
+      {props.type==="QuickLink" ? <></> : <Switch onChange={(checked)=>{setShowCompleted(checked)}} />}
+      </Space>
       {addNewDueDate}
       <List
-        dataSource={addedDataSource}
+        dataSource={addedDataSource.filter((item)=>{
+          if(!showCompleted) 
+            return !completedDDQLs.includes(""+item._id)
+          return true
+        })}
         renderItem={item => {
           console.log("hi:"+ completedDDQLs.includes(""+item._id))
           return (props.type === "DueDate") ?
@@ -81,6 +89,7 @@ export default function DDQLSection(props) {
               addOrCompleteDDQL={addOrCompleteDDQL}
               added={addedDDQLs.includes(""+item._id)}
               completed={completedDDQLs.includes(""+item._id)}
+            
             />
             :
             <QuickLink

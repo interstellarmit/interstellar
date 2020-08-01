@@ -1,6 +1,6 @@
 import React, { Component, useState } from 'react';
 import { List } from "antd";
-export default function UserList(props) {
+export default function PostList(props) {
   
   return (
     <List 

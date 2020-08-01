@@ -5,8 +5,9 @@ import ForumTab from "../modules/ForumTab";
 import LoungeTab from "../modules/LoungeTab";
 import InfoTab from "../modules/InfoTab";
 import TabPage from "../modules/TabPage";
-import { Spin } from 'antd';
-import { Button } from 'antd';
+import { Spin, Space, Button } from 'antd';
+
+import {UserAddOutlined, UserDeleteOutlined} from '@ant-design/icons';
 class Page extends Component {
   constructor(props) {
     super(props);
@@ -107,7 +108,7 @@ Input: {
     }
 
     let addClassButton = this.state.inPage ? 
-      <Button onClick={() => {
+      <Button type="primary" onClick={() => {
         post("/api/removeSelfFromPage", {pageId: this.state.page._id}).then((data) => {
           if(data.removed) {
             this.props.updatePageIds(this.props.pageIds.filter((id)=>{return id!==this.state.page._id}))
@@ -118,8 +119,8 @@ Input: {
             console.log("error")
 
         })
-      }}>Remove Class </Button> :
-        <Button onClick={() => {
+      }}><UserDeleteOutlined /></Button> :
+        <Button type="primary" onClick={() => {
           post("/api/addSelfToPage", {pageId: this.state.page._id}).then((data) => {
             if(data.added)  {
               let newPageIds = this.props.pageIds
@@ -132,10 +133,15 @@ Input: {
               console.log("error")
 
           })
-        }}>Add Class</Button>
+        }}><UserAddOutlined /></Button>
     return (
       <>
+        <Space>
+        <h1>{this.state.page.name}</h1>
+        
         {addClassButton}
+        </Space>
+       
         {this.state.inPage ? 
         <TabPage
           labels={["Dashboard", "Lounges", "Forum", "Info"]}

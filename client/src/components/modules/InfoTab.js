@@ -8,7 +8,7 @@ export default function InfoTab(props) {
   }
   return (
     <>
-    <h1>{props.page.name + ": " + props.page.title}</h1>
+    <h3>{props.page.title}</h3>
     <div>{"Description: " + props.page.description}</div>
     <UserList users={users} />
     </>

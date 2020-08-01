@@ -1,7 +1,7 @@
 import React, { Component, useState } from 'react';
 
 import { List, Avatar, Button } from 'antd';
-
+import {PlusOutlined, MinusOutlined} from "@ant-design/icons"; 
 export default function QuickLink(props) {
   
   return (
@@ -10,21 +10,26 @@ export default function QuickLink(props) {
       <Button onClick={() => {props.addOrCompleteDDQL({
         objectId: props.quickLink._id,
         action: "remove"
-      })}}>Remove</Button>
+      })}}><MinusOutlined /></Button>
       :
       <Button onClick={() => {props.addOrCompleteDDQL({
         objectId: props.quickLink._id,
         action: "add"
-      })}}>Add</Button>
+      })}}><PlusOutlined /></Button>
 
       
 
 
-    ]}>
+    ]}
+      onClick={() => {
+        window.open(props.quickLink.url, '_blank')
+      }}
+    >
       <List.Item.Meta
-        
+        avatar={<Avatar src={"https://s2.googleusercontent.com/s2/favicons?domain_url=" +
+        props.quickLink.url} />}
         title={props.quickLink.title}
-        description={props.quickLink.url}
+        
         />
     </List.Item>
   );
