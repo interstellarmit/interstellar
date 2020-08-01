@@ -47,7 +47,7 @@ class App extends Component {
   Methods from Public (Dan's login stuff)
   */
   login = () => {
-    post("api/login", { name: "Daniel Sun", email: "dansun@mit.edu", password: "hehexd" }).then(
+    post("/api/login", { name: "Daniel Sun", email: "dansun@mit.edu", password: "hehexd" }).then(
       (res) => {
         console.log(res);
         cookies.set("token", res.token, { path: "/" });
@@ -57,7 +57,7 @@ class App extends Component {
     );
   };
   logout = () => {
-    post("api/logout", { name: "Daniel Sun", email: "dansun@mit.edu", password: "hehexd" }).then(
+    post("/api/logout", { name: "Daniel Sun", email: "dansun@mit.edu", password: "hehexd" }).then(
       (res) => {
         cookies.set("token", "", { path: "/" });
         this.setState({userId: undefined})
@@ -67,7 +67,7 @@ class App extends Component {
   };
   me = () => {
     get(
-      "api/me",
+      "/api/me",
       {},
       cookies.get("token")
     ).then((res) => {
@@ -86,7 +86,7 @@ class App extends Component {
     });
   };
   signup = () => {
-    post("api/signup", { name: "Daniel Sun", email: "dansun@mit.edu", password: "hehexd" }).then(
+    post("/api/signup", { name: "Daniel Sun", email: "dansun@mit.edu", password: "hehexd" }).then(
       (res) => {
         console.log(res);
       }
