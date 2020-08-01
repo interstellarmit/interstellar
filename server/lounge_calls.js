@@ -131,7 +131,7 @@ Returns: {}
 Description: Sends message through socket
 */
 message = (req, res) => {
-  socket.to("Lounge: " + req.body.loungeId).emit("message", {userId: req.user._id, loungeId: req.body.loungeId, text: req.body.text})
+  socket.getSocketFromUserID(req.user._id).to("Lounge: " + req.body.loungeId).emit("message", {userId: req.user._id, name: req.user.name, loungeId: req.body.loungeId, text: req.body.text})
   res.send({})
 }
 
