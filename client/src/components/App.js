@@ -41,6 +41,9 @@ class App extends Component {
         this.me();
       }
     });
+    socket.on("disconnect", () => {
+      this.setState({disconnect: true})
+    })
   }
 
   /*
@@ -135,11 +138,15 @@ class App extends Component {
         <Public login={this.login} logout={this.logout} me={this.me} signup={this.signup} />
       </>
     }
+    if(this.state.disconnect) {
+      return <h1>Disconnected</h1>
+    }
     if(this.state.redirectPage !== "") {
       let page = this.state.redirectPage
       this.setState({redirectPage: ""})
       return <Router><Redirect to={page} /></Router>
     }
+    
     return (
       <div>
         <button onClick={()=>{console.log(this.state)}}>log state</button>
