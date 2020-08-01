@@ -51,8 +51,10 @@ class App extends Component {
       (res) => {
         console.log(res);
         cookies.set("token", res.token, { path: "/" });
-        this.me();
-        post("/api/initsocket", { socketid: socket.id });
+        
+        post("/api/initsocket", { socketid: socket.id }).then(() => {
+          this.me();
+        });
       }
     );
   };
@@ -104,6 +106,10 @@ class App extends Component {
   redirectPage = (link) => {
     this.setState({redirectPage: link})
   }
+
+  setLoungeId = (newId) => {
+    this.setState({loungeId: newId})
+  }
   /*
   handleLogin = (res) => {
     console.log(`Logged in as ${res.profileObj.name}`);
@@ -148,8 +154,8 @@ class App extends Component {
               <Router>
               <Switch>
                 <Home exact path="/" schoolId={this.state.schoolId} updateSelectedPageName={this.updateSelectedPageName} redirectPage={this.redirectPage} />
-                <Page path="/class/:selectedPage" schoolId={this.state.schoolId} pageIds={this.state.pageIds} updatePageIds={this.updatePageIds} updateSelectedPageName={this.updateSelectedPageName} user={{userId: this.state.userId, name: this.state.name}} redirectPage={this.redirectPage} />
-                <Page path="/group/:selectedPage" schoolId={this.state.schoolId} pageIds={this.state.pageIds} updatePageIds={this.updatePageIds} updateSelectedPageName={this.updateSelectedPageName} user={{userId: this.state.userId, name: this.state.name}} redirectPage={this.redirectPage} />
+                <Page path="/class/:selectedPage" schoolId={this.state.schoolId} pageIds={this.state.pageIds} updatePageIds={this.updatePageIds} updateSelectedPageName={this.updateSelectedPageName} user={{userId: this.state.userId, name: this.state.name}} redirectPage={this.redirectPage} loungeId = {this.state.loungeId} setLoungeId = {this.setLoungeId} />
+                <Page path="/group/:selectedPage" schoolId={this.state.schoolId} pageIds={this.state.pageIds} updatePageIds={this.updatePageIds} updateSelectedPageName={this.updateSelectedPageName} user={{userId: this.state.userId, name: this.state.name}} redirectPage={this.redirectPage} loungeId = {this.state.loungeId} setLoungeId = {this.setLoungeId} />
                 <NotFound default />
              </Switch>
               </Router>

@@ -15,7 +15,7 @@ export default function TabPage(props) {
   return (
     <Router>
       <Switch>
-        <Route path={"/"+props.page.pageType.toLowerCase()+"/"+props.page.name+":routeLink?"}
+        <Route path={"/"+props.page.pageType.toLowerCase()+"/"+props.page.name+"/:routeLink?"}
         render= {({ match, history }) => {
           console.log(match.params.routeLink )
           return (

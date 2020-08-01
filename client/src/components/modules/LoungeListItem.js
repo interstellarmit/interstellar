@@ -4,9 +4,9 @@ import ProfilePic from "./ProfilePic";
 export default function LoungeListItem(props) {
   
   return (
-    <List.Item>
+    <List.Item onClick={props.redirect}>
               <Avatar.Group maxCount={6}>
-              {users.map((user)=>{return <ProfilePic user={user} />})}
+              {props.users.map((user)=>{return <ProfilePic user={user} />})}
                 </Avatar.Group>
               {props.name}
     </List.Item>

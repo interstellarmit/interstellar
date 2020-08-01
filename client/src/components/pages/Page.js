@@ -2,9 +2,10 @@ import React, { Component } from "react";
 import { get, post } from "../../utilities";
 import DashboardTab from "../modules/DashboardTab";
 import ForumTab from "../modules/ForumTab";
-import LoungeTab from "../modules/LoungeTab";
+import LoungesTab from "../modules/LoungesTab";
 import InfoTab from "../modules/InfoTab";
 import TabPage from "../modules/TabPage";
+import { socket } from "../../client-socket.js";
 import { Spin, Space, Button } from 'antd';
 
 import {UserAddOutlined, UserDeleteOutlined} from '@ant-design/icons';
@@ -84,6 +85,77 @@ Input: {
     
   }
 
+  createNewLounge = (data) => {
+    post("/api/createNewLounge", {
+      name: data.name,
+      pageId: this.state.page._id
+    }).then((data) => {
+      if(!data.created) return
+      let lounges = this.state.lounges
+      lounges.push(data.lounge)
+      this.setState({lounges: lounges})
+    });
+  }
+
+  addToLounge = (userId, loungeId, callback = ()=>{}) => {
+    let lounges = this.state.lounges
+    let lounge = lounges.filter((l)=>{return l._id+"" === loungeId})[0]
+
+    let newLounges = lounges.filter((l)=>{return l._id+"" !== loungeId})
+        
+    let userIds = lounge.userIds
+    userIds.push(userId)
+    lounge.userIds = userIds 
+    newLounges.push(lounge)
+    this.setState({lounges: newLounges}, callback)
+  }
+
+  removeFromLounge = (userId, loungeId, callback = ()=>{}) => {
+      if(loungeId !== "") {
+      let lounges = this.state.lounges
+      let lounge = lounges.filter((l)=>{return l._id+"" === loungeId})[0]
+  
+      let newLounges = lounges.filter((l)=>{return l._id+"" !== loungeId})
+          
+      let userIds = lounge.userIds.filter((id) => {return id !== userId})
+      lounge.userIds = userIds 
+      console.log("newlounge") 
+      console.log(lounge)
+      newLounges.push(lounge)
+      this.setState({lounges: newLounges}, callback)
+      }
+      else {
+        callback()
+      }
+    
+  }
+
+  addSelfToLounge = (loungeId, callback=()=>{}) => {
+    post("/api/addSelfToLounge", {
+      loungeId: loungeId
+    }).then((data) => {
+      console.log(data)
+      console.log("added")
+      if(data.added) {
+        this.addToLounge(this.props.user.userId, loungeId,  callback)
+       
+      }
+    });
+  }
+
+  removeSelfFromLounge = (loungeId, callback=()=>{}) => {
+    post("/api/removeSelfFromLounge", {
+      loungeId: loungeId
+    }).then((data) => {
+      console.log(data)
+      console.log("removed")
+      if(data.removed) {
+        this.removeFromLounge(this.props.user.userId, loungeId, callback)
+        
+      }
+    });
+  }
+
    
   
 
@@ -100,6 +172,14 @@ Input: {
         inPage: data.inPage  
     })})
     // remember -- api calls go here!
+
+    socket.on("userAddedToLounge", (data) => {
+      this.addToLounge(data.userId, data.loungeId)
+    })
+
+    socket.on("userRemovedFromLounge", (data) => {
+      this.removeFromLounge(data.userId, data.loungeId)
+    })
   }
 
   render() {
@@ -160,7 +240,16 @@ Input: {
             editDDQL = {this.editDDQL}
             user={this.props.user}
           />
-          <LoungeTab />
+          <LoungesTab 
+            lounges = {this.state.lounges}
+            users = {this.state.users}
+            page = {this.state.page}
+            addSelfToLounge = {this.addSelfToLounge}
+            removeSelfFromLounge = {this.removeSelfFromLounge}
+            createNewLounge = {this.createNewLounge}
+            loungeId = {this.props.loungeId} 
+            setLoungeId = {this.props.setLoungeId}
+          />
           <ForumTab /> 
           <InfoTab users={this.state.users} inPage={true} page={this.state.page} user={this.props.user} />)
         </TabPage> 
