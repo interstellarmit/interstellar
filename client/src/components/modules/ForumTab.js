@@ -1,26 +1,28 @@
 import React, { Component } from "react";
 import { get, post } from "../../utilities";
+import { Row, Col, Divider, Button, Grid } from "antd";
+import PostList from "./PostList";
 
+export default function ForumTab(props) {
+  return (
+    <div>
+      <h1>ForumTab!</h1>
 
+      <Col span={8}>
+      <div>Forum post</div>
+      </Col>
 
-class ForumTab extends Component {
-  constructor(props) {
-    super(props);
-    // Initialize Default State
-    this.state = {};
-  }
+      
+      <Button> Add New Post </Button>
 
-  componentDidMount() {
-    // remember -- api calls go here!
-  }
+      <h3>Posts</h3>
 
-  render() {
-    return (
-      <>
-        ForumTab
-      </>
-    );
-  }
-}
+      <Col span={8}>
 
-export default ForumTab;
+      <div>Current post: Blah blah blah blah blah blah blah;</div>
+
+      </Col>
+      
+    </div>
+  );
+};
