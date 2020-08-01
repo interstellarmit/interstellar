@@ -36,7 +36,14 @@ a
             </List.Item>
           }}
         />
-        <Input />
+        <Input value={this.state.currentMessage} onChange={(text) => {this.setState({currentMessage:text})}}
+         onPressEnter={()=> {
+           let text = this.state.currentMessage
+           this.setState({currentMessage: ""})
+           post("/api/message", {text: text}).then((res) => {
+             return
+           })
+         }} />
       </>
     );
   }
