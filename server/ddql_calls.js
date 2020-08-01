@@ -21,32 +21,60 @@ Input (req.body): {
 
 Precondition: User is in the page, Date is not in the past 
 Socket: 
-Returns: DDQL
+Returns: {created: Boolean, DDQL: DDQL}
 Description: Creates the DDQL and returns it
 */
 createNewDDQL = (req, res) => {
-
-}
-
+  User.findById(req.user._id).then((user) => {
+    if (user.pageIds.includes(req.body.pageId)) {
+      let ddql = new DDQL({
+        title: req.body.title,
+        objectType: req.body.objectType,
+        dueDate: req.body.dueDate,
+        url: req.body.url,
+        pageId: req.body.pageId,
+        visibility: req.body.visibility,
+        creatorId: req.user._id,
+      });
+      ddql.save().then(() => {
+        res.send({ created: true, DDQL: ddql });
+      });
+    } else {
+      res.send({ created: false });
+    }
+  });
+};
 
 /*
 editDDQL
 Input (req.body): {
-	objectId: String,
-title: String,
+	DDQLId: String,
+	title: String,
 	dueDate: Date,
 	url: String,
-	visibility: String ("Public" or "Only Me")
+	deleted: Boolean
 
 }
-Precondition: 
+Precondition: User is the creator of the DDQL
 Socket: 
-Returns: DDQL
+Returns: {edited: Boolean, DDQL: DDQL}
 Description: Edits the DDQL and resaves it. Returns the edited DDQL
 */
 editDDQL = (req, res) => {
-
-}
+  DDQL.findById(req.body.DDQLId).then((ddql) => {
+    if (ddql.creatorId === req.user._id) {
+      ddql.title = req.body.title;
+      ddql.dueDate = req.body.dueDate;
+      ddql.url = req.body.url;
+      if (req.body.deleted) ddql.deleted = true;
+      ddql.save().then(() => {
+        res.send({ edited: true, DDQL: ddql });
+      });
+    } else {
+      res.send({ edited: false });
+    }
+  });
+};
 
 /*
 addOrCompleteDDQL
@@ -64,17 +92,76 @@ amount: "multiple"
 Precondition: IF AMOUNT IS SINGLE:  If "add", must not be added; If "remove", must be added; if "complete", must be added and not complete. if "uncomplete", must be added and complete. 
 ELSE: action will be ADD, and there will be list of IDs
 Socket: 
-Returns: {}
+Returns: {done: Boolean}
 Description: Updates addedUserIds or completedUserIds in the corresponding DDQL (s).
-*/ 
+*/
+
 addOrCompleteDDQL = (req, res) => {
+	if(req.body.amount === "single") {
+		DDQL.findById(req.body.objectId).then((ddql) => {
+			User.findById(req.user._id).then((user) => {
+				if(user.pageIds.includes(ddql.pageId)) {
+					let added = ddql.addedUserIds.includes(req.user._id)
+					let completed = ddql.completedUserIds.includes(req.user._id)
+					if(req.body.action==="add" && !added) {
+						ddql.addedUserIds.push(req.user._id)
+						ddql.save().then(()=>{
+							res.send({done: true})
+						})
+					}
+					else if(req.body.action==="remove" && added) {
+						ddql.addedUserIds = ddql.addedUserIds.filter((id)=>{return id !==(req.user._id)})
+						ddql.completedUserIds = ddql.completedUserIds.filter((id)=>{return id !==(req.user._id)})
+						ddql.save().then(()=>{
+							res.send({done: true})
+						})
+					
+					}
+					else if(req.body.action==="complete" && !completed) {
+						ddql.completedUserIds.push(req.user._id)
+						ddql.save().then(()=>{
+							res.send({done: true})
+						})
+					}
+					else if(req.body.action==="uncomplete" && completed) {
+						ddql.completedUserIds = ddql.completedUserIds.filter((id)=>{return id !==(req.user._id)})
+						ddql.save().then(()=>{
+							res.send({done: true})
+						})
+					}
+					else {
+						res.send({done: false})
+					}
+				}
+				else {
+					res.send({done: false})
+				}
+			})
+		})
+	}
+	else {
+		DDQL.find({_id: {$in: req.body.objectIds}}, (err, ddqls)=>{
+			User.findById(req.user._id).then((user)=>{
+				let counter = 0
+				if(ddqls.length === 0) res.send({done: false})
+				ddqls.forEach((ddql) => {
+					counter += 1
+					if(user.pageIds.includes(ddql.pageId) && !ddql.addedUserIds.includes(req.user._id)) {
+						ddql.addedUserIds.push(req.user._id)
+						ddql.save().then(() => {
+							if(counter === ddqls.length) 
+								res.send({done: true})
+						})
+					}
+				})
+			})
+		})
+	}
 
-
-}
-
+};
 
 module.exports = {
   createNewDDQL,
   editDDQL,
-  addOrCompleteDDQL,
+  addOrCompleteDDQL
 };

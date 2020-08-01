@@ -1,22 +1,35 @@
 import React, { Component } from "react";
+import { get, post } from "../../utilities";
 
-import "../../utilities.css";
+
 
 class Home extends Component {
   constructor(props) {
     super(props);
     // Initialize Default State
-    this.state = {};
+    this.state = {
+      users: [],
+      dueDates: [],
+      quickLinks: [],
+      lounges: [],
+    };
+    props.updateSelectedPageName("")
   }
 
   componentDidMount() {
-    // remember -- api calls go here!
+    post("api/joinPage", {home: true}).then((data) => {
+      this.setState({
+        users: data.users,
+        dueDates: data.dueDates,
+        quickLinks: data.quickLinks,
+        lounges: data.lounges,
+    })})
   }
 
   render() {
     return (
       <>
-        <div>Home</div>
+        Home
       </>
     );
   }

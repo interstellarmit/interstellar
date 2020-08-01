@@ -16,7 +16,7 @@ let expiryDate = new Date(2021, 1, 20); // expiry date for all classes this seme
 createNewSchool
 Input (req.body): {
 	name: String,
-	email: String,
+	exampleEmail: String,
 	classesString: String
 }
 Precondition: req.user.isSiteAdmin, name is a valid URL string (if not, replace spaces with '_', and delete other characters)
@@ -49,6 +49,7 @@ createNewSchool = (req, res) => {
             pageType: "Class",
             schoolId: req.user.schoolId,
             adminIds: [req.user._id],
+            expiryDate: expiryDate
           });
           page.save().then(() => {
             added_classes += 1;
@@ -79,6 +80,8 @@ Socket:
 Returns: {created: Boolean}
 Description: Creates a new page, populating with given info. Sets self as admin. Initially unlocked. Returns true if the page is successfully created.
 */
+
+//!!! Make sure no other page has same name... not implemeenteed yet!
 createNewPage = (req, res) => {
   School.findById(req.user.schoolId).then((school) => {
     if (school.adminIds.includes(req.user._id) || req.user.isSiteAdmin) {
@@ -149,10 +152,12 @@ Description: Removes user from the page
 removeSelfFromPage = (req, res) => {
   Page.findById(req.body.pageId).then((page) => {
     User.findById(req.user._id).then((user) => {
-      if (user.pageIds.includes(page._id)) {
+
+      if (user.pageIds.includes(req.body.pageId)) {
         user.pageIds = user.pageIds.filter((id) => {
-          return id !== page._id;
+          return id !== req.body.pageId;
         });
+
         user.save().then(() => {
           res.send({ removed: true });
         });
@@ -166,7 +171,8 @@ removeSelfFromPage = (req, res) => {
 /*
 joinPage
 Input (req.body): {
-	pageId: String,
+  schoolId: String
+	pageName: String,
 }
 Socket: 
 Returns: if user is in page {
@@ -178,24 +184,40 @@ page: Page
 
 else {users: [{userId: String, name: String}], page: Page}
 
-Description: If the user is in the page, returns the users, due dates that have him in "addedUserIds", quicklinks that have him in "addedUserIds", lounges, and Page. otherwise, just returns users and page. If pageId is "Home", return home stuff! (dueDates for all classes, quickLinks for all classes, lounges for all classes, users for all classes). Note: When returning user list, omit the people who have "visible" false.  (Note: group posts are not included here)
+Description: If the user is in the page, returns the users, due dates that have him in "addedUserIds", quicklinks that have him in "addedUserIds", lounges, and Page. otherwise, just returns users and page. If req.body.home is True, return home stuff! (dueDates for all classes, quickLinks for all classes, lounges for all classes, users for all classes). Note: When returning user list, omit the people who have "visible" false.  (Note: group posts are not included here)
 */
-joinPage = (req, res) => {
-  User.findById(req.user._id).then((user) => {
-    let pageArr = [req.body.pageId];
 
-    if (req.body.pageId === "Home") {
-      pageArr = user.pageIds;
+joinPage = (req, res) => {
+  console.log(req.body)
+  Page.findOne({ name: req.body.pageName, schoolId: req.body.schoolId }).then((page) => {
+    if(page) {
+      socket.getSocketFromUserID(req.user._id).join("Page: " + page._id);
     }
-    Page.findById(req.body.pageId).then((page) => {
+    User.findById(req.user._id).then((user) => {
+      let pageArr = []
+      
+
+      if (req.body.home) {
+        pageArr = user.pageIds;
+      }
+      else {
+        pageArr = [page._id]
+      }
+
       User.find({ pageIds: { $in: pageArr } }, (err, users) => {
         let condensedUsers = users.map((singleUser) => {
           return { userId: singleUser._id, name: singleUser.name };
         });
-        if (user.pageIds.includes(req.body.pageId) || req.body.pageId === "Home") {
+        if (req.body.home || user.pageIds.includes(page._id)) {
           DDQL.find(
-            { pageId: { $in: pageArr }, $or: { addedUserIds: req.user._id, visibility: "Public" } },
+            {
+              pageId: { $in: pageArr },
+              $or: [{ addedUserIds: req.user._id}, {visibility: "Public" }],
+              deleted: false,
+            },
             (err, DDQLs) => {
+             // console.log(err)
+              //console.log(DDQLs)
               Lounge.find({ pageId: { $in: pageArr } }, (err, lounges) => {
                 let returnValue = {
                   users: condensedUsers,
@@ -206,8 +228,9 @@ joinPage = (req, res) => {
                   quickLinks: DDQLs.filter((ddql) => {
                     return ddql.objectType == "QuickLink";
                   }),
+                  inPage: true
                 };
-                if (req.body.pageId !== "Home") {
+                if (!req.body.home) {
                   returnValue.page = page;
                 }
                 res.send(returnValue);
@@ -215,7 +238,7 @@ joinPage = (req, res) => {
             }
           );
         } else {
-          res.send({ users: condensedUsers, page: page });
+          res.send({ users: condensedUsers, page: page, inPage: false });
         }
       });
     });
@@ -225,7 +248,8 @@ joinPage = (req, res) => {
 /*
 leavePage
 Input (req.body): {
-	pageId: String,
+	schoolId: String
+	pageName: String,
 }
 Precondition: User is on the page 
 Socket: 
@@ -233,15 +257,18 @@ Returns: {}
 Description: Removes you from the lounge, if you are in one (by calling removeSelfFromLounge). 
 */
 leavePage = (req, res) => {
-  User.findById(req.user._id).then((user) => {
-    lounge_calls.removeSelfFromLounge(user.loungeId).then(() => {
-      user.loungeId = ""
-      user.save().then(() => {
-        res.send({})
-      })
-    })
-  })
-
+  if(req.body.home) {
+    res.send({})
+    return;
+  }
+  Page.findOne({ name: req.body.pageName, schoolId: req.body.schoolId }).then((page) => {
+    socket.getSocketFromUserID(req.user._id).leave("Page: " + page._id);
+    User.findById(req.user._id).then((user) => {
+      lounge_calls.removeSelfFromLounge(user.loungeId).then(() => {
+        res.send({});
+      });
+    });
+  });
 };
 
 module.exports = {

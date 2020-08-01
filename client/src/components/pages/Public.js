@@ -20,22 +20,34 @@ class Public extends Component {
     return (
       <>
         <button onClick = {() => {
-          post('api/signup', {name: "Daniel Sun", email: "guang@mit.edu", password: "hehexd"}).then((res)=> {
-            console.log(res)
-          })
+          this.props.signup()
         }}>Signup</button>
-        <button onClick = {this.props.handleLogin}>Login</button>
         <button onClick = {() => {
-          get('api/me', {name: "Daniel Sun", email: "dansun@mit.edu", password: "hehexd"}, cookies.get('token')).then((res)=> {
-            console.log(res)
-          })
+          this.props.login()
+        }}>Login</button>
+        <button onClick = {() => {
+          this.props.me()
         }}>Me</button>
+        <button onClick = {() => {
+          this.props.logout()
+        }}>Logout</button>
         <button onClick={()=> {
             console.log(cookies.get('token'))
         }}>Cookie</button>
+        
+       
       </>
     );
   }
 }
 
 export default Public;
+/*
+ <button onClick={()=> {
+           post("api/createNewSchool", {name: "MIT", email: "mit.edu", classesString: 
+           "6.031 Software Development\n6.033 Computer Systems Engineering\n6.UAT Presenting Skills\n11.125 Education"}).then((created) => {
+             if(created.created) console.log("done");
+             else console.log("error")
+           })
+        }}>Add MIT</button>
+        */

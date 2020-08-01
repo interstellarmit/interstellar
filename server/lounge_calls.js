@@ -18,11 +18,28 @@ Input (req.body): {
 }
 Precondition: User is on the page 
 Socket: "newLounge", Lounge (emitted to members of the page)
-Returns: Lounge
+Returns: {created: Boolean, lounge: Lounge}
 Description: Adds new lounge to mongo, emits socket telling everyone in page that new lounge is created. 
 */
 createNewLounge = (req, res) => {
-
+	User.findById(req.user._id).then((user) => {
+		if(user.pageIds.includes(req.body.pageId)) {
+			let lounge = new Lounge({
+				name: req.body.name,
+				pageId: req.body.pageId,
+				hostId: req.user._id
+			})
+			lounge.save().then(() => {
+				socket.to("Page: " + req.body.pageId).emit("newLounge", lounge)
+				res.send({created: true, lounge: lounge})
+			})
+			
+		}
+		else {
+			res.send({created: false})
+		}
+	})
+	
 }
 
 /*
@@ -32,11 +49,30 @@ Input (req.body): {
 }
 Precondition: User is on the page  and not in the lounge
 Socket: "userAddedToLounge", {loungeId: String, userId: String}
-Returns: {}
+Returns: {added: Boolean}
 Description: user added to lounge, emits socket telling people in page that someone joined lounge (and updates the userlist in lounge object). Updates loungeId in user object. Returns lounge and the list of users in lounge (giving names as well as userIds)
 */
 addSelfToLounge = (req, res) => {
-
+	User.findById(req.user._id).then((user) => {
+		Lounge.findById(req.body.loungeId).then((lounge) => {
+			if(user.pageIds.includes(lounge.pageId) && !lounge.userIds.includes(req.user._id)) {
+				lounge.userIds.push(req.user._id)
+				lounge.save().then(() => {
+					socket.getSocketFromUserID(req.user._id).to("Lounge: " + lounge._id).emit("userAddedToLounge", {loungeId: lounge._id, userId: req.user._id})
+					socket.getSocketFromUserID(req.user._id).join("Lounge: " + lounge._id)
+					user.loungeId = req.body.loungeId
+					user.save().then(() => {
+						res.send({added: true})
+					})
+				})
+				
+			}
+			else {
+				res.send({added: false})
+			}
+		})
+		
+	})
 }
 
 /*
@@ -46,24 +82,48 @@ Input (req.body): {
 }
 Precondition: User is in the lounge
 Socket: "userRemovedFromLounge", {loungeId: String, userId: String}
-Returns: {}
+Returns: {removed: Boolean}
 Description: user removed from lounge, emits socket telling people in page that someone left lounge (and updates the userlist in lounge object). Updates loungeId in user object. 
 */
 removeSelfFromLounge = (req, res) => {
-	removeSelfFromLoungePromise(req.body.loungeId).then(() => {
-		res.send({})
+	removeSelfFromLoungePromise(req.body.loungeId).then((removed) => {
+		res.send({removed: removed})
 	})
 }
 
-removeSelfFromLoungePromise =  new Promise((resolve, reject) => {
+removeSelfFromLoungePromise =  (loungeId) => {
+	return new Promise((resolve, reject) => {
 	// code for removing self from lounge goes here.. this is just to make it a promise
-	resolve();
-})
+	User.findById(req.user._id).then((user) => {
+		Lounge.findById(req.body.loungeId).then((lounge) => {
+			if(lounge.userIds.includes(req.user._id)) {
+				lounge.userIds = lounge.userIds.filter((id) => {return id !== req.user._id})
+				lounge.save().then(() => {
+					socket.getSocketFromUserID(req.user._id).to("Lounge: " + lounge._id).emit("userRemovedFromLounge", {loungeId: lounge._id, userId: req.user._id})
+					socket.getSocketFromUserID(req.user._id).leave("Lounge: " + lounge._id)
+					user.loungeId = ""
+					user.save().then(() => {
+						resolve(true)
+					})
+				})
+				
+			}
+			else {
+				resolve(false)
+			}
+		})
+		
+	})
+	
+	resolve(false);
+}) 
+}
 
 /*
 message
 Input (req.body): {
-	text: String
+	text: String,
+	loungeId: String
 }
 Precondition: User is in the page that the lounge is in. 
 Socket: "message", {userId: String, loungeId: String, text: String} (sent to members of that lounge)
@@ -71,7 +131,8 @@ Returns: {}
 Description: Sends message through socket
 */
 message = (req, res) => {
-  
+  socket.to("Lounge: " + req.body.loungeId).emit("message", {userId: req.user._id, loungeId: req.body.loungeId, text: req.body.text})
+  res.send({})
 }
 
 
