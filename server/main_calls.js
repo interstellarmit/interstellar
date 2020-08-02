@@ -49,7 +49,7 @@ createNewSchool = (req, res) => {
             pageType: "Class",
             schoolId: req.user.schoolId,
             adminIds: [req.user._id],
-            expiryDate: expiryDate
+            expiryDate: expiryDate,
           });
           page.save().then(() => {
             added_classes += 1;
@@ -89,7 +89,7 @@ createNewPage = (req, res) => {
         pageType: req.body.pageType,
         name: req.body.name,
         title: req.body.title,
-        description: req.body.desciption,
+        description: req.body.description,
         expiryDate: expiryDate,
         adminIds: [req.user._id],
         schoolId: req.user.schoolId,
@@ -152,7 +152,6 @@ Description: Removes user from the page
 removeSelfFromPage = (req, res) => {
   Page.findById(req.body.pageId).then((page) => {
     User.findById(req.user._id).then((user) => {
-
       if (user.pageIds.includes(req.body.pageId)) {
         user.pageIds = user.pageIds.filter((id) => {
           return id !== req.body.pageId;
@@ -188,20 +187,18 @@ Description: If the user is in the page, returns the users, due dates that have 
 */
 
 joinPage = (req, res) => {
-  console.log(req.body)
+  console.log(req.body);
   Page.findOne({ name: req.body.pageName, schoolId: req.body.schoolId }).then((page) => {
-    if(page) {
+    if (page) {
       socket.getSocketFromUserID(req.user._id).join("Page: " + page._id);
     }
     User.findById(req.user._id).then((user) => {
-      let pageArr = []
-      
+      let pageArr = [];
 
       if (req.body.home) {
         pageArr = user.pageIds;
-      }
-      else {
-        pageArr = [page._id]
+      } else {
+        pageArr = [page._id];
       }
 
       User.find({ pageIds: { $in: pageArr } }, (err, users) => {
@@ -212,11 +209,11 @@ joinPage = (req, res) => {
           DDQL.find(
             {
               pageId: { $in: pageArr },
-              $or: [{ addedUserIds: req.user._id}, {visibility: "Public" }],
+              $or: [{ addedUserIds: req.user._id }, { visibility: "Public" }],
               deleted: false,
             },
             (err, DDQLs) => {
-             // console.log(err)
+              // console.log(err)
               //console.log(DDQLs)
               Lounge.find({ pageId: { $in: pageArr } }, (err, lounges) => {
                 let returnValue = {
@@ -228,7 +225,7 @@ joinPage = (req, res) => {
                   quickLinks: DDQLs.filter((ddql) => {
                     return ddql.objectType == "QuickLink";
                   }),
-                  inPage: true
+                  inPage: true,
                 };
                 if (!req.body.home) {
                   returnValue.page = page;
@@ -257,8 +254,8 @@ Returns: {}
 Description: Removes you from the lounge, if you are in one (by calling removeSelfFromLounge). 
 */
 leavePage = (req, res) => {
-  if(req.body.home) {
-    res.send({})
+  if (req.body.home) {
+    res.send({});
     return;
   }
   Page.findOne({ name: req.body.pageName, schoolId: req.body.schoolId }).then((page) => {
