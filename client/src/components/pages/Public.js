@@ -18,7 +18,7 @@ export default function Public(props) {
     });
   };
   let onFinishSignup = (fieldsValue) => {
-    form.resetFields();
+    formSignup.resetFields();
     props.signup({
       name: fieldsValue.signupName,
       email: fieldsValue.signupEmail,
@@ -30,7 +30,7 @@ export default function Public(props) {
       visible={props.visible}
       title={"Welcome"}
       onCancel={() => {
-        form.resetFields();
+        // form.resetFields();
         //props.setVisible(false);
       }}
       footer={null}
@@ -49,7 +49,7 @@ export default function Public(props) {
                 },
               ]}
             >
-              <Input placeholder="xd@mit.edu" />
+              <Input placeholder="dansun@mit.edu" />
             </Form.Item>
             <Form.Item
               name="loginPassword"
@@ -61,7 +61,7 @@ export default function Public(props) {
                 },
               ]}
             >
-              <Input.Password placeholder="hehexd" />
+              <Input.Password placeholder="asdfasdf" />
             </Form.Item>
 
             <Form.Item>

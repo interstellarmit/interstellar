@@ -1,28 +1,13 @@
 import React, { Component, useState } from "react";
 import { List } from "antd";
 import "antd/dist/antd.css";
-import { redirectPage } from "@reach/router";
+//import { redirectPage } from "@reach/router";
 import { Menu, Dropdown, Layout } from "antd";
 import { DownOutlined } from "@ant-design/icons";
+import SearchBar from "./SearchBar";
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
 export default function SideBar(props) {
-  let searchOptions = (
-    <Menu>
-      {props.allPages.map((page) => {
-        return (
-          <Menu.Item
-            onClick={() => {
-              props.redirectPage("/" + page.pageType.toLowerCase() + "/" + page.name);
-            }}
-          >
-            {page.name + ": " + page.title}
-          </Menu.Item>
-        );
-      })}
-    </Menu>
-  );
-
   let myPages = props.allPages.filter((page) => {
     return props.pageIds.includes(page._id);
   });
@@ -30,7 +15,7 @@ export default function SideBar(props) {
   return (
     <>
       <Sider
-        width={"14%"}
+        width={"22%"}
         style={{
           overflow: "auto",
           height: "100vh",
@@ -39,11 +24,7 @@ export default function SideBar(props) {
           left: 0,
         }}
       >
-        <Dropdown overlay={searchOptions}>
-          <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()}>
-            {props.selectedPageName} <DownOutlined />
-          </a>
-        </Dropdown>
+        <SearchBar redirectPage={props.redirectPage} allPages={props.allPages} />
         <Menu
           theme="dark"
           selectedKeys={[props.selectedPageName === "" ? ".ho!!me." : props.selectedPageName]}

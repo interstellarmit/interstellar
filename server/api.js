@@ -26,25 +26,23 @@ const DDQL_calls = require("./DDQL_calls");
 const forum_calls = require("./forum_calls");
 // api endpoints: all these paths will be prefixed with "/api/"
 const router = express.Router();
-const { check, validationResult} = require("express-validator/check");
+const { check, validationResult } = require("express-validator/check");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-
+const sgMail = require("@sendgrid/mail");
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 //initialize socket
 const socket = require("./server-socket");
-
 
 //signin/user stuff
 router.post(
   "/signup",
   [
-      check("name", "Please Enter a Valid Name")
-      .not()
-      .isEmpty(),
-      check("email", "Please enter a valid email").isEmail(),
-      check("password", "Please enter a valid password").isLength({
-          min: 6
-      })
+    check("name", "Please Enter a Valid Name").not().isEmpty(),
+    check("email", "Please enter a valid email").isEmail(),
+    check("password", "Please enter a valid password").isLength({
+      min: 6,
+    }),
   ],
   auth.signUp
 );
@@ -54,8 +52,8 @@ router.post(
   [
     check("email", "Please enter a valid email").isEmail(),
     check("password", "Please enter a valid password").isLength({
-      min: 6
-    })
+      min: 6,
+    }),
   ],
   auth.login
 );
@@ -63,15 +61,21 @@ router.post(
 router.get("/me", auth.me, async (req, res) => {
   try {
     // request.user is getting fetched from Middleware after token authentication
-    console.log(req.user)
+    console.log(req.user);
     const user = await User.findById(req.user.id);
-    
-    Page.find({schoolId: user.schoolId, expiryDate: { $gte: new Date()}}, (err, pages) => {
-      res.send({user: user, allPages: pages});
-    })
-    
+
+    Page.find({ schoolId: user.schoolId, expiryDate: { $gte: new Date() } }, (err, pages) => {
+      res.send({
+        user: user,
+        allPages: pages.map((page) => {
+          let newPage = page;
+          newPage.description = "";
+          return newPage;
+        }),
+      });
+    });
   } catch (e) {
-    console.log(e)
+    console.log(e);
     res.send({ message: "Error in Fetching user" });
   }
 });
@@ -85,9 +89,24 @@ router.get("/whoami", (req, res) => {
   res.send(req.user);
 });
 
+router.post("/confirmation", auth.confirmationPost);
+router.post("/resend", auth.resendTokenPost);
+
 router.post("/initsocket", (req, res) => {
   // do nothing if user not logged in
   if (req.user) socket.addUser(req.user, socket.getSocketFromSocketID(req.body.socketid));
+  res.send({});
+});
+
+router.post("/test", (req, res) => {
+  const msg = {
+    to: "test@example.com",
+    from: "test@example.com",
+    subject: "Sending with Twilio SendGrid is Fun",
+    text: "and easy to do anywhere, even with Node.js",
+    html: "<strong>and easy to do anywhere, even with Node.js</strong>",
+  };
+  sgMail.send(msg);
   res.send({});
 });
 
@@ -95,27 +114,27 @@ router.post("/initsocket", (req, res) => {
 // | write your API methods below!|
 // |------------------------------|
 
-router.post("/createNewSchool", auth.ensureLoggedIn, main_calls.createNewSchool)
-router.post("/createNewPage", auth.ensureLoggedIn, main_calls.createNewPage)
-router.post("/addSelfToPage", auth.ensureLoggedIn, main_calls.addSelfToPage)
-router.post("/joinPage", auth.ensureLoggedIn, main_calls.joinPage)
-router.post("/removeSelfFromPage", auth.ensureLoggedIn, main_calls.removeSelfFromPage)
-router.post("/leavePage", auth.ensureLoggedIn, main_calls.leavePage)
+router.post("/createNewSchool", auth.ensureLoggedIn, main_calls.createNewSchool);
+router.post("/createNewPage", auth.ensureLoggedIn, main_calls.createNewPage);
+router.post("/addSelfToPage", auth.ensureLoggedIn, main_calls.addSelfToPage);
+router.post("/joinPage", auth.ensureLoggedIn, main_calls.joinPage);
+router.post("/removeSelfFromPage", auth.ensureLoggedIn, main_calls.removeSelfFromPage);
+router.post("/leavePage", auth.ensureLoggedIn, main_calls.leavePage);
 
-router.post("/createNewLounge", auth.ensureLoggedIn, lounge_calls.createNewLounge)
-router.post("/addSelfToLounge", auth.ensureLoggedIn, lounge_calls.addSelfToLounge)
-router.post("/removeSelfFromLounge", auth.ensureLoggedIn, lounge_calls.removeSelfFromLounge)
-router.post("/message", auth.ensureLoggedIn, lounge_calls.message)
+router.post("/createNewLounge", auth.ensureLoggedIn, lounge_calls.createNewLounge);
+router.post("/addSelfToLounge", auth.ensureLoggedIn, lounge_calls.addSelfToLounge);
+router.post("/removeSelfFromLounge", auth.ensureLoggedIn, lounge_calls.removeSelfFromLounge);
+router.post("/message", auth.ensureLoggedIn, lounge_calls.message);
 
-router.post("/createNewDDQL", auth.ensureLoggedIn, DDQL_calls.createNewDDQL)
-router.post("/editDDQL", auth.ensureLoggedIn, DDQL_calls.editDDQL)
-router.post("/addOrCompleteDDQL", auth.ensureLoggedIn, DDQL_calls.addOrCompleteDDQL)
+router.post("/createNewDDQL", auth.ensureLoggedIn, DDQL_calls.createNewDDQL);
+router.post("/editDDQL", auth.ensureLoggedIn, DDQL_calls.editDDQL);
+router.post("/addOrCompleteDDQL", auth.ensureLoggedIn, DDQL_calls.addOrCompleteDDQL);
 
-router.post("/joinForum", auth.ensureLoggedIn, forum_calls.joinForum)
-router.post("/createNewGroupPost", auth.ensureLoggedIn, forum_calls.createNewGroupPost)
-router.post("/createNewComment", auth.ensureLoggedIn, forum_calls.createNewComment)
-router.post("/updateGroupPost", auth.ensureLoggedIn, forum_calls.updateGroupPost)
-router.post("/updateComment", auth.ensureLoggedIn, forum_calls.updateComment)
+router.post("/joinForum", auth.ensureLoggedIn, forum_calls.joinForum);
+router.post("/createNewGroupPost", auth.ensureLoggedIn, forum_calls.createNewGroupPost);
+router.post("/createNewComment", auth.ensureLoggedIn, forum_calls.createNewComment);
+router.post("/updateGroupPost", auth.ensureLoggedIn, forum_calls.updateGroupPost);
+router.post("/updateComment", auth.ensureLoggedIn, forum_calls.updateComment);
 
 // anything else falls to this "not found" case
 router.all("*", (req, res) => {

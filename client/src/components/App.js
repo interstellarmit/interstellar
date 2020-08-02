@@ -7,6 +7,7 @@ import SideBar from "./modules/SideBar.js";
 import Public from "./pages/Public.js";
 import Home from "./pages/Home.js";
 import Page from "./pages/Page.js";
+import Confirmation from "./pages/Confirmation.js";
 import "../utilities.css";
 import { Row, Col, Divider } from "antd";
 import "antd/dist/antd.css";
@@ -83,7 +84,7 @@ class App extends Component {
     });
   };
   signup = (data) => {
-    post("/api/signup", { data }).then((res) => {
+    post("/api/signup", data).then((res) => {
       console.log(res);
     });
   };
@@ -129,13 +130,18 @@ class App extends Component {
     if (!this.state.userId) {
       return (
         <>
-          <Public
-            visible={true}
-            login={this.login}
-            logout={this.logout}
-            me={this.me}
-            signup={this.signup}
-          />
+          <Router>
+            <Switch>
+              <Confirmation path="/confirmation/:token"></Confirmation>
+              <Public
+                visible={true}
+                login={this.login}
+                logout={this.logout}
+                me={this.me}
+                signup={this.signup}
+              />
+            </Switch>
+          </Router>
         </>
       );
     }
@@ -154,13 +160,13 @@ class App extends Component {
 
     return (
       <div>
-        <Row>
+        <Row gutter={[16, 16]}>
           <Col>
             <Public login={this.login} logout={this.logout} me={this.me} signup={this.signup} />
           </Col>
         </Row>
         <Row>
-          <Col span={4}>
+          <Col span={6}>
             <SideBar
               pageIds={this.state.pageIds}
               allPages={this.state.allPages}
@@ -170,7 +176,7 @@ class App extends Component {
               logState={this.logState}
             />
           </Col>
-          <Col span={20}>
+          <Col span={18}>
             <Router>
               <Switch>
                 <Home
