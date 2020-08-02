@@ -6,8 +6,8 @@ import LoungesTab from "../modules/LoungesTab";
 import InfoTab from "../modules/InfoTab";
 import TabPage from "../modules/TabPage";
 import { socket } from "../../client-socket.js";
-import { Spin, Space, Button } from "antd";
-
+import { Spin, Space, Button, Typography } from "antd";
+const { Title, Text } = Typography;
 import { UserAddOutlined, UserDeleteOutlined } from "@ant-design/icons";
 class Page extends Component {
   constructor(props) {
@@ -237,8 +237,8 @@ class Page extends Component {
 
     return (
       <>
-        <Space>
-          <h1>{this.state.page.name}</h1>
+        <Space align="start">
+          <Title level={3}>{this.state.page.name}</Title>
           {this.state.inPage ? removeClassButton : addClassButton}
         </Space>
 

@@ -94,6 +94,14 @@ export default function SideBar(props) {
                 );
               })}
           </SubMenu>
+          <Menu.Item
+            key=".log!!out."
+            onClick={() => {
+              props.logout();
+            }}
+          >
+            Logout
+          </Menu.Item>
         </Menu>
       </Sider>
 
