@@ -9,7 +9,7 @@ import Home from "./pages/Home.js";
 import Page from "./pages/Page.js";
 import Confirmation from "./pages/Confirmation.js";
 import "../utilities.css";
-import { Row, Col, Divider } from "antd";
+import { Row, Col, Divider, Spin } from "antd";
 import "antd/dist/antd.css";
 
 import { socket } from "../client-socket.js";
@@ -30,6 +30,7 @@ class App extends Component {
       school: "",
       selectedPageName: "",
       redirectPage: "",
+      tryingToLogin: true,
       // currentPageName from URL?
     };
   }
@@ -40,6 +41,8 @@ class App extends Component {
         // they are registed in the database, and currently logged in.
         console.log("SDKFKLSDJFLKS");
         this.me();
+      } else {
+        this.setState({ tryingToLogin: false });
       }
     });
     socket.on("disconnect", () => {
@@ -63,7 +66,7 @@ class App extends Component {
   logout = () => {
     post("/api/logout", {}).then((res) => {
       cookies.set("token", "", { path: "/" });
-      this.setState({ userId: undefined });
+      this.setState({ userId: undefined, tryingToLogin: false });
       console.log(res);
     });
   };
@@ -128,6 +131,7 @@ class App extends Component {
 
   render() {
     if (!this.state.userId) {
+      if (this.state.tryingToLogin) return <Spin />;
       return (
         <>
           <Router>
