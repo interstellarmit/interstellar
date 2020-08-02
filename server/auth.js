@@ -57,11 +57,11 @@ async function signUp(req, res) {
   console.log(req.body);
   console.log(errors);
   if (!errors.isEmpty()) {
+    console.log("oops")
     return res.status(400).json({
       errors: errors.array(),
     });
   }
-
   const name = req.body.name;
   const email = req.body.email;
   const password = req.body.password;
