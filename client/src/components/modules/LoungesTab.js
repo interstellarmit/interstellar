@@ -1,7 +1,7 @@
 import React, { Component, useState } from "react";
 import { BrowserRouter as Router, Route, NavLink, Switch } from "react-router-dom";
 import { List, Avatar, Row, Col, Button } from "antd";
-import LoungeListItem from "./LoungeListItem";
+import LoungeList from "./LoungeList";
 import Chat from "./Chat";
 import AddLounge from "./AddLounge";
 import UserList from "./UserList";
@@ -70,30 +70,13 @@ export default function LoungesTab(props) {
                       visible={addNewLounge}
                       setVisible={setAddNewLounge}
                     />
-                    <List
-                      dataSource={props.lounges}
-                      renderItem={(oneLounge) => {
-                        return (
-                          <LoungeListItem
-                            name={oneLounge.name}
-                            users={oneLounge.userIds.map((user) => {
-                              return props.users.find((oneUser) => {
-                                return oneUser.userId === user;
-                              });
-                            })}
-                            redirect={() => {
-                              history.push(
-                                "/" +
-                                  props.page.pageType.toLowerCase() +
-                                  "/" +
-                                  props.page.name +
-                                  "/lounges/" +
-                                  oneLounge._id
-                              );
-                            }}
-                          />
-                        );
+                    <LoungeList
+                      lounges={props.lounges}
+                      redirect={(link) => {
+                        history.push(link);
                       }}
+                      users={props.users}
+                      page={props.page}
                     />
                   </Col>
                 </Row>

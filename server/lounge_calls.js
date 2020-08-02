@@ -154,5 +154,6 @@ module.exports = {
   createNewLounge,
   addSelfToLounge,
   removeSelfFromLounge,
+  removeSelfFromLoungePromise,
   message,
 };

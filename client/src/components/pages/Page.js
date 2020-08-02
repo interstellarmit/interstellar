@@ -258,6 +258,7 @@ class Page extends Component {
               createNewDDQL={this.createNewDDQL}
               editDDQL={this.editDDQL}
               user={this.props.user}
+              redirectPage={this.props.redirectPage}
             />
             <LoungesTab
               lounges={this.state.lounges}

@@ -1,31 +1,43 @@
-import React, { Component, useState } from 'react';
+import React, { Component, useState } from "react";
 import DDQLSection from "./DDQLSection";
-
+import { Row, Col, Typography } from "antd";
+const { Title, Text } = Typography;
+import LoungeList from "./LoungeList";
 export default function DashboardTab(props) {
-  
   return (
     <>
-      <DDQLSection 
-        dataSource = {props.dueDates}
-        users = {props.users}
-        page = {props.page}
-        createNewDDQL = {props.createNewDDQL}
-        editDDQL = {props.editDDQL}
-        user={props.user}
-        type = "DueDate"
-      />
+      <Row>
+        <Col span={12}>
+          <DDQLSection
+            dataSource={props.dueDates}
+            users={props.users}
+            page={props.page}
+            createNewDDQL={props.createNewDDQL}
+            editDDQL={props.editDDQL}
+            user={props.user}
+            type="DueDate"
+          />
 
-      <DDQLSection 
-        dataSource = {props.quickLinks}
-        users = {props.users}
-        page = {props.page}
-        createNewDDQL = {props.createNewDDQL}
-        editDDQL = {props.editDDQL}
-        user={props.user}
-        type = "QuickLink"
-      />
-    
+          <DDQLSection
+            dataSource={props.quickLinks}
+            users={props.users}
+            page={props.page}
+            createNewDDQL={props.createNewDDQL}
+            editDDQL={props.editDDQL}
+            user={props.user}
+            type="QuickLink"
+          />
+        </Col>
+        <Col span={12}>
+          <Title level={3}>{"Open Lounges"}</Title>
+          <LoungeList
+            redirect={(link) => props.redirectPage(link)}
+            lounges={props.lounges}
+            users={props.users}
+            page={props.page}
+          />
+        </Col>
+      </Row>
     </>
-
   );
-};
+}
