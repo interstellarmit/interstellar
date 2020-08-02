@@ -1,11 +1,15 @@
 import React, { Component, useState } from 'react';
 
 import { List, Avatar, Button } from 'antd';
-import {PlusOutlined, MinusOutlined} from "@ant-design/icons"; 
+import {PlusOutlined, MinusOutlined, LinkOutlined} from "@ant-design/icons"; 
 export default function QuickLink(props) {
   
   return (
     <List.Item actions={[
+      <Button onClick={() => {
+        window.open(props.quickLink.url, '_blank')
+      }} ><LinkOutlined /></Button>
+      ,
       props.added ?
       <Button onClick={() => {props.addOrCompleteDDQL({
         objectId: props.quickLink._id,
@@ -21,9 +25,7 @@ export default function QuickLink(props) {
 
 
     ]}
-      onClick={() => {
-        window.open(props.quickLink.url, '_blank')
-      }}
+      
     >
       <List.Item.Meta
         avatar={<Avatar src={"https://s2.googleusercontent.com/s2/favicons?domain_url=" +

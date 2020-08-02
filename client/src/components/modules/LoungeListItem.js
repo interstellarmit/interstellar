@@ -5,10 +5,16 @@ export default function LoungeListItem(props) {
   
   return (
     <List.Item onClick={props.redirect}>
-              <Avatar.Group maxCount={6}>
+      <List.Item.Meta 
+        avatar={
+          <Avatar.Group maxCount={6}>
               {props.users.map((user)=>{return <ProfilePic user={user} />})}
                 </Avatar.Group>
-              {props.name}
+        }
+        title={props.name}
+      />
+              
+              
     </List.Item>
   
   );

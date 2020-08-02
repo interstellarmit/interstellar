@@ -33,6 +33,7 @@ export default function AddNewDDQL(props) {
     <Modal
       visible={props.visible}
       title={"Add New " + text}
+      width={700}
       onCancel={() => {
         form.resetFields();
         props.setVisible(false);
@@ -53,6 +54,9 @@ export default function AddNewDDQL(props) {
         <Col span={12}>
           <Form form={form} name={"Add New " + text}
            onFinish={onFinish}
+           labelCol={{ span: 8 }}
+        wrapperCol={{ span: 22 }}
+        layout="horizontal"
            initialValues={{
             public: false,
           }}

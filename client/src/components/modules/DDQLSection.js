@@ -2,7 +2,8 @@ import React, { Component, useState } from "react";
 import DueDate from "./DueDate";
 import AddNewDDQL from "./AddNewDDQL";
 import QuickLink from "./QuickLink";
-import { List, Avatar, Button, Space, Switch } from 'antd';
+import { List, Avatar, Button, Space, Switch, Typography } from 'antd';
+const { Title, Text } = Typography;
 import { get, post } from "../../utilities";
 import {PlusOutlined, MinusOutlined} from "@ant-design/icons"; 
 export default function DDQLSection(props) {
@@ -67,8 +68,8 @@ export default function DDQLSection(props) {
 
   return (
     <>
-      <Space>
-      <h3>{props.type === "DueDate" ? "Due Dates" : "Quicklinks"}</h3>
+      <Space align="start">
+      <Title level={3}>{props.type === "DueDate" ? "Due Dates" : "Quicklinks"}</Title>
       <Button onClick={()=>{
         setShowAddNewDueDate(true)
       }}><PlusOutlined /></Button>
