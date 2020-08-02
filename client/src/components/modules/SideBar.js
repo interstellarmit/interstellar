@@ -102,6 +102,14 @@ export default function SideBar(props) {
           >
             Logout
           </Menu.Item>
+          <Menu.Item
+            key=".log!!state."
+            onClick={() => {
+              props.logState();
+            }}
+          >
+            Log State
+          </Menu.Item>
         </Menu>
       </Sider>
 

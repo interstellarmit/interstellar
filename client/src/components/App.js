@@ -103,6 +103,10 @@ class App extends Component {
   setLoungeId = (newId) => {
     this.setState({ loungeId: newId });
   };
+
+  logState = () => {
+    console.log(this.state);
+  };
   /*
   handleLogin = (res) => {
     console.log(`Logged in as ${res.profileObj.name}`);
@@ -125,13 +129,6 @@ class App extends Component {
     if (!this.state.userId) {
       return (
         <>
-          <button
-            onClick={() => {
-              console.log(this.state);
-            }}
-          >
-            log state
-          </button>
           <Public
             visible={true}
             login={this.login}
@@ -157,13 +154,6 @@ class App extends Component {
 
     return (
       <div>
-        <button
-          onClick={() => {
-            console.log(this.state);
-          }}
-        >
-          log state
-        </button>
         <Row>
           <Col>
             <Public login={this.login} logout={this.logout} me={this.me} signup={this.signup} />
@@ -177,6 +167,7 @@ class App extends Component {
               selectedPageName={this.state.selectedPageName}
               redirectPage={this.redirectPage}
               logout={this.logout}
+              logState={this.logState}
             />
           </Col>
           <Col span={20}>
