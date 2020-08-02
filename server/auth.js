@@ -54,8 +54,7 @@ function me(req, res, next) {
 
 async function signUp(req, res) {
   const errors = validationResult(req);
-  console.log(req.body);
-  console.log(errors);
+
   if (!errors.isEmpty()) {
     console.log("oops")
     return res.status(400).json({
