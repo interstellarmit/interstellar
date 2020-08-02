@@ -8,21 +8,21 @@ class Confirmation extends Component {
     // Initialize Default State
     let tok = this.props.computedMatch.params.token
     this.state = {
-        tok: tok
+      tok: tok
     };
   }
 
   submitForm = () => {
-    post('/api/confirmation', {email:"dansun@mit.edu",token:this.state.tok}).then((res)=> {
-        console.log(res)
+    post('/api/confirmation', { email: "dansun@mit.edu", token: this.state.tok }).then((res) => {
+      console.log(res)
     })
   }
 
   render() {
     return <>
-        <div>{this.state.tok}</div>
-        <div>One more step. Click below to confirm your email.</div>
-        <button onClick = {this.submitForm}>Confirm</button>
+      <div>{this.state.tok}</div>
+      <div>One more step. Click below to confirm your email.</div>
+      <button onClick={this.submitForm}>Confirm</button>
     </>
   }
 }

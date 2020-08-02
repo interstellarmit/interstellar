@@ -1,5 +1,6 @@
 let io;
-
+const User = require("./models/user");
+const Lounge = require("./models/lounge");
 const userToSocketMap = {}; // maps user ID to socket object
 const socketToUserMap = {}; // maps socket ID to user object
 
@@ -33,7 +34,40 @@ module.exports = {
       console.log(`socket has connected ${socket.id}`);
       socket.on("disconnect", (reason) => {
         const user = getUserFromSocketID(socket.id);
-        removeUser(user, socket);
+
+        if (user) {
+          User.findById(user._id).then((myUser) => {
+            if (myUser.loungeId === "") {
+              removeUser(user, socket);
+              return;
+            }
+            let oldLoungeId = myUser.loungeId;
+            Lounge.findById(oldLoungeId).then((lounge) => {
+              if (lounge.userIds.includes(user._id)) {
+                console.log("hello");
+                console.log(lounge.userIds.length);
+                lounge.userIds = lounge.userIds.filter((id) => {
+                  return id !== user._id;
+                });
+                console.log(lounge.userIds.length);
+                lounge.save().then(() => {
+                  getSocketFromUserID(user._id)
+                    .to("Lounge: " + lounge._id)
+                    .emit("userRemovedFromLounge", { loungeId: lounge._id, userId: user._id });
+                  getSocketFromUserID(user._id).leave("Lounge: " + lounge._id);
+                  myUser.loungeId = "";
+                  myUser.save().then(() => {
+                    removeUser(user, socket);
+                  });
+                });
+              } else {
+                removeUser(user, socket);
+              }
+            });
+          });
+        } else {
+          removeUser(user, socket);
+        }
       });
     });
   },

@@ -6,10 +6,16 @@ export default function UserList(props) {
   return (
     <List 
         dataSource = {props.users}
+        size="large"
+  
         renderItem = {(user) => {
             return (<List.Item>
-              <ProfilePic user={user} />
-              {user.name}
+              <List.Item.Meta
+                avatar={<ProfilePic user={user} />}
+                title={user.name}
+              />
+              
+              
             </List.Item>);
         }}
     />

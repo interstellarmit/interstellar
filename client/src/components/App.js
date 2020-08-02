@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
 import NotFound from "./pages/NotFound.js";
 import Skeleton from "./pages/Skeleton.js";
 import SideBar from "./modules/SideBar.js";
@@ -10,7 +10,7 @@ import Page from "./pages/Page.js";
 import Confirmation from "./pages/Confirmation.js"
 import "../utilities.css";
 import { Row, Col, Divider } from "antd";
-import 'antd/dist/antd.css';
+import "antd/dist/antd.css";
 
 import { socket } from "../client-socket.js";
 
@@ -29,7 +29,7 @@ class App extends Component {
       allPages: [],
       school: "",
       selectedPageName: "",
-      redirectPage: ""
+      redirectPage: "",
       // currentPageName from URL?
     };
   }
@@ -38,39 +38,37 @@ class App extends Component {
     get("/api/whoami").then((user) => {
       if (user._id) {
         // they are registed in the database, and currently logged in.
+        console.log("SDKFKLSDJFLKS");
         this.me();
       }
+    });
+    socket.on("disconnect", () => {
+      this.setState({ disconnect: true });
     });
   }
 
   /*
   Methods from Public (Dan's login stuff)
   */
-  login = () => {
-    post("/api/login", { name: "Daniel Sun", email: "xd@mit.edu", password: "hehexd" }).then(
-      (res) => {
-        console.log(res);
-        cookies.set("token", res.token, { path: "/" });
+  login = (data) => {
+    post("/api/login", data).then((res) => {
+      console.log(res);
+      cookies.set("token", res.token, { path: "/" });
+
+      post("/api/initsocket", { socketid: socket.id }).then(() => {
         this.me();
-        post("/api/initsocket", { socketid: socket.id });
-      }
-    );
+      });
+    });
   };
   logout = () => {
-    post("/api/logout").then(
-      (res) => {
-        cookies.set("token", "", { path: "/" });
-        this.setState({userId: undefined})
-        console.log(res);
-      }
-    );
+    post("/api/logout", {}).then((res) => {
+      cookies.set("token", "", { path: "/" });
+      this.setState({ userId: undefined });
+      console.log(res);
+    });
   };
   me = () => {
-    get(
-      "/api/me",
-      {},
-      cookies.get("token")
-    ).then((res) => {
+    get("/api/me", {}, cookies.get("token")).then((res) => {
       console.log(res);
       this.setState({
         userId: res.user._id,
@@ -85,25 +83,31 @@ class App extends Component {
       });
     });
   };
-  signup = () => {
-    post("/api/signup", { name: "Daniel Sun", email: "dansun@mit.edu", password: "hehexd" }).then(
-      (res) => {
-        console.log(res);
-      }
-    );
+  signup = (data) => {
+    post("/api/signup", data).then((res) => {
+      console.log(res);
+    });
   };
 
   updatePageIds = (newPageIds) => {
-    this.setState({pageIds: newPageIds})
-  }
+    this.setState({ pageIds: newPageIds });
+  };
 
   updateSelectedPageName = (page) => {
-    this.setState({selectedPageName: page})
-  }
+    this.setState({ selectedPageName: page });
+  };
 
   redirectPage = (link) => {
-    this.setState({redirectPage: link})
-  }
+    this.setState({ redirectPage: link });
+  };
+
+  setLoungeId = (newId) => {
+    this.setState({ loungeId: newId });
+  };
+
+  logState = () => {
+    console.log(this.state);
+  };
   /*
   handleLogin = (res) => {
     console.log(`Logged in as ${res.profileObj.name}`);
@@ -119,48 +123,96 @@ class App extends Component {
       cookies.set('token','',{path:"/"})
       this.setState({userId: undefined})
     })
-  // };
-  // */
+  };
+  */
 
   render() {
-    if(!this.state.userId) {
-      return <>
-        <button onClick={()=>{console.log(this.state)}}>log state</button>
-        <Router>
+    if (!this.state.userId) {
+      return (
+        <>
+          <Router>
             <Switch>
-              <Confirmation path = "/confirmation/:token"/>
-              <Public default login={this.login} logout={this.logout} me={this.me} signup={this.signup} />
+              <Confirmation path="/confirmation/:token"></Confirmation>
+              <Public
+                visible={true}
+                login={this.login}
+                logout={this.logout}
+                me={this.me}
+                signup={this.signup}
+              />
             </Switch>
           </Router>
-      </>
+        </>
+      );
     }
-    if(this.state.redirectPage !== "") {
-      let page = this.state.redirectPage
-      this.setState({redirectPage: ""})
-      return <Router><Redirect to={page} /></Router>
+    if (this.state.disconnect) {
+      return <h1>Disconnected</h1>;
     }
+    if (this.state.redirectPage !== "") {
+      let page = this.state.redirectPage;
+      this.setState({ redirectPage: "" });
+      return (
+        <Router>
+          <Redirect to={page} />
+        </Router>
+      );
+    }
+
     return (
       <div>
-        <button onClick={()=>{console.log(this.state)}}>log state</button>
         <Row>
-          <Col><Public login={this.login} logout={this.logout} me={this.me} signup={this.signup} /></Col>
+          <Col>
+            <Public login={this.login} logout={this.logout} me={this.me} signup={this.signup} />
+          </Col>
         </Row>
         <Row>
-            <Col span={4}>
-              <SideBar pageIds={this.state.pageIds} allPages={this.state.allPages} selectedPageName={this.state.selectedPageName} redirectPage={this.redirectPage} />
-            </Col>
-            <Col span={20}>
-              <Router>
+          <Col span={4}>
+            <SideBar
+              pageIds={this.state.pageIds}
+              allPages={this.state.allPages}
+              selectedPageName={this.state.selectedPageName}
+              redirectPage={this.redirectPage}
+              logout={this.logout}
+              logState={this.logState}
+            />
+          </Col>
+          <Col span={20}>
+            <Router>
               <Switch>
-                <Home exact path="/" schoolId={this.state.schoolId} updateSelectedPageName={this.updateSelectedPageName} redirectPage={this.redirectPage} />
-                <Page path="/class/:selectedPage" schoolId={this.state.schoolId} pageIds={this.state.pageIds} updatePageIds={this.updatePageIds} updateSelectedPageName={this.updateSelectedPageName} user={{userId: this.state.userId, name: this.state.name}} redirectPage={this.redirectPage} />
-                <Page path="/group/:selectedPage" schoolId={this.state.schoolId} pageIds={this.state.pageIds} updatePageIds={this.updatePageIds} updateSelectedPageName={this.updateSelectedPageName} user={{userId: this.state.userId, name: this.state.name}} redirectPage={this.redirectPage} />
+                <Home
+                  exact
+                  path="/"
+                  schoolId={this.state.schoolId}
+                  updateSelectedPageName={this.updateSelectedPageName}
+                  redirectPage={this.redirectPage}
+                />
+                <Page
+                  path="/class/:selectedPage"
+                  schoolId={this.state.schoolId}
+                  pageIds={this.state.pageIds}
+                  updatePageIds={this.updatePageIds}
+                  updateSelectedPageName={this.updateSelectedPageName}
+                  user={{ userId: this.state.userId, name: this.state.name }}
+                  redirectPage={this.redirectPage}
+                  loungeId={this.state.loungeId}
+                  setLoungeId={this.setLoungeId}
+                />
+                <Page
+                  path="/group/:selectedPage"
+                  schoolId={this.state.schoolId}
+                  pageIds={this.state.pageIds}
+                  updatePageIds={this.updatePageIds}
+                  updateSelectedPageName={this.updateSelectedPageName}
+                  user={{ userId: this.state.userId, name: this.state.name }}
+                  redirectPage={this.redirectPage}
+                  loungeId={this.state.loungeId}
+                  setLoungeId={this.setLoungeId}
+                />
                 <NotFound default />
-             </Switch>
-              </Router>
-            </Col>
+              </Switch>
+            </Router>
+          </Col>
         </Row>
-        
       </div>
     );
   }
