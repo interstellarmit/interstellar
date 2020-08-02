@@ -29,7 +29,8 @@ const router = express.Router();
 const { check, validationResult} = require("express-validator/check");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 //initialize socket
 const socket = require("./server-socket");
 
@@ -85,11 +86,26 @@ router.get("/whoami", (req, res) => {
   res.send(req.user);
 });
 
+router.post('/confirmation', auth.confirmationPost);
+router.post('/resend', auth.resendTokenPost);
+
 router.post("/initsocket", (req, res) => {
   // do nothing if user not logged in
   if (req.user) socket.addUser(req.user, socket.getSocketFromSocketID(req.body.socketid));
   res.send({});
 });
+
+router.post("/test", (req,res) => {
+  const msg = {
+    to: 'test@example.com',
+    from: 'test@example.com',
+    subject: 'Sending with Twilio SendGrid is Fun',
+    text: 'and easy to do anywhere, even with Node.js',
+    html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+  };
+  sgMail.send(msg);
+  res.send({})
+})
 
 // |------------------------------|
 // | write your API methods below!|

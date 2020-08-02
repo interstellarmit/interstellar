@@ -3,8 +3,10 @@ const mongoose = require("mongoose");
 const UserSchema = new mongoose.Schema({
   name: String,
   schoolId: String, 
-  email: String,
+  email: {type:String, unique: true},
   password: String,
+  passwordResetToken: String,
+  passwordResetExpires: Date,
   isVerified: {
     type: Boolean,
     default: false,

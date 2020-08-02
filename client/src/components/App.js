@@ -7,6 +7,7 @@ import SideBar from "./modules/SideBar.js";
 import Public from "./pages/Public.js";
 import Home from "./pages/Home.js";
 import Page from "./pages/Page.js";
+import Confirmation from "./pages/Confirmation.js"
 import "../utilities.css";
 import { Row, Col, Divider } from "antd";
 import 'antd/dist/antd.css';
@@ -37,7 +38,6 @@ class App extends Component {
     get("/api/whoami").then((user) => {
       if (user._id) {
         // they are registed in the database, and currently logged in.
-        console.log("SDKFKLSDJFLKS")
         this.me();
       }
     });
@@ -47,7 +47,7 @@ class App extends Component {
   Methods from Public (Dan's login stuff)
   */
   login = () => {
-    post("/api/login", { name: "Daniel Sun", email: "dansun@mit.edu", password: "hehexd" }).then(
+    post("/api/login", { name: "Daniel Sun", email: "xd@mit.edu", password: "hehexd" }).then(
       (res) => {
         console.log(res);
         cookies.set("token", res.token, { path: "/" });
@@ -57,7 +57,7 @@ class App extends Component {
     );
   };
   logout = () => {
-    post("/api/logout", { name: "Daniel Sun", email: "dansun@mit.edu", password: "hehexd" }).then(
+    post("/api/logout").then(
       (res) => {
         cookies.set("token", "", { path: "/" });
         this.setState({userId: undefined})
@@ -119,14 +119,19 @@ class App extends Component {
       cookies.set('token','',{path:"/"})
       this.setState({userId: undefined})
     })
-  };
-  */
+  // };
+  // */
 
   render() {
     if(!this.state.userId) {
       return <>
         <button onClick={()=>{console.log(this.state)}}>log state</button>
-        <Public login={this.login} logout={this.logout} me={this.me} signup={this.signup} />
+        <Router>
+            <Switch>
+              <Confirmation path = "/confirmation/:token"/>
+              <Public default login={this.login} logout={this.logout} me={this.me} signup={this.signup} />
+            </Switch>
+          </Router>
       </>
     }
     if(this.state.redirectPage !== "") {
