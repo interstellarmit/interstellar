@@ -22,7 +22,7 @@ const School = require("./models/school");
 const auth = require("./auth");
 const main_calls = require("./main_calls");
 const lounge_calls = require("./lounge_calls");
-const DDQL_calls = require("./DDQL_calls");
+const DDQL_calls = require("./ddql_calls");
 const forum_calls = require("./forum_calls");
 // api endpoints: all these paths will be prefixed with "/api/"
 const router = express.Router();
