@@ -60,7 +60,7 @@ addSelfToLounge = (req, res) => {
         lounge.save().then(() => {
           socket
             .getSocketFromUserID(req.user._id)
-            .to("Lounge: " + lounge._id)
+            .to("Page: " + lounge.pageId)
             .emit("userAddedToLounge", { loungeId: lounge._id, userId: req.user._id });
           socket.getSocketFromUserID(req.user._id).join("Lounge: " + lounge._id);
           user.loungeId = req.body.loungeId;
@@ -108,7 +108,7 @@ removeSelfFromLoungePromise = (userId, loungeId) => {
             lounge.save().then(() => {
               socket
                 .getSocketFromUserID(userId)
-                .to("Lounge: " + lounge._id)
+                .to("Page: " + lounge.pageId)
                 .emit("userRemovedFromLounge", { loungeId: lounge._id, userId: userId });
               socket.getSocketFromUserID(userId).leave("Lounge: " + lounge._id);
               user.loungeId = "";

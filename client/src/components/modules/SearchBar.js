@@ -30,7 +30,7 @@ export default function SearchBar(props) {
     <AutoComplete
       dropdownClassName="certain-category-search-dropdown"
       dropdownMatchSelectWidth={500}
-      style={{ width: 250, margin: "16px" }}
+      style={{ width: "calc(100% - 32px)", margin: "16px" }}
       onChange={(query) => {
         setQuery(query);
       }}

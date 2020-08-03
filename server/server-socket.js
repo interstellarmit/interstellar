@@ -52,7 +52,7 @@ module.exports = {
                 console.log(lounge.userIds.length);
                 lounge.save().then(() => {
                   getSocketFromUserID(user._id)
-                    .to("Lounge: " + lounge._id)
+                    .to("Page: " + lounge.pageId)
                     .emit("userRemovedFromLounge", { loungeId: lounge._id, userId: user._id });
                   getSocketFromUserID(user._id).leave("Lounge: " + lounge._id);
                   myUser.loungeId = "";

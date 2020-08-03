@@ -6,7 +6,8 @@ import LoungesTab from "../modules/LoungesTab";
 import InfoTab from "../modules/InfoTab";
 import TabPage from "../modules/TabPage";
 import { socket } from "../../client-socket.js";
-import { Spin, Space, Button, Typography } from "antd";
+import { Spin, Space, Button, Typography, Layout } from "antd";
+const { Header, Content, Footer, Sider } = Layout;
 const { Title, Text } = Typography;
 import { UserAddOutlined, UserDeleteOutlined } from "@ant-design/icons";
 class Page extends Component {
@@ -98,6 +99,7 @@ class Page extends Component {
   };
 
   addToLounge = (userId, loungeId, callback = () => {}) => {
+    console.log(userId + " Adding to lounge " + loungeId);
     let lounges = this.state.lounges;
     let lounge = lounges.filter((l) => {
       return l._id + "" === loungeId;
@@ -115,12 +117,16 @@ class Page extends Component {
   };
 
   removeFromLounge = (userId, loungeId, callback = () => {}) => {
+    console.log(userId + " Removing from lounge" + loungeId);
     if (loungeId !== "") {
       let lounges = this.state.lounges;
       let lounge = lounges.filter((l) => {
         return l._id + "" === loungeId;
       })[0];
-
+      if (!lounge) {
+        callback();
+        return;
+      }
       let newLounges = lounges.filter((l) => {
         return l._id + "" !== loungeId;
       });
@@ -132,7 +138,10 @@ class Page extends Component {
       console.log("newlounge");
       console.log(lounge);
       newLounges.push(lounge);
-      this.setState({ lounges: newLounges }, callback);
+      this.setState({ lounges: newLounges }, () => {
+        console.log("doing callback");
+        callback();
+      });
     } else {
       callback();
     }
@@ -180,10 +189,12 @@ class Page extends Component {
     // remember -- api calls go here!
 
     socket.on("userAddedToLounge", (data) => {
+      console.log("addingUser...");
       this.addToLounge(data.userId, data.loungeId);
     });
 
     socket.on("userRemovedFromLounge", (data) => {
+      console.log("removingUser...");
       this.removeFromLounge(data.userId, data.loungeId);
     });
 
@@ -242,65 +253,78 @@ class Page extends Component {
     );
 
     return (
-      <>
-        <Space align="start">
-          <Title level={3}>{this.state.page.name}</Title>
-          {this.state.inPage ? removeClassButton : addClassButton}
-        </Space>
-
-        {this.state.inPage ? (
-          <TabPage
-            labels={["Dashboard", "Lounges", "Forum", "Info"]}
-            routerLinks={["dashboard", "lounges", "forum", "info"]}
-            defaultRouterLink={this.state.inPage ? "info" : "info"}
-            page={this.state.page}
-          >
-            <DashboardTab
-              dueDates={this.state.dueDates}
-              quickLinks={this.state.quickLinks}
-              lounges={this.state.lounges}
-              users={this.state.users}
+      <Layout style={{ background: "rgba(240, 242, 245, 1)", height: "100vh" }}>
+        <Header
+          className="site-layout-sub-header-background"
+          style={{ padding: "0px 20px 0px 20px", background: "#fff", height: "64px" }}
+        >
+          <Space align="end">
+            <Title level={3}>{this.state.page.name}</Title>
+            {this.state.inPage ? removeClassButton : addClassButton}
+          </Space>
+        </Header>
+        <Content
+          style={{
+            margin: "36px 24px 36px 24px",
+            padding: 24,
+            background: "#fff",
+            height: "calc(100vh - 64px)",
+          }}
+        >
+          {this.state.inPage ? (
+            <TabPage
+              labels={["Dashboard", "Lounges", "Forum", "Info"]}
+              routerLinks={["dashboard", "lounges", "forum", "info"]}
+              defaultRouterLink={this.state.inPage ? "info" : "info"}
               page={this.state.page}
-              createNewDDQL={this.createNewDDQL}
-              editDDQL={this.editDDQL}
-              user={this.props.user}
-              redirectPage={this.props.redirectPage}
-            />
-            <LoungesTab
-              lounges={this.state.lounges}
-              users={this.state.users}
+            >
+              <DashboardTab
+                dueDates={this.state.dueDates}
+                quickLinks={this.state.quickLinks}
+                lounges={this.state.lounges}
+                users={this.state.users}
+                page={this.state.page}
+                createNewDDQL={this.createNewDDQL}
+                editDDQL={this.editDDQL}
+                user={this.props.user}
+                redirectPage={this.props.redirectPage}
+              />
+              <LoungesTab
+                lounges={this.state.lounges}
+                users={this.state.users}
+                page={this.state.page}
+                addSelfToLounge={this.addSelfToLounge}
+                removeSelfFromLounge={this.removeSelfFromLounge}
+                createNewLounge={this.createNewLounge}
+                loungeId={this.props.loungeId}
+                setLoungeId={this.props.setLoungeId}
+              />
+              <ForumTab users={this.state.users} page={this.state.page} />
+              <InfoTab
+                users={this.state.users}
+                inPage={true}
+                page={this.state.page}
+                user={this.props.user}
+              />
+              )
+            </TabPage>
+          ) : (
+            <TabPage
+              labels={["Info"]}
+              routerLinks={["info"]}
+              defaultRouterLink={"info"}
               page={this.state.page}
-              addSelfToLounge={this.addSelfToLounge}
-              removeSelfFromLounge={this.removeSelfFromLounge}
-              createNewLounge={this.createNewLounge}
-              loungeId={this.props.loungeId}
-              setLoungeId={this.props.setLoungeId}
-            />
-            <ForumTab users={this.state.users} page={this.state.page} />
-            <InfoTab
-              users={this.state.users}
-              inPage={true}
-              page={this.state.page}
-              user={this.props.user}
-            />
-            )
-          </TabPage>
-        ) : (
-          <TabPage
-            labels={["Info"]}
-            routerLinks={["info"]}
-            defaultRouterLink={"info"}
-            page={this.state.page}
-          >
-            <InfoTab
-              users={this.state.users}
-              inPage={false}
-              page={this.state.page}
-              user={this.props.user}
-            />
-          </TabPage>
-        )}
-      </>
+            >
+              <InfoTab
+                users={this.state.users}
+                inPage={false}
+                page={this.state.page}
+                user={this.props.user}
+              />
+            </TabPage>
+          )}
+        </Content>
+      </Layout>
     );
   }
 }

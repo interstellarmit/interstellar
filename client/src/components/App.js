@@ -164,11 +164,11 @@ class App extends Component {
 
     return (
       <div>
-        <Row gutter={[16, 16]}>
+        {/*<Row >
           <Col>
             <Public login={this.login} logout={this.logout} me={this.me} signup={this.signup} />
           </Col>
-        </Row>
+        </Row>*/}
         <Row>
           <Col span={6}>
             <SideBar

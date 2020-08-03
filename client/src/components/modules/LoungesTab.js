@@ -27,10 +27,11 @@ export default function LoungesTab(props) {
             if (lounge !== "") {
               if (props.loungeId !== loungeId) {
                 console.log("Hello");
-                props.removeSelfFromLounge(
-                  props.loungeId,
-                  props.addSelfToLounge(loungeId, props.setLoungeId(loungeId))
-                );
+                props.removeSelfFromLounge(props.loungeId, () => {
+                  props.addSelfToLounge(loungeId, () => {
+                    props.setLoungeId(loungeId);
+                  });
+                });
               }
 
               loungeCode = (

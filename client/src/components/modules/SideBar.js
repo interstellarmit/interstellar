@@ -15,7 +15,7 @@ export default function SideBar(props) {
   return (
     <>
       <Sider
-        width={"22%"}
+        width={"25%"}
         style={{
           overflow: "auto",
           height: "100vh",
