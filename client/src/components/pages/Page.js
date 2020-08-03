@@ -186,6 +186,12 @@ class Page extends Component {
     socket.on("userRemovedFromLounge", (data) => {
       this.removeFromLounge(data.userId, data.loungeId);
     });
+
+    socket.on("newLounge", (lounge) => {
+      let lounges = this.state.lounges;
+      lounges.push(lounge);
+      this.setState({ lounges: lounges });
+    });
   }
 
   render() {
