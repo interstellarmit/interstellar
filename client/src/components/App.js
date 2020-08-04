@@ -73,6 +73,11 @@ class App extends Component {
   me = () => {
     get("/api/me", {}, cookies.get("token")).then((res) => {
       console.log(res);
+      if (!res.user) {
+        this.logout();
+        return;
+      }
+
       this.setState({
         userId: res.user._id,
         schoolId: res.user.schoolId,
@@ -161,7 +166,9 @@ class App extends Component {
         </Router>
       );
     }
-
+    let myPages = this.state.allPages.filter((page) => {
+      return this.state.pageIds.includes(page._id);
+    });
     return (
       <div>
         {/*<Row >
@@ -174,6 +181,7 @@ class App extends Component {
             <SideBar
               pageIds={this.state.pageIds}
               allPages={this.state.allPages}
+              myPages={myPages}
               selectedPageName={this.state.selectedPageName}
               redirectPage={this.redirectPage}
               logout={this.logout}
@@ -188,7 +196,9 @@ class App extends Component {
                   path="/"
                   schoolId={this.state.schoolId}
                   updateSelectedPageName={this.updateSelectedPageName}
+                  user={{ userId: this.state.userId, name: this.state.name }}
                   redirectPage={this.redirectPage}
+                  myPages={myPages}
                 />
                 <Page
                   path="/class/:selectedPage"

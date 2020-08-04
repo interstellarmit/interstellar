@@ -4,7 +4,11 @@ import LoungeListItem from "./LoungeListItem";
 export default function LoungeList(props) {
   return (
     <List
-      dataSource={props.lounges}
+      dataSource={props.lounges.sort((a, b) => {
+        if (a.name > b.name) return 1;
+        if (a.name < b.name) return -1;
+        return 0;
+      })}
       renderItem={(oneLounge) => {
         return (
           <LoungeListItem
@@ -14,6 +18,8 @@ export default function LoungeList(props) {
                 return oneUser.userId === user;
               });
             })}
+            home={props.home}
+            pageName={props.page.name}
             redirect={() => {
               props.redirect(
                 "/" +

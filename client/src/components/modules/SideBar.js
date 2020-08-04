@@ -8,9 +8,7 @@ import SearchBar from "./SearchBar";
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
 export default function SideBar(props) {
-  let myPages = props.allPages.filter((page) => {
-    return props.pageIds.includes(page._id);
-  });
+  let myPages = props.myPages;
 
   return (
     <>

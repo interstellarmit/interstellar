@@ -192,11 +192,15 @@ joinPage = (req, res) => {
     if (page) {
       socket.getSocketFromUserID(req.user._id).join("Page: " + page._id);
     }
+
     User.findById(req.user._id).then((user) => {
       let pageArr = [];
 
       if (req.body.home) {
         pageArr = user.pageIds;
+        pageArr.forEach((onePageId) => {
+          socket.getSocketFromUserID(req.user._id).join("Page: " + onePageId);
+        });
       } else {
         pageArr = [page._id];
       }

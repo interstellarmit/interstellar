@@ -87,13 +87,17 @@ export default function DDQLSection(props) {
     <>
       <Space align="start">
         <Title level={3}>{props.type === "DueDate" ? "Due Dates" : "Quicklinks"}</Title>
-        <Button
-          onClick={() => {
-            setShowAddNewDueDate(true);
-          }}
-        >
-          <PlusOutlined />
-        </Button>
+        {!props.home ? (
+          <Button
+            onClick={() => {
+              setShowAddNewDueDate(true);
+            }}
+          >
+            <PlusOutlined />
+          </Button>
+        ) : (
+          <></>
+        )}
         {props.type === "QuickLink" ? (
           <></>
         ) : (
@@ -104,7 +108,7 @@ export default function DDQLSection(props) {
           />
         )}
       </Space>
-      {addNewDueDate}
+      {props.home ? <></> : addNewDueDate}
       <List
         size="large"
         dataSource={addedDataSource.filter((item) => {
@@ -119,12 +123,16 @@ export default function DDQLSection(props) {
               addOrCompleteDDQL={addOrCompleteDDQL}
               added={addedDDQLs.includes("" + item._id)}
               completed={completedDDQLs.includes("" + item._id)}
+              home={props.home}
+              pageMap={props.pageMap}
             />
           ) : (
             <QuickLink
               quickLink={item}
               addOrCompleteDDQL={addOrCompleteDDQL}
               added={addedDDQLs.includes("" + item._id)}
+              home={props.home}
+              pageMap={props.pageMap}
             />
           );
         }}

@@ -75,6 +75,7 @@ router.get("/me", auth.me, async (req, res) => {
       });
     });
   } catch (e) {
+    console.log("Badd");
     console.log(e);
     res.send({ message: "Error in Fetching user" });
   }
