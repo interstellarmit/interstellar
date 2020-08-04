@@ -1,4 +1,4 @@
-require('dotenv').config()
+require("dotenv").config();
 const { OAuth2Client } = require("google-auth-library");
 const User = require("./models/user");
 const Comment = require("./models/comment");
@@ -48,7 +48,8 @@ function me(req, res, next) {
     req.user = decoded.user;
     next();
   } catch (e) {
-    console.error(e);
+    //console.error(e);
+    console.print("token not verified");
     res.status(500).send({ message: "Invalid Token" });
   }
 }
@@ -57,7 +58,7 @@ async function signUp(req, res) {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    console.log("oops")
+    console.log("oops");
     return res.status(400).json({
       errors: errors.array(),
     });
