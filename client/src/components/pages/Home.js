@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { get, post } from "../../utilities";
 import { socket } from "../../client-socket.js";
-import { Spin, Space, Button, Typography, Layout, Row, Col } from "antd";
+import { Spin, Space, Button, Typography, Layout, Row, Col, PageHeader } from "antd";
 import DDQLSection from "../modules/DDQLSection";
 import LoungeList from "../modules/LoungeList";
 const { Header, Content, Footer, Sider } = Layout;
@@ -110,12 +110,18 @@ class Home extends Component {
       <Layout style={{ background: "rgba(240, 242, 245, 1)", height: "100vh" }}>
         <Header
           className="site-layout-sub-header-background"
-          style={{ padding: "0px 20px 0px 20px", background: "#fff", height: "64px" }}
+          style={{
+            padding: "0px 20px 0px 20px",
+            backgroundColor: "#fff",
+            color: "white",
+            height: "64px",
+          }}
         >
           <Space align="end">
             <Title level={3}>{"Welcome, " + this.props.user.name.split(" ")[0] + "!"}</Title>
           </Space>
         </Header>
+
         <Content
           style={{
             margin: "36px 24px 36px 24px",

@@ -6,7 +6,7 @@ import LoungesTab from "../modules/LoungesTab";
 import InfoTab from "../modules/InfoTab";
 import TabPage from "../modules/TabPage";
 import { socket } from "../../client-socket.js";
-import { Spin, Space, Button, Typography, Layout } from "antd";
+import { Spin, Space, Button, Typography, Layout, PageHeader, Row, Col } from "antd";
 const { Header, Content, Footer, Sider } = Layout;
 const { Title, Text } = Typography;
 import { UserAddOutlined, UserDeleteOutlined } from "@ant-design/icons";
@@ -229,7 +229,7 @@ class Page extends Component {
           });
         }}
       >
-        <UserDeleteOutlined />
+        <UserDeleteOutlined /> Remove Class
       </Button>
     );
 
@@ -248,21 +248,19 @@ class Page extends Component {
           });
         }}
       >
-        <UserAddOutlined />
+        <UserAddOutlined /> Add Class
       </Button>
     );
 
     return (
       <Layout style={{ background: "rgba(240, 242, 245, 1)", height: "100vh" }}>
-        <Header
+        <PageHeader
           className="site-layout-sub-header-background"
-          style={{ padding: "0px 20px 0px 20px", background: "#fff", height: "64px" }}
-        >
-          <Space align="end">
-            <Title level={3}>{this.state.page.name}</Title>
-            {this.state.inPage ? removeClassButton : addClassButton}
-          </Space>
-        </Header>
+          style={{ padding: "20px 20px 20px 20px", background: "#fff" }}
+          extra={[this.state.inPage ? removeClassButton : addClassButton]}
+          title={this.state.page.name}
+          subTitle={this.state.page.title}
+        ></PageHeader>
         <Content
           style={{
             margin: "36px 24px 36px 24px",

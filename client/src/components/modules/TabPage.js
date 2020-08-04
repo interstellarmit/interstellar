@@ -15,6 +15,7 @@ export default function TabPage(props) {
             return (
               <Switch>
                 <Tabs
+                  //type="card"
                   defaultActiveKey={match.params.routeLink || props.defaultRouterLink}
                   onChange={(key) => {
                     console.log(match);
