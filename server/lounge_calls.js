@@ -7,6 +7,7 @@ const Message = require("./models/message");
 const Page = require("./models/page");
 const School = require("./models/school");
 const socket = require("./server-socket");
+var ObjectId = require("mongodb").ObjectID;
 
 var Promise = require("promise");
 
@@ -105,10 +106,13 @@ removeSelfFromLoungePromise = (userId, loungeId) => {
             lounge.userIds = lounge.userIds.filter((id) => {
               return id !== userId;
             });
+            let oldPageId = lounge.pageId;
+            if (lounge.userIds.length === 0) lounge.pageId = "deleted";
+
             lounge.save().then(() => {
               socket
                 .getSocketFromUserID(userId)
-                .to("Page: " + lounge.pageId)
+                .to("Page: " + oldPageId)
                 .emit("userRemovedFromLounge", { loungeId: lounge._id, userId: userId });
               socket.getSocketFromUserID(userId).leave("Lounge: " + lounge._id);
               user.loungeId = "";

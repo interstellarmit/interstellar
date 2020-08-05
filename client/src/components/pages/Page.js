@@ -137,7 +137,8 @@ class Page extends Component {
       lounge.userIds = userIds;
       console.log("newlounge");
       console.log(lounge);
-      newLounges.push(lounge);
+      if (lounge.userIds.length > 0) newLounges.push(lounge);
+
       this.setState({ lounges: newLounges }, () => {
         console.log("doing callback");
         callback();
@@ -191,6 +192,14 @@ class Page extends Component {
     socket.on("userAddedToLounge", (data) => {
       console.log("addingUser...");
       this.addToLounge(data.userId, data.loungeId);
+    });
+
+    socket.on("userJoinedPage", (data) => {
+      console.log("addingUser...");
+      if (this.state.page._id !== data.pageId) return;
+      let users = this.state.users;
+      users.push(data.user);
+      this.setState({ users: users });
     });
 
     socket.on("userRemovedFromLounge", (data) => {
@@ -303,6 +312,7 @@ class Page extends Component {
                 inPage={true}
                 page={this.state.page}
                 user={this.props.user}
+                allPages={this.props.allPages}
               />
               )
             </TabPage>

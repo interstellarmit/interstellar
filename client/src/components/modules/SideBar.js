@@ -5,11 +5,12 @@ import "antd/dist/antd.css";
 import { Menu, Dropdown, Layout } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import SearchBar from "./SearchBar";
+import AddGroup from "./AddGroup";
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
 export default function SideBar(props) {
   let myPages = props.myPages;
-
+  const [addGroup, setAddGroup] = React.useState(false);
   return (
     <>
       <Sider
@@ -82,6 +83,14 @@ export default function SideBar(props) {
             Logout
           </Menu.Item>
           <Menu.Item
+            key=".add!!group."
+            onClick={() => {
+              setAddGroup(true);
+            }}
+          >
+            Create Group
+          </Menu.Item>
+          <Menu.Item
             key=".log!!state."
             onClick={() => {
               props.logState();
@@ -91,7 +100,7 @@ export default function SideBar(props) {
           </Menu.Item>
         </Menu>
       </Sider>
-
+      <AddGroup visible={addGroup} setVisible={setAddGroup} redirectPage={props.redirectPage} />
       {/*
     <List>
         <List.Item onClick={() => {

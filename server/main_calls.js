@@ -84,20 +84,33 @@ Description: Creates a new page, populating with given info. Sets self as admin.
 //!!! Make sure no other page has same name... not implemeenteed yet!
 createNewPage = (req, res) => {
   School.findById(req.user.schoolId).then((school) => {
-    if (school.adminIds.includes(req.user._id) || req.user.isSiteAdmin) {
-      let page = new Page({
-        pageType: req.body.pageType,
-        name: req.body.name,
-        title: req.body.title,
-        description: req.body.description,
-        expiryDate: expiryDate,
-        adminIds: [req.user._id],
-        schoolId: req.user.schoolId,
-        locked: req.body.locked,
-        joinCode: req.body.joinCode || "",
-      });
-      page.save().then(() => {
-        res.send({ created: true });
+    let name = req.body.name;
+    name = name.replace(/ /g, "_");
+    name = encodeURI(name);
+    if (
+      school.adminIds.includes(req.user._id) ||
+      req.user.isSiteAdmin ||
+      req.body.pageType === "Group"
+    ) {
+      Page.findOne({ name: name }).then((thepage) => {
+        if (thepage) {
+          res.send({ created: false });
+          return;
+        }
+        let page = new Page({
+          pageType: req.body.pageType,
+          name: name,
+          title: req.body.title,
+          description: req.body.description,
+          expiryDate: expiryDate,
+          adminIds: [req.user._id],
+          schoolId: req.user.schoolId,
+          locked: req.body.locked,
+          joinCode: req.body.joinCode || "",
+        });
+        page.save().then(() => {
+          res.send({ created: true, pageId: page._id, name: page.name });
+        });
       });
     } else {
       res.send({ created: false });
@@ -126,6 +139,13 @@ addSelfToPage = (req, res) => {
           } else {
             user.pageIds.push(page._id);
             user.save().then(() => {
+              socket
+                .getSocketFromUserID(req.user._id)
+                .to("Page: " + page._id)
+                .emit("userJoinedPage", {
+                  pageId: page._id,
+                  user: { userId: req.user._id, name: req.user.name },
+                });
               res.send({ added: true });
             });
           }
@@ -209,6 +229,13 @@ joinPage = (req, res) => {
         let condensedUsers = users.map((singleUser) => {
           return { userId: singleUser._id, name: singleUser.name };
         });
+        let inPageUsers = users.map((singleUser) => {
+          if (!req.body.home && page.pageType === "Group") {
+            //console.log("condens");
+            return { userId: singleUser._id, name: singleUser.name, pageIds: singleUser.pageIds };
+          }
+          return { userId: singleUser._id, name: singleUser.name };
+        });
         if (req.body.home || user.pageIds.includes(page._id)) {
           DDQL.find(
             {
@@ -221,7 +248,7 @@ joinPage = (req, res) => {
               //console.log(DDQLs)
               Lounge.find({ pageId: { $in: pageArr } }, (err, lounges) => {
                 let returnValue = {
-                  users: condensedUsers,
+                  users: inPageUsers,
                   lounges: lounges,
                   dueDates: DDQLs.filter((ddql) => {
                     return ddql.objectType == "DueDate";
@@ -239,7 +266,7 @@ joinPage = (req, res) => {
             }
           );
         } else {
-          res.send({ users: condensedUsers, page: page, inPage: false });
+          res.send({ users: page.locked ? [] : condensedUsers, page: page, inPage: false });
         }
       });
     });

@@ -17,7 +17,7 @@ export default function InfoTab(props) {
           <Text>{"Description: " + props.page.description}</Text>
         </Col>
         <Col span={12}>
-          <UserList users={users} />
+          <UserList users={users} allPages={props.allPages} showClasses={true} />
         </Col>
       </Row>
     </>

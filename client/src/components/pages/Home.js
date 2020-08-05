@@ -58,7 +58,7 @@ class Home extends Component {
       lounge.userIds = userIds;
       console.log("newlounge");
       console.log(lounge);
-      newLounges.push(lounge);
+      if (lounge.userIds.length > 0) newLounges.push(lounge);
       this.setState({ lounges: newLounges }, () => {
         console.log("doing callback");
         callback();
@@ -93,6 +93,12 @@ class Home extends Component {
       let lounges = this.state.lounges;
       lounges.push(lounge);
       this.setState({ lounges: lounges });
+    });
+    socket.on("userJoinedPage", (data) => {
+      console.log("addingUser...");
+      let users = this.state.users;
+      users.push(data.user);
+      this.setState({ users: users });
     });
   }
 

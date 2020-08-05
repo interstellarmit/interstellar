@@ -221,6 +221,7 @@ class App extends Component {
                   redirectPage={this.redirectPage}
                   loungeId={this.state.loungeId}
                   setLoungeId={this.setLoungeId}
+                  allPages={this.state.allPages}
                 />
                 <NotFound default />
               </Switch>
