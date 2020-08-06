@@ -49,7 +49,7 @@ function me(req, res, next) {
     next();
   } catch (e) {
     //console.error(e);
-    console.print("token not verified");
+    console.log("token not verified");
     res.status(500).send({ message: "Invalid Token" });
   }
 }

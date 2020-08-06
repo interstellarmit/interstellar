@@ -2,13 +2,17 @@ import React, { Component, useState } from "react";
 import { List, Avatar } from "antd";
 import LoungeListItem from "./LoungeListItem";
 export default function LoungeList(props) {
+  let datasource = props.lounges.sort((a, b) => {
+    if (a.name > b.name) return 1;
+    if (a.name < b.name) return -1;
+    return 0;
+  });
+  if (datasource.length == 0) {
+    return <></>;
+  }
   return (
     <List
-      dataSource={props.lounges.sort((a, b) => {
-        if (a.name > b.name) return 1;
-        if (a.name < b.name) return -1;
-        return 0;
-      })}
+      dataSource={datasource}
       renderItem={(oneLounge) => {
         return (
           <LoungeListItem

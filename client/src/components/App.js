@@ -71,7 +71,9 @@ class App extends Component {
   logout = () => {
     post("/api/logout", {}).then((res) => {
       cookies.set("token", "", { path: "/" });
-      this.setState({ userId: undefined, tryingToLogin: false });
+      this.setState({ userId: undefined, tryingToLogin: false }, () => {
+        window.location.href = "/";
+      });
       console.log(res);
     });
   };

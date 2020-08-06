@@ -30,20 +30,22 @@ class Chat extends Component {
   a;
   render() {
     return (
-      <>
-        <List
-          dataSource={this.state.messages.filter((message) => {
-            return message.loungeId === this.props.loungeId;
-          })}
-          renderItem={(message) => {
-            return (
-              <List.Item>
-                <ProfilePic user={{ userId: message.userId, name: message.name }} />
-                {message.name + ": " + message.text}
-              </List.Item>
-            );
-          }}
-        />
+      <div>
+        <div style={{ overflow: "auto", height: "400px" }}>
+          <List
+            dataSource={this.state.messages.filter((message) => {
+              return message.loungeId === this.props.loungeId;
+            })}
+            renderItem={(message) => {
+              return (
+                <List.Item>
+                  <ProfilePic user={{ userId: message.userId, name: message.name }} />
+                  {" " + message.name.split(" ")[0] + ": " + message.text}
+                </List.Item>
+              );
+            }}
+          />
+        </div>
         <Input
           value={this.state.currentMessage}
           onChange={(e) => {
@@ -59,7 +61,7 @@ class Chat extends Component {
             });
           }}
         />
-      </>
+      </div>
     );
   }
 }

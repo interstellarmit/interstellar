@@ -117,6 +117,8 @@ class Page extends Component {
       return l._id + "" !== loungeId;
     });
 
+    console.log(lounge);
+
     let userIds = lounge.userIds;
     userIds.push(userId);
     lounge.userIds = userIds;

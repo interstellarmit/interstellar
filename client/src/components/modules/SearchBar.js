@@ -43,7 +43,10 @@ export default function SearchBar(props) {
     >
       {props.allPages
         .filter((page) => {
-          return page.name.startsWith(query);
+          return (
+            page.name.toLowerCase().includes(query.toLowerCase()) ||
+            page.title.toLowerCase().includes(query.toLowerCase())
+          );
         })
         .map((page) => (
           <Option key={page.name} value={page.name}>
