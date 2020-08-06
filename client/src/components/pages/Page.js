@@ -21,7 +21,6 @@ class Page extends Component {
   constructor(props) {
     super(props);
     let selectedPage = this.props.computedMatch.params.selectedPage;
-    console.log(selectedPage);
     this.state = {
       pageName: selectedPage,
       users: [],
@@ -106,8 +105,7 @@ class Page extends Component {
     });
   };
 
-  addToLounge = (userId, loungeId, callback = () => {}) => {
-    console.log(userId + " Adding to lounge " + loungeId);
+  addToLounge = (userId, loungeId, callback = () => { }) => {
     let lounges = this.state.lounges;
     let lounge = lounges.filter((l) => {
       return l._id + "" === loungeId;
@@ -117,7 +115,6 @@ class Page extends Component {
       return l._id + "" !== loungeId;
     });
 
-    console.log(lounge);
 
     let userIds = lounge.userIds;
     userIds.push(userId);
@@ -126,8 +123,7 @@ class Page extends Component {
     this.setState({ lounges: newLounges }, callback);
   };
 
-  removeFromLounge = (userId, loungeId, callback = () => {}) => {
-    console.log(userId + " Removing from lounge" + loungeId);
+  removeFromLounge = (userId, loungeId, callback = () => { }) => {
     if (loungeId !== "") {
       let lounges = this.state.lounges;
       let lounge = lounges.filter((l) => {
@@ -145,12 +141,9 @@ class Page extends Component {
         return id !== userId;
       });
       lounge.userIds = userIds;
-      console.log("newlounge");
-      console.log(lounge);
       if (lounge.userIds.length > 0) newLounges.push(lounge);
 
       this.setState({ lounges: newLounges }, () => {
-        console.log("doing callback");
         callback();
       });
     } else {
@@ -158,24 +151,20 @@ class Page extends Component {
     }
   };
 
-  addSelfToLounge = (loungeId, callback = () => {}) => {
+  addSelfToLounge = (loungeId, callback = () => { }) => {
     post("/api/addSelfToLounge", {
       loungeId: loungeId,
     }).then((data) => {
-      console.log(data);
-      console.log("added");
       if (data.added) {
         this.addToLounge(this.props.user.userId, loungeId, callback);
       }
     });
   };
 
-  removeSelfFromLounge = (loungeId, callback = () => {}) => {
+  removeSelfFromLounge = (loungeId, callback = () => { }) => {
     post("/api/removeSelfFromLounge", {
       loungeId: loungeId,
     }).then((data) => {
-      console.log(data);
-      console.log("removed");
       if (data.removed) {
         this.removeFromLounge(this.props.user.userId, loungeId, callback);
       }
@@ -185,7 +174,6 @@ class Page extends Component {
   componentDidMount() {
     post("/api/joinPage", { pageName: this.state.pageName, schoolId: this.props.schoolId }).then(
       (data) => {
-        console.log(data);
         if (data.broken) {
           this.props.disconnect();
           return;
@@ -389,20 +377,20 @@ class Page extends Component {
               )
             </TabPage>
           ) : (
-            <TabPage
-              labels={["Info"]}
-              routerLinks={["info"]}
-              defaultRouterLink={"info"}
-              page={this.state.page}
-            >
-              <InfoTab
-                users={this.state.users}
-                inPage={false}
+              <TabPage
+                labels={["Info"]}
+                routerLinks={["info"]}
+                defaultRouterLink={"info"}
                 page={this.state.page}
-                user={this.props.user}
-              />
-            </TabPage>
-          )}
+              >
+                <InfoTab
+                  users={this.state.users}
+                  inPage={false}
+                  page={this.state.page}
+                  user={this.props.user}
+                />
+              </TabPage>
+            )}
         </Content>
       </Layout>
     );

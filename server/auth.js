@@ -41,7 +41,7 @@ function ensureLoggedIn(req, res, next) {
 
 function me(req, res, next) {
   const token = req.header("token");
-  if (!token) return res.status(401).json({ message: "Auth Error" });
+  if (!token) return res.status(401).json({ msg: "Auth Error" });
 
   try {
     const decoded = jwt.verify(token, "randomString");
@@ -50,7 +50,7 @@ function me(req, res, next) {
   } catch (e) {
     //console.error(e);
     console.log("token not verified");
-    res.status(500).send({ message: "Invalid Token" });
+    res.status(500).send({ msg: "Invalid Token" });
   }
 }
 
@@ -58,7 +58,6 @@ async function signUp(req, res) {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    console.log("oops");
     return res.status(400).json({
       errors: errors.array(),
     });
@@ -72,7 +71,7 @@ async function signUp(req, res) {
       email: email,
     });
     if (user) {
-      return res.status(400).json({
+      return res.status(200).json({
         msg: "User Already Exists",
       });
     }
@@ -133,7 +132,7 @@ async function signUp(req, res) {
         }
       });
     });
-    res.status(200).send({ msg: "A verification email has been sent to " + user.email + "." });
+    res.status(200).send({ type: "succes", msg: "A verification email has been sent to " + user.email + ". Please check your spam and/or promotions." });
   } catch (err) {
     console.log(err.message);
     res.status(500).send({ msg: "Error in Saving" });
@@ -153,7 +152,7 @@ function confirmationPost(req, res, next) {
   // Find a matching token
   Token.findOne({ token: req.body.token }, function (err, token) {
     if (!token)
-      return res.status(400).send({
+      return res.status(200).send({
         type: "not-verified",
         msg: "We were unable to find a valid token. Your token my have expired.",
       });
@@ -161,10 +160,10 @@ function confirmationPost(req, res, next) {
     // If we found a token, find a matching user
     User.findOne({ _id: token._userId, email: req.body.email }, function (err, user) {
       if (!user)
-        return res.status(400).send({ msg: "We were unable to find a user for this token." });
+        return res.status(200).send({ msg: "We were unable to find a user for this token." });
       if (user.isVerified)
         return res
-          .status(400)
+          .status(200)
           .send({ type: "already-verified", msg: "This user has already been verified." });
 
       // Verify and save the user
@@ -173,7 +172,7 @@ function confirmationPost(req, res, next) {
         if (err) {
           return res.status(500).send({ msg: err.message });
         }
-        res.status(200).send({ msg: "The account has been verified. Please log in." });
+        res.status(200).send({ type: "success", msg: "The account has been verified. Please log in." });
       });
     });
   });
@@ -182,15 +181,19 @@ function confirmationPost(req, res, next) {
 function resendTokenPost(req, res, next) {
   // Check for validation errors
   const errors = validationResult(req);
-  if (errors) return res.status(400).send(errors);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      errors: errors.array(),
+    });
+  }
 
   User.findOne({ email: req.body.email }, function (err, user) {
     if (!user)
-      return res.status(400).send({ msg: "We were unable to find a user with that email." });
+      return res.status(200).send({ msg: "We were unable to find a user with that email." });
     if (user.isVerified)
       return res
-        .status(400)
-        .send({ msg: "This account has already been verified. Please log in." });
+        .status(200)
+        .send({ msg: "This account has already been verified." });
 
     // Create a verification token, save it, and send email
     var token = new Token({ _userId: user._id, token: crypto.randomBytes(16).toString("hex") });
@@ -251,19 +254,19 @@ async function login(req, res) {
       email,
     });
     if (!user)
-      return res.status(400).json({
-        message: "User Not Exist",
+      return res.status(200).json({
+        msg: "User Not Exist",
       });
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch)
-      return res.status(400).json({
-        message: "Incorrect Password !",
+      return res.status(200).json({
+        msg: "Incorrect Password !",
       });
 
     if (!user.isVerified)
-      return res.status(400).json({
-        message: "Email not verified !",
+      return res.status(200).json({
+        msg: "Email not verified !",
       });
 
     req.session.user = user;
@@ -291,7 +294,7 @@ async function login(req, res) {
   } catch (e) {
     console.error(e);
     res.status(500).json({
-      message: "Server Error",
+      msg: "Server Error",
     });
   }
 }

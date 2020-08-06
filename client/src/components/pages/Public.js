@@ -69,13 +69,17 @@ export default function Public(props) {
                 Login
               </Button>
             </Form.Item>
+
+            <Form.Item>
+              {props.loginMessage}
+            </Form.Item>
           </Form>
         </Col>
         <Col span={12}>
           <Form form={formSignup} name={"Signup"} onFinish={onFinishSignup}>
             <Form.Item
               name="signupName"
-              label="Name"
+              label="Full Name"
               rules={[
                 {
                   required: true,
@@ -106,6 +110,14 @@ export default function Public(props) {
                   required: true,
                   message: "Please enter a password",
                 },
+                ({ getFieldValue }) => ({
+                  validator(rule, value) {
+                    if (getFieldValue('signupPassword').length >= 6) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject('Your password is too short!');
+                  },
+                }),
               ]}
             >
               <Input.Password placeholder={"dismypassword"} />
@@ -116,45 +128,13 @@ export default function Public(props) {
                 Signup
               </Button>
             </Form.Item>
+
+            <Form.Item>
+              {props.signUpMessage}
+            </Form.Item>
           </Form>
         </Col>
       </Row>
     </Modal>
   );
 }
-
-/*
- /*
- <>
-      <button
-        onClick={() => {
-          this.props.signup();
-        }}
-      >
-        Signup
-      </button>
-      <button
-        onClick={() => {
-          this.props.me();
-        }}
-      >
-        Me
-      </button>
-      <button
-        onClick={() => {
-          this.props.logout();
-        }}
-      >
-        Logout
-      </button>
-      <button
-        onClick={() => {
-          console.log(cookies.get("token"));
-        }}
-      >
-        Cookie
-      </button>
-    </>
-
-        
-        */

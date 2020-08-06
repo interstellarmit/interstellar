@@ -51,7 +51,6 @@ class ForumTab extends Component {
     post("/api/joinForum", {
       pageId: this.props.page._id,
     }).then((data) => {
-      console.log(data);
       let activePost = null;
       if (data.groupPosts.length !== 0) activePost = data.groupPosts[0];
       this.setState({

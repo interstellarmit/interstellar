@@ -38,9 +38,9 @@ const socket = require("./server-socket");
 router.post(
   "/signup",
   [
-    check("name", "Please Enter a Valid Name").not().isEmpty(),
+    check("name", "Please Enter a valid name").not().isEmpty(),
     check("email", "Please enter a valid email").isEmail(),
-    check("password", "Please enter a valid password").isLength({
+    check("password", "Please enter a longer password").isLength({
       min: 6,
     }),
   ],
@@ -51,9 +51,6 @@ router.post(
   "/login",
   [
     check("email", "Please enter a valid email").isEmail(),
-    check("password", "Please enter a valid password").isLength({
-      min: 6,
-    }),
   ],
   auth.login
 );
@@ -76,7 +73,6 @@ router.get("/me", auth.me, async (req, res) => {
       });
     });
   } catch (e) {
-    console.log("Badd");
     console.log(e);
     res.send({ message: "Error in Fetching user" });
   }

@@ -16,7 +16,10 @@ class Confirmation extends Component {
 
   submitForm = () => {
     post("/api/confirmation", { email: this.state.email, token: this.state.tok }).then((res) => {
-      window.location.href = "/";
+      console.log(res);
+      if (res.msg) {
+        this.setState({ msg: res.msg })
+      }
     });
   };
 
@@ -52,6 +55,8 @@ class Confirmation extends Component {
             ></Input>
             <br />
             <Button onClick={this.submitForm}>Confirm</Button>
+            <br />
+            {this.state.msg ? <>{this.state.msg}<a href={"/"}> Return to home</a></> : ""}
           </Col>
         </Row>
       </>

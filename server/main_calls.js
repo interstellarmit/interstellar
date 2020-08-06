@@ -207,7 +207,6 @@ Description: If the user is in the page, returns the users, due dates that have 
 */
 
 joinPage = (req, res) => {
-  //console.log(req.body);
   if (!socket.getSocketFromUserID(req.user._id)) {
     res.send({ broken: true });
     return;
@@ -236,7 +235,6 @@ joinPage = (req, res) => {
         });
         let inPageUsers = users.map((singleUser) => {
           if (!req.body.home && page.pageType === "Group") {
-            //console.log("condens");
             return { userId: singleUser._id, name: singleUser.name, pageIds: singleUser.pageIds };
           }
           return { userId: singleUser._id, name: singleUser.name };
@@ -249,8 +247,6 @@ joinPage = (req, res) => {
               deleted: false,
             },
             (err, DDQLs) => {
-              // console.log(err)
-              //console.log(DDQLs)
               Lounge.find({ pageId: { $in: pageArr } }, (err, lounges) => {
                 let returnValue = {
                   users: inPageUsers,
