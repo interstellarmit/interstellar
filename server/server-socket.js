@@ -55,10 +55,12 @@ module.exports = {
                 lounge.userIds = lounge.userIds.filter((id) => {
                   return id !== user._id;
                 });
+                let oldPageId = lounge.pageId;
+                if (lounge.userIds.length === 0) lounge.pageId = "deleted";
                 console.log(lounge.userIds.length);
                 lounge.save().then(() => {
                   getSocketFromUserID(user._id)
-                    .to("Page: " + lounge.pageId)
+                    .to("Page: " + oldPageId)
                     .emit("userRemovedFromLounge", { loungeId: lounge._id, userId: user._id });
                   getSocketFromUserID(user._id).leave("Lounge: " + lounge._id);
                   myUser.loungeId = "";
