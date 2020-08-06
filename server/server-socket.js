@@ -16,12 +16,13 @@ const addUser = (user, socket) => {
     oldSocket.disconnect();
     delete socketToUserMap[oldSocket.id];
   }
-
+  console.log("added user id", user._id);
   userToSocketMap[user._id] = socket;
   socketToUserMap[socket.id] = user;
 };
 
 const removeUser = (user, socket) => {
+  //console.log("removin");
   if (user) delete userToSocketMap[user._id];
   delete socketToUserMap[socket.id];
 };
@@ -33,6 +34,11 @@ module.exports = {
     io.on("connection", (socket) => {
       console.log(`socket has connected ${socket.id}`);
       socket.on("disconnect", (reason) => {
+        console.log("a disconnect ", reason);
+        if (reason === "server namespace disconnect") {
+          console.log("SEERVER DISCONNECT");
+          return;
+        }
         const user = getUserFromSocketID(socket.id);
 
         if (user) {
@@ -49,10 +55,12 @@ module.exports = {
                 lounge.userIds = lounge.userIds.filter((id) => {
                   return id !== user._id;
                 });
+                let oldPageId = lounge.pageId;
+                if (lounge.userIds.length === 0) lounge.pageId = "deleted";
                 console.log(lounge.userIds.length);
                 lounge.save().then(() => {
                   getSocketFromUserID(user._id)
-                    .to("Page: " + lounge.pageId)
+                    .to("Page: " + oldPageId)
                     .emit("userRemovedFromLounge", { loungeId: lounge._id, userId: user._id });
                   getSocketFromUserID(user._id).leave("Lounge: " + lounge._id);
                   myUser.loungeId = "";

@@ -69,13 +69,17 @@ export default function Public(props) {
                 Login
               </Button>
             </Form.Item>
+
+            <Form.Item>
+              {props.loginMessage}
+            </Form.Item>
           </Form>
         </Col>
         <Col span={12}>
           <Form form={formSignup} name={"Signup"} onFinish={onFinishSignup}>
             <Form.Item
               name="signupName"
-              label="Name"
+              label="Full Name"
               rules={[
                 {
                   required: true,
@@ -83,7 +87,7 @@ export default function Public(props) {
                 },
               ]}
             >
-              <Input />
+              <Input placeholder={"Tim Beaver"} />
             </Form.Item>
             <Form.Item
               name="signupEmail"
@@ -96,7 +100,7 @@ export default function Public(props) {
                 },
               ]}
             >
-              <Input />
+              <Input placeholder={"timmyb@mit.edu"} />
             </Form.Item>
             <Form.Item
               name="signupPassword"
@@ -106,9 +110,17 @@ export default function Public(props) {
                   required: true,
                   message: "Please enter a password",
                 },
+                ({ getFieldValue }) => ({
+                  validator(rule, value) {
+                    if (getFieldValue('signupPassword').length >= 6) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject('Your password is too short!');
+                  },
+                }),
               ]}
             >
-              <Input.Password />
+              <Input.Password placeholder={"dismypassword"} />
             </Form.Item>
 
             <Form.Item>
@@ -116,65 +128,13 @@ export default function Public(props) {
                 Signup
               </Button>
             </Form.Item>
+
+            <Form.Item>
+              {props.signUpMessage}
+            </Form.Item>
           </Form>
         </Col>
       </Row>
     </Modal>
   );
 }
-
-/*
- /*
- <>
-      <button
-        onClick={() => {
-          this.props.signup();
-        }}
-      >
-        Signup
-      </button>
-      <button
-        onClick={() => {
-          this.props.me();
-        }}
-      >
-        Me
-      </button>
-      <button
-        onClick={() => {
-          this.props.logout();
-        }}
-      >
-        Logout
-      </button>
-      <button
-        onClick={() => {
-          console.log(cookies.get("token"));
-        }}
-      >
-        Cookie
-      </button>
-    </>
-
-        <button
-          onClick={() => {
-            Object.keys(classes).forEach((oneclass) => {
-              let classObj = classes[oneclass];
-              //if (["6.031", "6.033", "6.UAT", "11.125"].includes(oneclass)) return;
-              post("/api/createNewPage", {
-                pageType: "Class",
-                name: oneclass,
-                title: classObj.n,
-                description: classObj.d,
-                locked: false,
-                joinCode: "",
-              }).then((created) => {
-                if (created.created) console.log(oneclass);
-                else console.log("error:" + oneclass);
-              });
-            });
-          }}
-        >
-          Add MIT
-        </button>
-        */

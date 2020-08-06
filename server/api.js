@@ -38,9 +38,9 @@ const socket = require("./server-socket");
 router.post(
   "/signup",
   [
-    check("name", "Please Enter a Valid Name").not().isEmpty(),
+    check("name", "Please Enter a valid name").not().isEmpty(),
     check("email", "Please enter a valid email").isEmail(),
-    check("password", "Please enter a valid password").isLength({
+    check("password", "Please enter a longer password").isLength({
       min: 6,
     }),
   ],
@@ -51,9 +51,6 @@ router.post(
   "/login",
   [
     check("email", "Please enter a valid email").isEmail(),
-    check("password", "Please enter a valid password").isLength({
-      min: 6,
-    }),
   ],
   auth.login
 );
@@ -70,12 +67,12 @@ router.get("/me", auth.me, async (req, res) => {
         allPages: pages.map((page) => {
           let newPage = page;
           newPage.description = "";
+          newPage.joinCode = "INVISIBLE";
           return newPage;
         }),
       });
     });
   } catch (e) {
-    console.log("Badd");
     console.log(e);
     res.send({ message: "Error in Fetching user" });
   }
@@ -95,8 +92,10 @@ router.post("/resend", auth.resendTokenPost);
 
 router.post("/initsocket", (req, res) => {
   // do nothing if user not logged in
-  if (req.user) socket.addUser(req.user, socket.getSocketFromSocketID(req.body.socketid));
-  res.send({});
+  if (req.user) {
+    socket.addUser(req.user, socket.getSocketFromSocketID(req.body.socketid));
+    res.send({ init: true });
+  } else res.send({ init: false });
 });
 
 router.post("/test", (req, res) => {
@@ -121,6 +120,7 @@ router.post("/addSelfToPage", auth.ensureLoggedIn, main_calls.addSelfToPage);
 router.post("/joinPage", auth.ensureLoggedIn, main_calls.joinPage);
 router.post("/removeSelfFromPage", auth.ensureLoggedIn, main_calls.removeSelfFromPage);
 router.post("/leavePage", auth.ensureLoggedIn, main_calls.leavePage);
+router.post("/setJoinCode", auth.ensureLoggedIn, main_calls.setJoinCode);
 
 router.post("/createNewLounge", auth.ensureLoggedIn, lounge_calls.createNewLounge);
 router.post("/addSelfToLounge", auth.ensureLoggedIn, lounge_calls.addSelfToLounge);

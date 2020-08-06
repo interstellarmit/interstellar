@@ -7,7 +7,7 @@ export default function InfoTab(props) {
     return user.userId !== props.user.userId;
   });
   if (props.inPage) {
-    users.push(props.user);
+    users.push(Object.assign(props.user, { pageIds: props.pageIds }));
   }
   return (
     <>
@@ -17,7 +17,12 @@ export default function InfoTab(props) {
           <Text>{"Description: " + props.page.description}</Text>
         </Col>
         <Col span={12}>
-          <UserList users={users} allPages={props.allPages} showClasses={true} />
+          <UserList
+            users={users}
+            allPages={props.allPages}
+            showClasses={true}
+            pageIds={props.pageIds}
+          />
         </Col>
       </Row>
     </>

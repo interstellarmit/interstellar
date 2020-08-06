@@ -45,7 +45,6 @@ export default function DDQLSection(props) {
         let newCompletedDDQLs = completedDDQLs.concat([]);
 
         newCompletedDDQLs.push(input.objectId);
-        console.log("New");
         console.log(newCompletedDDQLs);
         setCompletedDDQLs(newCompletedDDQLs);
       } else if (input.action === "uncomplete") {
@@ -80,8 +79,8 @@ export default function DDQLSection(props) {
       type={props.type}
     />
   ) : (
-    <></>
-  );
+      <></>
+    );
 
   return (
     <>
@@ -96,17 +95,17 @@ export default function DDQLSection(props) {
             <PlusOutlined />
           </Button>
         ) : (
-          <></>
-        )}
+            <></>
+          )}
         {props.type === "QuickLink" ? (
           <></>
         ) : (
-          <Switch
-            onChange={(checked) => {
-              setShowCompleted(checked);
-            }}
-          />
-        )}
+            <Switch
+              onChange={(checked) => {
+                setShowCompleted(checked);
+              }}
+            />
+          )}
       </Space>
       {props.home ? <></> : addNewDueDate}
       <List
@@ -127,14 +126,14 @@ export default function DDQLSection(props) {
               pageMap={props.pageMap}
             />
           ) : (
-            <QuickLink
-              quickLink={item}
-              addOrCompleteDDQL={addOrCompleteDDQL}
-              added={addedDDQLs.includes("" + item._id)}
-              home={props.home}
-              pageMap={props.pageMap}
-            />
-          );
+              <QuickLink
+                quickLink={item}
+                addOrCompleteDDQL={addOrCompleteDDQL}
+                added={addedDDQLs.includes("" + item._id)}
+                home={props.home}
+                pageMap={props.pageMap}
+              />
+            );
         }}
       />
     </>

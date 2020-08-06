@@ -5,16 +5,22 @@ import ForumTab from "../modules/ForumTab";
 import LoungesTab from "../modules/LoungesTab";
 import InfoTab from "../modules/InfoTab";
 import TabPage from "../modules/TabPage";
+import AddLock from "../modules/AddLock";
+import AddEnterCode from "../modules/AddEnterCode";
 import { socket } from "../../client-socket.js";
 import { Spin, Space, Button, Typography, Layout, PageHeader, Row, Col } from "antd";
 const { Header, Content, Footer, Sider } = Layout;
 const { Title, Text } = Typography;
-import { UserAddOutlined, UserDeleteOutlined } from "@ant-design/icons";
+import {
+  UserAddOutlined,
+  UserDeleteOutlined,
+  LockOutlined,
+  UnlockOutlined,
+} from "@ant-design/icons";
 class Page extends Component {
   constructor(props) {
     super(props);
     let selectedPage = this.props.computedMatch.params.selectedPage;
-    console.log(selectedPage);
     this.state = {
       pageName: selectedPage,
       users: [],
@@ -23,6 +29,7 @@ class Page extends Component {
       lounges: [],
       page: {},
       pageLoaded: false,
+      lockModal: false,
     };
     props.updateSelectedPageName(selectedPage);
   }
@@ -99,7 +106,6 @@ class Page extends Component {
   };
 
   addToLounge = (userId, loungeId, callback = () => {}) => {
-    console.log(userId + " Adding to lounge " + loungeId);
     let lounges = this.state.lounges;
     let lounge = lounges.filter((l) => {
       return l._id + "" === loungeId;
@@ -117,7 +123,6 @@ class Page extends Component {
   };
 
   removeFromLounge = (userId, loungeId, callback = () => {}) => {
-    console.log(userId + " Removing from lounge" + loungeId);
     if (loungeId !== "") {
       let lounges = this.state.lounges;
       let lounge = lounges.filter((l) => {
@@ -135,12 +140,9 @@ class Page extends Component {
         return id !== userId;
       });
       lounge.userIds = userIds;
-      console.log("newlounge");
-      console.log(lounge);
       if (lounge.userIds.length > 0) newLounges.push(lounge);
 
       this.setState({ lounges: newLounges }, () => {
-        console.log("doing callback");
         callback();
       });
     } else {
@@ -152,8 +154,6 @@ class Page extends Component {
     post("/api/addSelfToLounge", {
       loungeId: loungeId,
     }).then((data) => {
-      console.log(data);
-      console.log("added");
       if (data.added) {
         this.addToLounge(this.props.user.userId, loungeId, callback);
       }
@@ -164,8 +164,6 @@ class Page extends Component {
     post("/api/removeSelfFromLounge", {
       loungeId: loungeId,
     }).then((data) => {
-      console.log(data);
-      console.log("removed");
       if (data.removed) {
         this.removeFromLounge(this.props.user.userId, loungeId, callback);
       }
@@ -175,7 +173,10 @@ class Page extends Component {
   componentDidMount() {
     post("/api/joinPage", { pageName: this.state.pageName, schoolId: this.props.schoolId }).then(
       (data) => {
-        console.log(data);
+        if (data.broken) {
+          this.props.disconnect();
+          return;
+        }
         this.setState({
           users: data.users,
           dueDates: data.dueDates,
@@ -212,7 +213,42 @@ class Page extends Component {
       lounges.push(lounge);
       this.setState({ lounges: lounges });
     });
+
+    socket.on("locked", (data) => {
+      if (data.pageId !== this.state.page._id) return;
+      let page = this.state.page;
+      page.locked = data.locked;
+      this.setState({ page: page });
+    });
   }
+
+  setLockModal = (bol) => {
+    this.setState({ lockModal: bol });
+  };
+
+  setLockCode = (lock, code) => {
+    post("/api/setJoinCode", { lock: lock, code: code, pageId: this.state.page._id }).then(
+      (data) => {
+        if (data.setCode) {
+          let page = this.state.page;
+          page.locked = lock;
+          this.setState({ page: page });
+        }
+      }
+    );
+  };
+
+  addSelfToPage = (id, joinCode = "") => {
+    post("/api/addSelfToPage", { pageId: id, joinCode: joinCode }).then((data) => {
+      if (data.added) {
+        let newPageIds = this.props.pageIds;
+        newPageIds.push(id);
+        this.props.updatePageIds(newPageIds);
+        this.setState({ inPage: true });
+        this.componentDidMount();
+      } else console.log("error");
+    });
+  };
 
   render() {
     if (!this.state.pageLoaded) {
@@ -238,7 +274,7 @@ class Page extends Component {
           });
         }}
       >
-        <UserDeleteOutlined /> Remove Class
+        <UserDeleteOutlined /> Remove {this.state.page.pageType}
       </Button>
     );
 
@@ -246,30 +282,53 @@ class Page extends Component {
       <Button
         type="primary"
         onClick={() => {
-          post("/api/addSelfToPage", { pageId: this.state.page._id }).then((data) => {
-            if (data.added) {
-              let newPageIds = this.props.pageIds;
-              newPageIds.push(this.state.page._id);
-              this.props.updatePageIds(newPageIds);
-              this.setState({ inPage: true });
-              this.componentDidMount();
-            } else console.log("error");
-          });
+          this.state.page.locked
+            ? this.setState({ enterCodeModal: true })
+            : this.addSelfToPage(this.state.page._id);
         }}
       >
-        <UserAddOutlined /> Add Class
+        <UserAddOutlined /> Add {this.state.page.pageType}
       </Button>
     );
+
+    let lockButton = (
+      <Button
+        onClick={() => {
+          this.state.page.locked ? this.setLockCode(false, "") : this.setLockModal(true);
+        }}
+      >
+        {this.state.page.locked ? <LockOutlined /> : <UnlockOutlined />}
+      </Button>
+    );
+    // console.log(this.props.user);
 
     return (
       <Layout style={{ background: "rgba(240, 242, 245, 1)", height: "100vh" }}>
         <PageHeader
           className="site-layout-sub-header-background"
           style={{ padding: "20px 20px 20px 20px", background: "#fff" }}
-          extra={[this.state.inPage ? removeClassButton : addClassButton]}
+          extra={[this.state.inPage ? removeClassButton : addClassButton].concat(
+            (this.state.page.adminIds.includes(this.props.user._id) || this.props.isSiteAdmin) &&
+              this.state.inPage
+              ? [lockButton]
+              : []
+          )}
           title={this.state.page.name}
           subTitle={this.state.page.title}
         ></PageHeader>
+        <AddLock
+          lockModal={this.state.lockModal}
+          setLockModal={this.setLockModal}
+          setLockCode={this.setLockCode}
+        />
+        <AddEnterCode
+          enterCodeModal={this.state.enterCodeModal}
+          setEnterCodeModal={(bool) => {
+            this.setState({ enterCodeModal: bool });
+          }}
+          addSelfToPage={this.addSelfToPage}
+          pageId={this.state.page._id}
+        />
         <Content
           style={{
             margin: "36px 24px 36px 24px",
@@ -312,6 +371,7 @@ class Page extends Component {
                 inPage={true}
                 page={this.state.page}
                 user={this.props.user}
+                pageIds={this.props.pageIds}
                 allPages={this.props.allPages}
               />
               )

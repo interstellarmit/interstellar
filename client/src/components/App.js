@@ -1,15 +1,14 @@
 import React, { Component } from "react";
-
+//import arr from "./modules/ws.js";
 import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
 import NotFound from "./pages/NotFound.js";
-import Skeleton from "./pages/Skeleton.js";
 import SideBar from "./modules/SideBar.js";
 import Public from "./pages/Public.js";
 import Home from "./pages/Home.js";
 import Page from "./pages/Page.js";
 import Confirmation from "./pages/Confirmation.js";
 import "../utilities.css";
-import { Row, Col, Divider, Spin } from "antd";
+import { Row, Col, Divider, Spin, Modal } from "antd";
 import "antd/dist/antd.css";
 
 import { socket } from "../client-socket.js";
@@ -39,14 +38,19 @@ class App extends Component {
     get("/api/whoami").then((user) => {
       if (user._id) {
         // they are registed in the database, and currently logged in.
-        console.log("SDKFKLSDJFLKS");
         this.me();
       } else {
         this.setState({ tryingToLogin: false });
       }
     });
-    socket.on("disconnect", () => {
+    socket.on("reconnect_failed", () => {
       this.setState({ disconnect: true });
+    });
+    socket.on("disconnect", (reason) => {
+      if (reason === "io server disconnect") {
+        console.log("newtabdisconnect");
+        this.setState({ disconnect: true });
+      }
     });
   }
 
@@ -55,26 +59,37 @@ class App extends Component {
   */
   login = (data) => {
     post("/api/login", data).then((res) => {
-      console.log(res);
       cookies.set("token", res.token, { path: "/" });
-
-      post("/api/initsocket", { socketid: socket.id }).then(() => {
-        this.me();
+      if (res.msg) {
+        this.setState({ loginMessage: res.msg });
+      }
+      if (res.token) {
+        this.setState({ loginMessage: "Success!" });
+      }
+      post("/api/initsocket", { socketid: socket.id }).then((data) => {
+        if (data.init) this.me();
+        else {
+          this.setState({
+            disconnect: true,
+          });
+        }
       });
     });
   };
   logout = () => {
     post("/api/logout", {}).then((res) => {
       cookies.set("token", "", { path: "/" });
-      this.setState({ userId: undefined, tryingToLogin: false });
-      console.log(res);
+      this.setState({ userId: undefined, tryingToLogin: false }, () => {
+        window.location.href = "/";
+      });
     });
   };
   me = () => {
     get("/api/me", {}, cookies.get("token")).then((res) => {
-      console.log(res);
       if (!res.user) {
-        this.logout();
+        cookies.set("token", "", { path: "/" });
+        window.location.href = "/";
+        //this.logout();
         return;
       }
 
@@ -93,7 +108,12 @@ class App extends Component {
   };
   signup = (data) => {
     post("/api/signup", data).then((res) => {
-      console.log(res);
+      if (res.msg) {
+        this.setState({ signUpMessage: res.msg });
+      }
+      // if (data.password.length < 6) {
+      //   this.setState({ signUpMessage: "Please enter a longer password" })
+      // }
     });
   };
 
@@ -116,23 +136,10 @@ class App extends Component {
   logState = () => {
     console.log(this.state);
   };
-  /*
-  handleLogin = (res) => {
-    console.log(`Logged in as ${res.profileObj.name}`);
-    const userToken = res.tokenObj.id_token;
-    post("/api/login", { token: userToken }).then((user) => {
-      this.setState({ userId: user._id });
-      post("/api/initsocket", { socketid: socket.id });
-    });
-  };
 
-  handleLogout = () => {
-    post('api/logout', {name: "Daniel Sun", email: "dansun@mit.edu", password: "hehexd"}).then((res)=> {
-      cookies.set('token','',{path:"/"})
-      this.setState({userId: undefined})
-    })
+  disconnect = () => {
+    this.setState({ disconnect: true });
   };
-  */
 
   render() {
     if (!this.state.userId) {
@@ -148,15 +155,15 @@ class App extends Component {
                 logout={this.logout}
                 me={this.me}
                 signup={this.signup}
+                loginMessage={this.state.loginMessage}
+                signUpMessage={this.state.signUpMessage}
               />
             </Switch>
           </Router>
         </>
       );
     }
-    if (this.state.disconnect) {
-      return <h1>Disconnected</h1>;
-    }
+
     if (this.state.redirectPage !== "") {
       let page = this.state.redirectPage;
       this.setState({ redirectPage: "" });
@@ -171,6 +178,55 @@ class App extends Component {
     });
     return (
       <div>
+        {/*
+        <button
+          onClick={() => {
+            let keys = Object.keys(arr);
+
+            let runLoop = (i) => {
+              if (i >= keys.length) return;
+              let oneclass = keys[i];
+              let classObj = arr[oneclass];
+              //if (["6.031", "6.033", "6.UAT", "11.125"].includes(oneclass)) return;
+              post("/api/createNewPage", {
+                pageType: "Class",
+                name: oneclass,
+                title: classObj.name,
+                description: classObj.desc,
+                locked: false,
+                joinCode: "",
+              }).then((created) => {
+                if (created.created) console.log(oneclass + " " + i + "/" + keys.length);
+                else console.log("error:" + oneclass);
+                runLoop(i + 1);
+              });
+            };
+            runLoop(0);
+          }}
+        >
+          Add MIT
+        </button>*/}
+        {this.state.disconnect ? (
+          <Modal
+            visible={true}
+            title={"Disconnected"}
+            onCancel={() => {
+              window.location.href = "/";
+            }}
+            onOk={() => {
+              window.location.href = "/";
+            }}
+          >
+            <p>You have disconnected.</p>
+            <p>
+              Maybe you opened Interstellar in another tab, or you have been inactive for a long
+              period of time.
+            </p>
+            <p>Refresh to use Interstellar!</p>
+          </Modal>
+        ) : (
+          <></>
+        )}
         {/*<Row >
           <Col>
             <Public login={this.login} logout={this.logout} me={this.me} signup={this.signup} />
@@ -199,6 +255,7 @@ class App extends Component {
                   user={{ userId: this.state.userId, name: this.state.name }}
                   redirectPage={this.redirectPage}
                   myPages={myPages}
+                  disconnect={this.disconnect}
                 />
                 <Page
                   path="/class/:selectedPage"
@@ -210,6 +267,8 @@ class App extends Component {
                   redirectPage={this.redirectPage}
                   loungeId={this.state.loungeId}
                   setLoungeId={this.setLoungeId}
+                  isSiteAdmin={this.state.isSiteAdmin}
+                  disconnect={this.disconnect}
                 />
                 <Page
                   path="/group/:selectedPage"
@@ -222,6 +281,9 @@ class App extends Component {
                   loungeId={this.state.loungeId}
                   setLoungeId={this.setLoungeId}
                   allPages={this.state.allPages}
+                  pageIds={this.state.pageIds}
+                  isSiteAdmin={this.state.isSiteAdmin}
+                  disconnect={this.disconnect}
                 />
                 <NotFound default />
               </Switch>

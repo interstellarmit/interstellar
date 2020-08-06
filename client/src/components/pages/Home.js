@@ -19,8 +19,7 @@ class Home extends Component {
     props.updateSelectedPageName("");
   }
 
-  addToLounge = (userId, loungeId, callback = () => {}) => {
-    console.log(userId + " Adding to lounge " + loungeId);
+  addToLounge = (userId, loungeId, callback = () => { }) => {
     let lounges = this.state.lounges;
     let lounge = lounges.filter((l) => {
       return l._id + "" === loungeId;
@@ -37,8 +36,7 @@ class Home extends Component {
     this.setState({ lounges: newLounges }, callback);
   };
 
-  removeFromLounge = (userId, loungeId, callback = () => {}) => {
-    console.log(userId + " Removing from lounge" + loungeId);
+  removeFromLounge = (userId, loungeId, callback = () => { }) => {
     if (loungeId !== "") {
       let lounges = this.state.lounges;
       let lounge = lounges.filter((l) => {
@@ -56,11 +54,9 @@ class Home extends Component {
         return id !== userId;
       });
       lounge.userIds = userIds;
-      console.log("newlounge");
-      console.log(lounge);
+
       if (lounge.userIds.length > 0) newLounges.push(lounge);
       this.setState({ lounges: newLounges }, () => {
-        console.log("doing callback");
         callback();
       });
     } else {
@@ -70,6 +66,10 @@ class Home extends Component {
 
   componentDidMount() {
     post("api/joinPage", { home: true }).then((data) => {
+      if (data.broken) {
+        this.props.disconnect();
+        return;
+      }
       this.setState({
         users: data.users,
         dueDates: data.dueDates,

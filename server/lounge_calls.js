@@ -98,8 +98,6 @@ removeSelfFromLoungePromise = (userId, loungeId) => {
     if (loungeId === "") {
       resolve(true);
     } else {
-      console.log(userId + "hi");
-      console.log(loungeId);
       User.findById(userId).then((user) => {
         Lounge.findById(loungeId).then((lounge) => {
           if (lounge.userIds.includes(userId)) {
