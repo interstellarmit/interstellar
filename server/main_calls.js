@@ -207,7 +207,12 @@ Description: If the user is in the page, returns the users, due dates that have 
 */
 
 joinPage = (req, res) => {
-  console.log(req.body);
+  //console.log(req.body);
+  if (!socket.getSocketFromUserID(req.user._id)) {
+    res.send({ broken: true });
+    return;
+  }
+
   Page.findOne({ name: req.body.pageName, schoolId: req.body.schoolId }).then((page) => {
     if (page) {
       socket.getSocketFromUserID(req.user._id).join("Page: " + page._id);
@@ -266,7 +271,11 @@ joinPage = (req, res) => {
             }
           );
         } else {
-          res.send({ users: page.locked ? [] : condensedUsers, page: page, inPage: false });
+          res.send({
+            users: page.locked ? [] : condensedUsers,
+            page: Object.assign(page, { joinCode: "INVISIBLE" }),
+            inPage: false,
+          });
         }
       });
     });
@@ -299,6 +308,24 @@ leavePage = (req, res) => {
   });
 };
 
+setJoinCode = (req, res) => {
+  Page.findById(req.body.pageId).then((page) => {
+    if (req.user.isSiteAdmin || page.adminIds.includes(req.user._id)) {
+      page.locked = req.body.lock;
+      page.joinCode = req.body.lock ? req.body.code : "";
+      page.save().then(() => {
+        socket
+          .getSocketFromUserID(req.user._id)
+          .to("Page: " + page._id)
+          .emit("locked", { pageId: page._id, locked: page.locked });
+        res.send({ setCode: true });
+      });
+    } else {
+      res.send({ setCode: false });
+    }
+  });
+};
+
 module.exports = {
   createNewSchool,
   createNewPage,
@@ -306,4 +333,5 @@ module.exports = {
   removeSelfFromPage,
   joinPage,
   leavePage,
+  setJoinCode,
 };

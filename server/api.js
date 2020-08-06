@@ -70,6 +70,7 @@ router.get("/me", auth.me, async (req, res) => {
         allPages: pages.map((page) => {
           let newPage = page;
           newPage.description = "";
+          newPage.joinCode = "INVISIBLE";
           return newPage;
         }),
       });
@@ -95,8 +96,10 @@ router.post("/resend", auth.resendTokenPost);
 
 router.post("/initsocket", (req, res) => {
   // do nothing if user not logged in
-  if (req.user) socket.addUser(req.user, socket.getSocketFromSocketID(req.body.socketid));
-  res.send({});
+  if (req.user) {
+    socket.addUser(req.user, socket.getSocketFromSocketID(req.body.socketid));
+    res.send({ init: true });
+  } else res.send({ init: false });
 });
 
 router.post("/test", (req, res) => {
@@ -121,6 +124,7 @@ router.post("/addSelfToPage", auth.ensureLoggedIn, main_calls.addSelfToPage);
 router.post("/joinPage", auth.ensureLoggedIn, main_calls.joinPage);
 router.post("/removeSelfFromPage", auth.ensureLoggedIn, main_calls.removeSelfFromPage);
 router.post("/leavePage", auth.ensureLoggedIn, main_calls.leavePage);
+router.post("/setJoinCode", auth.ensureLoggedIn, main_calls.setJoinCode);
 
 router.post("/createNewLounge", auth.ensureLoggedIn, lounge_calls.createNewLounge);
 router.post("/addSelfToLounge", auth.ensureLoggedIn, lounge_calls.addSelfToLounge);

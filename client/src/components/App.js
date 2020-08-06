@@ -9,7 +9,7 @@ import Home from "./pages/Home.js";
 import Page from "./pages/Page.js";
 import Confirmation from "./pages/Confirmation.js";
 import "../utilities.css";
-import { Row, Col, Divider, Spin } from "antd";
+import { Row, Col, Divider, Spin, Modal } from "antd";
 import "antd/dist/antd.css";
 
 import { socket } from "../client-socket.js";
@@ -58,8 +58,13 @@ class App extends Component {
       console.log(res);
       cookies.set("token", res.token, { path: "/" });
 
-      post("/api/initsocket", { socketid: socket.id }).then(() => {
-        this.me();
+      post("/api/initsocket", { socketid: socket.id }).then((data) => {
+        if (data.init) this.me();
+        else {
+          this.setState({
+            disconnect: true,
+          });
+        }
       });
     });
   };
@@ -116,6 +121,10 @@ class App extends Component {
   logState = () => {
     console.log(this.state);
   };
+
+  disconnect = () => {
+    this.setState({ disconnect: true });
+  };
   /*
   handleLogin = (res) => {
     console.log(`Logged in as ${res.profileObj.name}`);
@@ -154,9 +163,7 @@ class App extends Component {
         </>
       );
     }
-    if (this.state.disconnect) {
-      return <h1>Disconnected</h1>;
-    }
+
     if (this.state.redirectPage !== "") {
       let page = this.state.redirectPage;
       this.setState({ redirectPage: "" });
@@ -171,6 +178,27 @@ class App extends Component {
     });
     return (
       <div>
+        {this.state.disconnect ? (
+          <Modal
+            visible={true}
+            title={"Disconnected"}
+            onCancel={() => {
+              window.location.href = "/";
+            }}
+            onOk={() => {
+              window.location.href = "/";
+            }}
+          >
+            <p>You have disconnected.</p>
+            <p>
+              Maybe you opened Interstellar in another tab, or you have been inactive for a long
+              period of time.
+            </p>
+            <p>Refresh to use Interstellar!</p>
+          </Modal>
+        ) : (
+          <></>
+        )}
         {/*<Row >
           <Col>
             <Public login={this.login} logout={this.logout} me={this.me} signup={this.signup} />
@@ -199,6 +227,7 @@ class App extends Component {
                   user={{ userId: this.state.userId, name: this.state.name }}
                   redirectPage={this.redirectPage}
                   myPages={myPages}
+                  disconnect={this.disconnect}
                 />
                 <Page
                   path="/class/:selectedPage"
@@ -210,6 +239,8 @@ class App extends Component {
                   redirectPage={this.redirectPage}
                   loungeId={this.state.loungeId}
                   setLoungeId={this.setLoungeId}
+                  isSiteAdmin={this.state.isSiteAdmin}
+                  disconnect={this.disconnect}
                 />
                 <Page
                   path="/group/:selectedPage"
@@ -222,6 +253,8 @@ class App extends Component {
                   loungeId={this.state.loungeId}
                   setLoungeId={this.setLoungeId}
                   allPages={this.state.allPages}
+                  isSiteAdmin={this.state.isSiteAdmin}
+                  disconnect={this.disconnect}
                 />
                 <NotFound default />
               </Switch>

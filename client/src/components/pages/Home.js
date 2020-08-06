@@ -70,6 +70,10 @@ class Home extends Component {
 
   componentDidMount() {
     post("api/joinPage", { home: true }).then((data) => {
+      if (data.broken) {
+        this.props.disconnect();
+        return;
+      }
       this.setState({
         users: data.users,
         dueDates: data.dueDates,
