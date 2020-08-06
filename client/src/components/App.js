@@ -2,7 +2,6 @@ import React, { Component } from "react";
 
 import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
 import NotFound from "./pages/NotFound.js";
-import Skeleton from "./pages/Skeleton.js";
 import SideBar from "./modules/SideBar.js";
 import Public from "./pages/Public.js";
 import Home from "./pages/Home.js";
@@ -39,7 +38,6 @@ class App extends Component {
     get("/api/whoami").then((user) => {
       if (user._id) {
         // they are registed in the database, and currently logged in.
-        console.log("SDKFKLSDJFLKS");
         this.me();
       } else {
         this.setState({ tryingToLogin: false });
@@ -55,9 +53,13 @@ class App extends Component {
   */
   login = (data) => {
     post("/api/login", data).then((res) => {
-      console.log(res);
       cookies.set("token", res.token, { path: "/" });
-
+      if (res.msg) {
+        this.setState({ loginMessage: res.msg })
+      }
+      if (res.token) {
+        this.setState({ loginMessage: "Success!" })
+      }
       post("/api/initsocket", { socketid: socket.id }).then((data) => {
         if (data.init) this.me();
         else {
@@ -74,12 +76,10 @@ class App extends Component {
       this.setState({ userId: undefined, tryingToLogin: false }, () => {
         window.location.href = "/";
       });
-      console.log(res);
     });
   };
   me = () => {
     get("/api/me", {}, cookies.get("token")).then((res) => {
-      console.log(res);
       if (!res.user) {
         this.logout();
         return;
@@ -100,7 +100,12 @@ class App extends Component {
   };
   signup = (data) => {
     post("/api/signup", data).then((res) => {
-      console.log(res);
+      if (res.msg) {
+        this.setState({ signUpMessage: res.msg })
+      }
+      // if (data.password.length < 6) {
+      //   this.setState({ signUpMessage: "Please enter a longer password" })
+      // }
     });
   };
 
@@ -127,23 +132,6 @@ class App extends Component {
   disconnect = () => {
     this.setState({ disconnect: true });
   };
-  /*
-  handleLogin = (res) => {
-    console.log(`Logged in as ${res.profileObj.name}`);
-    const userToken = res.tokenObj.id_token;
-    post("/api/login", { token: userToken }).then((user) => {
-      this.setState({ userId: user._id });
-      post("/api/initsocket", { socketid: socket.id });
-    });
-  };
-
-  handleLogout = () => {
-    post('api/logout', {name: "Daniel Sun", email: "dansun@mit.edu", password: "hehexd"}).then((res)=> {
-      cookies.set('token','',{path:"/"})
-      this.setState({userId: undefined})
-    })
-  };
-  */
 
   render() {
     if (!this.state.userId) {
@@ -159,6 +147,8 @@ class App extends Component {
                 logout={this.logout}
                 me={this.me}
                 signup={this.signup}
+                loginMessage={this.state.loginMessage}
+                signUpMessage={this.state.signUpMessage}
               />
             </Switch>
           </Router>
@@ -199,8 +189,8 @@ class App extends Component {
             <p>Refresh to use Interstellar!</p>
           </Modal>
         ) : (
-          <></>
-        )}
+            <></>
+          )}
         {/*<Row >
           <Col>
             <Public login={this.login} logout={this.logout} me={this.me} signup={this.signup} />

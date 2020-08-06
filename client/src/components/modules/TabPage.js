@@ -11,14 +11,12 @@ export default function TabPage(props) {
         <Route
           path={"/" + props.page.pageType.toLowerCase() + "/" + props.page.name + "/:routeLink?"}
           render={({ match, history }) => {
-            console.log(match.params.routeLink);
             return (
               <Switch>
                 <Tabs
                   //type="card"
                   defaultActiveKey={match.params.routeLink || props.defaultRouterLink}
                   onChange={(key) => {
-                    console.log(match);
                     history.push(
                       "/" + props.page.pageType.toLowerCase() + "/" + props.page.name + "/" + key
                     );

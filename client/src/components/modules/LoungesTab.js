@@ -16,7 +16,6 @@ export default function LoungesTab(props) {
             "/" + props.page.pageType.toLowerCase() + "/" + props.page.name + "/lounges/:loungeId?"
           }
           render={({ match, history }) => {
-            console.log(match.params.loungeId);
             let loungeId = match.params.loungeId || props.loungeId;
             let loungeArr = props.lounges.filter((cur) => {
               return cur._id === loungeId;
@@ -26,7 +25,6 @@ export default function LoungesTab(props) {
 
             if (lounge !== "") {
               if (props.loungeId !== loungeId) {
-                console.log("Hello");
                 props.removeSelfFromLounge(props.loungeId, () => {
                   props.addSelfToLounge(loungeId, () => {
                     props.setLoungeId(loungeId);
