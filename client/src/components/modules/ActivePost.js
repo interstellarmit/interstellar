@@ -1,10 +1,11 @@
 import React, { useState } from "react";
+import { Card } from "antd";
 
 export default function ActivePost(props) {
   return (
-    <React.Fragment>
-      <h3>{props.post.title}</h3>
-      {props.post.text}
-    </React.Fragment>
+    <Card title={props.activePost.post.title}>
+      {props.activePost.post.text}
+      {props.activePost.post.labels}
+    </Card>
   );
 }

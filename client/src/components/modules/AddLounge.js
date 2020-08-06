@@ -5,7 +5,7 @@ export default function AddLounge(props) {
   let onFinish = (fieldsValue) => {
     props.createNewLounge({
       name: fieldsValue.name,
-    })
+    });
     form.resetFields();
     props.setVisible(false);
   };
@@ -30,31 +30,26 @@ export default function AddLounge(props) {
         </Button>,
       ]}
     >
-      
-          <Form form={form} name={"Add New Lounge"}
-           onFinish={onFinish}
-           >
+      <Form form={form} name={"Add New Lounge"} onFinish={onFinish}>
+        <Form.Item
+          name="name"
+          label="Lounge Name"
+          rules={[
+            {
+              required: true,
+              message: "Please enter a lounge name",
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item>
 
-            <Form.Item
-              name="name"
-              label="Lounge Name"
-              rules={[
-                {
-                  required: true,
-                  message: "Please enter a lounge name",
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-            
-            <Form.Item>
-              <Button key="submit" type="primary" htmlType="submit">
-                Submit
-              </Button>
-            </Form.Item>
-          </Form>
-       
+        <Form.Item>
+          <Button key="submit" type="primary" htmlType="submit">
+            Submit
+          </Button>
+        </Form.Item>
+      </Form>
     </Modal>
   );
 }
