@@ -208,6 +208,7 @@ Description: If the user is in the page, returns the users, due dates that have 
 
 joinPage = (req, res) => {
   if (!socket.getSocketFromUserID(req.user._id)) {
+    console.log("broken", req.user._id);
     res.send({ broken: true });
     return;
   }

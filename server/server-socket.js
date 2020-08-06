@@ -16,12 +16,13 @@ const addUser = (user, socket) => {
     oldSocket.disconnect();
     delete socketToUserMap[oldSocket.id];
   }
-
+  console.log("added user id", user._id);
   userToSocketMap[user._id] = socket;
   socketToUserMap[socket.id] = user;
 };
 
 const removeUser = (user, socket) => {
+  //console.log("removin");
   if (user) delete userToSocketMap[user._id];
   delete socketToUserMap[socket.id];
 };
@@ -33,6 +34,11 @@ module.exports = {
     io.on("connection", (socket) => {
       console.log(`socket has connected ${socket.id}`);
       socket.on("disconnect", (reason) => {
+        console.log("a disconnect ", reason);
+        if (reason === "server namespace disconnect") {
+          console.log("SEERVER DISCONNECT");
+          return;
+        }
         const user = getUserFromSocketID(socket.id);
 
         if (user) {

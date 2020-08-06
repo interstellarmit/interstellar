@@ -43,8 +43,14 @@ class App extends Component {
         this.setState({ tryingToLogin: false });
       }
     });
-    socket.on("disconnect", () => {
+    socket.on("reconnect_failed", () => {
       this.setState({ disconnect: true });
+    });
+    socket.on("disconnect", (reason) => {
+      if (reason === "io server disconnect") {
+        console.log("newtabdisconnect");
+        this.setState({ disconnect: true });
+      }
     });
   }
 
@@ -55,10 +61,10 @@ class App extends Component {
     post("/api/login", data).then((res) => {
       cookies.set("token", res.token, { path: "/" });
       if (res.msg) {
-        this.setState({ loginMessage: res.msg })
+        this.setState({ loginMessage: res.msg });
       }
       if (res.token) {
-        this.setState({ loginMessage: "Success!" })
+        this.setState({ loginMessage: "Success!" });
       }
       post("/api/initsocket", { socketid: socket.id }).then((data) => {
         if (data.init) this.me();
@@ -103,7 +109,7 @@ class App extends Component {
   signup = (data) => {
     post("/api/signup", data).then((res) => {
       if (res.msg) {
-        this.setState({ signUpMessage: res.msg })
+        this.setState({ signUpMessage: res.msg });
       }
       // if (data.password.length < 6) {
       //   this.setState({ signUpMessage: "Please enter a longer password" })
@@ -219,8 +225,8 @@ class App extends Component {
             <p>Refresh to use Interstellar!</p>
           </Modal>
         ) : (
-            <></>
-          )}
+          <></>
+        )}
         {/*<Row >
           <Col>
             <Public login={this.login} logout={this.logout} me={this.me} signup={this.signup} />
@@ -275,6 +281,7 @@ class App extends Component {
                   loungeId={this.state.loungeId}
                   setLoungeId={this.setLoungeId}
                   allPages={this.state.allPages}
+                  pageIds={this.state.pageIds}
                   isSiteAdmin={this.state.isSiteAdmin}
                   disconnect={this.disconnect}
                 />
