@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import arr from "./modules/ws.js";
+//import arr from "./modules/ws.js";
 import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
 import NotFound from "./pages/NotFound.js";
 import Skeleton from "./pages/Skeleton.js";
