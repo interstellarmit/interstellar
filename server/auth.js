@@ -172,7 +172,11 @@ function confirmationPost(req, res, next) {
         if (err) {
           return res.status(500).send({ msg: err.message });
         }
+<<<<<<< HEAD
         res.status(200).send({ type: "success", msg: "The account has been verified. Please log in." });
+=======
+        res.status(200).send({ msg: "The account has been verified. Please log in." });
+>>>>>>> 56733542e62fb3283b98db802a6d7f38b832b7dd
       });
     });
   });

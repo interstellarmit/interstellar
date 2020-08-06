@@ -87,7 +87,7 @@ export default function Public(props) {
                 },
               ]}
             >
-              <Input />
+              <Input placeholder={"Tim Beaver"} />
             </Form.Item>
             <Form.Item
               name="signupEmail"
@@ -100,7 +100,7 @@ export default function Public(props) {
                 },
               ]}
             >
-              <Input />
+              <Input placeholder={"timmyb@mit.edu"} />
             </Form.Item>
             <Form.Item
               name="signupPassword"
@@ -120,7 +120,7 @@ export default function Public(props) {
                 }),
               ]}
             >
-              <Input.Password />
+              <Input.Password placeholder={"dismypassword"} />
             </Form.Item>
 
             <Form.Item>

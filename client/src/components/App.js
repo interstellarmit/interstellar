@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-
+//import arr from "./modules/ws.js";
 import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
 import NotFound from "./pages/NotFound.js";
 import SideBar from "./modules/SideBar.js";
@@ -170,6 +170,34 @@ class App extends Component {
     });
     return (
       <div>
+        {/*
+        <button
+          onClick={() => {
+            let keys = Object.keys(arr);
+
+            let runLoop = (i) => {
+              if (i >= keys.length) return;
+              let oneclass = keys[i];
+              let classObj = arr[oneclass];
+              //if (["6.031", "6.033", "6.UAT", "11.125"].includes(oneclass)) return;
+              post("/api/createNewPage", {
+                pageType: "Class",
+                name: oneclass,
+                title: classObj.name,
+                description: classObj.desc,
+                locked: false,
+                joinCode: "",
+              }).then((created) => {
+                if (created.created) console.log(oneclass + " " + i + "/" + keys.length);
+                else console.log("error:" + oneclass);
+                runLoop(i + 1);
+              });
+            };
+            runLoop(0);
+          }}
+        >
+          Add MIT
+        </button>*/}
         {this.state.disconnect ? (
           <Modal
             visible={true}

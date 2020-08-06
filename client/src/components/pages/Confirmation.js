@@ -27,12 +27,22 @@ class Confirmation extends Component {
     return (
       <>
         <Row justify={"center"}>
-          <Col style={{ flexDirection: "column", display: "flex", justifyContent: "center", alignItems: "center" }}>
+          <Col
+            style={{
+              flexDirection: "column",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
             <br />
             <br />
             <br />
             <br />
-            <img src={logo} style={{ display: "block", marginLeft: "auto", marginRight: "auto", width: "20%" }} />
+            <img
+              src={logo}
+              style={{ display: "block", marginLeft: "auto", marginRight: "auto", width: "20%" }}
+            />
             <br />
             <br />
             <h2 style={{ textAlign: "center" }}>One more step! Enter your email and hit confirm</h2>
