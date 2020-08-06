@@ -75,14 +75,6 @@ export default function SideBar(props) {
               })}
           </SubMenu>
           <Menu.Item
-            key=".log!!out."
-            onClick={() => {
-              props.logout();
-            }}
-          >
-            Logout
-          </Menu.Item>
-          <Menu.Item
             key=".add!!group."
             onClick={() => {
               setAddGroup(true);
@@ -91,13 +83,22 @@ export default function SideBar(props) {
             Create Group
           </Menu.Item>
           <Menu.Item
+            key=".log!!out."
+            onClick={() => {
+              props.logout();
+            }}
+          >
+            Logout
+          </Menu.Item>
+
+          {/* <Menu.Item
             key=".log!!state."
             onClick={() => {
               props.logState();
             }}
           >
             Log State
-          </Menu.Item>
+          </Menu.Item> */}
         </Menu>
       </Sider>
       <AddGroup visible={addGroup} setVisible={setAddGroup} redirectPage={props.redirectPage} />

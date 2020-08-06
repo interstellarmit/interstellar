@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { get, post } from "../../utilities";
-import { Form, Input, Button, Checkbox } from "antd";
+import { Row, Col, Form, Input, Button, Checkbox } from "antd";
+import logo from "../../../dist/favicon.png";
 
 class Confirmation extends Component {
   constructor(props) {
@@ -22,15 +23,27 @@ class Confirmation extends Component {
   render() {
     return (
       <>
-        <div>{this.state.tok}</div>
-        <div>One more step. Enter your email and hit confirm</div>
-        <Input
-          value={this.state.email}
-          onChange={(e) => {
-            this.setState({ email: e.target.value });
-          }}
-        ></Input>
-        <Button onClick={this.submitForm}>Confirm</Button>
+        <Row justify={"center"}>
+          <Col style={{ flexDirection: "column", display: "flex", justifyContent: "center", alignItems: "center" }}>
+            <br />
+            <br />
+            <br />
+            <br />
+            <img src={logo} style={{ display: "block", marginLeft: "auto", marginRight: "auto", width: "20%" }} />
+            <br />
+            <br />
+            <h2 style={{ textAlign: "center" }}>One more step! Enter your email and hit confirm</h2>
+            <Input
+              value={this.state.email}
+              onChange={(e) => {
+                this.setState({ email: e.target.value });
+              }}
+              style={{ width: "20%", textAlign: "center" }}
+            ></Input>
+            <br />
+            <Button onClick={this.submitForm}>Confirm</Button>
+          </Col>
+        </Row>
       </>
     );
   }
