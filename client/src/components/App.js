@@ -81,7 +81,9 @@ class App extends Component {
     get("/api/me", {}, cookies.get("token")).then((res) => {
       console.log(res);
       if (!res.user) {
-        this.logout();
+        cookies.set("token", "", { path: "/" });
+        window.location.href = "/";
+        //this.logout();
         return;
       }
 
