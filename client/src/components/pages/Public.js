@@ -83,7 +83,7 @@ export default function Public(props) {
                 },
               ]}
             >
-              <Input />
+              <Input placeholder={"Tim Beaver"} />
             </Form.Item>
             <Form.Item
               name="signupEmail"
@@ -96,7 +96,7 @@ export default function Public(props) {
                 },
               ]}
             >
-              <Input />
+              <Input placeholder={"timmyb@mit.edu"} />
             </Form.Item>
             <Form.Item
               name="signupPassword"
@@ -108,7 +108,7 @@ export default function Public(props) {
                 },
               ]}
             >
-              <Input.Password />
+              <Input.Password placeholder={"dismypassword"} />
             </Form.Item>
 
             <Form.Item>
@@ -156,25 +156,5 @@ export default function Public(props) {
       </button>
     </>
 
-        <button
-          onClick={() => {
-            Object.keys(classes).forEach((oneclass) => {
-              let classObj = classes[oneclass];
-              //if (["6.031", "6.033", "6.UAT", "11.125"].includes(oneclass)) return;
-              post("/api/createNewPage", {
-                pageType: "Class",
-                name: oneclass,
-                title: classObj.n,
-                description: classObj.d,
-                locked: false,
-                joinCode: "",
-              }).then((created) => {
-                if (created.created) console.log(oneclass);
-                else console.log("error:" + oneclass);
-              });
-            });
-          }}
-        >
-          Add MIT
-        </button>
+        
         */
