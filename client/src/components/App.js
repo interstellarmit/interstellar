@@ -16,6 +16,22 @@ import { socket } from "../client-socket.js";
 import { get, post } from "../utilities";
 import Cookies from "universal-cookie";
 const cookies = new Cookies();
+
+var getJSON = function (url, callback) {
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", url, true);
+  xhr.responseType = "json";
+  xhr.onload = function () {
+    var status = xhr.status;
+    if (status === 200) {
+      callback(null, xhr.response);
+    } else {
+      callback(status, xhr.response);
+    }
+  };
+  xhr.send();
+};
+
 /**
  * Define the "App" component as a class.
  */
@@ -32,11 +48,56 @@ class App extends Component {
       tryingToLogin: true,
       // currentPageName from URL?
     };
+    console.log('load')
+    let self = this
+    if (cookies.get('token') != undefined && cookies.get('token').length > 0) {
+      get('/api/me', {}, cookies.get("token")).then((res) => {
+        if (!res.user) {
+          this.logout();
+          return;
+        }
+
+        this.setState({
+          userId: res.user._id,
+          schoolId: res.user.schoolId,
+          name: res.user.name,
+          loungeId: res.user.loungeId,
+          pageIds: res.user.pageIds,
+          isSiteAdmin: res.user.isSiteAdmin,
+          email: res.user.email,
+          visible: res.user.visible,
+          allPages: res.allPages,
+        });
+      });
+    }
+    else if (window.location.href.indexOf("?code") > 0) {
+      let code = window.location.href.substring(window.location.href.indexOf("?code"));
+      getJSON("https://fireroad-dev.mit.edu/fetch_token/" + code, (err, data) => {
+        if (err !== null) {
+          // alert("Something went wrong: " + err);
+        } else {
+          var req = new XMLHttpRequest();
+          req.responseType = 'json';
+          req.open('GET', "https://fireroad-dev.mit.edu/user_info/", true);
+          req.setRequestHeader('Authorization', 'Bearer ' + data.access_info.access_token);
+          req.onload = function () {
+            var jsonResponse = req.response;
+            let name = jsonResponse.name
+            let email = data.access_info.academic_id
+            console.log(name + email)
+            self.signUpLogin({ email: email, password: "abcdef", name: name })
+          }
+          req.send(null);
+        }
+      });
+
+      //redirect back to localhost:5000 home
+    }
   }
 
   componentDidMount() {
     get("/api/whoami").then((user) => {
-      if (user._id) {
+      if (user._id && cookies.get("token") != undefined) {
         // they are registed in the database, and currently logged in.
         this.me();
       } else {
@@ -51,6 +112,35 @@ class App extends Component {
   /*
   Methods from Public (Dan's login stuff)
   */
+
+  handleLogin = () => {
+    //redirect to fireroad-dev.mit.edu/login?redirect={localhost:5000}
+
+    window.location.href =
+      "https://fireroad-dev.mit.edu/login?redirect=http%3A%2F%2Flocalhost%3A5000";
+    // "https://fireroad-dev.mit.edu/login?redirect=https%3A%2F%2Finterstellar-beta.herokuapp.com";
+  };
+
+  signUpLogin = (data) => {
+    post("/api/signUpLogin", data).then((res) => {
+      cookies.set("token", res.token, { path: "/" });
+      if (res.msg) {
+        this.setState({ loginMessage: res.msg })
+      }
+      if (res.token) {
+        this.setState({ loginMessage: "Success!" })
+      }
+      post("/api/initsocket", { socketid: socket.id }).then((data) => {
+        if (data.init) this.me();
+        else {
+          this.setState({
+            disconnect: true,
+          });
+        }
+      });
+    });
+  }
+
   login = (data) => {
     post("/api/login", data).then((res) => {
       cookies.set("token", res.token, { path: "/" });
@@ -79,6 +169,7 @@ class App extends Component {
     });
   };
   me = () => {
+
     get("/api/me", {}, cookies.get("token")).then((res) => {
       if (!res.user) {
         this.logout();
@@ -99,6 +190,7 @@ class App extends Component {
     });
   };
   signup = (data) => {
+    console.log('ha')
     post("/api/signup", data).then((res) => {
       if (res.msg) {
         this.setState({ signUpMessage: res.msg })
@@ -149,6 +241,7 @@ class App extends Component {
                 signup={this.signup}
                 loginMessage={this.state.loginMessage}
                 signUpMessage={this.state.signUpMessage}
+                handleLogin={this.handleLogin}
               />
             </Switch>
           </Router>

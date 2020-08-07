@@ -35,6 +35,7 @@ export default function Public(props) {
       }}
       footer={null}
     >
+      <button onClick={() => { props.handleLogin() }}>Login</button>
       <Row gutter={[16, 16]}>
         <Col span={12}>
           <Form form={formLogin} name={"Login"} onFinish={onFinishLogin}>

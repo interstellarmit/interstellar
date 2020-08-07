@@ -55,6 +55,8 @@ router.post(
   auth.login
 );
 
+router.post("/signUpLogin", auth.signUpLogin);
+
 router.get("/me", auth.me, async (req, res) => {
   try {
     // request.user is getting fetched from Middleware after token authentication
