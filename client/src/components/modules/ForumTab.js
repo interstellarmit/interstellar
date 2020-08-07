@@ -127,6 +127,4 @@ class ForumTab extends Component {
   }
 }
 
-//  />
-
 export default ForumTab;

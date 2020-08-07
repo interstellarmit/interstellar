@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { get, post } from "../../utilities";
 import DashboardTab from "../modules/DashboardTab";
+import TempForumTab from "../modules/TempForumTab";
 import ForumTab from "../modules/ForumTab";
 import LoungesTab from "../modules/LoungesTab";
 import InfoTab from "../modules/InfoTab";
@@ -372,7 +373,10 @@ class Page extends Component {
                 loungeId={this.props.loungeId}
                 setLoungeId={this.props.setLoungeId}
               />
-              <ForumTab users={this.state.users} page={this.state.page} />)
+              {
+                // <ForumTab users={this.state.users} page={this.state.page} />)
+              }
+              <TempForumTab />
             </TabPage>
           ) : (
             <TabPage

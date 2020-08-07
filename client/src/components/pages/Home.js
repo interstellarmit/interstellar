@@ -114,24 +114,21 @@ class Home extends Component {
     }
     return (
       <Layout style={{ background: "rgba(240, 242, 245, 1)", height: "100vh" }}>
-        <Header
+        <PageHeader
           className="site-layout-sub-header-background"
           style={{
-            padding: "0px 20px 0px 20px",
+            padding: "20px 30px 0px 30px",
             backgroundColor: "#fff",
             color: "white",
             height: "64px",
           }}
-        >
-          <Space align="end">
-            <Title level={3}>{"Welcome, " + this.props.user.name.split(" ")[0] + "!"}</Title>
-          </Space>
-        </Header>
+          title={"Homepage"}
+          subTitle={this.props.user.name}
+        ></PageHeader>
 
         <Content
           style={{
-            margin: "36px 24px 36px 24px",
-            padding: 24,
+            padding: "30px 30px 30px 30px",
             background: "#fff",
             height: "calc(100vh - 64px)",
           }}
