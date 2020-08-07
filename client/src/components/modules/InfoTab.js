@@ -1,5 +1,5 @@
 import React, { Component, useState } from "react";
-import { List, Typography, Row, Col } from "antd";
+import { List, Typography, Row, Col, Rate } from "antd";
 const { Title, Text } = Typography;
 import UserList from "./UserList";
 export default function InfoTab(props) {
@@ -13,7 +13,14 @@ export default function InfoTab(props) {
     <>
       <Row>
         <Col span={12}>
-          <Text>{"Description: " + props.page.description}</Text>
+          <Row>{"Professor: " + props.page.professor}</Row>
+          <Row>
+            <Rate allowHalf defaultValue={parseFloat(props.page.rating) - 2} />
+          </Row>
+
+          <Row>
+            <Text>{props.page.description}</Text>
+          </Row>
         </Col>
         <Col span={12}>
           <UserList
