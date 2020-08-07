@@ -17,7 +17,6 @@ import { get, post } from "../utilities";
 import Cookies from "universal-cookie";
 const cookies = new Cookies();
 
-<<<<<<< HEAD
 var getJSON = function (url, callback) {
   var xhr = new XMLHttpRequest();
   xhr.open("GET", url, true);
@@ -32,9 +31,7 @@ var getJSON = function (url, callback) {
   };
   xhr.send();
 };
-=======
 // var classes = require("./modules/full.json");
->>>>>>> c6dfc459959232804abf849b33060b5c26ff828c
 
 /**
  * Define the "App" component as a class.
@@ -127,8 +124,8 @@ class App extends Component {
     //redirect to fireroad-dev.mit.edu/login?redirect={localhost:5000}
 
     window.location.href =
-      "https://fireroad-dev.mit.edu/login?redirect=http%3A%2F%2Flocalhost%3A5000";
-    // "https://fireroad-dev.mit.edu/login?redirect=https%3A%2F%2Finterstellar-beta.herokuapp.com";
+      // "https://fireroad-dev.mit.edu/login?redirect=http%3A%2F%2Flocalhost%3A5000";
+      "https://fireroad-dev.mit.edu/login?redirect=https%3A%2F%2Finterstellar-beta.herokuapp.com";
   };
 
   signUpLogin = (data) => {
@@ -325,8 +322,8 @@ class App extends Component {
             <p>Refresh to use Interstellar!</p>
           </Modal>
         ) : (
-          <></>
-        )}
+            <></>
+          )}
         <Layout style={{ minHeight: "100vh" }}>
           <SideBar
             pageIds={this.state.pageIds}
