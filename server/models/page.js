@@ -1,28 +1,39 @@
 const mongoose = require("mongoose");
 
 const PageSchema = new mongoose.Schema({
-    pageType: String, // (ex: either "Class" or "Group"),
-    name: String, // (ex: "6.033" or "ZBT"),
-    title: String, // (ex: "Computer Systems" or "Zeta Beta Tau"), 
-    schoolId: String,
-    description: {
-        type: String,
-        default: ""
-    },
-    expiryDate: {
-        type: Date,
-        default: new Date(2085, 11, 24)
-    },
-    adminIds: [String], 
-    locked: {
-        type: Boolean,
-        default: false
-    },
-    joinCode: {
-        type: String,
-        default: ""
-    }
-
+  pageType: String, // (ex: either "Class" or "Group"),
+  name: String, // (ex: "6.033" or "ZBT"),
+  title: String, // (ex: "Computer Systems" or "Zeta Beta Tau"),
+  schoolId: String,
+  professor: {
+    type: String,
+    default: "",
+  },
+  rating: {
+    type: String,
+    default: "",
+  },
+  hours: {
+    type: String,
+    default: "",
+  },
+  description: {
+    type: String,
+    default: "",
+  },
+  expiryDate: {
+    type: Date,
+    default: new Date(2085, 11, 24),
+  },
+  adminIds: [String],
+  locked: {
+    type: Boolean,
+    default: false,
+  },
+  joinCode: {
+    type: String,
+    default: "",
+  },
 });
 
 // compile model from schema

@@ -102,6 +102,8 @@ createNewPage = (req, res) => {
           name: name,
           title: req.body.title,
           description: req.body.description,
+          professor: req.body.professor,
+          rating: req.body.rating,
           expiryDate: expiryDate,
           adminIds: [req.user._id],
           schoolId: req.user.schoolId,

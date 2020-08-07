@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-//import arr from "./modules/ws.js";
 import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
 import NotFound from "./pages/NotFound.js";
 import SideBar from "./modules/SideBar.js";
@@ -17,6 +16,9 @@ import { socket } from "../client-socket.js";
 import { get, post } from "../utilities";
 import Cookies from "universal-cookie";
 const cookies = new Cookies();
+
+// var classes = require("./modules/full.json");
+
 /**
  * Define the "App" component as a class.
  */
@@ -180,33 +182,36 @@ class App extends Component {
     return (
       <div>
         {/*
-        <button
-          onClick={() => {
-            let keys = Object.keys(arr);
-
-            let runLoop = (i) => {
-              if (i >= keys.length) return;
-              let oneclass = keys[i];
-              let classObj = arr[oneclass];
-              //if (["6.031", "6.033", "6.UAT", "11.125"].includes(oneclass)) return;
-              post("/api/createNewPage", {
-                pageType: "Class",
-                name: oneclass,
-                title: classObj.name,
-                description: classObj.desc,
-                locked: false,
-                joinCode: "",
-              }).then((created) => {
-                if (created.created) console.log(oneclass + " " + i + "/" + keys.length);
-                else console.log("error:" + oneclass);
-                runLoop(i + 1);
-              });
-            };
-            runLoop(0);
-          }}
-        >
-          Add MIT
-        </button>*/}
+          Adding Classes 
+          <button
+            onClick={() => {
+              let keys = Object.keys(classes);
+              let runLoop = (i) => {
+                if (i >= keys.length) return;
+                let oneclass = keys[i];
+                let classObj = classes[oneclass];
+                post("/api/createNewPage", {
+                  pageType: "Class",
+                  name: oneclass,
+                  title: classObj.n,
+                  description: classObj.d,
+                  professor: classObj.i,
+                  rating: classObj.ra,
+                  hours: classObj.h,
+                  locked: false,
+                  joinCode: "",
+                }).then((created) => {
+                  if (created.created) console.log(oneclass + " " + i + "/" + keys.length);
+                  else console.log("error:" + oneclass);
+                  runLoop(i + 1);
+                });
+              };
+              runLoop(0);
+            }}
+          >
+            Add MIT
+          </button>
+        */}
         {this.state.disconnect ? (
           <Modal
             visible={true}
@@ -228,11 +233,6 @@ class App extends Component {
         ) : (
           <></>
         )}
-        {/*<Row >
-          <Col>
-            <Public login={this.login} logout={this.logout} me={this.me} signup={this.signup} />
-          </Col>
-        </Row>*/}
         <Layout style={{ minHeight: "100vh" }}>
           <SideBar
             pageIds={this.state.pageIds}

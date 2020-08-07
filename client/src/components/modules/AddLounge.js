@@ -20,14 +20,8 @@ export default function AddLounge(props) {
         props.setVisible(false);
       }}
       footer={[
-        <Button
-          key="back"
-          onClick={() => {
-            form.resetFields();
-            props.setVisible(false);
-          }}
-        >
-          Return
+        <Button key="submit" type="primary" htmlType="submit">
+          Submit
         </Button>,
       ]}
     >
