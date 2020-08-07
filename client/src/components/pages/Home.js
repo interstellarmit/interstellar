@@ -154,7 +154,7 @@ class Home extends Component {
               />
             </Col>
             <Col span={12}>
-              <Title level={3}>{"Open Lounges"}</Title>
+              <Title level={4}>{"Open Lounges"}</Title>
               {this.props.myPages.map((page) => {
                 return (
                   <LoungeList

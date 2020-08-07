@@ -3,95 +3,96 @@ import { List } from "antd";
 import "antd/dist/antd.css";
 //import { redirectPage } from "@reach/router";
 import { Menu, Dropdown, Layout } from "antd";
-import { DownOutlined } from "@ant-design/icons";
 import SearchBar from "./SearchBar";
+import {
+  HomeOutlined,
+  LogoutOutlined,
+  UsergroupAddOutlined,
+  BookOutlined,
+  TeamOutlined,
+  DownOutlined,
+} from "@ant-design/icons";
 import AddGroup from "./AddGroup";
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
 export default function SideBar(props) {
   let myPages = props.myPages;
   const [addGroup, setAddGroup] = React.useState(false);
+  const [collapsed, setCollapsed] = React.useState(false);
   return (
-    <>
-      <Sider
-        width={"25%"}
-        style={{
-          overflow: "auto",
-          height: "100vh",
-
-          position: "fixed",
-          left: 0,
-        }}
+    <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed} width={"20%"}>
+      <SearchBar redirectPage={props.redirectPage} allPages={props.allPages} />
+      <Menu
+        theme="dark"
+        selectedKeys={[props.selectedPageName === "" ? ".ho!!me." : props.selectedPageName]}
+        defaultOpenKeys={["c", "g"]}
+        mode="inline"
       >
-        <SearchBar redirectPage={props.redirectPage} allPages={props.allPages} />
-        <Menu
-          theme="dark"
-          selectedKeys={[props.selectedPageName === "" ? ".ho!!me." : props.selectedPageName]}
-          defaultOpenKeys={["c", "g"]}
-          mode="inline"
+        <Menu.Item
+          key=".ho!!me."
+          onClick={() => {
+            props.redirectPage("/");
+          }}
+          icon={<HomeOutlined />}
         >
-          <Menu.Item
-            key=".ho!!me."
-            onClick={() => {
-              props.redirectPage("/");
-            }}
-          >
-            Home
-          </Menu.Item>
-          <SubMenu key="c" title="Classes">
-            {myPages
-              .filter((page) => {
-                return page.pageType === "Class";
-              })
-              .map((page) => {
-                return (
-                  <Menu.Item
-                    key={page.name}
-                    onClick={() => {
-                      props.redirectPage("/" + page.pageType.toLowerCase() + "/" + page.name);
-                    }}
-                  >
-                    {page.name}
-                  </Menu.Item>
-                );
-              })}
-          </SubMenu>
-          <SubMenu key="g" title="Groups">
-            {myPages
-              .filter((page) => {
-                return page.pageType === "Group";
-              })
-              .map((page) => {
-                return (
-                  <Menu.Item
-                    key={page.name}
-                    onClick={() => {
-                      props.redirectPage("/" + page.pageType.toLowerCase() + "/" + page.name);
-                    }}
-                  >
-                    {page.name}
-                  </Menu.Item>
-                );
-              })}
-          </SubMenu>
-          <Menu.Item
-            key=".add!!group."
-            onClick={() => {
-              setAddGroup(true);
-            }}
-          >
-            Create Group
-          </Menu.Item>
-          <Menu.Item
-            key=".log!!out."
-            onClick={() => {
-              props.logout();
-            }}
-          >
-            Logout
-          </Menu.Item>
+          Home
+        </Menu.Item>
+        <SubMenu key="c" title="Classes" icon={<BookOutlined />}>
+          {myPages
+            .filter((page) => {
+              return page.pageType === "Class";
+            })
+            .map((page) => {
+              return (
+                <Menu.Item
+                  key={page.name}
+                  onClick={() => {
+                    props.redirectPage("/" + page.pageType.toLowerCase() + "/" + page.name);
+                  }}
+                >
+                  {page.name}
+                </Menu.Item>
+              );
+            })}
+        </SubMenu>
+        <SubMenu key="g" title="Groups" icon={<TeamOutlined />}>
+          {myPages
+            .filter((page) => {
+              return page.pageType === "Group";
+            })
+            .map((page) => {
+              return (
+                <Menu.Item
+                  key={page.name}
+                  onClick={() => {
+                    props.redirectPage("/" + page.pageType.toLowerCase() + "/" + page.name);
+                  }}
+                >
+                  {page.name}
+                </Menu.Item>
+              );
+            })}
+        </SubMenu>
+        <Menu.Item
+          key=".add!!group."
+          onClick={() => {
+            setAddGroup(true);
+          }}
+          icon={<UsergroupAddOutlined />}
+        >
+          Create Group
+        </Menu.Item>
+        <Menu.Item
+          key=".log!!out."
+          onClick={() => {
+            props.logout();
+          }}
+          icon={<LogoutOutlined />}
+        >
+          Logout
+        </Menu.Item>
 
-          {/* <Menu.Item
+        {/* <Menu.Item
             key=".log!!state."
             onClick={() => {
               props.logState();
@@ -99,10 +100,13 @@ export default function SideBar(props) {
           >
             Log State
           </Menu.Item> */}
-        </Menu>
-      </Sider>
+      </Menu>
       <AddGroup visible={addGroup} setVisible={setAddGroup} redirectPage={props.redirectPage} />
-      {/*
+    </Sider>
+  );
+}
+
+/*
     <List>
         <List.Item onClick={() => {
                     
@@ -131,7 +135,4 @@ export default function SideBar(props) {
                 {isSelected ? <b>{name}</b> : name}
             </List.Item>;
         }}
-    />  */}
-    </>
-  );
-}
+    />  */

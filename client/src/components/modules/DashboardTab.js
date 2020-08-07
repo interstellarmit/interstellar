@@ -7,7 +7,7 @@ export default function DashboardTab(props) {
   return (
     <>
       <Row>
-        <Col span={12}>
+        <Col span={24}>
           <DDQLSection
             dataSource={props.dueDates}
             users={props.users}
@@ -28,16 +28,17 @@ export default function DashboardTab(props) {
             type="QuickLink"
           />
         </Col>
+      </Row>
+    </>
+  );
+  /*
         <Col span={12}>
-          <Title level={3}>{"Open Lounges"}</Title>
+          <Title level={4}>{"Open Lounges"}</Title>
           <LoungeList
             redirect={(link) => props.redirectPage(link)}
             lounges={props.lounges}
             users={props.users}
             page={props.page}
           />
-        </Col>
-      </Row>
-    </>
-  );
+        </Col>*/
 }

@@ -79,33 +79,32 @@ export default function DDQLSection(props) {
       type={props.type}
     />
   ) : (
-      <></>
-    );
+    <></>
+  );
 
   return (
     <>
-      <Space align="start">
-        <Title level={3}>{props.type === "DueDate" ? "Due Dates" : "Quicklinks"}</Title>
+      <Space align="center">
+        <Title level={4}>{props.type === "DueDate" ? "Due Dates" : "Quicklinks"}</Title>
         {!props.home ? (
           <Button
             onClick={() => {
               setShowAddNewDueDate(true);
             }}
-          >
-            <PlusOutlined />
-          </Button>
+            icon={<PlusOutlined />}
+          ></Button>
         ) : (
-            <></>
-          )}
+          <></>
+        )}
         {props.type === "QuickLink" ? (
           <></>
         ) : (
-            <Switch
-              onChange={(checked) => {
-                setShowCompleted(checked);
-              }}
-            />
-          )}
+          <Switch
+            onChange={(checked) => {
+              setShowCompleted(checked);
+            }}
+          />
+        )}
       </Space>
       {props.home ? <></> : addNewDueDate}
       <List
@@ -126,14 +125,14 @@ export default function DDQLSection(props) {
               pageMap={props.pageMap}
             />
           ) : (
-              <QuickLink
-                quickLink={item}
-                addOrCompleteDDQL={addOrCompleteDDQL}
-                added={addedDDQLs.includes("" + item._id)}
-                home={props.home}
-                pageMap={props.pageMap}
-              />
-            );
+            <QuickLink
+              quickLink={item}
+              addOrCompleteDDQL={addOrCompleteDDQL}
+              added={addedDDQLs.includes("" + item._id)}
+              home={props.home}
+              pageMap={props.pageMap}
+            />
+          );
         }}
       />
     </>
