@@ -50,7 +50,7 @@ function me(req, res, next) {
   } catch (e) {
     //console.error(e);
     console.log("token not verified");
-    res.status(500).send({ msg: "Invalid Token" });
+    res.status(200).send({ msg: "Invalid Token" });
   }
 }
 
@@ -132,7 +132,15 @@ async function signUp(req, res) {
         }
       });
     });
-    res.status(200).send({ type: "succes", msg: "A verification email has been sent to " + user.email + ". Please check your spam and/or promotions." });
+    res
+      .status(200)
+      .send({
+        type: "succes",
+        msg:
+          "A verification email has been sent to " +
+          user.email +
+          ". Please check your spam and/or promotions.",
+      });
   } catch (err) {
     console.log(err.message);
     res.status(500).send({ msg: "Error in Saving" });
@@ -172,7 +180,9 @@ function confirmationPost(req, res, next) {
         if (err) {
           return res.status(500).send({ msg: err.message });
         }
-        res.status(200).send({ type: "success", msg: "The account has been verified. Please log in." });
+        res
+          .status(200)
+          .send({ type: "success", msg: "The account has been verified. Please log in." });
       });
     });
   });
@@ -191,9 +201,7 @@ function resendTokenPost(req, res, next) {
     if (!user)
       return res.status(200).send({ msg: "We were unable to find a user with that email." });
     if (user.isVerified)
-      return res
-        .status(200)
-        .send({ msg: "This account has already been verified." });
+      return res.status(200).send({ msg: "This account has already been verified." });
 
     // Create a verification token, save it, and send email
     var token = new Token({ _userId: user._id, token: crypto.randomBytes(16).toString("hex") });
