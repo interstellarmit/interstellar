@@ -2,7 +2,7 @@ import React, { Component, useState } from "react";
 import DueDate from "./DueDate";
 import AddNewDDQL from "./AddNewDDQL";
 import QuickLink from "./QuickLink";
-import { List, Avatar, Button, Space, Switch, Typography } from "antd";
+import { List, Avatar, Button, Space, Switch, Typography, Empty, ConfigProvider } from "antd";
 const { Title, Text } = Typography;
 import { get, post } from "../../utilities";
 import { PlusOutlined, MinusOutlined } from "@ant-design/icons";
@@ -107,34 +107,42 @@ export default function DDQLSection(props) {
         )}
       </Space>
       {props.home ? <></> : addNewDueDate}
-      <List
-        size="large"
-        dataSource={addedDataSource.filter((item) => {
-          if (!showCompleted) return !completedDDQLs.includes("" + item._id);
-          return true;
-        })}
-        renderItem={(item) => {
-          console.log("hi:" + completedDDQLs.includes("" + item._id));
-          return props.type === "DueDate" ? (
-            <DueDate
-              dueDate={item}
-              addOrCompleteDDQL={addOrCompleteDDQL}
-              added={addedDDQLs.includes("" + item._id)}
-              completed={completedDDQLs.includes("" + item._id)}
-              home={props.home}
-              pageMap={props.pageMap}
-            />
-          ) : (
-            <QuickLink
-              quickLink={item}
-              addOrCompleteDDQL={addOrCompleteDDQL}
-              added={addedDDQLs.includes("" + item._id)}
-              home={props.home}
-              pageMap={props.pageMap}
-            />
+      <ConfigProvider
+        renderEmpty={() => {
+          return (
+            <Empty description={"No " + (props.type === "DueDate" ? "Due Dates" : "Quicklinks")} />
           );
         }}
-      />
+      >
+        <List
+          size="large"
+          dataSource={addedDataSource.filter((item) => {
+            if (!showCompleted) return !completedDDQLs.includes("" + item._id);
+            return true;
+          })}
+          renderItem={(item) => {
+            console.log("hi:" + completedDDQLs.includes("" + item._id));
+            return props.type === "DueDate" ? (
+              <DueDate
+                dueDate={item}
+                addOrCompleteDDQL={addOrCompleteDDQL}
+                added={addedDDQLs.includes("" + item._id)}
+                completed={completedDDQLs.includes("" + item._id)}
+                home={props.home}
+                pageMap={props.pageMap}
+              />
+            ) : (
+              <QuickLink
+                quickLink={item}
+                addOrCompleteDDQL={addOrCompleteDDQL}
+                added={addedDDQLs.includes("" + item._id)}
+                home={props.home}
+                pageMap={props.pageMap}
+              />
+            );
+          }}
+        />
+      </ConfigProvider>
     </>
   );
 }

@@ -5,11 +5,13 @@ import { Tabs } from "antd";
 const { TabPane } = Tabs;
 
 export default function TabPage(props) {
+  let url = props.page ? "/" + props.page.pageType.toLowerCase() + "/" + props.page.name : "";
+
   return (
     <Router>
       <Switch>
         <Route
-          path={"/" + props.page.pageType.toLowerCase() + "/" + props.page.name + "/:routeLink?"}
+          path={url + "/:routeLink?"}
           render={({ match, history }) => {
             return (
               <Switch>
@@ -17,9 +19,7 @@ export default function TabPage(props) {
                   //type="card"
                   defaultActiveKey={match.params.routeLink || props.defaultRouterLink}
                   onChange={(key) => {
-                    history.push(
-                      "/" + props.page.pageType.toLowerCase() + "/" + props.page.name + "/" + key
-                    );
+                    history.push(url + "/" + key);
                   }}
                 >
                   {(Array.isArray(props.children) ? props.children : [props.children]).map(

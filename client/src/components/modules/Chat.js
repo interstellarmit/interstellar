@@ -34,7 +34,7 @@ class Chat extends Component {
         <div
           style={{
             overflow: "auto",
-            height: "400px",
+            height: "50vh",
             display: "flex",
             flexDirection: "column-reverse",
             marginBottom: "auto",

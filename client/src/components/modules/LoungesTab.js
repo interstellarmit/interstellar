@@ -39,7 +39,15 @@ export default function LoungesTab(props) {
                     <center>{lounge.name}</center>
                   </Title>
                   <center>
-                    {lounge.zoomLink === "" ? <></> : <h3>{"Zoom Link: " + lounge.zoomLink}</h3>}
+                    {lounge.zoomLink === "" ? (
+                      <></>
+                    ) : (
+                      <h3>
+                        <Button type="link" target="_blank" href={lounge.zoomLink}>
+                          {"Zoom Link"}
+                        </Button>
+                      </h3>
+                    )}
                   </center>
                   <Row>
                     <Col span={8}>

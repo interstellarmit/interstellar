@@ -22,7 +22,11 @@ export default function SideBar(props) {
   const [collapsed, setCollapsed] = React.useState(false);
   return (
     <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed} width={"20%"}>
-      <SearchBar redirectPage={props.redirectPage} allPages={props.allPages} />
+      <SearchBar
+        redirectPage={props.redirectPage}
+        collapsed={collapsed}
+        allPages={props.allPages}
+      />
       <Menu
         theme="dark"
         selectedKeys={[props.selectedPageName === "" ? ".ho!!me." : props.selectedPageName]}
