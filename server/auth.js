@@ -40,6 +40,7 @@ function ensureLoggedIn(req, res, next) {
 }
 
 function me(req, res, next) {
+  console.log(req.header("token"))
   const token = req.header("token");
   if (!token) return res.status(401).json({ msg: "Auth Error" });
 
@@ -266,6 +267,7 @@ async function login(req, res) {
         msg: "User Not Exist",
       });
 
+
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch)
       return res.status(200).json({
@@ -307,6 +309,95 @@ async function login(req, res) {
   }
 }
 
+async function signUpLogin(req, res) {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      errors: errors.array(),
+    });
+  }
+  const name = req.body.name;
+  const email = req.body.email;
+  const password = req.body.password;
+
+  try {
+    let user = await User.findOne({
+      email: email,
+    });
+    if (user) {
+      console.log("found")
+      req.session.user = user;
+
+      const payload = {
+        user: {
+          id: user.id,
+        },
+      };
+
+      jwt.sign(
+        payload,
+        "randomString",
+        {
+          expiresIn: 3600,
+        },
+        (err, token) => {
+          if (err) throw err;
+
+          res.status(200).json({
+            token,
+          });
+        }
+      );
+      return;
+    }
+    let schoolEmail = encodeURI(email.split("@")[1].replace(/ /g, "_"));
+    let school = await School.findOne({ email: schoolEmail });
+    user = new User({
+      name: name,
+      email: email,
+      schoolId: school ? school._id : "None",
+      isVerified: true,
+    });
+
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(password, salt);
+
+    await user.save(function (err) {
+      if (err) {
+        return res.status(500).send({ msg: err.message });
+      }
+      req.session.user = user;
+
+      const payload = {
+        user: {
+          id: user.id,
+        },
+      };
+
+      jwt.sign(
+        payload,
+        "randomString",
+        {
+          expiresIn: 3600,
+        },
+        (err, token) => {
+          if (err) throw err;
+
+          res.status(200).json({
+            token,
+          });
+        }
+      );
+
+    });
+    res.status(200).send({ type: "success", msg: "confirm." });
+  } catch (err) {
+    console.log(err.message);
+    res.status(500).send({ msg: "Error in Saving" });
+  }
+}
+
 module.exports = {
   login,
   logout,
@@ -316,4 +407,5 @@ module.exports = {
   signUp,
   confirmationPost,
   resendTokenPost,
+  signUpLogin,
 };
