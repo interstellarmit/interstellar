@@ -61,6 +61,7 @@ export default function LoungesTab(props) {
                       onClick={() => {
                         setAddNewLounge(true);
                       }}
+                      shape={"round"}
                     >
                       Add New Lounge
                     </Button>

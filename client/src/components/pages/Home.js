@@ -19,7 +19,7 @@ class Home extends Component {
     props.updateSelectedPageName("");
   }
 
-  addToLounge = (userId, loungeId, callback = () => { }) => {
+  addToLounge = (userId, loungeId, callback = () => {}) => {
     let lounges = this.state.lounges;
     let lounge = lounges.filter((l) => {
       return l._id + "" === loungeId;
@@ -36,7 +36,7 @@ class Home extends Component {
     this.setState({ lounges: newLounges }, callback);
   };
 
-  removeFromLounge = (userId, loungeId, callback = () => { }) => {
+  removeFromLounge = (userId, loungeId, callback = () => {}) => {
     if (loungeId !== "") {
       let lounges = this.state.lounges;
       let lounge = lounges.filter((l) => {
@@ -157,7 +157,7 @@ class Home extends Component {
               />
             </Col>
             <Col span={12}>
-              <Title level={3}>{"Open Lounges"}</Title>
+              <Title level={4}>{"Open Lounges"}</Title>
               {this.props.myPages.map((page) => {
                 return (
                   <LoungeList

@@ -106,7 +106,7 @@ export default function AddNewDDQL(props) {
           </Form>
         </Col>
         <Col span={12}>
-          <div style={{ height: "400px", overflow: "auto" }}>
+          <div style={{ height: "250px", overflow: "auto" }}>
             <List
               dataSource={props.public}
               renderItem={(item) => {
