@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { get, post } from "../../utilities";
-import { Row, Col, Button, List } from "antd";
+import { post } from "../../utilities";
+import { Row, Col, List, Space } from "antd";
 import ActivePost from "./ActivePost";
 import AddPost from "./AddPost";
 import PostListItem from "./PostListItem";
@@ -15,16 +15,16 @@ class ForumTab extends Component {
   }
 
   createNewPost = (data) => {
-    post("api/createNewGroupPost", {
-      title: data.tiltle,
+    post("/api/createNewGroupPost", {
+      title: data.title,
       text: data.text,
       labels: data.labels,
       pageId: this.props.page._id,
-    }).then((data) => {
-      if (!data.created) return;
+    }).then((ret) => {
+      if (!ret.created) return;
       let groupPosts = this.state.groupPosts;
       groupPosts.push({
-        post: data.post,
+        post: ret.post,
         comments: [],
       });
       this.setState({ groupPosts: groupPosts });
@@ -32,17 +32,44 @@ class ForumTab extends Component {
   };
 
   createNewComment = (data) => {
-    post("api/createNewComment", {
+    post("/api/createNewComment", {
       text: data.text,
       postId: data.postId,
       pageId: this.props.page._id,
-    }).then((data) => {
-      if (!data.created) return;
+    }).then((ret) => {
+      if (!ret.created) return;
       let groupPosts = this.state.groupPosts;
       let commentedPost = groupPosts.find((onePost) => {
-        return onePost.post._id == data.postId;
+        return onePost.post._id == ret.comment.postId;
       });
-      commentedPost.comments.push(data.comment);
+      commentedPost.comments.push(ret.comment);
+      this.setState({ groupPosts: groupPosts });
+    });
+  };
+
+  updatePost = (data) => {
+    post("/api/updateGroupPost", data).then((ret) => {
+      if (!ret.updated) return;
+      let groupPosts = this.state.groupPosts;
+      let updatedPost = groupPosts.find((onePost) => {
+        return onePost.post._id == ret.post.postId;
+      });
+      updatedPost = ret.post;
+      this.setState({ groupPosts: groupPosts });
+    });
+  };
+
+  updateComment = (data) => {
+    post("/api/updateComment", data).then((ret) => {
+      if (!ret.updated) return;
+      let groupPosts = this.state.groupPosts;
+      let updatedPost = groupPosts.find((onePost) => {
+        return onePost.post._id == ret.comment.postId;
+      });
+      let updatedComment = updatedPost.comments.find((oneComment) => {
+        return oneComment._id == ret.commentId;
+      });
+      updatedComment = ret.comment;
       this.setState({ groupPosts: groupPosts });
     });
   };
@@ -51,10 +78,18 @@ class ForumTab extends Component {
     post("/api/joinForum", {
       pageId: this.props.page._id,
     }).then((data) => {
+      let groupPosts = data.groupPosts;
+      groupPosts = data.groupPosts.sort((a, b) => {
+        return a.post.timestamp - b.post.timestamp;
+      });
+
       let activePost = null;
-      if (data.groupPosts.length !== 0) activePost = data.groupPosts[0];
+      if (groupPosts.length !== 0) {
+        activePost = groupPosts[0];
+      }
+
       this.setState({
-        groupPosts: data.groupPosts,
+        groupPosts: groupPosts,
         activePost: activePost,
       });
     });
@@ -63,15 +98,19 @@ class ForumTab extends Component {
   render() {
     return (
       <Row>
-        <Col span={12}>
-          <AddPost createNewPost={this.createNewPost} />
+        <Col span={9}>
+          <AddPost createNewPost={this.createNewPost} page={this.props.page} />
           <List
+            itemLayout="vertical"
+            size="large"
             dataSource={this.state.groupPosts}
             renderItem={(onePost) => {
               return (
                 <PostListItem
-                  title={onePost.post.title}
-                  text={onePost.post.text}
+                  onClick={() => {
+                    console.log("clicked");
+                  }}
+                  groupPost={onePost}
                   user={this.props.users.find((oneUser) => {
                     return oneUser.userId == onePost.post.userId;
                   })}
@@ -80,8 +119,8 @@ class ForumTab extends Component {
             }}
           />
         </Col>
-        <Col span={12}>
-          {this.state.activePost !== null ? <ActivePost post={this.state.activePost} /> : ""}
+        <Col span={15}>
+          {this.state.activePost !== null ? <ActivePost activePost={this.state.activePost} /> : ""}
         </Col>
       </Row>
     );

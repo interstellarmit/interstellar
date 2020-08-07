@@ -102,6 +102,8 @@ createNewPage = (req, res) => {
           name: name,
           title: req.body.title,
           description: req.body.description,
+          professor: req.body.professor,
+          rating: req.body.rating,
           expiryDate: expiryDate,
           adminIds: [req.user._id],
           schoolId: req.user.schoolId,
@@ -208,6 +210,7 @@ Description: If the user is in the page, returns the users, due dates that have 
 
 joinPage = (req, res) => {
   if (!socket.getSocketFromUserID(req.user._id)) {
+    console.log("broken", req.user._id);
     res.send({ broken: true });
     return;
   }

@@ -11,32 +11,34 @@ export default function LoungeList(props) {
     return <></>;
   }
   return (
-    <List
-      dataSource={datasource}
-      renderItem={(oneLounge) => {
-        return (
-          <LoungeListItem
-            name={oneLounge.name}
-            users={oneLounge.userIds.map((user) => {
-              return props.users.find((oneUser) => {
-                return oneUser.userId === user;
-              });
-            })}
-            home={props.home}
-            pageName={props.page.name}
-            redirect={() => {
-              props.redirect(
-                "/" +
-                  props.page.pageType.toLowerCase() +
+    <div style={{ maxHeight: "400px", overflow: "auto" }}>
+      <List
+        dataSource={datasource}
+        renderItem={(oneLounge) => {
+          return (
+            <LoungeListItem
+              name={oneLounge.name}
+              users={oneLounge.userIds.map((user) => {
+                return props.users.find((oneUser) => {
+                  return oneUser.userId === user;
+                });
+              })}
+              home={props.home}
+              pageName={props.page.name}
+              redirect={() => {
+                props.redirect(
                   "/" +
-                  props.page.name +
-                  "/lounges/" +
-                  oneLounge._id
-              );
-            }}
-          />
-        );
-      }}
-    />
+                    props.page.pageType.toLowerCase() +
+                    "/" +
+                    props.page.name +
+                    "/lounges/" +
+                    oneLounge._id
+                );
+              }}
+            />
+          );
+        }}
+      />
+    </div>
   );
 }

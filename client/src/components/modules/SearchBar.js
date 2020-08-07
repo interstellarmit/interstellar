@@ -40,6 +40,7 @@ export default function SearchBar(props) {
         })[0];
         props.redirectPage("/" + page.pageType.toLowerCase() + "/" + page.name);
       }}
+      placeholder={"Search for a Class or Group"}
     >
       {props.allPages
         .filter((page) => {

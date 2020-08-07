@@ -1,7 +1,7 @@
 import React, { Component, useState } from "react";
 import { List, Modal, Row, Col, Button, Form, Input, DatePicker, Checkbox } from "antd";
-import DueDate from "./DueDate"
-import QuickLink from "./QuickLink"
+import DueDate from "./DueDate";
+import QuickLink from "./QuickLink";
 export default function AddNewDDQL(props) {
   const [form] = Form.useForm();
   let text = props.type === "DueDate" ? "Due Date" : "Quicklink";
@@ -52,15 +52,17 @@ export default function AddNewDDQL(props) {
     >
       <Row>
         <Col span={12}>
-          <Form form={form} name={"Add New " + text}
-           onFinish={onFinish}
-           labelCol={{ span: 8 }}
-        wrapperCol={{ span: 22 }}
-        layout="horizontal"
-           initialValues={{
-            public: false,
-          }}
-           >
+          <Form
+            form={form}
+            name={"Add New " + text}
+            onFinish={onFinish}
+            labelCol={{ span: 8 }}
+            wrapperCol={{ span: 22 }}
+            layout="horizontal"
+            initialValues={{
+              public: false,
+            }}
+          >
             {text === "Due Date" ? (
               <Form.Item name="dueDate" label="Due Date" {...dateConfig}>
                 <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />
@@ -91,7 +93,7 @@ export default function AddNewDDQL(props) {
                 },
               ]}
             >
-              <Input />
+              <Input placeholder={"http://mit.edu"} />
             </Form.Item>
             <Form.Item name="public" valuePropName="checked">
               <Checkbox>Public</Checkbox>
@@ -104,25 +106,27 @@ export default function AddNewDDQL(props) {
           </Form>
         </Col>
         <Col span={12}>
-          <List
-            dataSource={props.public}
-            renderItem={(item) => {
-              return props.type === "DueDate" ? (
-                <DueDate
-                  dueDate={item}
-                  addOrCompleteDDQL={props.addOrCompleteDDQL}
-                  added={false}
-                  completed={false}
-                />
-              ) : (
-                <QuickLink
-                  quickLink={item}
-                  addOrCompleteDDQL={props.addOrCompleteDDQL}
-                  added={false}
-                />
-              );
-            }}
-          />
+          <div style={{ height: "250px", overflow: "auto" }}>
+            <List
+              dataSource={props.public}
+              renderItem={(item) => {
+                return props.type === "DueDate" ? (
+                  <DueDate
+                    dueDate={item}
+                    addOrCompleteDDQL={props.addOrCompleteDDQL}
+                    added={false}
+                    completed={false}
+                  />
+                ) : (
+                  <QuickLink
+                    quickLink={item}
+                    addOrCompleteDDQL={props.addOrCompleteDDQL}
+                    added={false}
+                  />
+                );
+              }}
+            />
+          </div>
         </Col>
       </Row>
     </Modal>

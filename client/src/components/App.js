@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-//import arr from "./modules/ws.js";
 import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
 import NotFound from "./pages/NotFound.js";
 import SideBar from "./modules/SideBar.js";
@@ -8,8 +7,9 @@ import Home from "./pages/Home.js";
 import Page from "./pages/Page.js";
 import Confirmation from "./pages/Confirmation.js";
 import "../utilities.css";
-import { Row, Col, Divider, Spin, Modal } from "antd";
+import { Row, Col, Divider, Spin, Modal, Layout } from "antd";
 import "antd/dist/antd.css";
+const { Header, Content, Footer, Sider } = Layout;
 
 import { socket } from "../client-socket.js";
 
@@ -17,6 +17,7 @@ import { get, post } from "../utilities";
 import Cookies from "universal-cookie";
 const cookies = new Cookies();
 
+<<<<<<< HEAD
 var getJSON = function (url, callback) {
   var xhr = new XMLHttpRequest();
   xhr.open("GET", url, true);
@@ -31,6 +32,9 @@ var getJSON = function (url, callback) {
   };
   xhr.send();
 };
+=======
+// var classes = require("./modules/full.json");
+>>>>>>> c6dfc459959232804abf849b33060b5c26ff828c
 
 /**
  * Define the "App" component as a class.
@@ -104,8 +108,14 @@ class App extends Component {
         this.setState({ tryingToLogin: false });
       }
     });
-    socket.on("disconnect", () => {
+    socket.on("reconnect_failed", () => {
       this.setState({ disconnect: true });
+    });
+    socket.on("disconnect", (reason) => {
+      if (reason === "io server disconnect") {
+        console.log("newtabdisconnect");
+        this.setState({ disconnect: true });
+      }
     });
   }
 
@@ -145,10 +155,10 @@ class App extends Component {
     post("/api/login", data).then((res) => {
       cookies.set("token", res.token, { path: "/" });
       if (res.msg) {
-        this.setState({ loginMessage: res.msg })
+        this.setState({ loginMessage: res.msg });
       }
       if (res.token) {
-        this.setState({ loginMessage: "Success!" })
+        this.setState({ loginMessage: "Success!" });
       }
       post("/api/initsocket", { socketid: socket.id }).then((data) => {
         if (data.init) this.me();
@@ -172,7 +182,9 @@ class App extends Component {
 
     get("/api/me", {}, cookies.get("token")).then((res) => {
       if (!res.user) {
-        this.logout();
+        cookies.set("token", "", { path: "/" });
+        window.location.href = "/";
+        //this.logout();
         return;
       }
 
@@ -193,7 +205,7 @@ class App extends Component {
     console.log('ha')
     post("/api/signup", data).then((res) => {
       if (res.msg) {
-        this.setState({ signUpMessage: res.msg })
+        this.setState({ signUpMessage: res.msg });
       }
       // if (data.password.length < 6) {
       //   this.setState({ signUpMessage: "Please enter a longer password" })
@@ -264,33 +276,36 @@ class App extends Component {
     return (
       <div>
         {/*
-        <button
-          onClick={() => {
-            let keys = Object.keys(arr);
-
-            let runLoop = (i) => {
-              if (i >= keys.length) return;
-              let oneclass = keys[i];
-              let classObj = arr[oneclass];
-              //if (["6.031", "6.033", "6.UAT", "11.125"].includes(oneclass)) return;
-              post("/api/createNewPage", {
-                pageType: "Class",
-                name: oneclass,
-                title: classObj.name,
-                description: classObj.desc,
-                locked: false,
-                joinCode: "",
-              }).then((created) => {
-                if (created.created) console.log(oneclass + " " + i + "/" + keys.length);
-                else console.log("error:" + oneclass);
-                runLoop(i + 1);
-              });
-            };
-            runLoop(0);
-          }}
-        >
-          Add MIT
-        </button>*/}
+          Adding Classes 
+          <button
+            onClick={() => {
+              let keys = Object.keys(classes);
+              let runLoop = (i) => {
+                if (i >= keys.length) return;
+                let oneclass = keys[i];
+                let classObj = classes[oneclass];
+                post("/api/createNewPage", {
+                  pageType: "Class",
+                  name: oneclass,
+                  title: classObj.n,
+                  description: classObj.d,
+                  professor: classObj.i,
+                  rating: classObj.ra,
+                  hours: classObj.h,
+                  locked: false,
+                  joinCode: "",
+                }).then((created) => {
+                  if (created.created) console.log(oneclass + " " + i + "/" + keys.length);
+                  else console.log("error:" + oneclass);
+                  runLoop(i + 1);
+                });
+              };
+              runLoop(0);
+            }}
+          >
+            Add MIT
+          </button>
+        */}
         {this.state.disconnect ? (
           <Modal
             visible={true}
@@ -310,70 +325,66 @@ class App extends Component {
             <p>Refresh to use Interstellar!</p>
           </Modal>
         ) : (
-            <></>
-          )}
-        {/*<Row >
-          <Col>
-            <Public login={this.login} logout={this.logout} me={this.me} signup={this.signup} />
-          </Col>
-        </Row>*/}
-        <Row>
-          <Col span={6}>
-            <SideBar
-              pageIds={this.state.pageIds}
-              allPages={this.state.allPages}
-              myPages={myPages}
-              selectedPageName={this.state.selectedPageName}
-              redirectPage={this.redirectPage}
-              logout={this.logout}
-              logState={this.logState}
-            />
-          </Col>
-          <Col span={18}>
-            <Router>
-              <Switch>
-                <Home
-                  exact
-                  path="/"
-                  schoolId={this.state.schoolId}
-                  updateSelectedPageName={this.updateSelectedPageName}
-                  user={{ userId: this.state.userId, name: this.state.name }}
-                  redirectPage={this.redirectPage}
-                  myPages={myPages}
-                  disconnect={this.disconnect}
-                />
-                <Page
-                  path="/class/:selectedPage"
-                  schoolId={this.state.schoolId}
-                  pageIds={this.state.pageIds}
-                  updatePageIds={this.updatePageIds}
-                  updateSelectedPageName={this.updateSelectedPageName}
-                  user={{ userId: this.state.userId, name: this.state.name }}
-                  redirectPage={this.redirectPage}
-                  loungeId={this.state.loungeId}
-                  setLoungeId={this.setLoungeId}
-                  isSiteAdmin={this.state.isSiteAdmin}
-                  disconnect={this.disconnect}
-                />
-                <Page
-                  path="/group/:selectedPage"
-                  schoolId={this.state.schoolId}
-                  pageIds={this.state.pageIds}
-                  updatePageIds={this.updatePageIds}
-                  updateSelectedPageName={this.updateSelectedPageName}
-                  user={{ userId: this.state.userId, name: this.state.name }}
-                  redirectPage={this.redirectPage}
-                  loungeId={this.state.loungeId}
-                  setLoungeId={this.setLoungeId}
-                  allPages={this.state.allPages}
-                  isSiteAdmin={this.state.isSiteAdmin}
-                  disconnect={this.disconnect}
-                />
-                <NotFound default />
-              </Switch>
-            </Router>
-          </Col>
-        </Row>
+          <></>
+        )}
+        <Layout style={{ minHeight: "100vh" }}>
+          <SideBar
+            pageIds={this.state.pageIds}
+            allPages={this.state.allPages}
+            myPages={myPages}
+            selectedPageName={this.state.selectedPageName}
+            redirectPage={this.redirectPage}
+            logout={this.logout}
+            logState={this.logState}
+          />
+          <Layout className="site-layout">
+            <Content>
+              <Router>
+                <Switch>
+                  <Home
+                    exact
+                    path="/"
+                    schoolId={this.state.schoolId}
+                    updateSelectedPageName={this.updateSelectedPageName}
+                    user={{ userId: this.state.userId, name: this.state.name }}
+                    redirectPage={this.redirectPage}
+                    myPages={myPages}
+                    disconnect={this.disconnect}
+                  />
+                  <Page
+                    path="/class/:selectedPage"
+                    schoolId={this.state.schoolId}
+                    pageIds={this.state.pageIds}
+                    updatePageIds={this.updatePageIds}
+                    updateSelectedPageName={this.updateSelectedPageName}
+                    user={{ userId: this.state.userId, name: this.state.name }}
+                    redirectPage={this.redirectPage}
+                    loungeId={this.state.loungeId}
+                    setLoungeId={this.setLoungeId}
+                    isSiteAdmin={this.state.isSiteAdmin}
+                    disconnect={this.disconnect}
+                  />
+                  <Page
+                    path="/group/:selectedPage"
+                    schoolId={this.state.schoolId}
+                    pageIds={this.state.pageIds}
+                    updatePageIds={this.updatePageIds}
+                    updateSelectedPageName={this.updateSelectedPageName}
+                    user={{ userId: this.state.userId, name: this.state.name }}
+                    redirectPage={this.redirectPage}
+                    loungeId={this.state.loungeId}
+                    setLoungeId={this.setLoungeId}
+                    allPages={this.state.allPages}
+                    pageIds={this.state.pageIds}
+                    isSiteAdmin={this.state.isSiteAdmin}
+                    disconnect={this.disconnect}
+                  />
+                  <NotFound default />
+                </Switch>
+              </Router>
+            </Content>
+          </Layout>
+        </Layout>
       </div>
     );
   }
