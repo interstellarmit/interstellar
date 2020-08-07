@@ -34,8 +34,6 @@ export default function AddLounge(props) {
         >
           <Input />
         </Form.Item>
-<<<<<<< HEAD
-=======
 
         <Form.Item
           name="zoomLink"
@@ -49,7 +47,6 @@ export default function AddLounge(props) {
         >
           <Input placeholder={"Optional"} />
         </Form.Item>
->>>>>>> 756343631ae8be60739124db947d8bbbeb6c3b14
         <Form.Item>
           <Button key="submit" type="primary" htmlType="submit">
             Submit
