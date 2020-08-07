@@ -4,7 +4,7 @@ import ProfilePic from "./ProfilePic";
 
 export default function UserList(props) {
   return (
-    <div style={{ maxHeight: "500px", overflow: "auto" }}>
+    <div style={{ maxHeight: "600px", overflow: "auto" }}>
       <List
         dataSource={props.users}
         size="large"
