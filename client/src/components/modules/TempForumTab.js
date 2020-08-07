@@ -7,7 +7,7 @@ class TempForumTab extends Component {
   }
 
   render() {
-    return "This feature will be launched by semester's start!";
+    return `This feature will be launched by semester's start! On the forum, you can post helpful cheat sheets, set up times to PSET with classmates, or drop fire ${this.props.page.name}-related memes.`;
   }
 }
 
