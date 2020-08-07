@@ -9,15 +9,21 @@ export default function InfoTab(props) {
   if (props.inPage) {
     users.push(Object.assign(props.user, { pageIds: props.pageIds }));
   }
+
   return (
     <>
       <Row>
         <Col span={12}>
-          <Row>{"Professor: " + props.page.professor}</Row>
-          <Row>
-            <Rate allowHalf defaultValue={parseFloat(props.page.rating)} disabled count={7} />
-          </Row>
-
+          {props.page.pageType === "Class" ? (
+            <React.Fragment>
+              <Row>{"Professor: " + props.page.professor}</Row>
+              <Row>
+                <Rate allowHalf defaultValue={parseFloat(props.page.rating)} disabled count={7} />
+              </Row>
+            </React.Fragment>
+          ) : (
+            <></>
+          )}
           <Row>
             <Text>{props.page.description}</Text>
           </Row>
