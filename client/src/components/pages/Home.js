@@ -3,6 +3,8 @@ import { get, post } from "../../utilities";
 import { socket } from "../../client-socket.js";
 import { Spin, Space, Button, Typography, Layout, Row, Col, PageHeader } from "antd";
 import DDQLSection from "../modules/DDQLSection";
+import TabPage from "../modules/TabPage";
+import SearchBar from "../modules/SearchBar";
 import LoungeList from "../modules/LoungeList";
 const { Header, Content, Footer, Sider } = Layout;
 const { Title, Text } = Typography;
@@ -122,7 +124,7 @@ class Home extends Component {
             color: "white",
             height: "64px",
           }}
-          title={"Homepage"}
+          title={"Home"}
           subTitle={this.props.user.name}
         ></PageHeader>
 
@@ -133,43 +135,58 @@ class Home extends Component {
             height: "calc(100vh - 64px)",
           }}
         >
-          <Row>
-            <Col span={12}>
-              <DDQLSection
-                dataSource={this.state.dueDates}
-                users={this.state.users}
-                user={this.props.user}
-                type="DueDate"
-                home={true}
-                pageMap={pageMap}
+          <TabPage
+            labels={["Welcome", "Dashboard"]}
+            routerLinks={["welcome", "dashboard"]}
+            defaultRouterLink={"welcome"}
+          >
+            <div>
+              <SearchBar
+                size="large"
+                allPages={this.props.allPages}
+                placeholder="Search for a class to get started!"
+                redirectPage={this.props.redirectPage}
+                defaultOpen={true}
               />
+            </div>
+            <Row>
+              <Col span={12}>
+                <DDQLSection
+                  dataSource={this.state.dueDates}
+                  users={this.state.users}
+                  user={this.props.user}
+                  type="DueDate"
+                  home={true}
+                  pageMap={pageMap}
+                />
 
-              <DDQLSection
-                dataSource={this.state.quickLinks}
-                users={this.state.users}
-                user={this.props.user}
-                type="QuickLink"
-                home={true}
-                pageMap={pageMap}
-              />
-            </Col>
-            <Col span={12}>
-              <Title level={4}>{"Open Lounges"}</Title>
-              {this.props.myPages.map((page) => {
-                return (
-                  <LoungeList
-                    redirect={(link) => this.props.redirectPage(link)}
-                    lounges={this.state.lounges.filter((lounge) => {
-                      return lounge.pageId === page._id;
-                    })}
-                    users={this.state.users}
-                    page={page}
-                    home={true}
-                  />
-                );
-              })}
-            </Col>
-          </Row>
+                <DDQLSection
+                  dataSource={this.state.quickLinks}
+                  users={this.state.users}
+                  user={this.props.user}
+                  type="QuickLink"
+                  home={true}
+                  pageMap={pageMap}
+                />
+              </Col>
+              <Col span={12}>
+                <Title level={4}>{"Open Lounges"}</Title>
+                {this.props.myPages.map((page) => {
+                  return (
+                    <LoungeList
+                      redirect={(link) => this.props.redirectPage(link)}
+                      lounges={this.state.lounges.filter((lounge) => {
+                        return lounge.pageId === page._id;
+                      })}
+                      users={this.state.users}
+                      page={page}
+                      home={true}
+                    />
+                  );
+                })}
+              </Col>
+            </Row>
+          </TabPage>
         </Content>
       </Layout>
     );

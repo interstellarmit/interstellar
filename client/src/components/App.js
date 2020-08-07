@@ -49,10 +49,10 @@ class App extends Component {
       tryingToLogin: true,
       // currentPageName from URL?
     };
-    console.log('load')
-    let self = this
-    if (cookies.get('token') != undefined && cookies.get('token').length > 0) {
-      get('/api/me', {}, cookies.get("token")).then((res) => {
+    console.log("load");
+    let self = this;
+    if (cookies.get("token") != undefined && cookies.get("token").length > 0) {
+      get("/api/me", {}, cookies.get("token")).then((res) => {
         if (!res.user) {
           this.logout();
           return;
@@ -70,24 +70,23 @@ class App extends Component {
           allPages: res.allPages,
         });
       });
-    }
-    else if (window.location.href.indexOf("?code") > 0) {
+    } else if (window.location.href.indexOf("?code") > 0) {
       let code = window.location.href.substring(window.location.href.indexOf("?code"));
       getJSON("https://fireroad-dev.mit.edu/fetch_token/" + code, (err, data) => {
         if (err !== null) {
           // alert("Something went wrong: " + err);
         } else {
           var req = new XMLHttpRequest();
-          req.responseType = 'json';
-          req.open('GET', "https://fireroad-dev.mit.edu/user_info/", true);
-          req.setRequestHeader('Authorization', 'Bearer ' + data.access_info.access_token);
+          req.responseType = "json";
+          req.open("GET", "https://fireroad-dev.mit.edu/user_info/", true);
+          req.setRequestHeader("Authorization", "Bearer " + data.access_info.access_token);
           req.onload = function () {
             var jsonResponse = req.response;
-            let name = jsonResponse.name
-            let email = data.access_info.academic_id
-            console.log(name + email)
-            self.signUpLogin({ email: email, password: "abcdef", name: name })
-          }
+            let name = jsonResponse.name;
+            let email = data.access_info.academic_id;
+            console.log(name + email);
+            self.signUpLogin({ email: email, password: "abcdef", name: name });
+          };
           req.send(null);
         }
       });
@@ -132,10 +131,10 @@ class App extends Component {
     post("/api/signUpLogin", data).then((res) => {
       cookies.set("token", res.token, { path: "/" });
       if (res.msg) {
-        this.setState({ loginMessage: res.msg })
+        this.setState({ loginMessage: res.msg });
       }
       if (res.token) {
-        this.setState({ loginMessage: "Success!" })
+        this.setState({ loginMessage: "Success!" });
       }
       post("/api/initsocket", { socketid: socket.id }).then((data) => {
         if (data.init) this.me();
@@ -146,7 +145,7 @@ class App extends Component {
         }
       });
     });
-  }
+  };
 
   login = (data) => {
     post("/api/login", data).then((res) => {
@@ -176,7 +175,6 @@ class App extends Component {
     });
   };
   me = () => {
-
     get("/api/me", {}, cookies.get("token")).then((res) => {
       if (!res.user) {
         cookies.set("token", "", { path: "/" });
@@ -199,7 +197,7 @@ class App extends Component {
     });
   };
   signup = (data) => {
-    console.log('ha')
+    console.log("ha");
     post("/api/signup", data).then((res) => {
       if (res.msg) {
         this.setState({ signUpMessage: res.msg });
@@ -320,8 +318,8 @@ class App extends Component {
             },
           })
         ) : (
-            <></>
-          )}
+          <></>
+        )}
         <Layout style={{ minHeight: "100vh" }}>
           <SideBar
             pageIds={this.state.pageIds}
@@ -345,6 +343,7 @@ class App extends Component {
                     redirectPage={this.redirectPage}
                     myPages={myPages}
                     disconnect={this.disconnect}
+                    allPages={this.state.allPages}
                   />
                   <Page
                     path="/class/:selectedPage"
