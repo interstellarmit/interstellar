@@ -8,8 +8,9 @@ import Home from "./pages/Home.js";
 import Page from "./pages/Page.js";
 import Confirmation from "./pages/Confirmation.js";
 import "../utilities.css";
-import { Row, Col, Divider, Spin, Modal } from "antd";
+import { Row, Col, Divider, Spin, Modal, Layout } from "antd";
 import "antd/dist/antd.css";
+const { Header, Content, Footer, Sider } = Layout;
 
 import { socket } from "../client-socket.js";
 
@@ -232,64 +233,64 @@ class App extends Component {
             <Public login={this.login} logout={this.logout} me={this.me} signup={this.signup} />
           </Col>
         </Row>*/}
-        <Row>
-          <Col span={6}>
-            <SideBar
-              pageIds={this.state.pageIds}
-              allPages={this.state.allPages}
-              myPages={myPages}
-              selectedPageName={this.state.selectedPageName}
-              redirectPage={this.redirectPage}
-              logout={this.logout}
-              logState={this.logState}
-            />
-          </Col>
-          <Col span={18}>
-            <Router>
-              <Switch>
-                <Home
-                  exact
-                  path="/"
-                  schoolId={this.state.schoolId}
-                  updateSelectedPageName={this.updateSelectedPageName}
-                  user={{ userId: this.state.userId, name: this.state.name }}
-                  redirectPage={this.redirectPage}
-                  myPages={myPages}
-                  disconnect={this.disconnect}
-                />
-                <Page
-                  path="/class/:selectedPage"
-                  schoolId={this.state.schoolId}
-                  pageIds={this.state.pageIds}
-                  updatePageIds={this.updatePageIds}
-                  updateSelectedPageName={this.updateSelectedPageName}
-                  user={{ userId: this.state.userId, name: this.state.name }}
-                  redirectPage={this.redirectPage}
-                  loungeId={this.state.loungeId}
-                  setLoungeId={this.setLoungeId}
-                  isSiteAdmin={this.state.isSiteAdmin}
-                  disconnect={this.disconnect}
-                />
-                <Page
-                  path="/group/:selectedPage"
-                  schoolId={this.state.schoolId}
-                  pageIds={this.state.pageIds}
-                  updatePageIds={this.updatePageIds}
-                  updateSelectedPageName={this.updateSelectedPageName}
-                  user={{ userId: this.state.userId, name: this.state.name }}
-                  redirectPage={this.redirectPage}
-                  loungeId={this.state.loungeId}
-                  setLoungeId={this.setLoungeId}
-                  allPages={this.state.allPages}
-                  pageIds={this.state.pageIds}
-                  isSiteAdmin={this.state.isSiteAdmin}
-                  disconnect={this.disconnect}
-                />
-                <NotFound default />
-              </Switch>
-            </Router>
-          </Col>
-        </Row>
+        <Layout style={{ minHeight: "100vh" }}>
+          <SideBar
+            pageIds={this.state.pageIds}
+            allPages={this.state.allPages}
+            myPages={myPages}
+            selectedPageName={this.state.selectedPageName}
+            redirectPage={this.redirectPage}
+            logout={this.logout}
+            logState={this.logState}
+          />
+          <Layout className="site-layout">
+            <Content>
+              <Router>
+                <Switch>
+                  <Home
+                    exact
+                    path="/"
+                    schoolId={this.state.schoolId}
+                    updateSelectedPageName={this.updateSelectedPageName}
+                    user={{ userId: this.state.userId, name: this.state.name }}
+                    redirectPage={this.redirectPage}
+                    myPages={myPages}
+                    disconnect={this.disconnect}
+                  />
+                  <Page
+                    path="/class/:selectedPage"
+                    schoolId={this.state.schoolId}
+                    pageIds={this.state.pageIds}
+                    updatePageIds={this.updatePageIds}
+                    updateSelectedPageName={this.updateSelectedPageName}
+                    user={{ userId: this.state.userId, name: this.state.name }}
+                    redirectPage={this.redirectPage}
+                    loungeId={this.state.loungeId}
+                    setLoungeId={this.setLoungeId}
+                    isSiteAdmin={this.state.isSiteAdmin}
+                    disconnect={this.disconnect}
+                  />
+                  <Page
+                    path="/group/:selectedPage"
+                    schoolId={this.state.schoolId}
+                    pageIds={this.state.pageIds}
+                    updatePageIds={this.updatePageIds}
+                    updateSelectedPageName={this.updateSelectedPageName}
+                    user={{ userId: this.state.userId, name: this.state.name }}
+                    redirectPage={this.redirectPage}
+                    loungeId={this.state.loungeId}
+                    setLoungeId={this.setLoungeId}
+                    allPages={this.state.allPages}
+                    pageIds={this.state.pageIds}
+                    isSiteAdmin={this.state.isSiteAdmin}
+                    disconnect={this.disconnect}
+                  />
+                  <NotFound default />
+                </Switch>
+              </Router>
+            </Content>
+          </Layout>
+        </Layout>
       </div>
     );
   }
