@@ -18,11 +18,7 @@ export default function AddLounge(props) {
         form.resetFields();
         props.setVisible(false);
       }}
-      footer={[
-        <Button key="submit" type="primary" htmlType="submit">
-          Submit
-        </Button>,
-      ]}
+      footer={null}
     >
       <Form form={form} name={"Add New Lounge"} onFinish={onFinish}>
         <Form.Item
@@ -36,6 +32,11 @@ export default function AddLounge(props) {
           ]}
         >
           <Input />
+        </Form.Item>
+        <Form.Item>
+          <Button key="submit" type="primary" htmlType="submit">
+            Submit
+          </Button>
         </Form.Item>
       </Form>
     </Modal>

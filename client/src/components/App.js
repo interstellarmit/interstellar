@@ -213,23 +213,21 @@ class App extends Component {
           </button>
         */}
         {this.state.disconnect ? (
-          <Modal
-            visible={true}
-            title={"Disconnected"}
-            onCancel={() => {
+          Modal.error({
+            title: "Disconnected",
+            content: (
+              <div>
+                <p>
+                  You have disconnected. Maybe you opened Interstellar in another tab, or you have
+                  been inactive for a long period of time.
+                </p>
+                <p>Hit OK to relaunch Interstellar!</p>
+              </div>
+            ),
+            onOk() {
               window.location.href = "/";
-            }}
-            onOk={() => {
-              window.location.href = "/";
-            }}
-          >
-            <p>You have disconnected.</p>
-            <p>
-              Maybe you opened Interstellar in another tab, or you have been inactive for a long
-              period of time.
-            </p>
-            <p>Refresh to use Interstellar!</p>
-          </Modal>
+            },
+          })
         ) : (
           <></>
         )}

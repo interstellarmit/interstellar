@@ -10,11 +10,12 @@ import {
   UsergroupAddOutlined,
   BookOutlined,
   TeamOutlined,
-  DownOutlined,
+  SearchOutlined,
 } from "@ant-design/icons";
 import AddGroup from "./AddGroup";
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
+
 export default function SideBar(props) {
   let myPages = props.myPages;
   const [addGroup, setAddGroup] = React.useState(false);
@@ -72,16 +73,17 @@ export default function SideBar(props) {
                 </Menu.Item>
               );
             })}
+          <Menu.Item
+            key=".add!!group."
+            onClick={() => {
+              setAddGroup(true);
+            }}
+            icon={<UsergroupAddOutlined />}
+          >
+            Create Group
+          </Menu.Item>
         </SubMenu>
-        <Menu.Item
-          key=".add!!group."
-          onClick={() => {
-            setAddGroup(true);
-          }}
-          icon={<UsergroupAddOutlined />}
-        >
-          Create Group
-        </Menu.Item>
+
         <Menu.Item
           key=".log!!out."
           onClick={() => {

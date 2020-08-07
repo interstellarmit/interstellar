@@ -38,17 +38,7 @@ export default function AddNewDDQL(props) {
         form.resetFields();
         props.setVisible(false);
       }}
-      footer={[
-        <Button
-          key="back"
-          onClick={() => {
-            form.resetFields();
-            props.setVisible(false);
-          }}
-        >
-          Return
-        </Button>,
-      ]}
+      footer={null}
     >
       <Row>
         <Col span={12}>
