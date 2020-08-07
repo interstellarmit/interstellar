@@ -1,6 +1,7 @@
 import React, { Component, useState } from "react";
 import { BrowserRouter as Router, Route, NavLink, Switch } from "react-router-dom";
-import { List, Avatar, Row, Col, Button } from "antd";
+import { List, Avatar, Row, Col, Button, Typography } from "antd";
+const { Title, Text } = Typography;
 import LoungeList from "./LoungeList";
 import Chat from "./Chat";
 import AddLounge from "./AddLounge";
@@ -34,7 +35,12 @@ export default function LoungesTab(props) {
 
               loungeCode = (
                 <React.Fragment>
-                  <h3>{lounge.name}</h3>
+                  <Title level={3}>
+                    <center>{lounge.name}</center>
+                  </Title>
+                  <center>
+                    {lounge.zoomLink === "" ? <></> : <h3>{"Zoom Link: " + lounge.zoomLink}</h3>}
+                  </center>
                   <Row>
                     <Col span={8}>
                       <UserList

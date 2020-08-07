@@ -29,6 +29,7 @@ createNewLounge = (req, res) => {
         name: req.body.name,
         pageId: req.body.pageId,
         hostId: req.user._id,
+        zoomLink: req.body.zoomLink || "",
       });
       lounge.save().then(() => {
         socket
