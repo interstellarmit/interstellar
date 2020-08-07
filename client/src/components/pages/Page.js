@@ -306,7 +306,7 @@ class Page extends Component {
       <Layout style={{ background: "rgba(240, 242, 245, 1)", height: "100vh" }}>
         <PageHeader
           className="site-layout-sub-header-background"
-          style={{ padding: "20px 20px 20px 20px", background: "#fff" }}
+          style={{ padding: "20px 30px 0px 30px", background: "#fff" }}
           extra={[this.state.inPage ? removeClassButton : addClassButton].concat(
             (this.state.page.adminIds.includes(this.props.user._id) || this.props.isSiteAdmin) &&
               this.state.inPage
@@ -331,19 +331,26 @@ class Page extends Component {
         />
         <Content
           style={{
-            margin: "36px 24px 36px 24px",
-            padding: 24,
+            padding: "0px 30px 30px 30px",
             background: "#fff",
             height: "calc(100vh - 64px)",
           }}
         >
           {this.state.inPage ? (
             <TabPage
-              labels={["Dashboard", "Lounges", "Forum", "Info"]}
-              routerLinks={["dashboard", "lounges", "forum", "info"]}
+              labels={["Info", "Dashboard", "Lounges", "Forum"]}
+              routerLinks={["info", "dashboard", "lounges", "forum"]}
               defaultRouterLink={this.state.inPage ? "info" : "info"}
               page={this.state.page}
             >
+              <InfoTab
+                users={this.state.users}
+                inPage={true}
+                page={this.state.page}
+                user={this.props.user}
+                pageIds={this.props.pageIds}
+                allPages={this.props.allPages}
+              />
               <DashboardTab
                 dueDates={this.state.dueDates}
                 quickLinks={this.state.quickLinks}
@@ -365,16 +372,7 @@ class Page extends Component {
                 loungeId={this.props.loungeId}
                 setLoungeId={this.props.setLoungeId}
               />
-              <ForumTab users={this.state.users} page={this.state.page} />
-              <InfoTab
-                users={this.state.users}
-                inPage={true}
-                page={this.state.page}
-                user={this.props.user}
-                pageIds={this.props.pageIds}
-                allPages={this.props.allPages}
-              />
-              )
+              <ForumTab users={this.state.users} page={this.state.page} />)
             </TabPage>
           ) : (
             <TabPage

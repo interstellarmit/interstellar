@@ -78,10 +78,18 @@ class ForumTab extends Component {
     post("/api/joinForum", {
       pageId: this.props.page._id,
     }).then((data) => {
+      let groupPosts = data.groupPosts;
+      groupPosts = data.groupPosts.sort((a, b) => {
+        return a.post.timestamp - b.post.timestamp;
+      });
+
       let activePost = null;
-      if (data.groupPosts.length !== 0) activePost = data.groupPosts[0];
+      if (groupPosts.length !== 0) {
+        activePost = groupPosts[0];
+      }
+
       this.setState({
-        groupPosts: data.groupPosts,
+        groupPosts: groupPosts,
         activePost: activePost,
       });
     });
