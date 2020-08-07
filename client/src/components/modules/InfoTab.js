@@ -15,7 +15,7 @@ export default function InfoTab(props) {
         <Col span={12}>
           <Row>{"Professor: " + props.page.professor}</Row>
           <Row>
-            <Rate allowHalf defaultValue={parseFloat(props.page.rating) - 2} />
+            <Rate allowHalf defaultValue={parseFloat(props.page.rating)} disabled count={7} />
           </Row>
 
           <Row>
