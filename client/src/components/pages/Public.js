@@ -4,7 +4,6 @@ import Cookies from "universal-cookie";
 const cookies = new Cookies();
 import { List, Modal, Row, Col, Button, Form, Input, DatePicker, Checkbox } from "antd";
 
-//import classes from "../full.js";
 import "../../utilities.css";
 
 export default function Public(props) {
@@ -70,9 +69,7 @@ export default function Public(props) {
               </Button>
             </Form.Item>
 
-            <Form.Item>
-              {props.loginMessage}
-            </Form.Item>
+            <Form.Item>{props.loginMessage}</Form.Item>
           </Form>
         </Col>
         <Col span={12}>
@@ -112,10 +109,10 @@ export default function Public(props) {
                 },
                 ({ getFieldValue }) => ({
                   validator(rule, value) {
-                    if (getFieldValue('signupPassword').length >= 6) {
+                    if (getFieldValue("signupPassword").length >= 6) {
                       return Promise.resolve();
                     }
-                    return Promise.reject('Your password is too short!');
+                    return Promise.reject("Your password is too short!");
                   },
                 }),
               ]}
@@ -129,9 +126,7 @@ export default function Public(props) {
               </Button>
             </Form.Item>
 
-            <Form.Item>
-              {props.signUpMessage}
-            </Form.Item>
+            <Form.Item>{props.signUpMessage}</Form.Item>
           </Form>
         </Col>
       </Row>
