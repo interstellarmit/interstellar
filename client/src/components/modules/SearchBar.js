@@ -26,6 +26,12 @@ export default function SearchBar(props) {
         {props.selectedPageName} <DownOutlined />
       </a>
     </Dropdown>*/
+  let search = (name) => {
+    let page = props.allPages.filter((page) => {
+      return page.name === name;
+    })[0];
+    props.redirectPage("/" + page.pageType.toLowerCase() + "/" + page.name);
+  };
   return (
     <AutoComplete
       dropdownClassName="certain-category-search-dropdown"
@@ -34,13 +40,9 @@ export default function SearchBar(props) {
       onChange={(query) => {
         setQuery(query);
       }}
-      onSelect={(name) => {
-        let page = props.allPages.filter((page) => {
-          return page.name === name;
-        })[0];
-        props.redirectPage("/" + page.pageType.toLowerCase() + "/" + page.name);
-      }}
-      placeholder={"Search for a Class or Group"}
+      onSearch={search}
+      onSelect={search}
+      placeholder={"Search for a class or group"}
     >
       {props.allPages
         .filter((page) => {

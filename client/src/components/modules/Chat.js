@@ -31,7 +31,15 @@ class Chat extends Component {
   render() {
     return (
       <div>
-        <div style={{ overflow: "auto", height: "400px" }}>
+        <div
+          style={{
+            overflow: "auto",
+            height: "400px",
+            display: "flex",
+            flexDirection: "column-reverse",
+            marginBottom: "auto",
+          }}
+        >
           <List
             dataSource={this.state.messages.filter((message) => {
               return message.loungeId === this.props.loungeId;

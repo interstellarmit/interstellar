@@ -1,5 +1,5 @@
 import React, { Component, useState } from "react";
-import { List, Typography, Row, Col } from "antd";
+import { List, Typography, Row, Col, Rate } from "antd";
 const { Title, Text } = Typography;
 import UserList from "./UserList";
 export default function InfoTab(props) {
@@ -9,11 +9,24 @@ export default function InfoTab(props) {
   if (props.inPage) {
     users.push(Object.assign(props.user, { pageIds: props.pageIds }));
   }
+
   return (
     <>
       <Row>
         <Col span={12}>
-          <Text>{"Description: " + props.page.description}</Text>
+          {props.page.pageType === "Class" ? (
+            <React.Fragment>
+              <Row>{"Professor: " + props.page.professor}</Row>
+              <Row>
+                <Rate allowHalf defaultValue={parseFloat(props.page.rating)} disabled count={7} />
+              </Row>
+            </React.Fragment>
+          ) : (
+            <></>
+          )}
+          <Row>
+            <Text>{props.page.description}</Text>
+          </Row>
         </Col>
         <Col span={12}>
           <UserList

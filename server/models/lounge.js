@@ -5,7 +5,7 @@ const LoungeSchema = new mongoose.Schema({
   hostId: String,
   userIds: {
     type: [String],
-    default: []
+    default: [],
   },
   pageId: String,
   zoomLink: {

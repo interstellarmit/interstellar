@@ -98,11 +98,17 @@ class Page extends Component {
     post("/api/createNewLounge", {
       name: data.name,
       pageId: this.state.page._id,
+      zoomLink: data.zoomLink,
     }).then((data) => {
       if (!data.created) return;
       let lounges = this.state.lounges;
       lounges.push(data.lounge);
-      this.setState({ lounges: lounges });
+      this.setState({ lounges: lounges }, () => {
+        let page = this.state.page;
+        this.props.redirectPage(
+          "/" + page.pageType.toLowerCase() + "/" + page.name + "/lounges/" + data.lounge._id
+        );
+      });
     });
   };
 

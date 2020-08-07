@@ -5,6 +5,7 @@ export default function AddLounge(props) {
   let onFinish = (fieldsValue) => {
     props.createNewLounge({
       name: fieldsValue.name,
+      zoomLink: fieldsValue.zoomLink || "",
     });
     form.resetFields();
     props.setVisible(false);
@@ -33,6 +34,22 @@ export default function AddLounge(props) {
         >
           <Input />
         </Form.Item>
+<<<<<<< HEAD
+=======
+
+        <Form.Item
+          name="zoomLink"
+          label="Zoom Link"
+          rules={[
+            {
+              type: "url",
+              message: "Please enter a zoom link",
+            },
+          ]}
+        >
+          <Input placeholder={"Optional"} />
+        </Form.Item>
+>>>>>>> 756343631ae8be60739124db947d8bbbeb6c3b14
         <Form.Item>
           <Button key="submit" type="primary" htmlType="submit">
             Submit
