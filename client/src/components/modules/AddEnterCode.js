@@ -16,17 +16,7 @@ export default function AddLounge(props) {
         form.resetFields();
         props.setEnterCodeModal(false);
       }}
-      footer={[
-        <Button
-          key="back"
-          onClick={() => {
-            form.resetFields();
-            props.setEnterCodeModal(false);
-          }}
-        >
-          Return
-        </Button>,
-      ]}
+      footer={null}
     >
       <Form form={form} name={"Enter Join Code"} onFinish={onFinish}>
         <Form.Item

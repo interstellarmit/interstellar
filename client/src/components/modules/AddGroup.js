@@ -35,17 +35,7 @@ export default function AddGroup(props) {
         form.resetFields();
         props.setVisible(false);
       }}
-      footer={[
-        <Button
-          key="back"
-          onClick={() => {
-            form.resetFields();
-            props.setVisible(false);
-          }}
-        >
-          Return
-        </Button>,
-      ]}
+      footer={null}
     >
       <Form form={form} name={"Create New Group"} onFinish={onFinish}>
         <Form.Item

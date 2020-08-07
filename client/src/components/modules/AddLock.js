@@ -16,17 +16,7 @@ export default function AddLock(props) {
         form.resetFields();
         props.setLockModal(false);
       }}
-      footer={[
-        <Button
-          key="back"
-          onClick={() => {
-            form.resetFields();
-            props.setLockModal(false);
-          }}
-        >
-          Return
-        </Button>,
-      ]}
+      footer={null}
     >
       <Form form={form} name={"Lock Page"} onFinish={onFinish}>
         <Form.Item
@@ -41,7 +31,6 @@ export default function AddLock(props) {
         >
           <Input />
         </Form.Item>
-
         <Form.Item>
           <Button key="submit" type="primary" htmlType="submit">
             Submit
