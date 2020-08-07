@@ -11,7 +11,6 @@ export default function InfoTab(props) {
   }
   return (
     <>
-      <Title level={3}>{props.page.title}</Title>
       <Row>
         <Col span={12}>
           <Text>{"Description: " + props.page.description}</Text>
