@@ -19,14 +19,8 @@ export default function AddLounge(props) {
         props.setVisible(false);
       }}
       footer={[
-        <Button
-          key="back"
-          onClick={() => {
-            form.resetFields();
-            props.setVisible(false);
-          }}
-        >
-          Return
+        <Button key="submit" type="primary" htmlType="submit">
+          Submit
         </Button>,
       ]}
     >
@@ -42,12 +36,6 @@ export default function AddLounge(props) {
           ]}
         >
           <Input />
-        </Form.Item>
-
-        <Form.Item>
-          <Button key="submit" type="primary" htmlType="submit">
-            Submit
-          </Button>
         </Form.Item>
       </Form>
     </Modal>
