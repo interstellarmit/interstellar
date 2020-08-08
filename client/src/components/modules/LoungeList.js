@@ -7,9 +7,7 @@ export default function LoungeList(props) {
     if (a.name < b.name) return -1;
     return 0;
   });
-  if (datasource.length == 0) {
-    return <></>;
-  }
+
   return (
     <div style={{ maxHeight: "70vh", overflow: "auto" }}>
       <ConfigProvider

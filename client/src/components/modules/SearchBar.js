@@ -12,6 +12,9 @@ export default function SearchBar(props) {
     if (!page) return;
     props.redirectPage("/" + page.pageType.toLowerCase() + "/" + page.name);
   };
+  if (props.collapsed) {
+    return <></>;
+  }
 
   let options = [
     {
@@ -74,7 +77,7 @@ export default function SearchBar(props) {
       <Input.Search
         size={props.size}
         placeholder={props.placeholder || "Search for a class or group"}
-        enterButton={props.collapsed ? undefined : true}
+        enterButton
       />
     </AutoComplete>
   );

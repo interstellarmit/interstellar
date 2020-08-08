@@ -5,9 +5,10 @@ import SideBar from "./modules/SideBar.js";
 import Public from "./pages/Public.js";
 import Home from "./pages/Home.js";
 import Page from "./pages/Page.js";
+import MySpin from "./modules/MySpin";
 import Confirmation from "./pages/Confirmation.js";
 import "../utilities.css";
-import { Row, Col, Divider, Spin, Modal, Layout } from "antd";
+import { Row, Col, Divider, Spin, Modal, Layout, Button } from "antd";
 import "antd/dist/antd.css";
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -123,8 +124,8 @@ class App extends Component {
     //redirect to fireroad-dev.mit.edu/login?redirect={localhost:5000}
 
     window.location.href =
-      // "https://fireroad-dev.mit.edu/login?redirect=http%3A%2F%2Flocalhost%3A5000";
-      "https://fireroad-dev.mit.edu/login?redirect=https%3A%2F%2Finterstellar-beta.herokuapp.com";
+      "https://fireroad-dev.mit.edu/login?redirect=http%3A%2F%2Flocalhost%3A5000";
+    //"https://fireroad-dev.mit.edu/login?redirect=https%3A%2F%2Finterstellar-beta.herokuapp.com";
   };
 
   signUpLogin = (data) => {
@@ -234,7 +235,7 @@ class App extends Component {
 
   render() {
     if (!this.state.userId) {
-      if (this.state.tryingToLogin) return <Spin />;
+      if (this.state.tryingToLogin) return <MySpin />;
       return (
         <>
           <Router>
@@ -336,7 +337,7 @@ class App extends Component {
                 <Switch>
                   <Home
                     exact
-                    path="/"
+                    path={["/", "/welcome", "/dashboard"]}
                     schoolId={this.state.schoolId}
                     updateSelectedPageName={this.updateSelectedPageName}
                     user={{ userId: this.state.userId, name: this.state.name }}

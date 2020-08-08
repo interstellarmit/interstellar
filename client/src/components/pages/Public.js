@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+
 import { get, post } from "../../utilities";
 import Cookies from "universal-cookie";
 const cookies = new Cookies();
@@ -25,7 +26,39 @@ export default function Public(props) {
     });
   };
   return (
-    <Modal
+    <div style={{ width: "100%", height: "100vh" }}>
+      <Row>
+        <Col span={12}>
+          <div style={{ width: "100%", height: "100vh", backgroundColor: "#6c57f5", display: "flex", justifyContent: "center", flexDirection: "column", color: "white" }}>
+            <h2 style={{ color: "white" }}>Find out who else is in your classes</h2>
+            <h2 style={{ color: "white" }}>Hang out with classmates/groups in lounges</h2>
+            <h2 style={{ color: "white" }}>Share class resources with DueDates/QuickLinks</h2>
+          </div>
+        </Col>
+        <Col span={12}>
+          <div style={{ margin: "200px 80px 200px 80px" }}>
+            <center>
+              <h1>interstellar</h1>
+            </center>
+            <Button
+              block
+              type="primary"
+              shape="round"
+              onClick={() => {
+                props.handleLogin();
+              }}
+            >
+              Login With Touchstone
+            </Button>
+          </div>
+        </Col>
+      </Row>
+    </div >
+  );
+}
+
+/*
+<Modal
       visible={props.visible}
       title={"Welcome"}
       onCancel={() => {
@@ -138,5 +171,8 @@ export default function Public(props) {
         </Col>
       </Row>
     </Modal>
-  );
-}
+
+
+
+
+*/
