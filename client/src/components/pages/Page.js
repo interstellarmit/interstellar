@@ -383,7 +383,7 @@ class Page extends Component {
               {
                 // <ForumTab users={this.state.users} page={this.state.page} />)
               }
-              <TempForumTab />
+              <TempForumTab page={this.state.page} />
             </TabPage>
           ) : (
             <TabPage

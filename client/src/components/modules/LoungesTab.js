@@ -1,6 +1,6 @@
 import React, { Component, useState } from "react";
 import { BrowserRouter as Router, Route, NavLink, Switch } from "react-router-dom";
-import { List, Avatar, Row, Col, Button, Typography } from "antd";
+import { List, Avatar, Row, Col, Button, Typography, Divider } from "antd";
 const { Title, Text } = Typography;
 import LoungeList from "./LoungeList";
 import Chat from "./Chat";
@@ -42,12 +42,15 @@ export default function LoungesTab(props) {
                     {lounge.zoomLink === "" ? (
                       <></>
                     ) : (
-                      <h3>
-                        <Button type="link" target="_blank" href={lounge.zoomLink}>
-                          {"Zoom Link"}
-                        </Button>
-                      </h3>
-                    )}
+                        <h3 >
+                          <div >
+                            <Button type="primary" target="_blank" href={lounge.zoomLink}>
+                              {"Zoom Link"}
+                            </Button>
+                          </div>
+
+                        </h3>
+                      )}
                   </center>
                   <Row>
                     <Col span={8}>

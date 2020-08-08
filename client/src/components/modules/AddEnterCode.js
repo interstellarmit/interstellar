@@ -2,10 +2,20 @@ import React, { Component, useState } from "react";
 import { List, Modal, Row, Col, Button, Form, Input, DatePicker, Checkbox } from "antd";
 export default function AddLounge(props) {
   const [form] = Form.useForm();
+
   let onFinish = (fieldsValue) => {
     props.addSelfToPage(props.pageId, fieldsValue.joinCode);
     form.resetFields();
     props.setEnterCodeModal(false);
+  };
+
+  const layout = {
+    labelCol: { span: 6 },
+    wrapperCol: { span: 18 },
+  };
+
+  const tailLayout = {
+    wrapperCol: { offset: 6, span: 18 },
   };
 
   return (
@@ -18,7 +28,7 @@ export default function AddLounge(props) {
       }}
       footer={null}
     >
-      <Form form={form} name={"Enter Join Code"} onFinish={onFinish}>
+      <Form {...layout} form={form} name={"Enter Join Code"} onFinish={onFinish}>
         <Form.Item
           name="joinCode"
           label="Join Code"
@@ -32,7 +42,7 @@ export default function AddLounge(props) {
           <Input />
         </Form.Item>
 
-        <Form.Item>
+        <Form.Item {...tailLayout}>
           <Button key="submit" type="primary" htmlType="submit">
             Submit
           </Button>
