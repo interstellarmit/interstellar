@@ -40,13 +40,14 @@ function ensureLoggedIn(req, res, next) {
 }
 
 function me(req, res, next) {
-  console.log(req.header("token"))
+  console.log(req.header("token"));
   const token = req.header("token");
   if (!token) return res.status(401).json({ msg: "Auth Error" });
 
   try {
     const decoded = jwt.verify(token, "randomString");
     req.user = decoded.user;
+    //console.log("verified");
     next();
   } catch (e) {
     //console.error(e);
@@ -133,15 +134,13 @@ async function signUp(req, res) {
         }
       });
     });
-    res
-      .status(200)
-      .send({
-        type: "succes",
-        msg:
-          "A verification email has been sent to " +
-          user.email +
-          ". Please check your spam and/or promotions.",
-      });
+    res.status(200).send({
+      type: "succes",
+      msg:
+        "A verification email has been sent to " +
+        user.email +
+        ". Please check your spam and/or promotions.",
+    });
   } catch (err) {
     console.log(err.message);
     res.status(500).send({ msg: "Error in Saving" });
@@ -267,7 +266,6 @@ async function login(req, res) {
         msg: "User Not Exist",
       });
 
-
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch)
       return res.status(200).json({
@@ -326,7 +324,7 @@ async function signUpLogin(req, res) {
       email: email,
     });
     if (user) {
-      console.log("found")
+      console.log("found");
       req.session.user = user;
 
       const payload = {
@@ -363,11 +361,11 @@ async function signUpLogin(req, res) {
 
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(password, salt);
-    console.log(user)
+    console.log(user);
 
     await user.save(function (err) {
       if (err) {
-        console.log(err)
+        console.log(err);
         return res.status(500).send({ msg: err.message });
       }
     });
@@ -387,7 +385,7 @@ async function signUpLogin(req, res) {
       },
       (err, token) => {
         if (err) throw err;
-        console.log("yaya")
+        console.log("yaya");
         res.status(200).json({
           token,
         });
