@@ -47,7 +47,7 @@ function me(req, res, next) {
   try {
     const decoded = jwt.verify(token, "randomString");
     req.user = decoded.user;
-    //console.log("verified");
+    console.log("got to next in backend auth me");
     next();
   } catch (e) {
     //console.error(e);

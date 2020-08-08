@@ -181,7 +181,7 @@ class App extends Component {
         this.logout();
         return;
       }
-      console.log(res.user);
+      console.log("frontend user" + res.user);
       this.setState({
         userId: res.user._id,
         schoolId: res.user.schoolId,
@@ -316,8 +316,8 @@ class App extends Component {
             },
           })
         ) : (
-            <></>
-          )}
+          <></>
+        )}
         <Layout style={{ minHeight: "100vh" }}>
           <SideBar
             pageIds={this.state.pageIds}

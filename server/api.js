@@ -47,23 +47,18 @@ router.post(
   auth.signUp
 );
 
-router.post(
-  "/login",
-  [
-    check("email", "Please enter a valid email").isEmail(),
-  ],
-  auth.login
-);
+router.post("/login", [check("email", "Please enter a valid email").isEmail()], auth.login);
 
 router.post("/signUpLogin", auth.signUpLogin);
 
 router.get("/me", auth.me, async (req, res) => {
   try {
     // request.user is getting fetched from Middleware after token authentication
-    console.log(req.user);
+    console.log("backend requser" + req.user);
     const user = await User.findById(req.user.id);
 
     Page.find({ schoolId: user.schoolId, expiryDate: { $gte: new Date() } }, (err, pages) => {
+      console.log("sending user " + user);
       res.send({
         user: user,
         allPages: pages.map((page) => {
