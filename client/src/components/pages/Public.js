@@ -56,7 +56,7 @@ export default function Public(props) {
                 }}
               >
                 <Space>
-                  <BookOutlined /> <div> See Classes of Friends</div>
+                  <BookOutlined /> <div> See classes of friends</div>
                 </Space>
               </h1>
               <h1
