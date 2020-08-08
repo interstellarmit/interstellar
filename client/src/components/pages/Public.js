@@ -4,6 +4,7 @@ import { get, post } from "../../utilities";
 import Cookies from "universal-cookie";
 const cookies = new Cookies();
 import { List, Modal, Row, Col, Button, Form, Input, DatePicker, Checkbox } from "antd";
+import { CalendarOutlined, TeamOutlined, BookOutlined } from "@ant-design/icons";
 
 import "../../utilities.css";
 
@@ -29,10 +30,49 @@ export default function Public(props) {
     <div style={{ width: "100%", height: "100vh" }}>
       <Row>
         <Col span={12}>
-          <div style={{ width: "100%", height: "100vh", backgroundColor: "#6c57f5", display: "flex", justifyContent: "center", flexDirection: "column", color: "white" }}>
-            <h2 style={{ color: "white" }}>Find out who else is in your classes</h2>
-            <h2 style={{ color: "white" }}>Hang out with classmates/groups in lounges</h2>
-            <h2 style={{ color: "white" }}>Share class resources with DueDates/QuickLinks</h2>
+          <div
+            style={{
+              width: "100%",
+              height: "100vh",
+              backgroundColor: "#6c57f5",
+              display: "flex",
+
+              alignItems: "center",
+              paddingTop: "200px",
+              flexDirection: "column",
+              color: "white",
+            }}
+          >
+            <h3
+              style={{
+                color: "white",
+                marginBottom: "20px",
+                display: "flex",
+                flexDirection: "row",
+              }}
+            >
+              <BookOutlined /> <div> Find classmates</div>
+            </h3>
+            <h3
+              style={{
+                color: "white",
+                marginBottom: "20px",
+                display: "flex",
+                flexDirection: "row",
+              }}
+            >
+              <TeamOutlined /> <div> Work together in lounges</div>
+            </h3>
+            <h3
+              style={{
+                color: "white",
+                marginBottom: "20px",
+                display: "flex",
+                flexDirection: "row",
+              }}
+            >
+              <CalendarOutlined /> <div> Keep track of assignments</div>
+            </h3>
           </div>
         </Col>
         <Col span={12}>
@@ -53,7 +93,7 @@ export default function Public(props) {
           </div>
         </Col>
       </Row>
-    </div >
+    </div>
   );
 }
 
