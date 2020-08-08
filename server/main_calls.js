@@ -29,7 +29,7 @@ createNewSchool = (req, res) => {
   if (req.user.isSiteAdmin) {
     let name = req.body.name;
     name = name.replace(/ /g, "_");
-    name = encodeURI(name);
+    name = name.replace(/[^a-zA-Z0-9-_]/g, "");
     let school = new School({
       name: name,
       email: req.body.email,
@@ -86,7 +86,7 @@ createNewPage = (req, res) => {
   School.findById(req.user.schoolId).then((school) => {
     let name = req.body.name;
     name = name.replace(/ /g, "_");
-    name = encodeURI(name);
+    name = name.replace(/[^a-zA-Z0-9-_]/g, "");
     if (
       school.adminIds.includes(req.user._id) ||
       req.user.isSiteAdmin ||
