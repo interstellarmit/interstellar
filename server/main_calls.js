@@ -92,7 +92,7 @@ createNewPage = (req, res) => {
       req.user.isSiteAdmin ||
       req.body.pageType === "Group"
     ) {
-      Page.findOne({ name: new RegExp(name, "i") }).then((thepage) => {
+      Page.findOne({ name: new RegExp("^" + name + "$", "i") }).then((thepage) => {
         if (thepage) {
           res.send({ created: false });
           return;
