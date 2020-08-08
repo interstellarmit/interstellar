@@ -22,7 +22,7 @@ class Home extends Component {
     props.updateSelectedPageName("");
   }
 
-  addToLounge = (userId, loungeId, callback = () => {}) => {
+  addToLounge = (userId, loungeId, callback = () => { }) => {
     let lounges = this.state.lounges;
     let lounge = lounges.filter((l) => {
       return l._id + "" === loungeId;
@@ -39,7 +39,7 @@ class Home extends Component {
     this.setState({ lounges: newLounges }, callback);
   };
 
-  removeFromLounge = (userId, loungeId, callback = () => {}) => {
+  removeFromLounge = (userId, loungeId, callback = () => { }) => {
     if (loungeId !== "") {
       let lounges = this.state.lounges;
       let lounge = lounges.filter((l) => {
@@ -83,12 +83,10 @@ class Home extends Component {
     });
 
     socket.on("userAddedToLounge", (data) => {
-      console.log("addingUser...");
       this.addToLounge(data.userId, data.loungeId);
     });
 
     socket.on("userRemovedFromLounge", (data) => {
-      console.log("removingUser...");
       this.removeFromLounge(data.userId, data.loungeId);
     });
 
@@ -98,7 +96,6 @@ class Home extends Component {
       this.setState({ lounges: lounges });
     });
     socket.on("userJoinedPage", (data) => {
-      console.log("addingUser...");
       let users = this.state.users;
       if (
         users.filter((user) => {

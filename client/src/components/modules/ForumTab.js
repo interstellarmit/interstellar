@@ -108,7 +108,6 @@ class ForumTab extends Component {
               return (
                 <PostListItem
                   onClick={() => {
-                    console.log("clicked");
                   }}
                   groupPost={onePost}
                   user={this.props.users.find((oneUser) => {

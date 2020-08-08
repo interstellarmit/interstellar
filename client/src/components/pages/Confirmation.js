@@ -16,7 +16,6 @@ class Confirmation extends Component {
 
   submitForm = () => {
     post("/api/confirmation", { email: this.state.email, token: this.state.tok }).then((res) => {
-      console.log(res);
       if (res.msg) {
         this.setState({ msg: res.msg })
       }
