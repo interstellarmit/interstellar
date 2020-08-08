@@ -98,7 +98,7 @@ class App extends Component {
       if (user._id && cookies.get("token") != undefined) {
         // they are registed in the database, and currently logged in.
         this.me();
-      } else if (this.state.code == undefined) {
+      } else if (!this.state.code) {
         this.setState({ tryingToLogin: false });
       }
     });
@@ -120,7 +120,7 @@ class App extends Component {
     //redirect to fireroad-dev.mit.edu/login?redirect={localhost:5000}
 
     window.location.href =
-      // "https://fireroad-dev.mit.edu/login?redirect=http%3A%2F%2Flocalhost%3A5000";
+      //"https://fireroad-dev.mit.edu/login?redirect=http%3A%2F%2Flocalhost%3A5000";
       "https://fireroad-dev.mit.edu/login?redirect=https%3A%2F%2Finterstellar-beta.herokuapp.com";
   };
 
@@ -172,7 +172,7 @@ class App extends Component {
     });
   };
   me = () => {
-    let token = cookies.get("token")
+    let token = cookies.get("token");
     get("/api/me", {}, token).then((res) => {
       if (!res.user) {
         cookies.set("token", "", { path: "/" });
