@@ -3,6 +3,7 @@ import { List, Empty, ConfigProvider } from "antd";
 import ProfilePic from "./ProfilePic";
 
 export default function UserList(props) {
+  props.users.sort((a, b) => (a.name > b.name) ? 1 : -1)
   return (
     <div style={{ maxHeight: "70vh", overflow: "auto" }}>
       <ConfigProvider
@@ -22,19 +23,19 @@ export default function UserList(props) {
                   description={
                     props.allPages && props.showClasses && user.pageIds
                       ? user.pageIds
-                          .map((id) => {
-                            return props.allPages.find((pg) => {
-                              return pg._id === id;
-                            });
-                          })
-                          .filter((page) => {
-                            return page.pageType === "Class";
-                          })
-                          .map((page) => {
-                            return page.name;
-                          })
+                        .map((id) => {
+                          return props.allPages.find((pg) => {
+                            return pg._id === id;
+                          });
+                        })
+                        .filter((page) => {
+                          return page.pageType === "Class";
+                        })
+                        .map((page) => {
+                          return page.name;
+                        })
 
-                          .join(", ")
+                        .join(", ")
                       : undefined
                   }
                 />

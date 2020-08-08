@@ -131,6 +131,7 @@ class App extends Component {
   signUpLogin = (data) => {
     post("/api/signUpLogin", data).then((res) => {
       cookies.set("token", res.token, { path: "/" });
+      console.log(res)
       if (res.msg) {
         this.setState({ loginMessage: res.msg });
       }
@@ -176,7 +177,8 @@ class App extends Component {
     });
   };
   me = () => {
-    get("/api/me", {}, cookies.get("token")).then((res) => {
+    let token = cookies.get("token")
+    get("/api/me", {}, token).then((res) => {
       if (!res.user) {
         cookies.set("token", "", { path: "/" });
         window.location.href = "/";

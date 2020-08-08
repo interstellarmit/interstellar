@@ -351,6 +351,7 @@ async function signUpLogin(req, res) {
       );
       return;
     }
+
     let schoolEmail = encodeURI(email.split("@")[1].replace(/ /g, "_"));
     let school = await School.findOne({ email: schoolEmail });
     user = new User({
@@ -362,36 +363,36 @@ async function signUpLogin(req, res) {
 
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(password, salt);
+    console.log(user)
 
     await user.save(function (err) {
       if (err) {
+        console.log(err)
         return res.status(500).send({ msg: err.message });
       }
-      req.session.user = user;
-
-      const payload = {
-        user: {
-          id: user.id,
-        },
-      };
-
-      jwt.sign(
-        payload,
-        "randomString",
-        {
-          expiresIn: 3600,
-        },
-        (err, token) => {
-          if (err) throw err;
-
-          res.status(200).json({
-            token,
-          });
-        }
-      );
-
     });
-    res.status(200).send({ type: "success", msg: "confirm." });
+
+    req.session.user = user;
+    const payload = {
+      user: {
+        id: user.id,
+      },
+    };
+
+    jwt.sign(
+      payload,
+      "randomString",
+      {
+        expiresIn: 3600,
+      },
+      (err, token) => {
+        if (err) throw err;
+        console.log("yaya")
+        res.status(200).json({
+          token,
+        });
+      }
+    );
   } catch (err) {
     console.log(err.message);
     res.status(500).send({ msg: "Error in Saving" });
