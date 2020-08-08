@@ -28,6 +28,7 @@ export default function UserList(props) {
                             });
                           })
                           .filter((page) => {
+                            if (!page) return false;
                             return page.pageType === "Class";
                           })
                           .map((page) => {

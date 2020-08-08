@@ -86,12 +86,12 @@ export default function AddNewDDQL(props) {
               label="URL"
               rules={[
                 {
-                  type: "url",
+                  required: true,
                   message: "Please enter a valid URL",
                 },
               ]}
             >
-              <Input placeholder={"http://mit.edu"} />
+              <Input placeholder={"www.mit.edu"} />
             </Form.Item>
             <Form.Item {...tailLayout} name="public" valuePropName="checked">
               <Checkbox>Public</Checkbox>

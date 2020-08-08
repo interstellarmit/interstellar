@@ -18,7 +18,7 @@ export default function AddGroup(props) {
           joinCode: "",
         }).then((data2) => {
           if (data2.added) {
-            props.redirectPage("/group/" + data.name);
+            window.location.href = "/group/" + data.name;
           }
         });
       }
@@ -59,11 +59,29 @@ export default function AddGroup(props) {
         >
           <Input placeholder={"MIT"} />
         </Form.Item>
-        <Form.Item name="title" label="Group Title" rules={[]}>
+        <Form.Item
+          name="title"
+          label="Group Title"
+          rules={[
+            {
+              required: true,
+              message: "Please enter a group title",
+            },
+          ]}
+        >
           <Input placeholder={"Massachusetts Institute of Technology"} />
         </Form.Item>
-        <Form.Item name="description" label="Description" rules={[]}>
-          <Input placeholder={"Optional"} />
+        <Form.Item
+          name="description"
+          label="Description"
+          rules={[
+            {
+              required: true,
+              message: "Please enter a short description",
+            },
+          ]}
+        >
+          <Input />
         </Form.Item>
         <Form.Item {...tailLayout}>
           <Button key="submit" type="primary" htmlType="submit">
