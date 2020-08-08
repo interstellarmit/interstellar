@@ -6,6 +6,7 @@ import DDQLSection from "../modules/DDQLSection";
 import TabPage from "../modules/TabPage";
 import SearchBar from "../modules/SearchBar";
 import LoungeList from "../modules/LoungeList";
+import MySpin from "../modules/MySpin";
 const { Header, Content, Footer, Sider } = Layout;
 const { Title, Text } = Typography;
 class Home extends Component {
@@ -106,7 +107,7 @@ class Home extends Component {
 
   render() {
     if (!this.state.pageLoaded) {
-      return <Spin />;
+      return <MySpin />;
     }
     let pageMap = {};
     let i = 0;
@@ -172,12 +173,14 @@ class Home extends Component {
               <Col span={12}>
                 <Title level={4}>{"Open Lounges"}</Title>
                 {this.props.myPages.map((page) => {
+                  let lounges = this.state.lounges.filter((lounge) => {
+                    return lounge.pageId === page._id;
+                  });
+                  if (lounges.length === 0) return <></>;
                   return (
                     <LoungeList
                       redirect={(link) => this.props.redirectPage(link)}
-                      lounges={this.state.lounges.filter((lounge) => {
-                        return lounge.pageId === page._id;
-                      })}
+                      lounges={lounges}
                       users={this.state.users}
                       page={page}
                       home={true}
@@ -188,6 +191,15 @@ class Home extends Component {
             </Row>
           </TabPage>
         </Content>
+
+        <div style={{ bottom: "20px", padding: "10px 10px 10px 10px" }}>
+          <center>
+            Please share any bugs or feedback
+            <Button type="link" target="_blank" href="https://forms.gle/ZSdrfPZfpwngxQ3aA">
+              here!
+            </Button>
+          </center>
+        </div>
       </Layout>
     );
   }

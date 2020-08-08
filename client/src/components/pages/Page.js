@@ -8,6 +8,7 @@ import InfoTab from "../modules/InfoTab";
 import TabPage from "../modules/TabPage";
 import AddLock from "../modules/AddLock";
 import AddEnterCode from "../modules/AddEnterCode";
+import MySpin from "../modules/MySpin";
 import { socket } from "../../client-socket.js";
 import { Spin, Space, Button, Typography, Layout, PageHeader, Row, Col } from "antd";
 const { Header, Content, Footer, Sider } = Layout;
@@ -259,7 +260,7 @@ class Page extends Component {
 
   render() {
     if (!this.state.pageLoaded) {
-      return <Spin />;
+      return <MySpin />;
     }
 
     let removeClassButton = (
@@ -315,7 +316,7 @@ class Page extends Component {
           className="site-layout-sub-header-background"
           style={{ padding: "20px 30px 0px 30px", background: "#fff" }}
           extra={[this.state.inPage ? removeClassButton : addClassButton].concat(
-            (this.state.page.adminIds.includes(this.props.user._id) || this.props.isSiteAdmin) &&
+            (this.state.page.adminIds.includes(this.props.user.userId) || this.props.isSiteAdmin) &&
               this.state.inPage
               ? [lockButton]
               : []

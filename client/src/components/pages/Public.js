@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+
 import { get, post } from "../../utilities";
 import Cookies from "universal-cookie";
 const cookies = new Cookies();
@@ -25,7 +26,35 @@ export default function Public(props) {
     });
   };
   return (
-    <Modal
+    <div style={{ width: "100%", height: "100vh" }}>
+      <Row>
+        <Col span={12}>
+          <div style={{ width: "100%", height: "100vh", backgroundColor: "#6c57f5" }}></div>
+        </Col>
+        <Col span={12}>
+          <div style={{ margin: "200px 80px 200px 80px" }}>
+            <center>
+              <h1>interstellar</h1>
+            </center>
+            <Button
+              block
+              type="primary"
+              shape="round"
+              onClick={() => {
+                props.handleLogin();
+              }}
+            >
+              Login With Touchstone
+            </Button>
+          </div>
+        </Col>
+      </Row>
+    </div>
+  );
+}
+
+/*
+<Modal
       visible={props.visible}
       title={"Welcome"}
       onCancel={() => {
@@ -34,7 +63,6 @@ export default function Public(props) {
       }}
       footer={null}
     >
-      <button onClick={() => { props.handleLogin() }}>Login</button>
       <Row gutter={[16, 16]}>
         <Col span={12}>
           <Form form={formLogin} name={"Login"} onFinish={onFinishLogin}>
@@ -132,5 +160,8 @@ export default function Public(props) {
         </Col>
       </Row>
     </Modal>
-  );
-}
+
+
+
+
+*/

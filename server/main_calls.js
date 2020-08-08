@@ -110,7 +110,7 @@ createNewPage = (req, res) => {
           locked: req.body.locked,
           joinCode: req.body.joinCode || "",
         });
-        page.save().then(() => {
+        page.save().then((pg) => {
           res.send({ created: true, pageId: page._id, name: page.name });
         });
       });
