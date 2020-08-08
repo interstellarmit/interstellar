@@ -106,9 +106,8 @@ class Page extends Component {
       lounges.push(data.lounge);
       this.setState({ lounges: lounges }, () => {
         let page = this.state.page;
-        this.props.redirectPage(
-          "/" + page.pageType.toLowerCase() + "/" + page.name + "/lounges/" + data.lounge._id
-        );
+        window.location.href =
+          "/" + page.pageType.toLowerCase() + "/" + page.name + "/lounges/" + data.lounge._id;
       });
     });
   };
@@ -124,6 +123,7 @@ class Page extends Component {
     });
 
     let userIds = lounge.userIds;
+    if (userIds.includes(userId)) return;
     userIds.push(userId);
     lounge.userIds = userIds;
     newLounges.push(lounge);
@@ -255,7 +255,7 @@ class Page extends Component {
         let newPageIds = this.props.pageIds;
         newPageIds.push(id);
         this.props.updatePageIds(newPageIds);
-        this.setState({ inPage: true });
+        this.setState({ inPage: true, pageLoaded: false });
         this.componentDidMount();
       } else console.log("error");
     });
