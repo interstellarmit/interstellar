@@ -73,6 +73,7 @@ class App extends Component {
       });
     } else if (window.location.href.indexOf("?code") > 0) {
       let code = window.location.href.substring(window.location.href.indexOf("?code"));
+      self.state.code = code
       getJSON("https://fireroad-dev.mit.edu/fetch_token/" + code, (err, data) => {
         if (err !== null) {
           // alert("Something went wrong: " + err);
@@ -101,7 +102,7 @@ class App extends Component {
       if (user._id && cookies.get("token") != undefined) {
         // they are registed in the database, and currently logged in.
         this.me();
-      } else {
+      } else if (this.state.code == undefined) {
         this.setState({ tryingToLogin: false });
       }
     });
@@ -110,7 +111,6 @@ class App extends Component {
     });
     socket.on("disconnect", (reason) => {
       if (reason === "io server disconnect") {
-        console.log("newtabdisconnect");
         this.setState({ disconnect: true });
       }
     });
@@ -124,8 +124,8 @@ class App extends Component {
     //redirect to fireroad-dev.mit.edu/login?redirect={localhost:5000}
 
     window.location.href =
-      // "https://fireroad-dev.mit.edu/login?redirect=http%3A%2F%2Flocalhost%3A5000";
-      "https://fireroad-dev.mit.edu/login?redirect=https%3A%2F%2Finterstellar-beta.herokuapp.com";
+      "https://fireroad-dev.mit.edu/login?redirect=http%3A%2F%2Flocalhost%3A5000";
+    // "https://fireroad-dev.mit.edu/login?redirect=https%3A%2F%2Finterstellar-beta.herokuapp.com";
   };
 
   signUpLogin = (data) => {
@@ -319,8 +319,8 @@ class App extends Component {
             },
           })
         ) : (
-          <></>
-        )}
+            <></>
+          )}
         <Layout style={{ minHeight: "100vh" }}>
           <SideBar
             pageIds={this.state.pageIds}

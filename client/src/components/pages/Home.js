@@ -22,7 +22,7 @@ class Home extends Component {
     props.updateSelectedPageName("");
   }
 
-  addToLounge = (userId, loungeId, callback = () => {}) => {
+  addToLounge = (userId, loungeId, callback = () => { }) => {
     let lounges = this.state.lounges;
     let lounge = lounges.filter((l) => {
       return l._id + "" === loungeId;
@@ -39,7 +39,7 @@ class Home extends Component {
     this.setState({ lounges: newLounges }, callback);
   };
 
-  removeFromLounge = (userId, loungeId, callback = () => {}) => {
+  removeFromLounge = (userId, loungeId, callback = () => { }) => {
     if (loungeId !== "") {
       let lounges = this.state.lounges;
       let lounge = lounges.filter((l) => {
@@ -151,7 +151,7 @@ class Home extends Component {
               <SearchBar
                 size="large"
                 allPages={this.props.allPages}
-                placeholder="Search for a class or group to get started!"
+                placeholder="Search for a class or group to join!"
                 redirectPage={this.props.redirectPage}
                 defaultOpen={true}
               />
