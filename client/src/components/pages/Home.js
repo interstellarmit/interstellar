@@ -33,6 +33,7 @@ class Home extends Component {
     });
 
     let userIds = lounge.userIds;
+    if (userIds.includes(userId)) return;
     userIds.push(userId);
     lounge.userIds = userIds;
     newLounges.push(lounge);
@@ -83,6 +84,7 @@ class Home extends Component {
     });
 
     socket.on("userAddedToLounge", (data) => {
+      console.log("user just got added to lounge");
       this.addToLounge(data.userId, data.loungeId);
     });
 
