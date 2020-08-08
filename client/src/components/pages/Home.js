@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { get, post } from "../../utilities";
 import { socket } from "../../client-socket.js";
-import { Spin, Space, Button, Typography, Layout, Row, Col, PageHeader } from "antd";
+import { Spin, Space, Button, Typography, Layout, Row, Col, PageHeader, Descriptions } from "antd";
 import DDQLSection from "../modules/DDQLSection";
 import TabPage from "../modules/TabPage";
 import SearchBar from "../modules/SearchBar";
@@ -145,7 +145,7 @@ class Home extends Component {
               <SearchBar
                 size="large"
                 allPages={this.props.allPages}
-                placeholder="Search for a class or group to get started!"
+                placeholder="Search for a class or group to get started."
                 redirectPage={this.props.redirectPage}
                 defaultOpen={true}
               />
