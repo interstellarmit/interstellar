@@ -135,6 +135,8 @@ class App extends Component {
       }
       if (res.token) {
         this.setState({ loginMessage: "Success!" });
+      } else {
+        console.log("hi");
       }
       post("/api/initsocket", { socketid: socket.id }).then((data) => {
         if (data.init) this.me();
@@ -167,8 +169,8 @@ class App extends Component {
     });
   };
   logout = () => {
+    cookies.set("token", "", { path: "/" });
     post("/api/logout", {}).then((res) => {
-      cookies.set("token", "", { path: "/" });
       this.setState({ userId: undefined, tryingToLogin: false }, () => {
         window.location.href = "/";
       });
