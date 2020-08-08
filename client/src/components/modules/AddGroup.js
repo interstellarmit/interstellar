@@ -3,6 +3,7 @@ import { List, Modal, Row, Col, Button, Form, Input, DatePicker, Checkbox } from
 import { get, post } from "../../utilities";
 export default function AddGroup(props) {
   const [form] = Form.useForm();
+  const [message, setMessage] = useState("");
   let onFinish = (fieldsValue) => {
     post("/api/createNewPage", {
       pageType: "Group",
@@ -21,10 +22,11 @@ export default function AddGroup(props) {
             window.location.href = "/group/" + data.name;
           }
         });
+      } else {
+        form.resetFields();
+        setMessage("Uh oh that group name already exists. Try searching for it in the search bar!")
       }
     });
-    form.resetFields();
-    props.setVisible(false);
   };
 
   const layout = {
@@ -106,6 +108,9 @@ export default function AddGroup(props) {
           ]}
         >
           <Input />
+        </Form.Item>
+        <Form.Item>
+          <div style={{ color: "red" }}>{message}</div>
         </Form.Item>
         <Form.Item {...tailLayout}>
           <Button key="submit" type="primary" htmlType="submit">

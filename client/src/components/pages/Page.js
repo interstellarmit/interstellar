@@ -112,7 +112,7 @@ class Page extends Component {
     });
   };
 
-  addToLounge = (userId, loungeId, callback = () => {}) => {
+  addToLounge = (userId, loungeId, callback = () => { }) => {
     let lounges = this.state.lounges;
     let lounge = lounges.filter((l) => {
       return l._id + "" === loungeId;
@@ -130,7 +130,7 @@ class Page extends Component {
     this.setState({ lounges: newLounges }, callback);
   };
 
-  removeFromLounge = (userId, loungeId, callback = () => {}) => {
+  removeFromLounge = (userId, loungeId, callback = () => { }) => {
     if (loungeId !== "") {
       let lounges = this.state.lounges;
       let lounge = lounges.filter((l) => {
@@ -158,7 +158,7 @@ class Page extends Component {
     }
   };
 
-  addSelfToLounge = (loungeId, callback = () => {}) => {
+  addSelfToLounge = (loungeId, callback = () => { }) => {
     post("/api/addSelfToLounge", {
       loungeId: loungeId,
     }).then((data) => {
@@ -168,7 +168,7 @@ class Page extends Component {
     });
   };
 
-  removeSelfFromLounge = (loungeId, callback = () => {}) => {
+  removeSelfFromLounge = (loungeId, callback = () => { }) => {
     post("/api/removeSelfFromLounge", {
       loungeId: loungeId,
     }).then((data) => {
@@ -388,20 +388,20 @@ class Page extends Component {
               <TempForumTab page={this.state.page} />
             </TabPage>
           ) : (
-            <TabPage
-              labels={["Info"]}
-              routerLinks={["info"]}
-              defaultRouterLink={"info"}
-              page={this.state.page}
-            >
-              <InfoTab
-                users={this.state.users}
-                inPage={false}
+              <TabPage
+                labels={["Info"]}
+                routerLinks={["info"]}
+                defaultRouterLink={"info"}
                 page={this.state.page}
-                user={this.props.user}
-              />
-            </TabPage>
-          )}
+              >
+                <InfoTab
+                  users={this.state.users}
+                  inPage={false}
+                  page={this.state.page}
+                  user={this.props.user}
+                />
+              </TabPage>
+            )}
         </Content>
       </Layout>
     );
