@@ -304,8 +304,8 @@ class App extends Component {
             },
           })
         ) : (
-            <></>
-          )}
+          <></>
+        )}
         <Layout style={{ minHeight: "100vh" }}>
           <SideBar
             pageIds={this.state.pageIds}
@@ -330,6 +330,7 @@ class App extends Component {
                     myPages={myPages}
                     disconnect={this.disconnect}
                     allPages={this.state.allPages}
+                    logout={this.logout}
                   />
                   <Page
                     path="/class/:selectedPage"
@@ -343,6 +344,7 @@ class App extends Component {
                     setLoungeId={this.setLoungeId}
                     isSiteAdmin={this.state.isSiteAdmin}
                     disconnect={this.disconnect}
+                    logout={this.logout}
                   />
                   <Page
                     path="/group/:selectedPage"
@@ -358,6 +360,7 @@ class App extends Component {
                     pageIds={this.state.pageIds}
                     isSiteAdmin={this.state.isSiteAdmin}
                     disconnect={this.disconnect}
+                    logout={this.logout}
                   />
                   <NotFound default />
                 </Switch>

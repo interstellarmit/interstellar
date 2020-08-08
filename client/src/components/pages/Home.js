@@ -22,7 +22,7 @@ class Home extends Component {
     props.updateSelectedPageName("");
   }
 
-  addToLounge = (userId, loungeId, callback = () => { }) => {
+  addToLounge = (userId, loungeId, callback = () => {}) => {
     let lounges = this.state.lounges;
     let lounge = lounges.filter((l) => {
       return l._id + "" === loungeId;
@@ -33,13 +33,14 @@ class Home extends Component {
     });
 
     let userIds = lounge.userIds;
+    if (userIds.includes(userId)) return;
     userIds.push(userId);
     lounge.userIds = userIds;
     newLounges.push(lounge);
     this.setState({ lounges: newLounges }, callback);
   };
 
-  removeFromLounge = (userId, loungeId, callback = () => { }) => {
+  removeFromLounge = (userId, loungeId, callback = () => {}) => {
     if (loungeId !== "") {
       let lounges = this.state.lounges;
       let lounge = lounges.filter((l) => {
@@ -70,7 +71,7 @@ class Home extends Component {
   componentDidMount() {
     post("api/joinPage", { home: true }).then((data) => {
       if (data.broken) {
-        this.props.disconnect();
+        this.props.logout();
         return;
       }
       this.setState({
@@ -83,6 +84,7 @@ class Home extends Component {
     });
 
     socket.on("userAddedToLounge", (data) => {
+      console.log("user just got added to lounge");
       this.addToLounge(data.userId, data.loungeId);
     });
 
