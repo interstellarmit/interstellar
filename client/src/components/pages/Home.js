@@ -100,6 +100,12 @@ class Home extends Component {
     socket.on("userJoinedPage", (data) => {
       console.log("addingUser...");
       let users = this.state.users;
+      if (
+        users.filter((user) => {
+          return user.userId === data.user.userId;
+        }).length > 0
+      )
+        return;
       users.push(data.user);
       this.setState({ users: users });
     });
@@ -145,7 +151,7 @@ class Home extends Component {
               <SearchBar
                 size="large"
                 allPages={this.props.allPages}
-                placeholder="Search for a class or group to get started."
+                placeholder="Search for a class or group to join!"
                 redirectPage={this.props.redirectPage}
                 defaultOpen={true}
               />

@@ -24,7 +24,13 @@ export default function SideBar(props) {
   const [addGroup, setAddGroup] = React.useState(false);
   const [collapsed, setCollapsed] = React.useState(false);
   return (
-    <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed} width={"20%"}>
+    <Sider
+      collapsible
+      collapsed={collapsed}
+      onCollapse={setCollapsed}
+      width={"20%"}
+      style={{ overflow: "auto", height: "100vh" }}
+    >
       {collapsed ? (
         <></>
       ) : (

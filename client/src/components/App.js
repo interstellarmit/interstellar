@@ -73,6 +73,7 @@ class App extends Component {
       });
     } else if (window.location.href.indexOf("?code") > 0) {
       let code = window.location.href.substring(window.location.href.indexOf("?code"));
+      self.state.code = code;
       getJSON("https://fireroad-dev.mit.edu/fetch_token/" + code, (err, data) => {
         if (err !== null) {
           // alert("Something went wrong: " + err);
@@ -99,7 +100,7 @@ class App extends Component {
       if (user._id && cookies.get("token") != undefined) {
         // they are registed in the database, and currently logged in.
         this.me();
-      } else {
+      } else if (this.state.code == undefined) {
         this.setState({ tryingToLogin: false });
       }
     });
@@ -108,7 +109,6 @@ class App extends Component {
     });
     socket.on("disconnect", (reason) => {
       if (reason === "io server disconnect") {
-        console.log("newtabdisconnect");
         this.setState({ disconnect: true });
       }
     });

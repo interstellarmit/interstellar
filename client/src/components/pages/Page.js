@@ -207,6 +207,12 @@ class Page extends Component {
       console.log("addingUser...");
       if (this.state.page._id !== data.pageId) return;
       let users = this.state.users;
+      if (
+        users.filter((user) => {
+          return user.userId === data.user.userId;
+        }).length > 0
+      )
+        return;
       users.push(data.user);
       this.setState({ users: users });
     });
