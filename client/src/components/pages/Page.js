@@ -255,7 +255,7 @@ class Page extends Component {
         let newPageIds = this.props.pageIds;
         newPageIds.push(id);
         this.props.updatePageIds(newPageIds);
-        this.setState({ inPage: true });
+        this.setState({ inPage: true, pageLoaded: false });
         this.componentDidMount();
       } else console.log("error");
     });
