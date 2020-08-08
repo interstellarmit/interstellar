@@ -39,6 +39,14 @@ export default function AddLounge(props) {
               required: true,
               message: "Please enter a lounge name",
             },
+            {
+              min: 1,
+              message: "Name must be at least 1 character",
+            },
+            {
+              max: 100,
+              message: "Name must be at most 100 characters",
+            },
           ]}
         >
           <Input />
@@ -51,6 +59,10 @@ export default function AddLounge(props) {
             {
               type: "url",
               message: "Please enter a zoom link",
+            },
+            {
+              max: 200,
+              message: "Zoom link must be at most 200 characters",
             },
           ]}
         >
