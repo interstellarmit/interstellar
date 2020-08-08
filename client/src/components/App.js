@@ -52,24 +52,7 @@ class App extends Component {
     };
     let self = this;
     if (cookies.get("token") != undefined && cookies.get("token").length > 0) {
-      get("/api/me", {}, cookies.get("token")).then((res) => {
-        if (!res.user) {
-          this.logout();
-          return;
-        }
-
-        this.setState({
-          userId: res.user._id,
-          schoolId: res.user.schoolId,
-          name: res.user.name,
-          loungeId: res.user.loungeId,
-          pageIds: res.user.pageIds,
-          isSiteAdmin: res.user.isSiteAdmin,
-          email: res.user.email,
-          visible: res.user.visible,
-          allPages: res.allPages,
-        });
-      });
+      self.me();
     } else if (window.location.href.indexOf("?code") > 0) {
       let code = window.location.href.substring(window.location.href.indexOf("?code"));
       self.state.code = code;
@@ -120,8 +103,8 @@ class App extends Component {
     //redirect to fireroad-dev.mit.edu/login?redirect={localhost:5000}
 
     window.location.href =
-      "https://fireroad-dev.mit.edu/login?redirect=http%3A%2F%2Flocalhost%3A5000";
-    // "https://fireroad-dev.mit.edu/login?redirect=https%3A%2F%2Finterstellar-beta.herokuapp.com";
+      // "https://fireroad-dev.mit.edu/login?redirect=http%3A%2F%2Flocalhost%3A5000";
+      "https://fireroad-dev.mit.edu/login?redirect=https%3A%2F%2Finterstellar-beta.herokuapp.com";
   };
 
   signUpLogin = (data) => {
@@ -132,6 +115,8 @@ class App extends Component {
       }
       if (res.token) {
         this.setState({ loginMessage: "Success!" });
+      } else {
+        console.log("hi");
       }
       post("/api/initsocket", { socketid: socket.id }).then((data) => {
         if (data.init) this.me();
@@ -164,23 +149,26 @@ class App extends Component {
     });
   };
   logout = () => {
+    cookies.set("token", "", { path: "/" });
     post("/api/logout", {}).then((res) => {
-      cookies.set("token", "", { path: "/" });
       this.setState({ userId: undefined, tryingToLogin: false }, () => {
         window.location.href = "/";
       });
     });
   };
   me = () => {
+    console.log("cur_id");
+    console.log(this.state.userId);
     let token = cookies.get("token");
     get("/api/me", {}, token).then((res) => {
       if (!res.user) {
-        cookies.set("token", "", { path: "/" });
-        window.location.href = "/";
-        //this.logout();
+        console.log("no token");
+        this.logout();
         return;
       }
+      console.log("frontend user");
 
+      console.log(res.user);
       this.setState({
         userId: res.user._id,
         schoolId: res.user.schoolId,
@@ -265,6 +253,7 @@ class App extends Component {
     let myPages = this.state.allPages.filter((page) => {
       return this.state.pageIds.includes(page._id);
     });
+    console.log(this.state.userId);
     return (
       <div>
         {/*
