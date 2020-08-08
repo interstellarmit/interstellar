@@ -29,6 +29,15 @@ export default function AddNewDDQL(props) {
     form.resetFields();
   };
 
+  const layout = {
+    labelCol: { span: 6 },
+    wrapperCol: { span: 18 },
+  };
+
+  const tailLayout = {
+    wrapperCol: { offset: 6, span: 18 },
+  };
+
   return (
     <Modal
       visible={props.visible}
@@ -43,11 +52,10 @@ export default function AddNewDDQL(props) {
       <Row>
         <Col span={12}>
           <Form
+            {...layout}
             form={form}
             name={"Add New " + text}
             onFinish={onFinish}
-            labelCol={{ span: 8 }}
-            wrapperCol={{ span: 22 }}
             layout="horizontal"
             initialValues={{
               public: false,
@@ -85,10 +93,10 @@ export default function AddNewDDQL(props) {
             >
               <Input placeholder={"http://mit.edu"} />
             </Form.Item>
-            <Form.Item name="public" valuePropName="checked">
+            <Form.Item {...tailLayout} name="public" valuePropName="checked">
               <Checkbox>Public</Checkbox>
             </Form.Item>
-            <Form.Item>
+            <Form.Item {...tailLayout}>
               <Button key="submit" type="primary" htmlType="submit">
                 Submit
               </Button>

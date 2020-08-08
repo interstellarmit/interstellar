@@ -8,6 +8,15 @@ export default function AddLock(props) {
     props.setLockModal(false);
   };
 
+  const layout = {
+    labelCol: { span: 6 },
+    wrapperCol: { span: 18 },
+  };
+
+  const tailLayout = {
+    wrapperCol: { offset: 6, span: 18 },
+  };
+
   return (
     <Modal
       visible={props.lockModal}
@@ -18,7 +27,7 @@ export default function AddLock(props) {
       }}
       footer={null}
     >
-      <Form form={form} name={"Lock Page"} onFinish={onFinish}>
+      <Form {...layout} form={form} name={"Lock Page"} onFinish={onFinish}>
         <Form.Item
           name="joinCode"
           label="Join Code"
@@ -31,7 +40,7 @@ export default function AddLock(props) {
         >
           <Input />
         </Form.Item>
-        <Form.Item>
+        <Form.Item {...tailLayout}>
           <Button key="submit" type="primary" htmlType="submit">
             Submit
           </Button>

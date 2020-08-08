@@ -27,6 +27,15 @@ export default function AddGroup(props) {
     props.setVisible(false);
   };
 
+  const layout = {
+    labelCol: { span: 6 },
+    wrapperCol: { span: 18 },
+  };
+
+  const tailLayout = {
+    wrapperCol: { offset: 6, span: 18 },
+  };
+
   return (
     <Modal
       visible={props.visible}
@@ -37,10 +46,10 @@ export default function AddGroup(props) {
       }}
       footer={null}
     >
-      <Form form={form} name={"Create New Group"} onFinish={onFinish}>
+      <Form {...layout} form={form} name={"Create New Group"} onFinish={onFinish}>
         <Form.Item
           name="name"
-          label="Short Group Name"
+          label="Group Name"
           rules={[
             {
               required: true,
@@ -50,13 +59,13 @@ export default function AddGroup(props) {
         >
           <Input placeholder={"MIT"} />
         </Form.Item>
-        <Form.Item name="title" label="Long Group Title" rules={[]}>
+        <Form.Item name="title" label="Group Title" rules={[]}>
           <Input placeholder={"Massachusetts Institute of Technology"} />
         </Form.Item>
         <Form.Item name="description" label="Description" rules={[]}>
           <Input placeholder={"Optional"} />
         </Form.Item>
-        <Form.Item>
+        <Form.Item {...tailLayout}>
           <Button key="submit" type="primary" htmlType="submit">
             Submit
           </Button>
