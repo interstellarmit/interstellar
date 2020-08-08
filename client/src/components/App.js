@@ -52,24 +52,7 @@ class App extends Component {
     };
     let self = this;
     if (cookies.get("token") != undefined && cookies.get("token").length > 0) {
-      get("/api/me", {}, cookies.get("token")).then((res) => {
-        if (!res.user) {
-          this.logout();
-          return;
-        }
-
-        this.setState({
-          userId: res.user._id,
-          schoolId: res.user.schoolId,
-          name: res.user.name,
-          loungeId: res.user.loungeId,
-          pageIds: res.user.pageIds,
-          isSiteAdmin: res.user.isSiteAdmin,
-          email: res.user.email,
-          visible: res.user.visible,
-          allPages: res.allPages,
-        });
-      });
+      self.me();
     } else if (window.location.href.indexOf("?code") > 0) {
       let code = window.location.href.substring(window.location.href.indexOf("?code"));
       self.state.code = code;
@@ -174,6 +157,8 @@ class App extends Component {
     });
   };
   me = () => {
+    console.log("cur_id");
+    console.log(this.state.userId);
     let token = cookies.get("token");
     get("/api/me", {}, token).then((res) => {
       if (!res.user) {
@@ -181,7 +166,9 @@ class App extends Component {
         this.logout();
         return;
       }
-      console.log("frontend user" + res.user);
+      console.log("frontend user");
+
+      console.log(res.user);
       this.setState({
         userId: res.user._id,
         schoolId: res.user.schoolId,
@@ -266,6 +253,7 @@ class App extends Component {
     let myPages = this.state.allPages.filter((page) => {
       return this.state.pageIds.includes(page._id);
     });
+    console.log(this.state.userId);
     return (
       <div>
         {/*
