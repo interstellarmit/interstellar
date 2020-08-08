@@ -27,7 +27,7 @@ class Chat extends Component {
       this.setState({ messages: messages });
     });
   }
-  a;
+
   render() {
     return (
       <div>
@@ -37,7 +37,7 @@ class Chat extends Component {
             height: "50vh",
             display: "flex",
             flexDirection: "column-reverse",
-            marginBottom: "auto",
+            margin: "auto",
           }}
         >
           <List
@@ -46,9 +46,11 @@ class Chat extends Component {
             })}
             renderItem={(message) => {
               return (
-                <List.Item>
-                  <ProfilePic user={{ userId: message.userId, name: message.name }} />
-                  {" " + message.name.split(" ")[0] + ": " + message.text}
+                <List.Item style={{ display: "flex" }}>
+                  <div style={{ alignItems: "center" }}>
+                    <ProfilePic user={{ userId: message.userId, name: message.name }} />
+                    {"  " + message.name.split(" ")[0] + ": " + message.text}
+                  </div>
                 </List.Item>
               );
             }}
