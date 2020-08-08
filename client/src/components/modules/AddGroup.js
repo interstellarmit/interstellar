@@ -45,6 +45,7 @@ export default function AddGroup(props) {
       onCancel={() => {
         form.resetFields();
         props.setVisible(false);
+        setMessage("")
       }}
       footer={null}
     >
