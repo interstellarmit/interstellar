@@ -38,16 +38,16 @@ export default function Public(props) {
               display: "flex",
 
               alignItems: "center",
-              paddingTop: "200px",
+              justifyContent: "center",
               flexDirection: "column",
               color: "white",
             }}
           >
             <div>
-              <h2
+              <h1
                 style={{
                   color: "white",
-                  marginBottom: "30px",
+                  marginBottom: "40px",
                   display: "flex",
                   flexDirection: "row",
                 }}
@@ -55,11 +55,11 @@ export default function Public(props) {
                 <Space>
                   <BookOutlined /> <div> Find classmates</div>
                 </Space>
-              </h2>
-              <h2
+              </h1>
+              <h1
                 style={{
                   color: "white",
-                  marginBottom: "30px",
+                  marginBottom: "40px",
                   display: "flex",
                   flexDirection: "row",
                 }}
@@ -67,11 +67,11 @@ export default function Public(props) {
                 <Space>
                   <TeamOutlined /> <div> Work together in lounges</div>
                 </Space>
-              </h2>
-              <h2
+              </h1>
+              <h1
                 style={{
                   color: "white",
-                  marginBottom: "30px",
+                  marginBottom: "40px",
                   display: "flex",
                   flexDirection: "row",
                 }}
@@ -79,26 +79,41 @@ export default function Public(props) {
                 <Space>
                   <CalendarOutlined /> <div> Keep track of assignments</div>
                 </Space>
-              </h2>
+              </h1>
             </div>
           </div>
         </Col>
         <Col span={12}>
-          <div style={{ margin: "200px 80px 200px 80px" }}>
-            <center>
-              <h1 style={{ fontSize: "40px", fontWeight: "700" }}>interstellar</h1>
-            </center>
-            <Button
-              block
-              type="primary"
-              shape="round"
-              onClick={() => {
-                props.handleLogin();
-              }}
-              size="large"
-            >
-              Login With Touchstone
-            </Button>
+          <div
+            style={{
+              width: "100%",
+              height: "100vh",
+
+              display: "flex",
+
+              alignItems: "center",
+              justifyContent: "center",
+              flexDirection: "column",
+            }}
+          >
+            <div>
+              <center>
+                <h1 style={{ fontSize: "50px", fontWeight: "700", fontFamily: "Chakra Petch" }}>
+                  interstellar
+                </h1>
+              </center>
+              <Button
+                block
+                type="primary"
+                shape="round"
+                onClick={() => {
+                  props.handleLogin();
+                }}
+                size="large"
+              >
+                Login With Touchstone
+              </Button>
+            </div>
           </div>
         </Col>
       </Row>
