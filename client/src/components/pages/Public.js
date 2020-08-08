@@ -37,7 +37,7 @@ export default function Public(props) {
             style={{
               width: "100%",
               height: "100vh",
-              backgroundColor: "#07427D",
+              backgroundColor: "#041528",
               display: "flex",
               overflow: "hidden",
               alignItems: "center",
