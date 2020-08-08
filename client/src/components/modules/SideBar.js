@@ -13,6 +13,8 @@ import {
   TeamOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
+import logo from "../../public/logo_inverted.png";
+
 import AddGroup from "./AddGroup";
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
@@ -26,18 +28,23 @@ export default function SideBar(props) {
       {collapsed ? (
         <></>
       ) : (
-        <div style={{ margin: "10px 10px -5px 10px" }}>
+        <div style={{ margin: "15px 10px 0px 10px" }}>
           <div
             style={{
+              display: "flex",
+              flexDirection: "row",
               fontSize: "30px",
               fontFamily: "Chakra Petch",
               color: "#fff",
               fontWeight: "700",
               width: "100%",
               overflow: "hidden",
+              alignItems: "center",
+              justifyContent: "center",
             }}
           >
-            <center>interstellar</center>
+            <img src={logo} style={{ height: "30px" }} /> <div style={{ width: "10px" }} />
+            interstellar
           </div>
         </div>
       )}

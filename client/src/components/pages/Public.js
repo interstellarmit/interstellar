@@ -8,6 +8,8 @@ import { CalendarOutlined, TeamOutlined, BookOutlined } from "@ant-design/icons"
 
 import "../../utilities.css";
 
+import logo from "../../public/logo.png";
+
 export default function Public(props) {
   const [formLogin] = Form.useForm();
   const [formSignup] = Form.useForm();
@@ -36,7 +38,7 @@ export default function Public(props) {
               height: "100vh",
               backgroundColor: "#6c57f5",
               display: "flex",
-
+              overflow: "hidden",
               alignItems: "center",
               justifyContent: "center",
               flexDirection: "column",
@@ -88,9 +90,8 @@ export default function Public(props) {
             style={{
               width: "100%",
               height: "100vh",
-
+              overflow: "hidden",
               display: "flex",
-
               alignItems: "center",
               justifyContent: "center",
               flexDirection: "column",
@@ -98,6 +99,7 @@ export default function Public(props) {
           >
             <div>
               <center>
+                <img src={logo} style={{ height: "200px", marginBottom: "20px" }} />
                 <h1 style={{ fontSize: "50px", fontWeight: "700", fontFamily: "Chakra Petch" }}>
                   interstellar
                 </h1>
