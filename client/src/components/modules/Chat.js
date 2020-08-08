@@ -9,8 +9,9 @@ class Chat extends Component {
     super(props);
     // Initialize Default State
     this.state = {
-      currentMessage: String,
+      currentMessage: "",
       messages: [],
+      lastMessage: new Date(),
     };
   }
 
@@ -63,12 +64,18 @@ class Chat extends Component {
           }}
           onPressEnter={() => {
             let text = this.state.currentMessage;
-            this.setState({ currentMessage: "" });
-            post("/api/message", { text: text, loungeId: this.props.loungeId }).then((res) => {
-              let messages = this.state.messages;
-              messages.push(res);
-              this.setState({ messages: messages });
-            });
+            if (
+              text != undefined &&
+              text.length > 0 &&
+              new Date().getTime() - new Date(this.state.lastMessage).getTime() >= 500
+            ) {
+              this.setState({ currentMessage: "", lastMessage: new Date() });
+              post("/api/message", { text: text, loungeId: this.props.loungeId }).then((res) => {
+                let messages = this.state.messages;
+                messages.push(res);
+                this.setState({ messages: messages });
+              });
+            }
           }}
         />
       </div>
