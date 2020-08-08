@@ -1,6 +1,7 @@
 import React, { Component, useState } from "react";
 import { List } from "antd";
 import "antd/dist/antd.css";
+import "../../utilities.css";
 //import { redirectPage } from "@reach/router";
 import { Menu, Dropdown, Layout } from "antd";
 import SearchBar from "./SearchBar";
@@ -22,6 +23,24 @@ export default function SideBar(props) {
   const [collapsed, setCollapsed] = React.useState(false);
   return (
     <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed} width={"20%"}>
+      {collapsed ? (
+        <></>
+      ) : (
+        <div style={{ margin: "10px 10px -5px 10px" }}>
+          <div
+            style={{
+              fontSize: "30px",
+              fontFamily: "Chakra Petch",
+              color: "#fff",
+              fontWeight: "700",
+              width: "100%",
+              overflow: "hidden",
+            }}
+          >
+            <center>interstellar</center>
+          </div>
+        </div>
+      )}
       <SearchBar
         redirectPage={props.redirectPage}
         collapsed={collapsed}

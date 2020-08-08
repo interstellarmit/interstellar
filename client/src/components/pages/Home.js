@@ -194,9 +194,8 @@ class Home extends Component {
 
         <div style={{ bottom: "20px", padding: "10px 10px 10px 10px" }}>
           <center>
-            Please share any bugs or feedback
             <Button type="link" target="_blank" href="https://forms.gle/ZSdrfPZfpwngxQ3aA">
-              here!
+              Please share any bugs or feedback here!
             </Button>
           </center>
         </div>
