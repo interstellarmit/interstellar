@@ -11,6 +11,15 @@ export default function AddLounge(props) {
     props.setVisible(false);
   };
 
+  const layout = {
+    labelCol: { span: 6 },
+    wrapperCol: { span: 18 },
+  };
+
+  const tailLayout = {
+    wrapperCol: { offset: 6, span: 18 },
+  };
+
   return (
     <Modal
       visible={props.visible}
@@ -21,7 +30,7 @@ export default function AddLounge(props) {
       }}
       footer={null}
     >
-      <Form form={form} name={"Add New Lounge"} onFinish={onFinish}>
+      <Form {...layout} form={form} name={"Add New Lounge"} onFinish={onFinish}>
         <Form.Item
           name="name"
           label="Lounge Name"
@@ -47,7 +56,7 @@ export default function AddLounge(props) {
         >
           <Input placeholder={"Optional"} />
         </Form.Item>
-        <Form.Item>
+        <Form.Item {...tailLayout}>
           <Button key="submit" type="primary" htmlType="submit">
             Submit
           </Button>
