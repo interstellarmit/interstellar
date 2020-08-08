@@ -9,6 +9,7 @@ import { CalendarOutlined, TeamOutlined, BookOutlined } from "@ant-design/icons"
 import "../../utilities.css";
 
 import logo from "../../public/logo.png";
+import public1 from "../../public/public1-removebg-preview.png";
 
 export default function Public(props) {
   const [formLogin] = Form.useForm();
@@ -36,7 +37,7 @@ export default function Public(props) {
             style={{
               width: "100%",
               height: "100vh",
-              backgroundColor: "#6c57f5",
+              backgroundColor: "#07427D",
               display: "flex",
               overflow: "hidden",
               alignItems: "center",
@@ -83,6 +84,7 @@ export default function Public(props) {
                 </Space>
               </h1>
             </div>
+            {/* <img width={"70%"} src={public1}></img> */}
           </div>
         </Col>
         <Col span={12}>
@@ -95,6 +97,7 @@ export default function Public(props) {
               alignItems: "center",
               justifyContent: "center",
               flexDirection: "column",
+              backgroundColor: "white",
             }}
           >
             <div>
