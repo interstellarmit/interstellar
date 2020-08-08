@@ -55,6 +55,14 @@ export default function AddGroup(props) {
               required: true,
               message: "Please enter a short group name",
             },
+            {
+              min: 2,
+              message: "Name must be at least 2 characters",
+            },
+            {
+              max: 20,
+              message: "Name must be at most 20 characters",
+            },
           ]}
         >
           <Input placeholder={"MIT"} />
@@ -67,6 +75,14 @@ export default function AddGroup(props) {
               required: true,
               message: "Please enter a group title",
             },
+            {
+              min: 2,
+              message: "Title must be at least 2 characters",
+            },
+            {
+              max: 100,
+              message: "Title must be at most 100 characters",
+            },
           ]}
         >
           <Input placeholder={"Massachusetts Institute of Technology"} />
@@ -78,6 +94,14 @@ export default function AddGroup(props) {
             {
               required: true,
               message: "Please enter a short description",
+            },
+            {
+              min: 10,
+              message: "Description must be at least 10 characters",
+            },
+            {
+              max: 10000,
+              message: "Description must be at most 10000 characters",
             },
           ]}
         >

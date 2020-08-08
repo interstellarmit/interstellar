@@ -36,6 +36,14 @@ export default function AddLock(props) {
               required: true,
               message: "Please choose a join code for this page",
             },
+            {
+              min: 1,
+              message: "Join code must be at least 1 character",
+            },
+            {
+              max: 500,
+              message: "Join code must be at most 500 characters",
+            },
           ]}
         >
           <Input />

@@ -65,8 +65,8 @@ export default function AddNewDDQL(props) {
                 <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />
               </Form.Item>
             ) : (
-                <></>
-              )}
+              <></>
+            )}
 
             <Form.Item
               name="title"
@@ -76,6 +76,14 @@ export default function AddNewDDQL(props) {
                   required: true,
                   message: "Please enter a title",
                 },
+                {
+                  min: 2,
+                  message: "Title must be at least 2 characters",
+                },
+                {
+                  max: 100,
+                  message: "Title must be at most 100 characters",
+                },
               ]}
             >
               <Input />
@@ -83,12 +91,20 @@ export default function AddNewDDQL(props) {
             <Form.Item
               name="url"
               label="URL"
-              rules={[
+              rules={(props.type === "DueDate"
+                ? []
+                : [
+                    {
+                      required: true,
+                      message: "Please enter a valid URL",
+                    },
+                  ]
+              ).concat([
                 {
-                  required: true,
-                  message: "Please enter a valid URL",
+                  max: 500,
+                  message: "URL must be at most 500 characters",
                 },
-              ]}
+              ])}
             >
               <Input placeholder={"www.mit.edu"} />
             </Form.Item>
@@ -115,12 +131,12 @@ export default function AddNewDDQL(props) {
                     completed={false}
                   />
                 ) : (
-                    <QuickLink
-                      quickLink={item}
-                      addOrCompleteDDQL={props.addOrCompleteDDQL}
-                      added={false}
-                    />
-                  );
+                  <QuickLink
+                    quickLink={item}
+                    addOrCompleteDDQL={props.addOrCompleteDDQL}
+                    added={false}
+                  />
+                );
               }}
             />
           </div>
