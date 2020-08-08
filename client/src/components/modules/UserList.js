@@ -3,6 +3,7 @@ import { List, Empty, ConfigProvider } from "antd";
 import ProfilePic from "./ProfilePic";
 
 export default function UserList(props) {
+  props.users.sort((a, b) => (a.name > b.name ? 1 : -1));
   return (
     <div style={{ maxHeight: "70vh", overflow: "auto" }}>
       <ConfigProvider

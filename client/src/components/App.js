@@ -92,8 +92,6 @@ class App extends Component {
           req.send(null);
         }
       });
-
-      //redirect back to localhost:5000 home
     }
   }
 
@@ -125,12 +123,13 @@ class App extends Component {
 
     window.location.href =
       "https://fireroad-dev.mit.edu/login?redirect=http%3A%2F%2Flocalhost%3A5000";
-    // "https://fireroad-dev.mit.edu/login?redirect=https%3A%2F%2Finterstellar-beta.herokuapp.com";
+    //"https://fireroad-dev.mit.edu/login?redirect=https%3A%2F%2Finterstellar-beta.herokuapp.com";
   };
 
   signUpLogin = (data) => {
     post("/api/signUpLogin", data).then((res) => {
       cookies.set("token", res.token, { path: "/" });
+      console.log(res)
       if (res.msg) {
         this.setState({ loginMessage: res.msg });
       }
@@ -176,7 +175,8 @@ class App extends Component {
     });
   };
   me = () => {
-    get("/api/me", {}, cookies.get("token")).then((res) => {
+    let token = cookies.get("token")
+    get("/api/me", {}, token).then((res) => {
       if (!res.user) {
         cookies.set("token", "", { path: "/" });
         window.location.href = "/";

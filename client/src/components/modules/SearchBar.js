@@ -22,7 +22,7 @@ export default function SearchBar(props) {
       options: props.allPages
         .filter((page) => {
           return (
-            (page.name.toLowerCase().includes(query.toLowerCase()) ||
+            (page.name.toLowerCase().startsWith(query.toLowerCase()) ||
               page.title.toLowerCase().includes(query.toLowerCase())) &&
             page.pageType == "Class"
           );
@@ -32,7 +32,7 @@ export default function SearchBar(props) {
             value: page.name,
             label: (
               <div key={page.name} value={page.name}>
-                {page.name + ": " + page.title}
+                {page.title == "" ? page.name : page.name + ": " + page.title}
               </div>
             ),
           };

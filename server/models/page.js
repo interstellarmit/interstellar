@@ -3,7 +3,11 @@ const mongoose = require("mongoose");
 const PageSchema = new mongoose.Schema({
   pageType: String, // (ex: either "Class" or "Group"),
   name: String, // (ex: "6.033" or "ZBT"),
-  title: String, // (ex: "Computer Systems" or "Zeta Beta Tau"),
+  title: {
+    // (ex: "Computer Systems" or "Zeta Beta Tau"),
+    type: String,
+    default: "",
+  },
   schoolId: String,
   professor: {
     type: String,
