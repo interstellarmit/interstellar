@@ -1,7 +1,8 @@
 import React, { Component, useState } from "react";
-import { List, Typography, Row, Col, Rate } from "antd";
+import { List, Typography, Row, Col, Rate, Divider } from "antd";
 const { Title, Text } = Typography;
 import UserList from "./UserList";
+
 export default function InfoTab(props) {
   let users = props.users.filter((user) => {
     return user.userId !== props.user.userId;

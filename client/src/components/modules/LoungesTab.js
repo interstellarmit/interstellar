@@ -43,14 +43,15 @@ export default function LoungesTab(props) {
                       <></>
                     ) : (
                       <h3>
-                        <Button type="link" target="_blank" href={lounge.zoomLink}>
-                          {"Zoom Link"}
-                        </Button>
+                        {"Zoom Link: "}{" "}
+                        <a href={lounge.zoomLink} target="_blank">
+                          {lounge.zoomLink}
+                        </a>
                       </h3>
                     )}
                   </center>
                   <Row>
-                    <Col span={8}>
+                    <Col span={6}>
                       <UserList
                         users={lounge.userIds.map((user) => {
                           return props.users.filter((oneUser) => {
@@ -59,7 +60,7 @@ export default function LoungesTab(props) {
                         })}
                       />
                     </Col>
-                    <Col span={16}>
+                    <Col span={18}>
                       <Chat loungeId={loungeId} />
                     </Col>
                   </Row>
