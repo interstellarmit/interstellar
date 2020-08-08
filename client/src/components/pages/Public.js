@@ -29,7 +29,11 @@ export default function Public(props) {
     <div style={{ width: "100%", height: "100vh" }}>
       <Row>
         <Col span={12}>
-          <div style={{ width: "100%", height: "100vh", backgroundColor: "#6c57f5" }}></div>
+          <div style={{ width: "100%", height: "100vh", backgroundColor: "#6c57f5", display: "flex", justifyContent: "center", flexDirection: "column", color: "white" }}>
+            <h2 style={{ color: "white" }}>Find out who else is in your classes</h2>
+            <h2 style={{ color: "white" }}>Hang out with classmates/groups in lounges</h2>
+            <h2 style={{ color: "white" }}>Share class resources with DueDates/QuickLinks</h2>
+          </div>
         </Col>
         <Col span={12}>
           <div style={{ margin: "200px 80px 200px 80px" }}>
@@ -49,7 +53,7 @@ export default function Public(props) {
           </div>
         </Col>
       </Row>
-    </div>
+    </div >
   );
 }
 
@@ -63,8 +67,6 @@ export default function Public(props) {
       }}
       footer={null}
     >
-<<<<<<< HEAD
-=======
       <button
         onClick={() => {
           props.handleLogin();
@@ -72,7 +74,6 @@ export default function Public(props) {
       >
         Login
       </button>
->>>>>>> 1f971bedb7b6ad006de42752ba07a6fe85eb9de4
       <Row gutter={[16, 16]}>
         <Col span={12}>
           <Form form={formLogin} name={"Login"} onFinish={onFinishLogin}>
