@@ -103,8 +103,8 @@ class App extends Component {
     //redirect to fireroad-dev.mit.edu/login?redirect={localhost:5000}
 
     window.location.href =
-      // "https://fireroad-dev.mit.edu/login?redirect=http%3A%2F%2Flocalhost%3A5000";
-      "https://fireroad-dev.mit.edu/login?redirect=https%3A%2F%2Finterstellar-beta.herokuapp.com";
+      "https://fireroad-dev.mit.edu/login?redirect=http%3A%2F%2Flocalhost%3A5000";
+    //"https://fireroad-dev.mit.edu/login?redirect=https%3A%2F%2Finterstellar-beta.herokuapp.com";
   };
 
   signUpLogin = (data) => {
@@ -330,6 +330,7 @@ class App extends Component {
                     myPages={myPages}
                     disconnect={this.disconnect}
                     allPages={this.state.allPages}
+                    logout={this.logout}
                   />
                   <Page
                     path="/class/:selectedPage"
@@ -343,6 +344,7 @@ class App extends Component {
                     setLoungeId={this.setLoungeId}
                     isSiteAdmin={this.state.isSiteAdmin}
                     disconnect={this.disconnect}
+                    logout={this.logout}
                   />
                   <Page
                     path="/group/:selectedPage"
@@ -358,6 +360,7 @@ class App extends Component {
                     pageIds={this.state.pageIds}
                     isSiteAdmin={this.state.isSiteAdmin}
                     disconnect={this.disconnect}
+                    logout={this.logout}
                   />
                   <NotFound default />
                 </Switch>
