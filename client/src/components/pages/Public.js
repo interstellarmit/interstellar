@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import { get, post } from "../../utilities";
 import Cookies from "universal-cookie";
 const cookies = new Cookies();
-import { List, Modal, Row, Col, Button, Form, Input, DatePicker, Checkbox } from "antd";
+import { List, Space, Modal, Row, Col, Button, Form, Input, DatePicker, Checkbox } from "antd";
 import { CalendarOutlined, TeamOutlined, BookOutlined } from "@ant-design/icons";
 
 import "../../utilities.css";
@@ -43,42 +43,50 @@ export default function Public(props) {
               color: "white",
             }}
           >
-            <h3
-              style={{
-                color: "white",
-                marginBottom: "20px",
-                display: "flex",
-                flexDirection: "row",
-              }}
-            >
-              <BookOutlined /> <div> Find classmates</div>
-            </h3>
-            <h3
-              style={{
-                color: "white",
-                marginBottom: "20px",
-                display: "flex",
-                flexDirection: "row",
-              }}
-            >
-              <TeamOutlined /> <div> Work together in lounges</div>
-            </h3>
-            <h3
-              style={{
-                color: "white",
-                marginBottom: "20px",
-                display: "flex",
-                flexDirection: "row",
-              }}
-            >
-              <CalendarOutlined /> <div> Keep track of assignments</div>
-            </h3>
+            <div>
+              <h2
+                style={{
+                  color: "white",
+                  marginBottom: "30px",
+                  display: "flex",
+                  flexDirection: "row",
+                }}
+              >
+                <Space>
+                  <BookOutlined /> <div> Find classmates</div>
+                </Space>
+              </h2>
+              <h2
+                style={{
+                  color: "white",
+                  marginBottom: "30px",
+                  display: "flex",
+                  flexDirection: "row",
+                }}
+              >
+                <Space>
+                  <TeamOutlined /> <div> Work together in lounges</div>
+                </Space>
+              </h2>
+              <h2
+                style={{
+                  color: "white",
+                  marginBottom: "30px",
+                  display: "flex",
+                  flexDirection: "row",
+                }}
+              >
+                <Space>
+                  <CalendarOutlined /> <div> Keep track of assignments</div>
+                </Space>
+              </h2>
+            </div>
           </div>
         </Col>
         <Col span={12}>
           <div style={{ margin: "200px 80px 200px 80px" }}>
             <center>
-              <h1>interstellar</h1>
+              <h1 style={{ fontSize: "40px", fontWeight: "700" }}>interstellar</h1>
             </center>
             <Button
               block
@@ -87,6 +95,7 @@ export default function Public(props) {
               onClick={() => {
                 props.handleLogin();
               }}
+              size="large"
             >
               Login With Touchstone
             </Button>
