@@ -9,7 +9,6 @@ export default function AddNewDDQL(props) {
     rules: [{ type: "object", required: true, message: "Please select a due date!" }],
   };
   let onFinish = (fieldsValue) => {
-    console.log(fieldsValue);
     let values = {};
     if (props.type === "DueDate") {
       values = {
@@ -66,8 +65,8 @@ export default function AddNewDDQL(props) {
                 <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />
               </Form.Item>
             ) : (
-              <></>
-            )}
+                <></>
+              )}
 
             <Form.Item
               name="title"
@@ -116,12 +115,12 @@ export default function AddNewDDQL(props) {
                     completed={false}
                   />
                 ) : (
-                  <QuickLink
-                    quickLink={item}
-                    addOrCompleteDDQL={props.addOrCompleteDDQL}
-                    added={false}
-                  />
-                );
+                    <QuickLink
+                      quickLink={item}
+                      addOrCompleteDDQL={props.addOrCompleteDDQL}
+                      added={false}
+                    />
+                  );
               }}
             />
           </div>

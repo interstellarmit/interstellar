@@ -45,7 +45,6 @@ export default function DDQLSection(props) {
         let newCompletedDDQLs = completedDDQLs.concat([]);
 
         newCompletedDDQLs.push(input.objectId);
-        console.log(newCompletedDDQLs);
         setCompletedDDQLs(newCompletedDDQLs);
       } else if (input.action === "uncomplete") {
         let newCompletedDDQLs = completedDDQLs.filter((id) => {
@@ -79,8 +78,8 @@ export default function DDQLSection(props) {
       type={props.type}
     />
   ) : (
-    <></>
-  );
+      <></>
+    );
 
   return (
     <>
@@ -94,17 +93,17 @@ export default function DDQLSection(props) {
             icon={<PlusOutlined />}
           ></Button>
         ) : (
-          <></>
-        )}
+            <></>
+          )}
         {props.type === "QuickLink" ? (
           <></>
         ) : (
-          <Switch
-            onChange={(checked) => {
-              setShowCompleted(checked);
-            }}
-          />
-        )}
+            <Switch
+              onChange={(checked) => {
+                setShowCompleted(checked);
+              }}
+            />
+          )}
       </Space>
       {props.home ? <></> : addNewDueDate}
       <ConfigProvider
@@ -121,7 +120,7 @@ export default function DDQLSection(props) {
             return true;
           })}
           renderItem={(item) => {
-            console.log("hi:" + completedDDQLs.includes("" + item._id));
+            // console.log("hi:" + completedDDQLs.includes("" + item._id));
             return props.type === "DueDate" ? (
               <DueDate
                 dueDate={item}
@@ -132,14 +131,14 @@ export default function DDQLSection(props) {
                 pageMap={props.pageMap}
               />
             ) : (
-              <QuickLink
-                quickLink={item}
-                addOrCompleteDDQL={addOrCompleteDDQL}
-                added={addedDDQLs.includes("" + item._id)}
-                home={props.home}
-                pageMap={props.pageMap}
-              />
-            );
+                <QuickLink
+                  quickLink={item}
+                  addOrCompleteDDQL={addOrCompleteDDQL}
+                  added={addedDDQLs.includes("" + item._id)}
+                  home={props.home}
+                  pageMap={props.pageMap}
+                />
+              );
           }}
         />
       </ConfigProvider>
