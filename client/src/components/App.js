@@ -103,8 +103,8 @@ class App extends Component {
     //redirect to fireroad-dev.mit.edu/login?redirect={localhost:5000}
 
     window.location.href =
-      // "https://fireroad-dev.mit.edu/login?redirect=http%3A%2F%2Flocalhost%3A5000";
-      "https://fireroad-dev.mit.edu/login?redirect=https%3A%2F%2Finterstellar-beta.herokuapp.com";
+      "https://fireroad-dev.mit.edu/login?redirect=http%3A%2F%2Flocalhost%3A5000";
+    //"https://fireroad-dev.mit.edu/login?redirect=https%3A%2F%2Finterstellar-beta.herokuapp.com";
   };
 
   signUpLogin = (data) => {
@@ -180,6 +180,14 @@ class App extends Component {
         visible: res.user.visible,
         allPages: res.allPages,
       });
+    });
+  };
+
+  setVisible = (bool) => {
+    post("/api/setVisible", { visible: bool }).then((data) => {
+      if (data.setVisible) {
+        this.setState({ visible: bool });
+      }
     });
   };
   signup = (data) => {
@@ -322,15 +330,20 @@ class App extends Component {
                 <Switch>
                   <Home
                     exact
-                    path={["/", "/welcome", "/dashboard"]}
+                    path={["/", "/welcome", "/dashboard", "/privacy"]}
                     schoolId={this.state.schoolId}
                     updateSelectedPageName={this.updateSelectedPageName}
-                    user={{ userId: this.state.userId, name: this.state.name }}
+                    user={{
+                      userId: this.state.userId,
+                      name: this.state.visible ? this.state.name : "Anonymous (Me)",
+                    }}
                     redirectPage={this.redirectPage}
                     myPages={myPages}
                     disconnect={this.disconnect}
                     allPages={this.state.allPages}
                     logout={this.logout}
+                    visible={this.state.visible}
+                    setVisible={this.setVisible}
                   />
                   <Page
                     path="/class/:selectedPage"
@@ -338,13 +351,17 @@ class App extends Component {
                     pageIds={this.state.pageIds}
                     updatePageIds={this.updatePageIds}
                     updateSelectedPageName={this.updateSelectedPageName}
-                    user={{ userId: this.state.userId, name: this.state.name }}
+                    user={{
+                      userId: this.state.userId,
+                      name: this.state.visible ? this.state.name : "Anonymous (Me)",
+                    }}
                     redirectPage={this.redirectPage}
                     loungeId={this.state.loungeId}
                     setLoungeId={this.setLoungeId}
                     isSiteAdmin={this.state.isSiteAdmin}
                     disconnect={this.disconnect}
                     logout={this.logout}
+                    visible={this.state.visible}
                   />
                   <Page
                     path="/group/:selectedPage"
