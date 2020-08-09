@@ -10,8 +10,8 @@ export default function AddGroup(props) {
       name: fieldsValue.name,
       title: fieldsValue.title,
       description: fieldsValue.description,
-      locked: false,
-      joinCode: "",
+      locked: fieldsValue.joinCode && fieldsValue.joinCode.length > 0,
+      joinCode: fieldsValue.joinCode || "",
     }).then((data) => {
       if (data.created) {
         post("/api/addSelfToPage", {
@@ -24,7 +24,7 @@ export default function AddGroup(props) {
         });
       } else {
         form.resetFields();
-        setMessage("Uh oh that group name already exists. Try searching for it in the search bar!")
+        setMessage("Uh oh that group name already exists. Try searching for it in the search bar!");
       }
     });
   };
@@ -45,7 +45,7 @@ export default function AddGroup(props) {
       onCancel={() => {
         form.resetFields();
         props.setVisible(false);
-        setMessage("")
+        setMessage("");
       }}
       footer={null}
     >
@@ -109,6 +109,18 @@ export default function AddGroup(props) {
           ]}
         >
           <Input />
+        </Form.Item>
+        <Form.Item
+          name="joinCode"
+          label="Join Code"
+          rules={[
+            {
+              max: 500,
+              message: "Join code must be at most 500 characters",
+            },
+          ]}
+        >
+          <Input placeholder={"Optional password for your group"} />
         </Form.Item>
         <Form.Item>
           <div style={{ color: "red" }}>{message}</div>
