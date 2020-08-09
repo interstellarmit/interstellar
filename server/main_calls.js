@@ -148,7 +148,11 @@ addSelfToPage = (req, res) => {
                 .to("Page: " + page._id)
                 .emit("userJoinedPage", {
                   pageId: page._id,
-                  user: { userId: req.user._id, name: req.user.name },
+                  user: {
+                    userId: req.user._id,
+                    name:
+                      req.user.visible || page.pageType === "Group" ? req.user.name : "Anonymous",
+                  },
                 });
               res.send({ added: true });
             });

@@ -44,9 +44,11 @@ export default function SearchBar(props) {
       options: props.allPages
         .filter((page) => {
           return (
-            (page.name.toLowerCase().includes(query.toLowerCase()) ||
+            ((page.name.toLowerCase().includes(query.toLowerCase()) ||
               page.title.toLowerCase().includes(query.toLowerCase())) &&
-            page.pageType == "Group"
+              page.pageType == "Group" &&
+              !page.locked) ||
+            (page.pageType == "Group" && page.name.toLowerCase() === query.toLowerCase())
           );
         })
         .map((page) => {
