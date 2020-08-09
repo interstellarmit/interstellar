@@ -34,26 +34,26 @@ export default function SideBar(props) {
       {collapsed ? (
         <></>
       ) : (
-        <div style={{ margin: "15px 10px 0px 10px" }}>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              fontSize: "30px",
-              fontFamily: "Chakra Petch",
-              color: "#fff",
-              fontWeight: "700",
-              width: "100%",
-              overflow: "hidden",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <img src={logo} style={{ height: "30px" }} /> <div style={{ width: "10px" }} />
+          <div style={{ margin: "15px 10px 0px 10px" }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                fontSize: "30px",
+                fontFamily: "Chakra Petch",
+                color: "#fff",
+                fontWeight: "700",
+                width: "100%",
+                overflow: "hidden",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <img src={logo} style={{ height: "30px" }} /> <div style={{ width: "10px" }} />
             interstellar
           </div>
-        </div>
-      )}
+          </div>
+        )}
       <SearchBar
         redirectPage={props.redirectPage}
         collapsed={collapsed}
@@ -147,26 +147,26 @@ export default function SideBar(props) {
 /*
     <List>
         <List.Item onClick={() => {
-                    
+
                     props.redirectPage("/")
                 }}>
                     Home
         </List.Item>
-                
+
     </List>
-    
-    <List 
+
+    <List
         dataSource = {props.pageIds}
         renderItem = {(pageId) => {
             let page = props.allPages.filter((page) => {
                 return page._id === pageId
             })[0]
             let name = page.name
-            
+
             let isSelected = (name === props.selectedPageName)
             return <List.Item
                 onClick={() => {
-                    
+
                     props.redirectPage("/" + page.pageType.toLowerCase() + "/"+name)
                 }}
             >
