@@ -103,13 +103,8 @@ class App extends Component {
     //redirect to fireroad-dev.mit.edu/login?redirect={localhost:5000}
 
     window.location.href =
-<<<<<<< HEAD
-      // "https://fireroad-dev.mit.edu/login?redirect=http%3A%2F%2Flocalhost%3A5000";
-      "https://fireroad.mit.edu/login?redirect=https%3A%2F%2Finterstellar-beta.herokuapp.com";
-=======
       "https://fireroad-dev.mit.edu/login?redirect=http%3A%2F%2Flocalhost%3A5000";
     //"https://fireroad-dev.mit.edu/login?redirect=https%3A%2F%2Finterstellar-beta.herokuapp.com";
->>>>>>> 9043718a44b4877e7ab579ef53138bba8e9bcb2a
   };
 
   signUpLogin = (data) => {
@@ -317,8 +312,8 @@ class App extends Component {
             },
           })
         ) : (
-            <></>
-          )}
+          <></>
+        )}
         <Layout style={{ minHeight: "100vh" }}>
           <SideBar
             pageIds={this.state.pageIds}
