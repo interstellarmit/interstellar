@@ -24,7 +24,7 @@ export default function InfoTab(props) {
               <Row>
                 <Rate allowHalf defaultValue={parseFloat(props.page.rating)} disabled count={7} />
                 <div style={{ padding: '10px' }}>{rating}/7.0</div>
-                {/* <div style={{ padding: '10px' }}>{props.page.hours} hours</div> */}
+                <div style={{ padding: '10px' }}>{props.page.hours} hours</div>
               </Row>
             </React.Fragment>
           ) : (
