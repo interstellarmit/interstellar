@@ -56,13 +56,13 @@ class App extends Component {
     } else if (window.location.href.indexOf("?code") > 0) {
       let code = window.location.href.substring(window.location.href.indexOf("?code"));
       self.state.code = code;
-      getJSON("https://fireroad.mit.edu/fetch_token/" + code, (err, data) => {
+      getJSON("https://fireroad.mit.edu/fetch_token" + code, (err, data) => {
         if (err !== null) {
           // alert("Something went wrong: " + err);
         } else {
           var req = new XMLHttpRequest();
           req.responseType = "json";
-          req.open("GET", "https://fireroad.mit.edu/user_info/", true);
+          req.open("GET", "https://fireroad.mit.edu/user_info", true);
           req.setRequestHeader("Authorization", "Bearer " + data.access_info.access_token);
           req.onload = function () {
             var jsonResponse = req.response;
