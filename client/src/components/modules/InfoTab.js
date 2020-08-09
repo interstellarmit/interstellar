@@ -10,11 +10,7 @@ export default function InfoTab(props) {
   if (props.inPage) {
     users.push(Object.assign(props.user, { pageIds: props.pageIds }));
   }
-<<<<<<< HEAD
-  let rating = props.page.rating;
-=======
-  let rating = String(props.page.rating)
->>>>>>> e5dca812a9e79bdc4e942caf444830eee4bec880
+  let rating = String(props.page.rating);
   if (rating.length === 1) {
     rating += ".0";
   }
