@@ -67,18 +67,22 @@ export default function SearchBar(props) {
       dropdownClassName="certain-category-search-dropdown"
       dropdownMatchSelectWidth={props.size === "large" ? undefined : 500}
       style={{ width: "calc(100% - 32px)", margin: "16px" }}
-      onChange={(query) => {
-        setQuery(query);
+      onChange={(queryy) => {
+        setQuery(queryy);
       }}
-      onSearch={search}
       defaultOpen={props.defaultOpen}
-      onSelect={search}
+      onSelect={() => {
+        search(query);
+      }}
       options={options}
     >
       <Input.Search
         size={props.size}
         placeholder={props.placeholder || "Search for a class or group"}
         enterButton
+        onPressEnter={() => {
+          search(query);
+        }}
       />
     </AutoComplete>
   );
