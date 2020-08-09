@@ -14,12 +14,16 @@ const PageSchema = new mongoose.Schema({
     default: "",
   },
   rating: {
-    type: String,
-    default: "",
+    type: Number,
+    default: 0,
   },
   hours: {
-    type: String,
-    default: "",
+    type: Number,
+    default: 0,
+  },
+  units: {
+    type: Number,
+    default: 0,
   },
   description: {
     type: String,

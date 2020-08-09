@@ -2,6 +2,7 @@ const User = require("./models/user");
 const Comment = require("./models/comment");
 const DDQL = require("./models/DDQL");
 const GroupPost = require("./models/groupPost");
+const Link = require("./models/link");
 const Lounge = require("./models/lounge");
 const Message = require("./models/message");
 const Page = require("./models/page");
@@ -81,7 +82,6 @@ Returns: {created: Boolean}
 Description: Creates a new page, populating with given info. Sets self as admin. Initially unlocked. Returns true if the page is successfully created.
 */
 
-//!!! Make sure no other page has same name... not implemeenteed yet!
 createNewPage = (req, res) => {
   School.findById(req.user.schoolId).then((school) => {
     let name = req.body.name;
@@ -104,6 +104,8 @@ createNewPage = (req, res) => {
           description: req.body.description,
           professor: req.body.professor,
           rating: req.body.rating,
+          hours: req.body.hours,
+          units: req.body.units,
           expiryDate: expiryDate,
           adminIds: [req.user._id],
           schoolId: req.user.schoolId,
@@ -327,6 +329,12 @@ setJoinCode = (req, res) => {
   });
 };
 
+getRedirectLink = (req, res) => {
+  Link.findOne({}).then((ret) => {
+    res.send({ link: ret.link });
+  });
+};
+
 module.exports = {
   createNewSchool,
   createNewPage,
@@ -335,4 +343,5 @@ module.exports = {
   joinPage,
   leavePage,
   setJoinCode,
+  getRedirectLink,
 };

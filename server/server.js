@@ -15,7 +15,7 @@
 
 // validator runs some basic checks to make sure you've set everything up correctly
 // this is a tool provided by staff, so you don't need to worry about it
-require('dotenv').config()
+require("dotenv").config();
 const validator = require("./validator");
 validator.checkSetup();
 
@@ -37,7 +37,7 @@ const socket = require("./server-socket");
 // TODO change connection URL after setting up your team database
 const mongoConnectionURL = process.env.ATLAS_SRV;
 // TODO change database name to the name you chose
-const databaseName = "test";
+const databaseName = process.env.DATABASE_NAME;
 
 // connect to mongodb
 mongoose
@@ -75,7 +75,7 @@ app.use("/api", api);
 const reactPath = path.resolve(__dirname, "..", "client", "dist");
 app.use(express.static(reactPath));
 
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 
 // for all other routes, render index.html and let react router handle it
 app.get("*", (req, res) => {

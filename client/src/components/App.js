@@ -13,10 +13,12 @@ import "antd/dist/antd.css";
 const { Header, Content, Footer, Sider } = Layout;
 
 import { socket } from "../client-socket.js";
-
 import { get, post } from "../utilities";
+
 import Cookies from "universal-cookie";
 const cookies = new Cookies();
+
+var classes = require("../full.json");
 
 var getJSON = function (url, callback) {
   var xhr = new XMLHttpRequest();
@@ -32,7 +34,6 @@ var getJSON = function (url, callback) {
   };
   xhr.send();
 };
-// var classes = require("./modules/full.json");
 
 /**
  * Define the "App" component as a class.
@@ -100,11 +101,9 @@ class App extends Component {
   */
 
   handleLogin = () => {
-    //redirect to fireroad-dev.mit.edu/login?redirect={localhost:5000}
-
-    window.location.href =
-      // "https://fireroad-dev.mit.edu/login?redirect=http%3A%2F%2Flocalhost%3A5000";
-      "https://fireroad-dev.mit.edu/login?redirect=https%3A%2F%2Finterstellar-beta.herokuapp.com";
+    post("/api/getRedirectLink", {}).then((ret) => {
+      window.location.href = ret.link;
+    });
   };
 
   signUpLogin = (data) => {
@@ -257,7 +256,7 @@ class App extends Component {
     return (
       <div>
         {/*
-          Adding Classes 
+          // Adding Classes
           <button
             onClick={() => {
               let keys = Object.keys(classes);
@@ -273,6 +272,7 @@ class App extends Component {
                   professor: classObj.i,
                   rating: classObj.ra,
                   hours: classObj.h,
+                  units: classObj.u1 + classObj.u2 + classObj.u3,
                   locked: false,
                   joinCode: "",
                 }).then((created) => {
