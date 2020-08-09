@@ -285,7 +285,7 @@ class Page extends Component {
           });
         }}
       >
-        <UserDeleteOutlined /> Remove {this.state.page.pageType}
+        <UserDeleteOutlined /> Leave {this.state.page.pageType}
       </Button>
     );
 
@@ -298,7 +298,7 @@ class Page extends Component {
             : this.addSelfToPage(this.state.page._id);
         }}
       >
-        <UserAddOutlined /> Add {this.state.page.pageType}
+        <UserAddOutlined /> Join {this.state.page.pageType}
       </Button>
     );
 

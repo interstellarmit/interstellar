@@ -147,6 +147,7 @@ class App extends Component {
       });
     });
   };
+
   logout = () => {
     cookies.set("token", "", { path: "/" });
     post("/api/logout", {}).then((res) => {
@@ -155,6 +156,7 @@ class App extends Component {
       });
     });
   };
+
   me = () => {
     console.log("cur_id");
     console.log(this.state.userId);
@@ -181,14 +183,19 @@ class App extends Component {
       });
     });
   };
+
+  setVisible = (bool) => {
+    post("/api/setVisible", { visible: bool }).then((data) => {
+      if (data.setVisible) {
+        this.setState({ visible: bool });
+      }
+    });
+  };
   signup = (data) => {
     post("/api/signup", data).then((res) => {
       if (res.msg) {
         this.setState({ signUpMessage: res.msg });
       }
-      // if (data.password.length < 6) {
-      //   this.setState({ signUpMessage: "Please enter a longer password" })
-      // }
     });
   };
 
@@ -322,15 +329,20 @@ class App extends Component {
                 <Switch>
                   <Home
                     exact
-                    path={["/", "/welcome", "/dashboard"]}
+                    path={["/", "/welcome", "/dashboard", "/privacy"]}
                     schoolId={this.state.schoolId}
                     updateSelectedPageName={this.updateSelectedPageName}
-                    user={{ userId: this.state.userId, name: this.state.name }}
+                    user={{
+                      userId: this.state.userId,
+                      name: this.state.visible ? this.state.name : "Anonymous (Me)",
+                    }}
                     redirectPage={this.redirectPage}
                     myPages={myPages}
                     disconnect={this.disconnect}
                     allPages={this.state.allPages}
                     logout={this.logout}
+                    visible={this.state.visible}
+                    setVisible={this.setVisible}
                   />
                   <Page
                     path="/class/:selectedPage"
@@ -338,13 +350,17 @@ class App extends Component {
                     pageIds={this.state.pageIds}
                     updatePageIds={this.updatePageIds}
                     updateSelectedPageName={this.updateSelectedPageName}
-                    user={{ userId: this.state.userId, name: this.state.name }}
+                    user={{
+                      userId: this.state.userId,
+                      name: this.state.visible ? this.state.name : "Anonymous (Me)",
+                    }}
                     redirectPage={this.redirectPage}
                     loungeId={this.state.loungeId}
                     setLoungeId={this.setLoungeId}
                     isSiteAdmin={this.state.isSiteAdmin}
                     disconnect={this.disconnect}
                     logout={this.logout}
+                    visible={this.state.visible}
                   />
                   <Page
                     path="/group/:selectedPage"
