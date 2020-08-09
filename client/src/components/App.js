@@ -312,8 +312,8 @@ class App extends Component {
             },
           })
         ) : (
-          <></>
-        )}
+            <></>
+          )}
         <Layout style={{ minHeight: "100vh" }}>
           <SideBar
             pageIds={this.state.pageIds}
