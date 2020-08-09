@@ -294,7 +294,7 @@ async function login(req, res) {
       payload,
       "randomString",
       {
-        expiresIn: 3600,
+        expiresIn: 360000,
       },
       (err, token) => {
         if (err) throw err;
@@ -342,7 +342,7 @@ async function signUpLogin(req, res) {
         payload,
         "randomString",
         {
-          expiresIn: 3600,
+          expiresIn: 360000,
         },
         (err, token) => {
           if (err) throw err;
@@ -386,7 +386,7 @@ async function signUpLogin(req, res) {
       payload,
       "randomString",
       {
-        expiresIn: 3600,
+        expiresIn: 360000,
       },
       (err, token) => {
         if (err) throw err;

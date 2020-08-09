@@ -51,6 +51,7 @@ class App extends Component {
       tryingToLogin: true,
       // currentPageName from URL?
     };
+    this.encodedLink = encodeURIComponent(window.location.href)
     let self = this;
     if (cookies.get("token") != undefined && cookies.get("token").length > 0) {
       self.me();
@@ -101,9 +102,10 @@ class App extends Component {
   */
 
   handleLogin = () => {
-    post("/api/getRedirectLink", {}).then((ret) => {
-      window.location.href = ret.link;
-    });
+    // post("/api/getRedirectLink", {}).then((ret) => {
+    //   window.location.href = ret.link;
+    // });
+    window.location.href = "https://fireroad-dev.mit.edu/login?redirect=" + this.encodedLink;
   };
 
   signUpLogin = (data) => {
@@ -115,7 +117,6 @@ class App extends Component {
       if (res.token) {
         this.setState({ loginMessage: "Success!" });
       } else {
-        console.log("hi");
       }
       post("/api/initsocket", { socketid: socket.id }).then((data) => {
         if (data.init) this.me();
@@ -158,18 +159,12 @@ class App extends Component {
   };
 
   me = () => {
-    console.log("cur_id");
-    console.log(this.state.userId);
     let token = cookies.get("token");
     get("/api/me", {}, token).then((res) => {
       if (!res.user) {
-        console.log("no token");
         this.logout();
         return;
       }
-      console.log("frontend user");
-
-      console.log(res.user);
       this.setState({
         userId: res.user._id,
         schoolId: res.user.schoolId,
@@ -259,7 +254,6 @@ class App extends Component {
     let myPages = this.state.allPages.filter((page) => {
       return this.state.pageIds.includes(page._id);
     });
-    console.log(this.state.userId);
     return (
       <div>
         {/*
