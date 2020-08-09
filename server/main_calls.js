@@ -83,6 +83,17 @@ Description: Creates a new page, populating with given info. Sets self as admin.
 */
 
 createNewPage = (req, res) => {
+  if (
+    req.body.name.length < 2 ||
+    req.body.name.length > 20 ||
+    req.body.title.length < 2 ||
+    req.body.title.length > 100 ||
+    req.body.description.length < 10 ||
+    req.body.description.length > 10000
+  ) {
+    res.send({ created: false });
+    return;
+  }
   School.findById(req.user.schoolId).then((school) => {
     let name = req.body.name;
     name = name.replace(/ /g, "_");
@@ -320,6 +331,10 @@ leavePage = (req, res) => {
 };
 
 setJoinCode = (req, res) => {
+  if (req.body.lock && (req.body.code.length > 500 || req.body.code.length < 1)) {
+    res.send({ setCode: false });
+    return;
+  }
   Page.findById(req.body.pageId).then((page) => {
     if (req.user.isSiteAdmin || page.adminIds.includes(req.user._id)) {
       page.locked = req.body.lock;

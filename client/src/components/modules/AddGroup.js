@@ -10,7 +10,7 @@ export default function AddGroup(props) {
       name: fieldsValue.name,
       title: fieldsValue.title,
       description: fieldsValue.description,
-      locked: fieldsValue.joinCode && fieldsValue.joinCode.length > 0,
+      locked: fieldsValue.joinCode ? fieldsValue.joinCode.length > 0 : false,
       joinCode: fieldsValue.joinCode || "",
     }).then((data) => {
       if (data.created) {
