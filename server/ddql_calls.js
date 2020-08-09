@@ -25,7 +25,11 @@ Returns: {created: Boolean, DDQL: DDQL}
 Description: Creates the DDQL and returns it
 */
 createNewDDQL = (req, res) => {
-  if (req.body.url.length > 500 || req.body.title.length < 2 || req.body.title.length > 100) {
+  if (
+    (req.body.url && req.body.url.length > 500) ||
+    req.body.title.length < 2 ||
+    req.body.title.length > 100
+  ) {
     res.send({ created: false });
     return;
   }
