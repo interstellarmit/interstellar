@@ -10,9 +10,9 @@ export default function InfoTab(props) {
   if (props.inPage) {
     users.push(Object.assign(props.user, { pageIds: props.pageIds }));
   }
-  let rating = props.page.rating
+  let rating = props.page.rating;
   if (rating.length === 1) {
-    rating += ".0"
+    rating += ".0";
   }
   return (
     <>
@@ -23,13 +23,13 @@ export default function InfoTab(props) {
               <Row>{"Professor: " + props.page.professor}</Row>
               <Row>
                 <Rate allowHalf defaultValue={parseFloat(props.page.rating)} disabled count={7} />
-                <div style={{ padding: '10px' }}>{rating}/7.0</div>
-                {/* <div style={{ padding: '10px' }}>{props.page.hours} hours</div> */}
+                <div style={{ padding: "10px" }}>{rating}/7.0</div>
+                <div style={{ padding: "10px" }}>{props.page.hours} hours</div>
               </Row>
             </React.Fragment>
           ) : (
-              <></>
-            )}
+            <></>
+          )}
           <Row>
             <Text>{props.page.description}</Text>
           </Row>

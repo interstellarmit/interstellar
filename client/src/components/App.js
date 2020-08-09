@@ -115,7 +115,7 @@ class App extends Component {
       if (res.token) {
         this.setState({ loginMessage: "Success!" });
       } else {
-        console.log("hi");
+        console.log("failed login");
       }
       post("/api/initsocket", { socketid: socket.id }).then((data) => {
         if (data.init) this.me();
