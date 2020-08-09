@@ -10,6 +10,7 @@ export default function SearchBar(props) {
       return page.name === name;
     })[0];
     if (!page) return;
+    if (!name) return;
     setQuery("");
     props.redirectPage("/" + page.pageType.toLowerCase() + "/" + page.name);
   };
