@@ -1,7 +1,18 @@
 import React, { Component } from "react";
 import { get, post } from "../../utilities";
 import { socket } from "../../client-socket.js";
-import { Spin, Space, Button, Typography, Layout, Row, Col, PageHeader, Descriptions } from "antd";
+import {
+  Spin,
+  Space,
+  Switch,
+  Button,
+  Typography,
+  Layout,
+  Row,
+  Col,
+  PageHeader,
+  Descriptions,
+} from "antd";
 import DDQLSection from "../modules/DDQLSection";
 import TabPage from "../modules/TabPage";
 import SearchBar from "../modules/SearchBar";
@@ -22,7 +33,7 @@ class Home extends Component {
     props.updateSelectedPageName("");
   }
 
-  addToLounge = (userId, loungeId, callback = () => { }) => {
+  addToLounge = (userId, loungeId, callback = () => {}) => {
     let lounges = this.state.lounges;
     let lounge = lounges.filter((l) => {
       return l._id + "" === loungeId;
@@ -40,7 +51,7 @@ class Home extends Component {
     this.setState({ lounges: newLounges }, callback);
   };
 
-  removeFromLounge = (userId, loungeId, callback = () => { }) => {
+  removeFromLounge = (userId, loungeId, callback = () => {}) => {
     if (loungeId !== "") {
       let lounges = this.state.lounges;
       let lounge = lounges.filter((l) => {
@@ -142,8 +153,8 @@ class Home extends Component {
           }}
         >
           <TabPage
-            labels={["Welcome", "Dashboard"]}
-            routerLinks={["welcome", "dashboard"]}
+            labels={["Welcome", "Dashboard", "Privacy"]}
+            routerLinks={["welcome", "dashboard", "privacy"]}
             defaultRouterLink={"welcome"}
           >
             <div>
@@ -194,6 +205,19 @@ class Home extends Component {
                 })}
               </Col>
             </Row>
+            <div>
+              <div style={{ paddingBottom: "10px" }}>
+                Toggle privacy mode to appear as anonymous in all of your classes
+              </div>
+              <Switch
+                checked={!this.props.visible}
+                onChange={(checked) => {
+                  this.props.setVisible(!checked);
+                }}
+                checkedChildren={"Privacy Mode On"}
+                unCheckedChildren={"Privacy Mode Off"}
+              />
+            </div>
           </TabPage>
         </Content>
 

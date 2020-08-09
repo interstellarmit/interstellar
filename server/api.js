@@ -118,6 +118,7 @@ router.post("/joinPage", main_calls.joinPage);
 router.post("/removeSelfFromPage", auth.ensureLoggedIn, main_calls.removeSelfFromPage);
 router.post("/leavePage", auth.ensureLoggedIn, main_calls.leavePage);
 router.post("/setJoinCode", auth.ensureLoggedIn, main_calls.setJoinCode);
+router.post("/setVisible", auth.ensureLoggedIn, main_calls.setVisible);
 
 router.post("/createNewLounge", auth.ensureLoggedIn, lounge_calls.createNewLounge);
 router.post("/addSelfToLounge", auth.ensureLoggedIn, lounge_calls.addSelfToLounge);

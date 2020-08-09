@@ -236,12 +236,16 @@ joinPage = (req, res) => {
 
       User.find({ pageIds: { $in: pageArr } }, (err, users) => {
         let condensedUsers = users.map((singleUser) => {
+          if ((req.body.home || page.pageType === "Class") && !singleUser.visible)
+            return { userId: singleUser._id, name: "Anonymous" };
           return { userId: singleUser._id, name: singleUser.name };
         });
         let inPageUsers = users.map((singleUser) => {
           if (!req.body.home && page.pageType === "Group") {
             return { userId: singleUser._id, name: singleUser.name, pageIds: singleUser.pageIds };
           }
+          if ((req.body.home || page.pageType === "Class") && !singleUser.visible)
+            return { userId: singleUser._id, name: "Anonymous" };
           return { userId: singleUser._id, name: singleUser.name };
         });
         if (req.body.home || user.pageIds.includes(page._id)) {
@@ -327,6 +331,15 @@ setJoinCode = (req, res) => {
   });
 };
 
+setVisible = (req, res) => {
+  User.findById(req.user._id).then((user) => {
+    user.visible = req.body.visible;
+    user.save().then(() => {
+      res.send({ setVisible: true });
+    });
+  });
+};
+
 module.exports = {
   createNewSchool,
   createNewPage,
@@ -335,4 +348,5 @@ module.exports = {
   joinPage,
   leavePage,
   setJoinCode,
+  setVisible,
 };
