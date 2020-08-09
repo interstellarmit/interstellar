@@ -104,6 +104,10 @@ export default function AddNewDDQL(props) {
                   max: 500,
                   message: "URL must be at most 500 characters",
                 },
+                {
+                  type: "url",
+                  message: "Please enter a valid URL",
+                },
               ])}
             >
               <Input placeholder={"www.mit.edu"} />
