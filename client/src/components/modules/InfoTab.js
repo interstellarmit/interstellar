@@ -14,6 +14,10 @@ export default function InfoTab(props) {
   if (rating.length === 1) {
     rating += ".0";
   }
+  //let adminUser = props.users.concat(props.user).find((user) => {
+  //  return user.userId === (props.page.adminIds[0] || "");
+  //});
+  //let admin = adminUser ? adminUser.name.split(" ")[0] : "the group creator";
   return (
     <>
       <Row>
@@ -32,6 +36,13 @@ export default function InfoTab(props) {
           )}
           <Row>
             <Text>{props.page.description}</Text>
+          </Row>
+          <Row>
+            {props.page.pageType === "Group" && !props.page.locked ? (
+              <Text style={{ fontStyle: "italic" }}>{"This is a public group."}</Text>
+            ) : (
+              <></>
+            )}
           </Row>
         </Col>
         <Col span={12}>
