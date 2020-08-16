@@ -23,6 +23,10 @@ Returns: {created: Boolean, lounge: Lounge}
 Description: Adds new lounge to mongo, emits socket telling everyone in page that new lounge is created. 
 */
 createNewLounge = (req, res) => {
+  if (req.body.name.length < 1 || req.body.name.length > 100 || req.body.zoomLink.length > 200) {
+    res.send({ created: false });
+    return;
+  }
   User.findById(req.user._id).then((user) => {
     if (user.pageIds.includes(req.body.pageId)) {
       let lounge = new Lounge({
