@@ -58,19 +58,40 @@ router.get("/me", auth.me, async (req, res) => {
     const user = await User.findById(req.user.id);
     //,
     console.log("start slow part");
-    Page.find({ schoolId: user.schoolId, expiryDate: { $gte: new Date() } }, (err, pages) => {
-      console.log("end slow part");
-      console.log("sending user " + user);
-      res.send({
-        user: user,
-        allPages: pages.map((page) => {
-          let newPage = page;
-          newPage.description = "";
-          newPage.joinCode = "INVISIBLE";
-          return newPage;
-        }),
+    Page.find({
+      schoolId: user.schoolId,
+      expiryDate: { $gte: new Date() },
+      //pageType: "Group",
+    })
+      .select("name _id title locked pageType")
+
+      .then((pages) => {
+        console.log("end slow part");
+        console.log("sending user " + user);
+        let allPages = [];
+        //console.log("sending pages" + pages);
+        pages.forEach((page) => {
+          allPages.push({
+            _id: String(page._id),
+            name: page.name,
+            title: page.title,
+            pageType: page.pageType,
+            locked: page.locked,
+          });
+          if (allPages.length === pages.length) {
+            res.send({
+              user: user,
+              allPages: allPages,
+              //pages.map((page) => {
+              // let newPage = page;
+              //newPage.description = "";
+              //newPage.joinCode = "INVISIBLE";
+              // return newPage;
+              //}),
+            });
+          }
+        });
       });
-    });
   } catch (e) {
     console.log(e);
     res.send({ message: "Error in Fetching user" });

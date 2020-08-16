@@ -100,6 +100,7 @@ class Page extends Component {
       name: data.name,
       pageId: this.state.page._id,
       zoomLink: data.zoomLink,
+      permanent: data.permanent,
     }).then((data) => {
       if (!data.created) return;
       let lounges = this.state.lounges;

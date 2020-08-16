@@ -51,7 +51,7 @@ class App extends Component {
       tryingToLogin: true,
       // currentPageName from URL?
     };
-    this.encodedLink = encodeURIComponent(window.location.href)
+    this.encodedLink = encodeURIComponent(window.location.href);
     let self = this;
     if (cookies.get("token") != undefined && cookies.get("token").length > 0) {
       self.me();
@@ -176,6 +176,7 @@ class App extends Component {
         visible: res.user.visible,
         allPages: res.allPages,
       });
+      console.log(res.allPages[0]);
     });
   };
 
@@ -305,8 +306,8 @@ class App extends Component {
             },
           })
         ) : (
-            <></>
-          )}
+          <></>
+        )}
         <Layout style={{ minHeight: "100vh" }}>
           <SideBar
             pageIds={this.state.pageIds}
