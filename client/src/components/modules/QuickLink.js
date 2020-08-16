@@ -1,11 +1,27 @@
 import React, { Component, useState } from "react";
 
 import { List, Avatar, Button } from "antd";
-import { PlusOutlined, MinusOutlined, LinkOutlined } from "@ant-design/icons";
+import { PlusOutlined, MinusOutlined, LinkOutlined, CheckCircleTwoTone } from "@ant-design/icons";
 export default function QuickLink(props) {
   return (
     <List.Item
-      actions={[
+      actions={(props.verify && props.dueDate.visibility === "Public"
+        ? [
+            <Button
+              onClick={() => {
+                post("/api/verifyDDQL", {
+                  objectId: props.dueDate._id,
+                  verified: !verified,
+                }).then((data) => {
+                  if (data.verified) setVerified(!verified);
+                });
+              }}
+            >
+              <CheckCircleTwoTone twoToneColor={verified ? "#52c41a" : undefined} />
+            </Button>,
+          ]
+        : []
+      ).concat([
         <Button
           onClick={() => {
             window.open(props.quickLink.url, "_blank");
@@ -36,7 +52,7 @@ export default function QuickLink(props) {
             <PlusOutlined />
           </Button>
         ),
-      ]}
+      ])}
     >
       <List.Item.Meta
         avatar={

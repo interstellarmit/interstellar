@@ -15,6 +15,7 @@ export default function DashboardTab(props) {
             createNewDDQL={props.createNewDDQL}
             editDDQL={props.editDDQL}
             user={props.user}
+            isSiteAdmin={props.isSiteAdmin}
             type="DueDate"
           />
 
@@ -23,6 +24,7 @@ export default function DashboardTab(props) {
             users={props.users}
             page={props.page}
             createNewDDQL={props.createNewDDQL}
+            isSiteAdmin={props.isSiteAdmin}
             editDDQL={props.editDDQL}
             user={props.user}
             type="QuickLink"

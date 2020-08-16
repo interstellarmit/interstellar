@@ -13,17 +13,21 @@ const DDQLSchema = new mongoose.Schema({
   creatorId: String,
   deleted: {
     type: Boolean,
-    default: false
+    default: false,
   },
   addedUserIds: {
     type: [String], //  (the users who added this duedate),
-    default: []
+    default: [],
   },
   completedUserIds: {
     type: [String], // (the users who completed this duedate)
-    default: []
-  }
-  });
+    default: [],
+  },
+  verified: {
+    type: Boolean,
+    default: false,
+  },
+});
 
 // compile model from schema
 module.exports = mongoose.model("DDQL", DDQLSchema);

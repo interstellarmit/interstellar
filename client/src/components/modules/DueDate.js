@@ -1,8 +1,9 @@
 import React, { Component, useState } from "react";
 import { List, Avatar, Button, Checkbox } from "antd";
-import { PlusOutlined, MinusOutlined } from "@ant-design/icons";
-
+import { PlusOutlined, MinusOutlined, CheckCircleTwoTone, UnCheck } from "@ant-design/icons";
+import { get, post } from "../../utilities";
 export default function DueDate(props) {
+  const [verified, setVerified] = React.useState(props.dueDate.verified);
   const formatDueDate = (duedate) => {
     return (
       new Date(duedate.toString()).toString().substring(0, 11) +
@@ -12,7 +13,23 @@ export default function DueDate(props) {
   };
   return (
     <List.Item
-      actions={[
+      actions={(props.verify && props.dueDate.visibility === "Public"
+        ? [
+            <Button
+              onClick={() => {
+                post("/api/verifyDDQL", {
+                  objectId: props.dueDate._id,
+                  verified: !verified,
+                }).then((data) => {
+                  if (data.verified) setVerified(!verified);
+                });
+              }}
+            >
+              <CheckCircleTwoTone twoToneColor={verified ? "#52c41a" : undefined} />
+            </Button>,
+          ]
+        : []
+      ).concat([
         props.added ? (
           <Button
             onClick={() => {
@@ -36,7 +53,7 @@ export default function DueDate(props) {
             <PlusOutlined />
           </Button>
         ),
-      ]}
+      ])}
     >
       <List.Item.Meta
         avatar={

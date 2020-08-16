@@ -6,6 +6,7 @@ export default function AddLounge(props) {
     props.createNewLounge({
       name: fieldsValue.name,
       zoomLink: fieldsValue.zoomLink || "",
+      permanent: fieldsValue.permanent || false,
     });
     form.resetFields();
     props.setVisible(false);
@@ -68,6 +69,15 @@ export default function AddLounge(props) {
         >
           <Input placeholder={"Optional"} />
         </Form.Item>
+
+        {props.admin ? (
+          <Form.Item {...tailLayout} name="permanent" valuePropName="checked">
+            <Checkbox>Permanent</Checkbox>
+          </Form.Item>
+        ) : (
+          <></>
+        )}
+
         <Form.Item {...tailLayout}>
           <Button key="submit" type="primary" htmlType="submit">
             Submit

@@ -57,7 +57,7 @@ export default function DDQLSection(props) {
 
   let dataSource = props.dataSource;
   let addedDataSource = dataSource.filter((ddql) => {
-    return !ddql.deleted && addedDDQLs.includes("" + ddql._id);
+    return !ddql.deleted && (addedDDQLs.includes("" + ddql._id) || ddql.verified);
   });
 
   let addNewDueDate = showAddNewDueDate ? (
@@ -78,8 +78,8 @@ export default function DDQLSection(props) {
       type={props.type}
     />
   ) : (
-      <></>
-    );
+    <></>
+  );
 
   return (
     <>
@@ -93,17 +93,17 @@ export default function DDQLSection(props) {
             icon={<PlusOutlined />}
           ></Button>
         ) : (
-            <></>
-          )}
+          <></>
+        )}
         {props.type === "QuickLink" ? (
           <></>
         ) : (
-            <Switch
-              onChange={(checked) => {
-                setShowCompleted(checked);
-              }}
-            />
-          )}
+          <Switch
+            onChange={(checked) => {
+              setShowCompleted(checked);
+            }}
+          />
+        )}
       </Space>
       {props.home ? <></> : addNewDueDate}
       <ConfigProvider
@@ -129,16 +129,26 @@ export default function DDQLSection(props) {
                 completed={completedDDQLs.includes("" + item._id)}
                 home={props.home}
                 pageMap={props.pageMap}
+                verify={
+                  props.page
+                    ? props.page.adminIds.includes(props.user.userId) || props.isSiteAdmin
+                    : false
+                }
               />
             ) : (
-                <QuickLink
-                  quickLink={item}
-                  addOrCompleteDDQL={addOrCompleteDDQL}
-                  added={addedDDQLs.includes("" + item._id)}
-                  home={props.home}
-                  pageMap={props.pageMap}
-                />
-              );
+              <QuickLink
+                quickLink={item}
+                addOrCompleteDDQL={addOrCompleteDDQL}
+                added={addedDDQLs.includes("" + item._id)}
+                home={props.home}
+                pageMap={props.pageMap}
+                verify={
+                  props.page
+                    ? props.page.adminIds.includes(props.user.userId) || props.isSiteAdmin
+                    : false
+                }
+              />
+            );
           }}
         />
       </ConfigProvider>

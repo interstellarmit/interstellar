@@ -84,6 +84,7 @@ export default function LoungesTab(props) {
                       createNewLounge={props.createNewLounge}
                       visible={addNewLounge}
                       setVisible={setAddNewLounge}
+                      admin={props.page.adminIds.includes(props.user.userId) || props.isSiteAdmin}
                     />
                     <LoungeList
                       lounges={props.lounges}

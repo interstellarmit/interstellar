@@ -56,8 +56,10 @@ router.get("/me", auth.me, async (req, res) => {
     // request.user is getting fetched from Middleware after token authentication
     console.log("backend requser" + req.user);
     const user = await User.findById(req.user.id);
-
+    //,
+    console.log("start slow part");
     Page.find({ schoolId: user.schoolId, expiryDate: { $gte: new Date() } }, (err, pages) => {
+      console.log("end slow part");
       console.log("sending user " + user);
       res.send({
         user: user,
@@ -128,6 +130,7 @@ router.post("/message", auth.ensureLoggedIn, lounge_calls.message);
 
 router.post("/createNewDDQL", auth.ensureLoggedIn, DDQL_calls.createNewDDQL);
 router.post("/editDDQL", auth.ensureLoggedIn, DDQL_calls.editDDQL);
+router.post("/verifyDDQL", auth.ensureLoggedIn, DDQL_calls.verifyDDQL);
 router.post("/addOrCompleteDDQL", auth.ensureLoggedIn, DDQL_calls.addOrCompleteDDQL);
 
 router.post("/joinForum", auth.ensureLoggedIn, forum_calls.joinForum);

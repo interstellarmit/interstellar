@@ -375,6 +375,7 @@ class Page extends Component {
                 lounges={this.state.lounges}
                 users={this.state.users}
                 page={this.state.page}
+                isSiteAdmin={this.props.isSiteAdmin}
                 createNewDDQL={this.createNewDDQL}
                 editDDQL={this.editDDQL}
                 user={this.props.user}
@@ -388,6 +389,8 @@ class Page extends Component {
                 removeSelfFromLounge={this.removeSelfFromLounge}
                 createNewLounge={this.createNewLounge}
                 loungeId={this.props.loungeId}
+                user={this.props.user}
+                isSiteAdmin={this.props.isSiteAdmin}
                 setLoungeId={this.props.setLoungeId}
               />
               {

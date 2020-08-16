@@ -269,7 +269,7 @@ joinPage = (req, res) => {
           DDQL.find(
             {
               pageId: { $in: pageArr },
-              $or: [{ addedUserIds: req.user._id }, { visibility: "Public" }],
+              $or: [{ addedUserIds: req.user._id }, { visibility: "Public" }, { verified: true }],
               deleted: false,
             },
             (err, DDQLs) => {
