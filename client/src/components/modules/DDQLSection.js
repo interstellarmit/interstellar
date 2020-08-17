@@ -14,6 +14,13 @@ export default function DDQLSection(props) {
     .map((ddql) => {
       return ddql._id;
     });
+  let initialVerified = props.dataSource
+    .filter((ddql) => {
+      return ddql.verified;
+    })
+    .map((ddql) => {
+      return ddql._id;
+    });
   let initialCompleted = props.dataSource
     .filter((ddql) => {
       return (ddql.completedUserIds || []).includes(props.user.userId);
@@ -23,8 +30,29 @@ export default function DDQLSection(props) {
     });
   const [showCompleted, setShowCompleted] = React.useState(false);
   const [addedDDQLs, setAddedDDQLs] = React.useState(initialAdded); // ids
+  const [verifiedDDQLs, setVerifiedDDQLs] = React.useState(initialVerified); // ids
   const [completedDDQLs, setCompletedDDQLs] = React.useState(initialCompleted); // ids
   const [showAddNewDueDate, setShowAddNewDueDate] = React.useState(false);
+  const verifyDDQL = (input) => {
+    post("/api/verifyDDQL", input).then((data) => {
+      if (data.verified) {
+        if (input.verified) {
+          let newVerified = verifiedDDQLs.map((id) => {
+            return id;
+          });
+          newVerified.push(input.objectId);
+
+          setVerifiedDDQLs(newVerified);
+        } else {
+          let newVerified = verifiedDDQLs.filter((id) => {
+            return id !== input.objectId;
+          });
+
+          setVerifiedDDQLs(newVerified);
+        }
+      }
+    });
+  };
   const addOrCompleteDDQL = (input) => {
     post("/api/addOrCompleteDDQL", Object.assign(input, { amount: "single" })).then((result) => {
       if (!result.done) return;
@@ -134,6 +162,8 @@ export default function DDQLSection(props) {
                     ? props.page.adminIds.includes(props.user.userId) || props.isSiteAdmin
                     : false
                 }
+                verified={verifiedDDQLs.includes("" + item._id)}
+                verifyDDQL={verifyDDQL}
               />
             ) : (
               <QuickLink
@@ -147,6 +177,8 @@ export default function DDQLSection(props) {
                     ? props.page.adminIds.includes(props.user.userId) || props.isSiteAdmin
                     : false
                 }
+                verified={verifiedDDQLs.includes("" + item._id)}
+                verifyDDQL={verifyDDQL}
               />
             );
           }}

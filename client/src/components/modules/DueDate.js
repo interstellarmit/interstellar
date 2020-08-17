@@ -1,9 +1,9 @@
 import React, { Component, useState } from "react";
-import { List, Avatar, Button, Checkbox } from "antd";
+import { List, Avatar, Button } from "antd";
 import { PlusOutlined, MinusOutlined, CheckCircleTwoTone, UnCheck } from "@ant-design/icons";
+import Checkbox from "@material-ui/core/Checkbox";
 import { get, post } from "../../utilities";
 export default function DueDate(props) {
-  const [verified, setVerified] = React.useState(props.dueDate.verified);
   const formatDueDate = (duedate) => {
     return (
       new Date(duedate.toString()).toString().substring(0, 11) +
@@ -17,67 +17,71 @@ export default function DueDate(props) {
         ? [
             <Button
               onClick={() => {
-                post("/api/verifyDDQL", {
+                props.verifyDDQL({
                   objectId: props.dueDate._id,
-                  verified: !verified,
-                }).then((data) => {
-                  if (data.verified) setVerified(!verified);
+                  verified: !props.verified,
                 });
               }}
             >
-              <CheckCircleTwoTone twoToneColor={verified ? "#52c41a" : undefined} />{" "}
-              {verified ? "Pushed to Everyone" : "Push to Everyone"}
+              <CheckCircleTwoTone twoToneColor={props.verified ? "#52c41a" : undefined} />{" "}
+              {props.verified ? "Pushed to Everyone" : "Push to Everyone"}
             </Button>,
           ]
         : []
-      ).concat([
-        props.added ? (
-          <Button
-            onClick={() => {
-              props.addOrCompleteDDQL({
-                objectId: props.dueDate._id,
-                action: "remove",
-              });
-            }}
-          >
-            <MinusOutlined />
-          </Button>
-        ) : (
-          <Button
-            onClick={() => {
-              props.addOrCompleteDDQL({
-                objectId: props.dueDate._id,
-                action: "add",
-              });
-            }}
-          >
-            <PlusOutlined />
-          </Button>
-        ),
-      ])}
+      ).concat(
+        !props.verified
+          ? [
+              props.added ? (
+                <Button
+                  onClick={() => {
+                    props.addOrCompleteDDQL({
+                      objectId: props.dueDate._id,
+                      action: "remove",
+                    });
+                  }}
+                >
+                  <MinusOutlined />
+                </Button>
+              ) : (
+                <Button
+                  onClick={() => {
+                    props.addOrCompleteDDQL({
+                      objectId: props.dueDate._id,
+                      action: "add",
+                    });
+                  }}
+                >
+                  <PlusOutlined />
+                </Button>
+              ),
+            ]
+          : []
+      )}
     >
       <List.Item.Meta
         avatar={
-          props.added ? (
+          props.added || props.verified ? (
             props.completed ? (
               <Checkbox
                 checked={true}
-                onClick={() => {
+                onChange={() => {
                   props.addOrCompleteDDQL({
                     objectId: props.dueDate._id,
                     action: "uncomplete",
                   });
                 }}
+                color="primary"
               />
             ) : (
               <Checkbox
                 checked={false}
-                onClick={() => {
+                onChange={() => {
                   props.addOrCompleteDDQL({
                     objectId: props.dueDate._id,
                     action: "complete",
                   });
                 }}
+                color="primary"
               />
             )
           ) : (

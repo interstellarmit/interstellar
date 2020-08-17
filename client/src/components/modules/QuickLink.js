@@ -5,54 +5,60 @@ import { PlusOutlined, MinusOutlined, LinkOutlined, CheckCircleTwoTone } from "@
 export default function QuickLink(props) {
   return (
     <List.Item
-      actions={(props.verify && props.dueDate.visibility === "Public"
+      actions={(props.verify && props.quickLink.visibility === "Public"
         ? [
             <Button
               onClick={() => {
-                post("/api/verifyDDQL", {
-                  objectId: props.dueDate._id,
-                  verified: !verified,
-                }).then((data) => {
-                  if (data.verified) setVerified(!verified);
+                props.verifyDDQL({
+                  objectId: props.quickLink._id,
+                  verified: !props.verified,
                 });
               }}
             >
-              <CheckCircleTwoTone twoToneColor={verified ? "#52c41a" : undefined} />
+              <CheckCircleTwoTone twoToneColor={props.verified ? "#52c41a" : undefined} />{" "}
+              {props.verified ? "Pushed to Everyone" : "Push to Everyone"}
             </Button>,
           ]
         : []
-      ).concat([
-        <Button
-          onClick={() => {
-            window.open(props.quickLink.url, "_blank");
-          }}
-        >
-          <LinkOutlined />
-        </Button>,
-        props.added ? (
+      )
+        .concat([
           <Button
             onClick={() => {
-              props.addOrCompleteDDQL({
-                objectId: props.quickLink._id,
-                action: "remove",
-              });
+              window.open(props.quickLink.url, "_blank");
             }}
           >
-            <MinusOutlined />
-          </Button>
-        ) : (
-          <Button
-            onClick={() => {
-              props.addOrCompleteDDQL({
-                objectId: props.quickLink._id,
-                action: "add",
-              });
-            }}
-          >
-            <PlusOutlined />
-          </Button>
-        ),
-      ])}
+            <LinkOutlined />
+          </Button>,
+        ])
+        .concat(
+          props.verified
+            ? []
+            : [
+                props.added ? (
+                  <Button
+                    onClick={() => {
+                      props.addOrCompleteDDQL({
+                        objectId: props.quickLink._id,
+                        action: "remove",
+                      });
+                    }}
+                  >
+                    <MinusOutlined />
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={() => {
+                      props.addOrCompleteDDQL({
+                        objectId: props.quickLink._id,
+                        action: "add",
+                      });
+                    }}
+                  >
+                    <PlusOutlined />
+                  </Button>
+                ),
+              ]
+        )}
     >
       <List.Item.Meta
         avatar={
