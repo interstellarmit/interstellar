@@ -152,9 +152,10 @@ class App extends Component {
   logout = () => {
     cookies.set("token", "", { path: "/" });
     post("/api/logout", {}).then((res) => {
-      this.setState({ userId: undefined, tryingToLogin: false }, () => {
-        window.location.href = "/";
-      });
+      window.location.href = "/";
+      //this.setState({ userId: undefined, tryingToLogin: false }, () => {
+
+      //});
     });
   };
 
@@ -176,7 +177,7 @@ class App extends Component {
         visible: res.user.visible,
         allPages: res.allPages,
       });
-      console.log(res.allPages[0]);
+      console.log("loungeId " + res.user.loungeId);
     });
   };
 

@@ -124,7 +124,7 @@ createNewPage = (req, res) => {
           joinCode: req.body.joinCode || "",
         });
         page.save().then((pg) => {
-          res.send({ created: true, pageId: page._id, name: page.name });
+          res.send({ created: true, pageId: pg._id, name: page.name });
         });
       });
     } else {
@@ -367,6 +367,39 @@ setVisible = (req, res) => {
   });
 };
 
+addRemoveAdmin = (req, res) => {
+  if (!req.user.isSiteAdmin) {
+    res.send({ success: false });
+    return;
+  }
+  Page.findById(req.body.pageId).then((page) => {
+    if (req.body.isAdmin) {
+      if (page.adminIds.includes(req.body.userId)) {
+        let adminIds = page.adminIds.filter((id) => {
+          return id !== req.body.userId;
+        });
+        page.adminIds = adminIds;
+        page.save().then(() => {
+          res.send({ success: true });
+        });
+      } else {
+        res.send({ success: false });
+      }
+    } else {
+      if (!page.adminIds.includes(req.body.userId)) {
+        let adminIds = page.adminIds;
+        adminIds.push(req.body.userId);
+        page.adminIds = adminIds;
+        page.save().then(() => {
+          res.send({ success: true });
+        });
+      } else {
+        res.send({ success: false });
+      }
+    }
+  });
+};
+
 module.exports = {
   createNewSchool,
   createNewPage,
@@ -377,4 +410,5 @@ module.exports = {
   setJoinCode,
   getRedirectLink,
   setVisible,
+  addRemoveAdmin,
 };

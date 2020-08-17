@@ -44,8 +44,8 @@ createNewDDQL = (req, res) => {
         visibility: req.body.visibility,
         creatorId: req.user._id,
       });
-      ddql.save().then(() => {
-        res.send({ created: true, DDQL: ddql });
+      ddql.save().then((ddqlSaved) => {
+        res.send({ created: true, DDQL: ddqlSaved });
       });
     } else {
       res.send({ created: false });

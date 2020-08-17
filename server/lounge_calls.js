@@ -40,12 +40,12 @@ createNewLounge = (req, res) => {
               ? req.body.permanent
               : false,
         });
-        lounge.save().then(() => {
+        lounge.save().then((loungeS) => {
           socket
             .getSocketFromUserID(req.user._id)
             .to("Page: " + req.body.pageId)
-            .emit("newLounge", lounge);
-          res.send({ created: true, lounge: lounge });
+            .emit("newLounge", loungeS);
+          res.send({ created: true, lounge: loungeS });
         });
       } else {
         res.send({ created: false });

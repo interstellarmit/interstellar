@@ -51,6 +51,9 @@ export default function InfoTab(props) {
             allPages={props.allPages}
             showClasses={true}
             pageIds={props.pageIds}
+            page={props.page}
+            adminIds={props.page.adminIds}
+            isSiteAdmin={props.isSiteAdmin}
           />
         </Col>
       </Row>

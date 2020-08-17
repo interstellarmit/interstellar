@@ -25,7 +25,8 @@ export default function DueDate(props) {
                 });
               }}
             >
-              <CheckCircleTwoTone twoToneColor={verified ? "#52c41a" : undefined} />
+              <CheckCircleTwoTone twoToneColor={verified ? "#52c41a" : undefined} />{" "}
+              {verified ? "Pushed to Everyone" : "Push to Everyone"}
             </Button>,
           ]
         : []

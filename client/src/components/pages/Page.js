@@ -107,8 +107,9 @@ class Page extends Component {
       lounges.push(data.lounge);
       this.setState({ lounges: lounges }, () => {
         let page = this.state.page;
-        window.location.href =
-          "/" + page.pageType.toLowerCase() + "/" + page.name + "/lounges/" + data.lounge._id;
+        this.props.redirectPage(
+          "/" + page.pageType.toLowerCase() + "/" + page.name + "/lounges/" + data.lounge._id
+        );
       });
     });
   };
@@ -149,7 +150,7 @@ class Page extends Component {
         return id !== userId;
       });
       lounge.userIds = userIds;
-      if (lounge.userIds.length > 0) newLounges.push(lounge);
+      if (lounge.userIds.length > 0 || lounge.permanent) newLounges.push(lounge);
 
       this.setState({ lounges: newLounges }, () => {
         callback();
@@ -369,6 +370,7 @@ class Page extends Component {
                 user={this.props.user}
                 pageIds={this.props.pageIds}
                 allPages={this.props.allPages}
+                isSiteAdmin={this.props.isSiteAdmin}
               />
               <DashboardTab
                 dueDates={this.state.dueDates}
