@@ -19,7 +19,7 @@ export default function AddGroup(props) {
           joinCode: fieldsValue.joinCode || "",
         }).then((data2) => {
           if (data2.added) {
-            window.location.href = "/group/" + data.name;
+            props.redirectPage("/group/" + data.name);
           }
         });
       } else {

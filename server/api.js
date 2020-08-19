@@ -56,19 +56,42 @@ router.get("/me", auth.me, async (req, res) => {
     // request.user is getting fetched from Middleware after token authentication
     console.log("backend requser" + req.user);
     const user = await User.findById(req.user.id);
+    //,
+    console.log("start slow part");
+    Page.find({
+      schoolId: user.schoolId,
+      expiryDate: { $gte: new Date() },
+      //pageType: "Group",
+    })
+      .select("name _id title locked pageType")
 
-    Page.find({ schoolId: user.schoolId, expiryDate: { $gte: new Date() } }, (err, pages) => {
-      console.log("sending user " + user);
-      res.send({
-        user: user,
-        allPages: pages.map((page) => {
-          let newPage = page;
-          newPage.description = "";
-          newPage.joinCode = "INVISIBLE";
-          return newPage;
-        }),
+      .then((pages) => {
+        console.log("end slow part");
+        console.log("sending user " + user);
+        let allPages = [];
+        //console.log("sending pages" + pages);
+        pages.forEach((page) => {
+          allPages.push({
+            _id: String(page._id),
+            name: page.name,
+            title: page.title,
+            pageType: page.pageType,
+            locked: page.locked,
+          });
+          if (allPages.length === pages.length) {
+            res.send({
+              user: user,
+              allPages: allPages,
+              //pages.map((page) => {
+              // let newPage = page;
+              //newPage.description = "";
+              //newPage.joinCode = "INVISIBLE";
+              // return newPage;
+              //}),
+            });
+          }
+        });
       });
-    });
   } catch (e) {
     console.log(e);
     res.send({ message: "Error in Fetching user" });
@@ -120,6 +143,7 @@ router.post("/leavePage", auth.ensureLoggedIn, main_calls.leavePage);
 router.post("/setJoinCode", auth.ensureLoggedIn, main_calls.setJoinCode);
 router.post("/getRedirectLink", main_calls.getRedirectLink);
 router.post("/setVisible", auth.ensureLoggedIn, main_calls.setVisible);
+router.post("/addRemoveAdmin", auth.ensureLoggedIn, main_calls.addRemoveAdmin);
 
 router.post("/createNewLounge", auth.ensureLoggedIn, lounge_calls.createNewLounge);
 router.post("/addSelfToLounge", auth.ensureLoggedIn, lounge_calls.addSelfToLounge);
@@ -128,6 +152,7 @@ router.post("/message", auth.ensureLoggedIn, lounge_calls.message);
 
 router.post("/createNewDDQL", auth.ensureLoggedIn, DDQL_calls.createNewDDQL);
 router.post("/editDDQL", auth.ensureLoggedIn, DDQL_calls.editDDQL);
+router.post("/verifyDDQL", auth.ensureLoggedIn, DDQL_calls.verifyDDQL);
 router.post("/addOrCompleteDDQL", auth.ensureLoggedIn, DDQL_calls.addOrCompleteDDQL);
 
 router.post("/joinForum", auth.ensureLoggedIn, forum_calls.joinForum);

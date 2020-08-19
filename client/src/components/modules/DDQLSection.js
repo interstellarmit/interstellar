@@ -14,6 +14,13 @@ export default function DDQLSection(props) {
     .map((ddql) => {
       return ddql._id;
     });
+  let initialVerified = props.dataSource
+    .filter((ddql) => {
+      return ddql.verified;
+    })
+    .map((ddql) => {
+      return ddql._id;
+    });
   let initialCompleted = props.dataSource
     .filter((ddql) => {
       return (ddql.completedUserIds || []).includes(props.user.userId);
@@ -23,8 +30,29 @@ export default function DDQLSection(props) {
     });
   const [showCompleted, setShowCompleted] = React.useState(false);
   const [addedDDQLs, setAddedDDQLs] = React.useState(initialAdded); // ids
+  const [verifiedDDQLs, setVerifiedDDQLs] = React.useState(initialVerified); // ids
   const [completedDDQLs, setCompletedDDQLs] = React.useState(initialCompleted); // ids
   const [showAddNewDueDate, setShowAddNewDueDate] = React.useState(false);
+  const verifyDDQL = (input) => {
+    post("/api/verifyDDQL", input).then((data) => {
+      if (data.verified) {
+        if (input.verified) {
+          let newVerified = verifiedDDQLs.map((id) => {
+            return id;
+          });
+          newVerified.push(input.objectId);
+
+          setVerifiedDDQLs(newVerified);
+        } else {
+          let newVerified = verifiedDDQLs.filter((id) => {
+            return id !== input.objectId;
+          });
+
+          setVerifiedDDQLs(newVerified);
+        }
+      }
+    });
+  };
   const addOrCompleteDDQL = (input) => {
     post("/api/addOrCompleteDDQL", Object.assign(input, { amount: "single" })).then((result) => {
       if (!result.done) return;
@@ -57,7 +85,7 @@ export default function DDQLSection(props) {
 
   let dataSource = props.dataSource;
   let addedDataSource = dataSource.filter((ddql) => {
-    return !ddql.deleted && addedDDQLs.includes("" + ddql._id);
+    return !ddql.deleted && (addedDDQLs.includes("" + ddql._id) || ddql.verified);
   });
 
   let addNewDueDate = showAddNewDueDate ? (
@@ -78,8 +106,8 @@ export default function DDQLSection(props) {
       type={props.type}
     />
   ) : (
-      <></>
-    );
+    <></>
+  );
 
   return (
     <>
@@ -93,17 +121,17 @@ export default function DDQLSection(props) {
             icon={<PlusOutlined />}
           ></Button>
         ) : (
-            <></>
-          )}
+          <></>
+        )}
         {props.type === "QuickLink" ? (
           <></>
         ) : (
-            <Switch
-              onChange={(checked) => {
-                setShowCompleted(checked);
-              }}
-            />
-          )}
+          <Switch
+            onChange={(checked) => {
+              setShowCompleted(checked);
+            }}
+          />
+        )}
       </Space>
       {props.home ? <></> : addNewDueDate}
       <ConfigProvider
@@ -129,16 +157,30 @@ export default function DDQLSection(props) {
                 completed={completedDDQLs.includes("" + item._id)}
                 home={props.home}
                 pageMap={props.pageMap}
+                verify={
+                  props.page
+                    ? props.page.adminIds.includes(props.user.userId) || props.isSiteAdmin
+                    : false
+                }
+                verified={verifiedDDQLs.includes("" + item._id)}
+                verifyDDQL={verifyDDQL}
               />
             ) : (
-                <QuickLink
-                  quickLink={item}
-                  addOrCompleteDDQL={addOrCompleteDDQL}
-                  added={addedDDQLs.includes("" + item._id)}
-                  home={props.home}
-                  pageMap={props.pageMap}
-                />
-              );
+              <QuickLink
+                quickLink={item}
+                addOrCompleteDDQL={addOrCompleteDDQL}
+                added={addedDDQLs.includes("" + item._id)}
+                home={props.home}
+                pageMap={props.pageMap}
+                verify={
+                  props.page
+                    ? props.page.adminIds.includes(props.user.userId) || props.isSiteAdmin
+                    : false
+                }
+                verified={verifiedDDQLs.includes("" + item._id)}
+                verifyDDQL={verifyDDQL}
+              />
+            );
           }}
         />
       </ConfigProvider>

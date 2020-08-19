@@ -70,7 +70,7 @@ class Home extends Component {
       });
       lounge.userIds = userIds;
 
-      if (lounge.userIds.length > 0) newLounges.push(lounge);
+      if (lounge.userIds.length > 0 || lounge.permanent) newLounges.push(lounge);
       this.setState({ lounges: newLounges }, () => {
         callback();
       });

@@ -28,23 +28,29 @@ createNewLounge = (req, res) => {
     return;
   }
   User.findById(req.user._id).then((user) => {
-    if (user.pageIds.includes(req.body.pageId)) {
-      let lounge = new Lounge({
-        name: req.body.name,
-        pageId: req.body.pageId,
-        hostId: req.user._id,
-        zoomLink: req.body.zoomLink || "",
-      });
-      lounge.save().then(() => {
-        socket
-          .getSocketFromUserID(req.user._id)
-          .to("Page: " + req.body.pageId)
-          .emit("newLounge", lounge);
-        res.send({ created: true, lounge: lounge });
-      });
-    } else {
-      res.send({ created: false });
-    }
+    Page.findById(req.body.pageId).then((page) => {
+      if (user.pageIds.includes(req.body.pageId)) {
+        let lounge = new Lounge({
+          name: req.body.name,
+          pageId: req.body.pageId,
+          hostId: req.user._id,
+          zoomLink: req.body.zoomLink || "",
+          permanent:
+            req.user.isSiteAdmin || page.adminIds.includes(req.user._id)
+              ? req.body.permanent
+              : false,
+        });
+        lounge.save().then((loungeS) => {
+          socket
+            .getSocketFromUserID(req.user._id)
+            .to("Page: " + req.body.pageId)
+            .emit("newLounge", loungeS);
+          res.send({ created: true, lounge: loungeS });
+        });
+      } else {
+        res.send({ created: false });
+      }
+    });
   });
 };
 
@@ -110,7 +116,7 @@ removeSelfFromLoungePromise = (userId, loungeId) => {
               return id !== userId;
             });
             let oldPageId = lounge.pageId;
-            if (lounge.userIds.length === 0) lounge.pageId = "deleted";
+            if (lounge.userIds.length === 0 && !lounge.permanent) lounge.pageId = "deleted";
 
             lounge.save().then(() => {
               socket

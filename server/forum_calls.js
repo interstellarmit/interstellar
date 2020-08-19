@@ -104,9 +104,9 @@ createNewComment = (req, res) => {
         postId: req.body.postId,
       });
 
-      comment.save().then(() => {
+      comment.save().then((commentSaved) => {
         res.send({
-          comment: comment,
+          comment: commentSaved,
           created: true,
         });
       });

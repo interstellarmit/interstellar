@@ -56,7 +56,7 @@ module.exports = {
                   return id !== user._id;
                 });
                 let oldPageId = lounge.pageId;
-                if (lounge.userIds.length === 0) lounge.pageId = "deleted";
+                if (lounge.userIds.length === 0 && !lounge.permanent) lounge.pageId = "deleted";
                 console.log(lounge.userIds.length);
                 lounge.save().then(() => {
                   getSocketFromUserID(user._id)

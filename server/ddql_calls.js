@@ -44,8 +44,8 @@ createNewDDQL = (req, res) => {
         visibility: req.body.visibility,
         creatorId: req.user._id,
       });
-      ddql.save().then(() => {
-        res.send({ created: true, DDQL: ddql });
+      ddql.save().then((ddqlSaved) => {
+        res.send({ created: true, DDQL: ddqlSaved });
       });
     } else {
       res.send({ created: false });
@@ -70,17 +70,50 @@ Description: Edits the DDQL and resaves it. Returns the edited DDQL
 */
 editDDQL = (req, res) => {
   DDQL.findById(req.body.DDQLId).then((ddql) => {
-    if (ddql.creatorId === req.user._id) {
-      ddql.title = req.body.title;
-      ddql.dueDate = req.body.dueDate;
-      ddql.url = req.body.url;
-      if (req.body.deleted) ddql.deleted = true;
-      ddql.save().then(() => {
-        res.send({ edited: true, DDQL: ddql });
-      });
-    } else {
-      res.send({ edited: false });
-    }
+    Page.findById(ddql.pageId).then((page) => {
+      if (
+        ddql.creatorId === req.user._id ||
+        req.user.isSiteAdmin ||
+        page.adminIds.includes(req.user._id)
+      ) {
+        ddql.title = req.body.title;
+        ddql.dueDate = req.body.dueDate;
+        ddql.url = req.body.url;
+        if (req.body.deleted) ddql.deleted = true;
+        ddql.save().then(() => {
+          res.send({ edited: true, DDQL: ddql });
+        });
+      } else {
+        res.send({ edited: false });
+      }
+    });
+  });
+};
+
+/*
+verifyDDQL
+Input (req.body): {
+	objectId: String,
+	verified: Boolean
+
+}
+Precondition: User is the creator of the DDQL
+Socket: 
+Returns: {edited: Boolean, DDQL: DDQL}
+Description: Edits the DDQL and resaves it. Returns the edited DDQL
+*/
+verifyDDQL = (req, res) => {
+  DDQL.findById(req.body.objectId).then((ddql) => {
+    Page.findById(ddql.pageId).then((page) => {
+      if (req.user.isSiteAdmin || page.adminIds.includes(req.user._id)) {
+        ddql.verified = req.body.verified;
+        ddql.save().then(() => {
+          res.send({ verified: true, DDQL: ddql });
+        });
+      } else {
+        res.send({ verified: false });
+      }
+    });
   });
 };
 
@@ -169,4 +202,5 @@ module.exports = {
   createNewDDQL,
   editDDQL,
   addOrCompleteDDQL,
+  verifyDDQL,
 };

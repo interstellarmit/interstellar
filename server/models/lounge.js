@@ -12,6 +12,10 @@ const LoungeSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
+  permanent: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 // compile model from schema

@@ -100,14 +100,16 @@ class Page extends Component {
       name: data.name,
       pageId: this.state.page._id,
       zoomLink: data.zoomLink,
+      permanent: data.permanent,
     }).then((data) => {
       if (!data.created) return;
       let lounges = this.state.lounges;
       lounges.push(data.lounge);
       this.setState({ lounges: lounges }, () => {
         let page = this.state.page;
-        window.location.href =
-          "/" + page.pageType.toLowerCase() + "/" + page.name + "/lounges/" + data.lounge._id;
+        this.props.redirectPage(
+          "/" + page.pageType.toLowerCase() + "/" + page.name + "/lounges/" + data.lounge._id
+        );
       });
     });
   };
@@ -148,7 +150,7 @@ class Page extends Component {
         return id !== userId;
       });
       lounge.userIds = userIds;
-      if (lounge.userIds.length > 0) newLounges.push(lounge);
+      if (lounge.userIds.length > 0 || lounge.permanent) newLounges.push(lounge);
 
       this.setState({ lounges: newLounges }, () => {
         callback();
@@ -368,6 +370,7 @@ class Page extends Component {
                 user={this.props.user}
                 pageIds={this.props.pageIds}
                 allPages={this.props.allPages}
+                isSiteAdmin={this.props.isSiteAdmin}
               />
               <DashboardTab
                 dueDates={this.state.dueDates}
@@ -375,6 +378,7 @@ class Page extends Component {
                 lounges={this.state.lounges}
                 users={this.state.users}
                 page={this.state.page}
+                isSiteAdmin={this.props.isSiteAdmin}
                 createNewDDQL={this.createNewDDQL}
                 editDDQL={this.editDDQL}
                 user={this.props.user}
@@ -388,6 +392,8 @@ class Page extends Component {
                 removeSelfFromLounge={this.removeSelfFromLounge}
                 createNewLounge={this.createNewLounge}
                 loungeId={this.props.loungeId}
+                user={this.props.user}
+                isSiteAdmin={this.props.isSiteAdmin}
                 setLoungeId={this.props.setLoungeId}
               />
               {
