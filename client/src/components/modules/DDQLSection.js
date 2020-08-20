@@ -2,7 +2,17 @@ import React, { Component, useState } from "react";
 import DueDate from "./DueDate";
 import AddNewDDQL from "./AddNewDDQL";
 import QuickLink from "./QuickLink";
-import { List, Avatar, Button, Space, Switch, Typography, Empty, ConfigProvider } from "antd";
+import {
+  List,
+  Avatar,
+  Button,
+  Space,
+  Switch,
+  Typography,
+  Empty,
+  ConfigProvider,
+  PageHeader,
+} from "antd";
 const { Title, Text } = Typography;
 import { get, post } from "../../utilities";
 import { PlusOutlined, MinusOutlined } from "@ant-design/icons";
@@ -111,28 +121,38 @@ export default function DDQLSection(props) {
 
   return (
     <>
-      <Space align="center">
-        <Title level={4}>{props.type === "DueDate" ? "Due Dates" : "Quicklinks"}</Title>
-        {!props.home ? (
-          <Button
-            onClick={() => {
-              setShowAddNewDueDate(true);
-            }}
-            icon={<PlusOutlined />}
-          ></Button>
-        ) : (
-          <></>
-        )}
-        {props.type === "QuickLink" ? (
-          <></>
-        ) : (
-          <Switch
-            onChange={(checked) => {
-              setShowCompleted(checked);
-            }}
-          />
-        )}
-      </Space>
+      <PageHeader
+        title={props.type === "DueDate" ? "Due Dates" : "Quicklinks"}
+        extra={[
+          props.type === "QuickLink" ? (
+            <></>
+          ) : (
+            <Button
+              onClick={() => {
+                setShowCompleted(!showCompleted);
+              }}
+              shape={"round"}
+            >
+              {!showCompleted ? "Show Completed" : "Hide Completed"}
+            </Button>
+          ),
+          !props.home ? (
+            <Button
+              onClick={() => {
+                setShowAddNewDueDate(true);
+              }}
+              type="primary"
+              shape="round"
+              icon={<PlusOutlined />}
+            >
+              Add
+            </Button>
+          ) : (
+            <></>
+          ),
+        ]}
+      ></PageHeader>
+
       {props.home ? <></> : addNewDueDate}
       <ConfigProvider
         renderEmpty={() => {
