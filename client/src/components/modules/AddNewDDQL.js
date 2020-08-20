@@ -14,7 +14,7 @@ export default function AddNewDDQL(props) {
     if (props.type === "DueDate") {
       values = {
         ...fieldsValue,
-        dueDate: fieldsValue["dueDate"].format("YYYY-MM-DD HH:mm:ss"),
+        dueDate: fieldsValue["dueDate"].toDate(),
       };
     } else {
       values = fieldsValue;
