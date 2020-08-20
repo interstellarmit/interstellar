@@ -1,9 +1,18 @@
 import React, { Component, useState } from "react";
 import { List, Avatar, Button } from "antd";
-import { PlusOutlined, MinusOutlined, CheckCircleTwoTone, UnCheck } from "@ant-design/icons";
+import {
+  PlusOutlined,
+  MinusOutlined,
+  CheckCircleTwoTone,
+  LinkOutlined,
+  EditOutlined,
+} from "@ant-design/icons";
 import Checkbox from "@material-ui/core/Checkbox";
+import AddNewDDQL from "./AddNewDDQL";
 import { get, post } from "../../utilities";
 export default function DueDate(props) {
+  const [showEdit, setShowEdit] = React.useState(false);
+
   const formatDueDate = (duedate) => {
     return (
       new Date(duedate.toString()).toString().substring(0, 11) +
@@ -11,6 +20,18 @@ export default function DueDate(props) {
     );
     // duedate.toString().substring(0, 11) + duedate.toString().substring(16, 21);
   };
+
+  let editDDQL = (
+    <AddNewDDQL
+      editDDQL={props.editDDQL}
+      visible={showEdit}
+      setVisible={setShowEdit}
+      DDQL={props.dueDate}
+      type={"DueDate"}
+      edit={true}
+    />
+  );
+
   return (
     <List.Item
       actions={(props.verify && props.dueDate.visibility === "Public"
@@ -28,36 +49,64 @@ export default function DueDate(props) {
             </Button>,
           ]
         : []
-      ).concat(
-        !props.verified
-          ? [
-              props.added ? (
-                <Button
-                  onClick={() => {
-                    props.addOrCompleteDDQL({
-                      objectId: props.dueDate._id,
-                      action: "remove",
-                    });
-                  }}
-                >
-                  <MinusOutlined />
-                </Button>
-              ) : (
-                <Button
-                  onClick={() => {
-                    props.addOrCompleteDDQL({
-                      objectId: props.dueDate._id,
-                      action: "add",
-                    });
-                  }}
-                >
-                  <PlusOutlined />
-                </Button>
-              ),
-            ]
-          : []
-      )}
+      )
+        .concat(
+          !props.verified
+            ? [
+                props.added ? (
+                  <Button
+                    onClick={() => {
+                      props.addOrCompleteDDQL({
+                        objectId: props.dueDate._id,
+                        action: "remove",
+                      });
+                    }}
+                  >
+                    <MinusOutlined />
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={() => {
+                      props.addOrCompleteDDQL({
+                        objectId: props.dueDate._id,
+                        action: "add",
+                      });
+                    }}
+                  >
+                    <PlusOutlined />
+                  </Button>
+                ),
+              ]
+            : []
+        )
+        .concat(
+          props.dueDate.url ? (
+            <Button
+              onClick={() => {
+                window.open(props.dueDate.url, "_blank");
+              }}
+            >
+              <LinkOutlined />
+            </Button>
+          ) : (
+            <></>
+          )
+        )
+        .concat(
+          props.verify || props.dueDate.creatorId === props.userId ? (
+            <Button
+              onClick={() => {
+                setShowEdit(true);
+              }}
+            >
+              <EditOutlined />
+            </Button>
+          ) : (
+            <></>
+          )
+        )}
     >
+      {editDDQL}
       <List.Item.Meta
         avatar={
           props.added || props.verified ? (

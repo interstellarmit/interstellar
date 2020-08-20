@@ -144,6 +144,7 @@ export default function DDQLSection(props) {
         <List
           size="large"
           dataSource={addedDataSource.filter((item) => {
+            if (item.deleted) return false;
             if (!showCompleted) return !completedDDQLs.includes("" + item._id);
             return true;
           })}
@@ -164,6 +165,8 @@ export default function DDQLSection(props) {
                 }
                 verified={verifiedDDQLs.includes("" + item._id)}
                 verifyDDQL={verifyDDQL}
+                editDDQL={props.editDDQL}
+                userId={props.user.userId}
               />
             ) : (
               <QuickLink
@@ -172,6 +175,7 @@ export default function DDQLSection(props) {
                 added={addedDDQLs.includes("" + item._id)}
                 home={props.home}
                 pageMap={props.pageMap}
+                userId={props.user.userId}
                 verify={
                   props.page
                     ? props.page.adminIds.includes(props.user.userId) || props.isSiteAdmin
@@ -179,6 +183,7 @@ export default function DDQLSection(props) {
                 }
                 verified={verifiedDDQLs.includes("" + item._id)}
                 verifyDDQL={verifyDDQL}
+                editDDQL={props.editDDQL}
               />
             );
           }}
