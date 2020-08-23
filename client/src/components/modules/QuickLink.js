@@ -52,19 +52,23 @@ export default function QuickLink(props) {
                 ]
               : []
             )
-              .concat([
-                <Button
-                  onClick={() => {
-                    window.open(props.quickLink.url, "_blank");
-                  }}
-                  icon={<LinkOutlined />}
-                  shape={"round"}
-                >
-                  Link
-                </Button>,
-              ])
               .concat(
-                props.verified
+                props.added
+                  ? [
+                      <Button
+                        onClick={() => {
+                          window.open(props.quickLink.url, "_blank");
+                        }}
+                        icon={<LinkOutlined />}
+                        shape={"round"}
+                      >
+                        Link
+                      </Button>,
+                    ]
+                  : []
+              )
+              .concat(
+                props.verified || props.home
                   ? []
                   : [
                       props.added ? (
@@ -95,7 +99,7 @@ export default function QuickLink(props) {
                     ]
               )
               .concat(
-                props.verify || props.quickLink.creatorId === props.userId ? (
+                (props.verify || props.quickLink.creatorId === props.userId) && !props.home ? (
                   <Button
                     onClick={() => {
                       setShowEdit(true);

@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { Component, useState, useEffect, useRef } from "react";
 import DueDate from "./DueDate";
 import AddNewDDQL from "./AddNewDDQL";
 import QuickLink from "./QuickLink";
@@ -17,6 +17,11 @@ const { Title, Text } = Typography;
 import { get, post } from "../../utilities";
 import { PlusOutlined, MinusOutlined } from "@ant-design/icons";
 export default function DDQLSection(props) {
+  const scrollToRef = useRef(null);
+  useEffect(() => {
+    if (!scrollToRef.current) return;
+    scrollToRef.current.scrollIntoView({ behavior: "smooth" });
+  });
   let initialAdded = props.dataSource
     .filter((ddql) => {
       return ddql.addedUserIds.includes(props.user.userId);
@@ -154,61 +159,81 @@ export default function DDQLSection(props) {
       ></PageHeader>
 
       {props.home ? <></> : addNewDueDate}
-      <ConfigProvider
-        renderEmpty={() => {
-          return (
-            <Empty description={"No " + (props.type === "DueDate" ? "Due Dates" : "Quicklinks")} />
-          );
-        }}
-      >
-        <List
-          size="large"
-          dataSource={addedDataSource.filter((item) => {
-            if (item.deleted) return false;
-            if (!showCompleted) return !completedDDQLs.includes("" + item._id);
-            return true;
-          })}
-          renderItem={(item) => {
-            // console.log("hi:" + completedDDQLs.includes("" + item._id));
-            return props.type === "DueDate" ? (
-              <DueDate
-                dueDate={item}
-                addOrCompleteDDQL={addOrCompleteDDQL}
-                added={addedDDQLs.includes("" + item._id)}
-                completed={completedDDQLs.includes("" + item._id)}
-                home={props.home}
-                pageMap={props.pageMap}
-                verify={
-                  props.page
-                    ? props.page.adminIds.includes(props.user.userId) || props.isSiteAdmin
-                    : false
-                }
-                verified={verifiedDDQLs.includes("" + item._id)}
-                verifyDDQL={verifyDDQL}
-                editDDQL={props.editDDQL}
-                userId={props.user.userId}
-              />
-            ) : (
-              <QuickLink
-                quickLink={item}
-                addOrCompleteDDQL={addOrCompleteDDQL}
-                added={addedDDQLs.includes("" + item._id)}
-                home={props.home}
-                pageMap={props.pageMap}
-                userId={props.user.userId}
-                verify={
-                  props.page
-                    ? props.page.adminIds.includes(props.user.userId) || props.isSiteAdmin
-                    : false
-                }
-                verified={verifiedDDQLs.includes("" + item._id)}
-                verifyDDQL={verifyDDQL}
-                editDDQL={props.editDDQL}
+      <div style={{ maxHeight: "250px", overflow: "auto" }}>
+        <ConfigProvider
+          renderEmpty={() => {
+            return (
+              <Empty
+                description={"No " + (props.type === "DueDate" ? "Due Dates" : "Quicklinks")}
               />
             );
           }}
-        />
-      </ConfigProvider>
+        >
+          <List
+            size="large"
+            dataSource={addedDataSource
+              .filter((item) => {
+                if (item.deleted) return false;
+                if (!showCompleted) return !completedDDQLs.includes("" + item._id);
+                return true;
+              })
+              .concat(
+                props.type === "DueDate"
+                  ? [{ objectType: "DueDate", dueDate: new Date(), marker: true }]
+                  : []
+              )
+              .sort((a, b) => {
+                let diff = 0;
+                if (a.objectType === "DueDate") {
+                  diff = new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
+                } else {
+                  diff = (a.addedUserIds.length - b.addedUserIds.length) * -1;
+                }
+                return diff === 0 ? (a._id + "").localeCompare(b._id + "") : diff;
+              })}
+            renderItem={(item) => {
+              // console.log("hi:" + completedDDQLs.includes("" + item._id));
+              if (item.marker) return <div ref={scrollToRef} />;
+              return props.type === "DueDate" ? (
+                <DueDate
+                  dueDate={item}
+                  addOrCompleteDDQL={addOrCompleteDDQL}
+                  added={addedDDQLs.includes("" + item._id)}
+                  completed={completedDDQLs.includes("" + item._id)}
+                  home={props.home}
+                  pageMap={props.pageMap}
+                  verify={
+                    props.page
+                      ? props.page.adminIds.includes(props.user.userId) || props.isSiteAdmin
+                      : false
+                  }
+                  verified={verifiedDDQLs.includes("" + item._id)}
+                  verifyDDQL={verifyDDQL}
+                  editDDQL={props.editDDQL}
+                  userId={props.user.userId}
+                />
+              ) : (
+                <QuickLink
+                  quickLink={item}
+                  addOrCompleteDDQL={addOrCompleteDDQL}
+                  added={addedDDQLs.includes("" + item._id)}
+                  home={props.home}
+                  pageMap={props.pageMap}
+                  userId={props.user.userId}
+                  verify={
+                    props.page
+                      ? props.page.adminIds.includes(props.user.userId) || props.isSiteAdmin
+                      : false
+                  }
+                  verified={verifiedDDQLs.includes("" + item._id)}
+                  verifyDDQL={verifyDDQL}
+                  editDDQL={props.editDDQL}
+                />
+              );
+            }}
+          />
+        </ConfigProvider>
+      </div>
     </>
   );
 }

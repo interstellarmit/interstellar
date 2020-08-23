@@ -1,10 +1,12 @@
-import React, { Component, useState } from "react";
+import React, { Component, useState, useEffect, useRef } from "react";
 import { List, Modal, Row, Col, Button, Form, Input, DatePicker, Checkbox } from "antd";
 import DueDate from "./DueDate";
 import moment from "moment";
 import QuickLink from "./QuickLink";
+import AddNewDDQLList from "./AddNewDDQLList";
 export default function AddNewDDQL(props) {
   const [form] = Form.useForm();
+
   let text = props.type === "DueDate" ? "Due Date" : "Quicklink";
   let dateConfig = {
     rules: [{ type: "object", required: true, message: "Please select a due date!" }],
@@ -63,15 +65,17 @@ export default function AddNewDDQL(props) {
   return (
     <Modal
       visible={props.visible}
-      title={"Add New " + text}
-      width={700}
+      title={
+        (props.edit ? "Edit " : "Add New ") + text + (!props.edit ? " or Add Existing " + text : "")
+      }
+      width={props.edit ? undefined : 700}
       onCancel={() => {
         form.resetFields();
         props.setVisible(false);
       }}
       footer={null}
     >
-      <Row>
+      <Row gutter={!props.edit ? [16, 16] : undefined}>
         <Col span={props.edit ? 24 : 12}>
           <Form
             {...layout}
@@ -157,7 +161,7 @@ export default function AddNewDDQL(props) {
                 {props.edit ? "Edit " + text : "Add " + text}
               </Button>
               {props.edit ? (
-                <Button type="primary" onClick={onDelete}>
+                <Button type="primary" onClick={onDelete} style={{ marginLeft: "10px" }}>
                   {"Delete " + text}
                 </Button>
               ) : (
@@ -170,27 +174,39 @@ export default function AddNewDDQL(props) {
           <></>
         ) : (
           <Col span={12}>
-            <div style={{ height: "250px", overflow: "auto" }}>
-              <List
-                dataSource={props.public}
-                renderItem={(item) => {
-                  return props.type === "DueDate" ? (
-                    <DueDate
-                      dueDate={item}
-                      addOrCompleteDDQL={props.addOrCompleteDDQL}
-                      added={false}
-                      completed={false}
-                    />
-                  ) : (
-                    <QuickLink
-                      quickLink={item}
-                      addOrCompleteDDQL={props.addOrCompleteDDQL}
-                      added={false}
-                    />
-                  );
-                }}
-              />
-            </div>
+            <AddNewDDQLList
+              dataSource={props.public
+                .concat(
+                  props.type === "DueDate"
+                    ? [{ objectType: "DueDate", dueDate: new Date(), marker: true }]
+                    : []
+                )
+                .sort((a, b) => {
+                  let diff = 0;
+                  if (a.objectType === "DueDate") {
+                    diff = new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
+                  } else {
+                    diff = (a.addedUserIds.length - b.addedUserIds.length) * -1;
+                  }
+                  return diff === 0 ? (a._id + "").localeCompare(b._id + "") : diff;
+                })}
+              renderItem={(item) => {
+                return props.type === "DueDate" ? (
+                  <DueDate
+                    dueDate={item}
+                    addOrCompleteDDQL={props.addOrCompleteDDQL}
+                    added={false}
+                    completed={false}
+                  />
+                ) : (
+                  <QuickLink
+                    quickLink={item}
+                    addOrCompleteDDQL={props.addOrCompleteDDQL}
+                    added={false}
+                  />
+                );
+              }}
+            />
           </Col>
         )}
       </Row>

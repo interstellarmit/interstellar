@@ -70,7 +70,7 @@ export default function DueDate(props) {
               : []
             )
               .concat(
-                !props.verified
+                !props.verified && !props.home
                   ? [
                       props.added ? (
                         <Button
@@ -101,7 +101,7 @@ export default function DueDate(props) {
                   : []
               )
               .concat(
-                props.dueDate.url ? (
+                props.added && props.dueDate.url ? (
                   <Button
                     onClick={() => {
                       window.open(props.dueDate.url, "_blank");
@@ -116,7 +116,7 @@ export default function DueDate(props) {
                 )
               )
               .concat(
-                props.verify || props.dueDate.creatorId === props.userId ? (
+                (props.verify || props.dueDate.creatorId === props.userId) && !props.home ? (
                   <Button
                     onClick={() => {
                       setShowEdit(true);
@@ -170,7 +170,7 @@ export default function DueDate(props) {
           formatDueDate(props.dueDate.dueDate)
         }
       />
-      {timeUntilDue < 24 ? (
+      {!hover && props.added && !props.completed && timeUntilDue < 24 ? (
         timeUntilDue < 3 ? (
           timeUntilDue < 0 ? (
             <Alert message={"Due " + -1 * timeUntilDue + " hours ago"} type="error" />
