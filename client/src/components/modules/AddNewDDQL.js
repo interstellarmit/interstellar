@@ -178,7 +178,13 @@ export default function AddNewDDQL(props) {
               dataSource={props.public
                 .concat(
                   props.type === "DueDate"
-                    ? [{ objectType: "DueDate", dueDate: new Date(), marker: true }]
+                    ? [
+                        {
+                          objectType: "DueDate",
+                          dueDate: new Date(new Date() - 1000 * 60 * 60 * 24 * 7),
+                          marker: true,
+                        },
+                      ]
                     : []
                 )
                 .sort((a, b) => {

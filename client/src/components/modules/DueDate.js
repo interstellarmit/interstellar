@@ -173,7 +173,19 @@ export default function DueDate(props) {
       {!hover && props.added && !props.completed && timeUntilDue < 24 ? (
         timeUntilDue < 3 ? (
           timeUntilDue < 0 ? (
-            <Alert message={"Due " + -1 * timeUntilDue + " hours ago"} type="error" />
+            timeUntilDue <= -48 ? (
+              <Alert
+                message={"Due " + Math.floor((-1 * timeUntilDue) / 24) + " days ago"}
+                type="error"
+              />
+            ) : timeUntilDue < -24 ? (
+              <Alert
+                message={"Due " + Math.floor((-1 * timeUntilDue) / 24) + " day ago"}
+                type="error"
+              />
+            ) : (
+              <Alert message={"Due " + -1 * timeUntilDue + " hours ago"} type="error" />
+            )
           ) : (
             <Alert message={"Due in " + timeUntilDue + " hours"} type="error" />
           )

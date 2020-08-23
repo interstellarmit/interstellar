@@ -179,7 +179,13 @@ export default function DDQLSection(props) {
               })
               .concat(
                 props.type === "DueDate"
-                  ? [{ objectType: "DueDate", dueDate: new Date(), marker: true }]
+                  ? [
+                      {
+                        objectType: "DueDate",
+                        dueDate: new Date(new Date() - 1000 * 60 * 60 * 24 * 7),
+                        marker: true,
+                      },
+                    ]
                   : []
               )
               .sort((a, b) => {
