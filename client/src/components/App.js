@@ -177,6 +177,7 @@ class App extends Component {
         isSiteAdmin: res.user.isSiteAdmin,
         email: res.user.email,
         visible: res.user.visible,
+        seeHelpText: res.user.seeHelpText,
         allPages: res.allPages,
       });
       console.log("loungeId " + res.user.loungeId);
@@ -187,6 +188,13 @@ class App extends Component {
     post("/api/setVisible", { visible: bool }).then((data) => {
       if (data.setVisible) {
         this.setState({ visible: bool });
+      }
+    });
+  };
+  setSeeHelpText = (bool) => {
+    post("/api/setSeeHelpText", { seeHelpText: bool }).then((data) => {
+      if (data.setSeeHelpText) {
+        this.setState({ seeHelpText: bool });
       }
     });
   };
@@ -342,6 +350,8 @@ class App extends Component {
                     logout={this.logout}
                     visible={this.state.visible}
                     setVisible={this.setVisible}
+                    seeHelpText={this.state.seeHelpText}
+                    setSeeHelpText={this.setSeeHelpText}
                   />
                   <Page
                     path="/class/:selectedPage"
@@ -360,6 +370,8 @@ class App extends Component {
                     disconnect={this.disconnect}
                     logout={this.logout}
                     visible={this.state.visible}
+                    seeHelpText={this.state.seeHelpText}
+                    setSeeHelpText={this.setSeeHelpText}
                   />
                   <Page
                     path="/group/:selectedPage"
@@ -375,6 +387,8 @@ class App extends Component {
                     pageIds={this.state.pageIds}
                     isSiteAdmin={this.state.isSiteAdmin}
                     disconnect={this.disconnect}
+                    seeHelpText={this.state.seeHelpText}
+                    setSeeHelpText={this.setSeeHelpText}
                     logout={this.logout}
                   />
                   <NotFound default />
