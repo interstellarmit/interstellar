@@ -378,7 +378,11 @@ class Page extends Component {
                 lounges={this.state.lounges}
                 users={this.state.users}
                 page={this.state.page}
+                inPage={true}
+                seeHelpText={this.props.seeHelpText}
+                setSeeHelpText={this.props.setSeeHelpText}
                 isSiteAdmin={this.props.isSiteAdmin}
+                allPages={this.props.allPages}
                 createNewDDQL={this.createNewDDQL}
                 editDDQL={this.editDDQL}
                 user={this.props.user}

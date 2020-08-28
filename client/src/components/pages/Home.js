@@ -205,22 +205,42 @@ class Home extends Component {
                 })}
               </Col>
             </Row>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-              }}
-            >
-              <Switch
-                checked={!this.props.visible}
-                onChange={(checked) => {
-                  this.props.setVisible(!checked);
+            <div>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
                 }}
-                checkedChildren={"On"}
-                unCheckedChildren={"Off"}
-              />
-              <div style={{ paddingLeft: "10px" }}>
-                Toggle privacy mode to appear as anonymous in all of your classes
+              >
+                <Switch
+                  checked={!this.props.visible}
+                  onChange={(checked) => {
+                    this.props.setVisible(!checked);
+                  }}
+                  checkedChildren={"On"}
+                  unCheckedChildren={"Off"}
+                />
+                <div style={{ paddingLeft: "10px" }}>
+                  Toggle privacy mode to appear as anonymous in all of your classes
+                </div>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                }}
+              >
+                <Switch
+                  checked={this.props.seeHelpText}
+                  onChange={(checked) => {
+                    this.props.setSeeHelpText(checked);
+                  }}
+                  checkedChildren={"On"}
+                  unCheckedChildren={"Off"}
+                />
+                <div style={{ paddingLeft: "10px" }}>
+                  Toggle help mode to hide the helper text that appears on dashboard
+                </div>
               </div>
             </div>
           </TabPage>

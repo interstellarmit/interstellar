@@ -367,6 +367,15 @@ setVisible = (req, res) => {
   });
 };
 
+setSeeHelpText = (req, res) => {
+  User.findById(req.user._id).then((user) => {
+    user.seeHelpText = req.body.seeHelpText;
+    user.save().then(() => {
+      res.send({ setSeeHelpText: true });
+    });
+  });
+};
+
 addRemoveAdmin = (req, res) => {
   if (!req.user.isSiteAdmin) {
     res.send({ success: false });
@@ -410,5 +419,6 @@ module.exports = {
   setJoinCode,
   getRedirectLink,
   setVisible,
+  setSeeHelpText,
   addRemoveAdmin,
 };
