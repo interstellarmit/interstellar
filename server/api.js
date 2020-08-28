@@ -170,8 +170,8 @@ router.post("/populateLounges", auth.ensureLoggedIn, (req, res) => {
           pageId: page._id,
           hostId: page.req.user._id,
           zoomLink: req.body.zoomLink,
-          permanent:
-            true
+          permanent: true,
+          main: true,
         });
         console.log(lounge)
         lounge.save()
