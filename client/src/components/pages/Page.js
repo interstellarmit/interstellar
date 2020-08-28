@@ -358,8 +358,8 @@ class Page extends Component {
         >
           {this.state.inPage ? (
             <TabPage
-              labels={["Info", "Dashboard", "Lounges", "Forum"]}
-              routerLinks={["info", "dashboard", "lounges", "forum"]}
+              labels={["Info", "Dashboard", "Lounge", "Forum"]}
+              routerLinks={["info", "dashboard", "lounges/" + this.state.lounges.filter((lounge) => { return lounge.name === this.state.page.name })[0]._id, "forum"]}
               defaultRouterLink={this.state.inPage ? "info" : "info"}
               page={this.state.page}
             >

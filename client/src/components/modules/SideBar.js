@@ -139,7 +139,7 @@ export default function SideBar(props) {
           Logout
         </Menu.Item>
 
-        <button onClick={populateLounges}>Populate Lounges</button>
+        {props.email === "dansun@mit.edu" ? <button onClick={populateLounges}>Populate Lounges</button> : <></>}
 
         {/* <Menu.Item
             key=".log!!state."

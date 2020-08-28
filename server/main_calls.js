@@ -10,7 +10,7 @@ const School = require("./models/school");
 const socket = require("./server-socket");
 const { useReducer } = require("react");
 const lounge_calls = require("./lounge_calls");
-
+require("dotenv").config()
 let expiryDate = new Date(2021, 1, 20); // expiry date for all classes this semester
 
 /*
