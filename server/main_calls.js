@@ -10,7 +10,7 @@ const School = require("./models/school");
 const socket = require("./server-socket");
 const { useReducer } = require("react");
 const lounge_calls = require("./lounge_calls");
-
+require("dotenv").config()
 let expiryDate = new Date(2021, 1, 20); // expiry date for all classes this semester
 
 /*
@@ -124,6 +124,15 @@ createNewPage = (req, res) => {
           joinCode: req.body.joinCode || "",
         });
         page.save().then((pg) => {
+          let lounge = new Lounge({
+            name: pg.name,
+            pageId: pg._id,
+            hostId: req.user._id,
+            zoomLink: req.body.zoomLink,
+            permanent:
+              true
+          });
+          lounge.save()
           res.send({ created: true, pageId: pg._id, name: page.name });
         });
       });

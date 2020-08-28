@@ -35,22 +35,33 @@ export default function LoungesTab(props) {
 
               loungeCode = (
                 <React.Fragment>
-                  <Title level={3}>
+                  {/* <Title level={3}>
                     <center>{lounge.name}</center>
-                  </Title>
+                  </Title> */}
+                  <br />
+                  <br />
                   <center>
                     {lounge.zoomLink === "" ? (
                       <></>
                     ) : (
-                      <h3>
-                        {"Zoom Link: "}{" "}
-                        <a href={lounge.zoomLink} target="_blank">
-                          {lounge.zoomLink}
+
+                        <a href={lounge.zoomLink} target="_blank" style={{
+                          backgroundColor: "#041528",
+                          padding: '20px',
+                          borderRadius: '10px',
+                          color: "white",
+                          fontSize: 25,
+                        }}>
+                          Hop In The Lounge
                         </a>
-                      </h3>
-                    )}
+
+                      )}
+                    <br />
+                    <br />
+                    <br />
+                    <br />.
                   </center>
-                  <Row>
+                  {/* <Row>
                     <Col span={6}>
                       <UserList
                         users={lounge.userIds.map((user) => {
@@ -63,7 +74,7 @@ export default function LoungesTab(props) {
                     <Col span={18}>
                       <Chat loungeId={loungeId} />
                     </Col>
-                  </Row>
+                  </Row> */}
                 </React.Fragment>
               );
             }
@@ -72,7 +83,7 @@ export default function LoungesTab(props) {
                 <Row>
                   <Col span={18}>{loungeCode}</Col>
                   <Col span={6}>
-                    <Button
+                    {/* <Button
                       onClick={() => {
                         setAddNewLounge(true);
                       }}
@@ -93,6 +104,13 @@ export default function LoungesTab(props) {
                       }}
                       users={props.users}
                       page={props.page}
+                    /> */}
+                    <UserList
+                      users={lounge.userIds.map((user) => {
+                        return props.users.filter((oneUser) => {
+                          return oneUser.userId === user;
+                        })[0];
+                      })}
                     />
                   </Col>
                 </Row>

@@ -29,12 +29,13 @@ createNewLounge = (req, res) => {
   }
   User.findById(req.user._id).then((user) => {
     Page.findById(req.body.pageId).then((page) => {
+      let zoomLink = req.body.zoomLink.length > 0 ? req.body.zoomLink.length : undefined
       if (user.pageIds.includes(req.body.pageId)) {
         let lounge = new Lounge({
           name: req.body.name,
           pageId: req.body.pageId,
           hostId: req.user._id,
-          zoomLink: req.body.zoomLink || "",
+          zoomLink: zoomLink,
           permanent:
             req.user.isSiteAdmin || page.adminIds.includes(req.user._id)
               ? req.body.permanent

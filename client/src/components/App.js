@@ -58,23 +58,26 @@ class App extends Component {
     } else if (window.location.href.indexOf("?code") > 0) {
       let code = window.location.href.substring(window.location.href.indexOf("?code"));
       self.state.code = code;
-      getJSON("https://fireroad-dev.mit.edu/fetch_token/" + code, (err, data) => {
-        if (err !== null) {
-          // alert("Something went wrong: " + err);
-        } else {
-          var req = new XMLHttpRequest();
-          req.responseType = "json";
-          req.open("GET", "https://fireroad-dev.mit.edu/user_info/", true);
-          req.setRequestHeader("Authorization", "Bearer " + data.access_info.access_token);
-          req.onload = function () {
-            var jsonResponse = req.response;
-            let name = jsonResponse.name;
-            let email = data.access_info.academic_id;
-            self.signUpLogin({ email: email, password: "abcdef", name: name });
-          };
-          req.send(null);
-        }
-      });
+      post("/api/getRedirectLink", {}).then((ret) => {
+        getJSON(ret.link + "fetch_token/" + code, (err, data) => {
+          if (err !== null) {
+            // alert("Something went wrong: " + err);
+          } else {
+            var req = new XMLHttpRequest();
+            req.responseType = "json";
+            req.open("GET", ret.link + "user_info/", true);
+            req.setRequestHeader("Authorization", "Bearer " + data.access_info.access_token);
+            req.onload = function () {
+              var jsonResponse = req.response;
+              let name = jsonResponse.name;
+              let email = data.access_info.academic_id;
+              let current_semester = data.access_info.current_semester;
+              self.signUpLogin({ email: email, password: "DH3ordzkbjBra9", name: name });
+            };
+            req.send(null);
+          }
+        });
+      })
     }
   }
 
@@ -102,10 +105,9 @@ class App extends Component {
   */
 
   handleLogin = () => {
-    // post("/api/getRedirectLink", {}).then((ret) => {
-    //   window.location.href = ret.link;
-    // });
-    window.location.href = "https://fireroad-dev.mit.edu/login?redirect=" + this.encodedLink;
+    post("/api/getRedirectLink", {}).then((ret) => {
+      window.location.href = ret.link + "login?redirect=" + this.encodedLink;;
+    });
   };
 
   signUpLogin = (data) => {
@@ -315,8 +317,8 @@ class App extends Component {
             },
           })
         ) : (
-          <></>
-        )}
+            <></>
+          )}
         <Layout style={{ minHeight: "100vh" }}>
           <SideBar
             pageIds={this.state.pageIds}
@@ -326,6 +328,7 @@ class App extends Component {
             redirectPage={this.redirectPage}
             logout={this.logout}
             logState={this.logState}
+            email={this.state.email}
           />
           <Layout className="site-layout">
             <Content>
