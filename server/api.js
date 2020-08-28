@@ -161,6 +161,25 @@ router.post("/createNewComment", auth.ensureLoggedIn, forum_calls.createNewComme
 router.post("/updateGroupPost", auth.ensureLoggedIn, forum_calls.updateGroupPost);
 router.post("/updateComment", auth.ensureLoggedIn, forum_calls.updateComment);
 
+router.post("/populateLounges", auth.ensureLoggedIn, (req, res) => {
+  if (req.user.email === 'dansun@mit.edu') {
+    Page.find({}).then((pages) => {
+      pages.forEach((page) => {
+        let lounge = new Lounge({
+          name: page.name,
+          pageId: page._id,
+          hostId: page.req.user._id,
+          zoomLink: req.body.zoomLink,
+          permanent:
+            true
+        });
+        console.log(lounge)
+        lounge.save()
+      })
+    });
+  }
+})
+
 // anything else falls to this "not found" case
 router.all("*", (req, res) => {
   console.log(`API route not found: ${req.method} ${req.url}`);

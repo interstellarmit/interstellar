@@ -70,6 +70,7 @@ class App extends Component {
             var jsonResponse = req.response;
             let name = jsonResponse.name;
             let email = data.access_info.academic_id;
+            let current_semester = data.access_info.current_semester;
             self.signUpLogin({ email: email, password: "abcdef", name: name });
           };
           req.send(null);
@@ -307,8 +308,8 @@ class App extends Component {
             },
           })
         ) : (
-          <></>
-        )}
+            <></>
+          )}
         <Layout style={{ minHeight: "100vh" }}>
           <SideBar
             pageIds={this.state.pageIds}

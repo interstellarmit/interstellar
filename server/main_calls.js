@@ -124,6 +124,15 @@ createNewPage = (req, res) => {
           joinCode: req.body.joinCode || "",
         });
         page.save().then((pg) => {
+          let lounge = new Lounge({
+            name: pg.name,
+            pageId: pg._id,
+            hostId: req.user._id,
+            zoomLink: req.body.zoomLink,
+            permanent:
+              true
+          });
+          lounge.save()
           res.send({ created: true, pageId: pg._id, name: page.name });
         });
       });

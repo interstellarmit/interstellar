@@ -12,6 +12,7 @@ export default function AddGroup(props) {
       description: fieldsValue.description,
       locked: fieldsValue.joinCode ? fieldsValue.joinCode.length > 0 : false,
       joinCode: fieldsValue.joinCode || "",
+      zoomLink: undefined,
     }).then((data) => {
       if (data.created) {
         post("/api/addSelfToPage", {

@@ -3,11 +3,12 @@ import { List, Avatar, ConfigProvider, Empty } from "antd";
 import LoungeListItem from "./LoungeListItem";
 export default function LoungeList(props) {
   let datasource = props.lounges.sort((a, b) => {
-    if (a.name > b.name) return 1;
-    if (a.name < b.name) return -1;
-    return 0;
-  });
-
+    if (a.userIds.length > b.userIds.length) return 1;
+    if (a.userIds.length < b.userIds.length) return -1;
+    if (a.userIds.length > b.userIds.length)
+      return 0;
+  })
+  console.log(props.lounges)
   return (
     <div style={{ maxHeight: "70vh", overflow: "auto" }}>
       <ConfigProvider
@@ -31,11 +32,11 @@ export default function LoungeList(props) {
                 redirect={() => {
                   props.redirect(
                     "/" +
-                      props.page.pageType.toLowerCase() +
-                      "/" +
-                      props.page.name +
-                      "/lounges/" +
-                      oneLounge._id
+                    props.page.pageType.toLowerCase() +
+                    "/" +
+                    props.page.name +
+                    "/lounges/" +
+                    oneLounge._id
                   );
                 }}
               />
