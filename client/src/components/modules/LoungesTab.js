@@ -17,7 +17,14 @@ export default function LoungesTab(props) {
             "/" + props.page.pageType.toLowerCase() + "/" + props.page.name + "/lounges/:loungeId?"
           }
           render={({ match, history }) => {
-            let loungeId = match.params.loungeId || props.loungeId;
+            let loungeId =
+              match.params.loungeId ||
+              (
+                props.lounges.filter((lounge) => {
+                  return lounge.name === props.page.name;
+                })[0] || {}
+              )._id ||
+              props.loungeId;
             let loungeArr = props.lounges.filter((cur) => {
               return cur._id === loungeId;
             });
@@ -44,18 +51,20 @@ export default function LoungesTab(props) {
                     {lounge.zoomLink === "" ? (
                       <></>
                     ) : (
-
-                        <a href={lounge.zoomLink} target="_blank" style={{
+                      <a
+                        href={lounge.zoomLink}
+                        target="_blank"
+                        style={{
                           backgroundColor: "#041528",
-                          padding: '20px',
-                          borderRadius: '10px',
+                          padding: "20px",
+                          borderRadius: "10px",
                           color: "white",
                           fontSize: 25,
-                        }}>
-                          Hop In The Lounge
-                        </a>
-
-                      )}
+                        }}
+                      >
+                        Hop In The Lounge
+                      </a>
+                    )}
                     <br />
                     <br />
                     <br />
