@@ -161,7 +161,7 @@ class Home extends Component {
             routerLinks={["welcome", "dashboard", "privacy"].concat(
               this.props.isSiteAdmin ? ["admin"] : []
             )}
-            defaultRouterLink={"welcome"}
+            defaultRouterLink={this.props.seeHelpText ? "welcome" : "dashboard"}
           >
             <div>
               <SearchBar
