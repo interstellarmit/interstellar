@@ -169,7 +169,7 @@ router.post("/populateLounges", auth.ensureLoggedIn, (req, res) => {
         let lounge = new Lounge({
           name: page.name,
           pageId: page._id,
-          hostId: page.req.user._id,
+          hostId: req.user._id,
           zoomLink: req.body.zoomLink,
           permanent: true,
           main: true,
