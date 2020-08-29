@@ -162,6 +162,13 @@ router.post("/createNewComment", auth.ensureLoggedIn, forum_calls.createNewComme
 router.post("/updateGroupPost", auth.ensureLoggedIn, forum_calls.updateGroupPost);
 router.post("/updateComment", auth.ensureLoggedIn, forum_calls.updateComment);
 
+router.post("/gatherKey", auth.ensureLoggedIn, (req, res) => {
+  let name = req.body.name;
+  name = name.replace(/ /g, "_");
+  name = name.replace(/[^a-zA-Z0-9-_]/g, "_");
+  let apiKey = process.env.gather_key
+  res.send({ name: name, apiKey, apiKey })
+})
 router.post("/populateLounges", auth.ensureLoggedIn, (req, res) => {
   if (req.user.email === 'dansun@mit.edu') {
     Page.find({}).then((pages) => {
