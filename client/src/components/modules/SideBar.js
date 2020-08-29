@@ -29,7 +29,9 @@ function populateLounges() {
 }
 
 export default function SideBar(props) {
-  let myPages = props.myPages;
+  let myPages = props.myPages.sort((a, b) => {
+    return a.name.localeCompare(b.name);
+  });;
   const [addGroup, setAddGroup] = React.useState(false);
   const [collapsed, setCollapsed] = React.useState(false);
   return (

@@ -5,9 +5,8 @@ export default function LoungeList(props) {
   let datasource = props.lounges.sort((a, b) => {
     if (a.userIds.length > b.userIds.length) return 1;
     if (a.userIds.length < b.userIds.length) return -1;
-    if (a.userIds.length > b.userIds.length) return 0;
+    return a.name.localeCompare(b.name);
   });
-  console.log(props.lounges);
   return (
     <div style={{ maxHeight: "70vh", overflow: "auto" }}>
       <ConfigProvider

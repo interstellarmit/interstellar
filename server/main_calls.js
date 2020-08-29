@@ -142,6 +142,12 @@ createNewPage = (req, res) => {
               main: true,
             });
             lounge.save();
+            socket
+              .getSocketFromUserID(req.user._id)
+              .emit("createdPage", {
+                page: page,
+                userId: req.user._id,
+              });
             res.send({ created: true, pageId: pg._id, name: page.name });
           });
         });

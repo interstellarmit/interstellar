@@ -99,6 +99,17 @@ class App extends Component {
         this.setState({ disconnect: true });
       }
     });
+    socket.on("createdPage", (data) => {
+      let allPages = this.state.allPages
+      let pageIds = this.state.pageIds
+      if (!allPages.includes(data.page)) {
+        allPages.push(data.page)
+        if (data.userId === this.state.userId) {
+          pageIds.push(data.page._id)
+        }
+        this.setState({ allPages: allPages, pageIds: pageIds })
+      }
+    });
   }
 
   /*
