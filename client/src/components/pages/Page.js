@@ -11,7 +11,7 @@ import AdminRequests from "../modules/AdminRequests";
 import AddEnterCode from "../modules/AddEnterCode";
 import MySpin from "../modules/MySpin";
 import { socket } from "../../client-socket.js";
-import { Spin, Space, Button, Typography, Layout, PageHeader, Row, Col } from "antd";
+import { Spin, Space, Button, Typography, Layout, PageHeader, Badge, Row, Col } from "antd";
 const { Header, Content, Footer, Sider } = Layout;
 const { Title, Text } = Typography;
 import {
@@ -109,7 +109,8 @@ class Page extends Component {
       this.setState({ lounges: lounges }, () => {
         let page = this.state.page;
         this.props.redirectPage(
-          "/" + page.pageType.toLowerCase() + "/" + page.name + "/lounges/" + data.lounge._id
+          "/" + page.pageType.toLowerCase() + "/" + page.name + "/lounge"
+          // "/" + page.pageType.toLowerCase() + "/" + page.name + "/lounges/" + data.lounge._id
         );
       });
     });
@@ -270,6 +271,10 @@ class Page extends Component {
       return <MySpin />;
     }
 
+    let mainLounge = this.state.lounges.find((lounge) => {
+      return lounge.main;
+    });
+    let numInLounge = mainLounge ? mainLounge.userIds.length : 0;
     let removeClassButton = (
       <Button
         type="primary"
@@ -359,10 +364,17 @@ class Page extends Component {
         >
           {this.state.inPage ? (
             <TabPage
-              labels={["Info", "Dashboard", "Lounge", "Forum"].concat(
-                this.state.adminRequests.length > 0 ? ["Admin"] : []
-              )}
-              routerLinks={["info", "dashboard", "lounges", "forum"].concat(
+              labels={[
+                "Info",
+                "Dashboard",
+                <div style={{ display: "flex", flexDirection: "row" }}>
+                  <div>{"Lounge"}</div>
+
+                  <Badge count={numInLounge} size="small" style={{ marginLeft: "5px" }} />
+                </div>,
+                "Forum",
+              ].concat(this.state.adminRequests.length > 0 ? ["Admin"] : [])}
+              routerLinks={["info", "dashboard", "lounge", "forum"].concat(
                 this.state.adminRequests.length > 0 ? ["admin"] : []
               )}
               defaultRouterLink={this.state.inPage ? "info" : "info"}

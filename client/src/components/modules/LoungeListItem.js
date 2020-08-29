@@ -19,8 +19,7 @@ export default function LoungeListItem(props) {
             })}
           </Avatar.Group>
         }
-        title={props.name}
-        description={props.home ? props.pageName : undefined}
+        title={props.pageName + " Lounge"}
       />
     </List.Item>
   );
