@@ -11,6 +11,7 @@ const School = require("./models/school");
 const socket = require("./server-socket");
 const { useReducer } = require("react");
 const lounge_calls = require("./lounge_calls");
+const axios = require('axios');
 require("dotenv").config();
 let expiryDate = new Date(2021, 1, 20); // expiry date for all classes this semester
 
@@ -99,47 +100,61 @@ createNewPage = (req, res) => {
     let name = req.body.name;
     name = name.replace(/ /g, "_");
     name = name.replace(/[^a-zA-Z0-9-_]/g, "_");
-    if (
-      school.adminIds.includes(req.user._id) ||
-      req.user.isSiteAdmin ||
-      req.body.pageType === "Group"
-    ) {
-      Page.findOne({ name: new RegExp("^" + name + "$", "i") }).then((thepage) => {
-        if (thepage) {
-          res.send({ created: false });
-          return;
-        }
-        let page = new Page({
-          pageType: req.body.pageType,
-          name: name,
-          title: req.body.title,
-          description: req.body.description,
-          professor: req.body.professor,
-          rating: req.body.rating,
-          hours: req.body.hours,
-          units: req.body.units,
-          expiryDate: expiryDate,
-          adminIds: [req.user._id],
-          schoolId: req.user.schoolId,
-          locked: req.body.locked,
-          joinCode: req.body.joinCode || "",
-        });
-        page.save().then((pg) => {
-          let lounge = new Lounge({
-            name: pg.name,
-            pageId: pg._id,
-            hostId: req.user._id,
-            zoomLink: req.body.zoomLink,
-            permanent: true,
-            main: true,
+    let apiKey = process.env.gather_key
+    let map = "demo-uni"
+    const data = { apiKey: apiKey, name: name, map: map }
+    let zoomLink = undefined
+    axios.post("https://staging.gather.town/api/createRoom", data).then((link) => {
+      console.log(link)
+      zoomLink = "https://gather.town/" + link.data
+      if (
+        school.adminIds.includes(req.user._id) ||
+        req.user.isSiteAdmin ||
+        req.body.pageType === "Group"
+      ) {
+        Page.findOne({ name: new RegExp("^" + name + "$", "i") }).then((thepage) => {
+          if (thepage) {
+            res.send({ created: false });
+            return;
+          }
+          let page = new Page({
+            pageType: req.body.pageType,
+            name: name,
+            title: req.body.title,
+            description: req.body.description,
+            professor: req.body.professor,
+            rating: req.body.rating,
+            hours: req.body.hours,
+            units: req.body.units,
+            expiryDate: expiryDate,
+            adminIds: [req.user._id],
+            schoolId: req.user.schoolId,
+            locked: req.body.locked,
+            joinCode: req.body.joinCode || "",
           });
-          lounge.save();
-          res.send({ created: true, pageId: pg._id, name: page.name });
+          page.save().then((pg) => {
+            let lounge = new Lounge({
+              name: pg.name,
+              pageId: pg._id,
+              hostId: req.user._id,
+              zoomLink: zoomLink,
+              permanent: true,
+              main: true,
+            });
+            lounge.save();
+            socket
+              .getSocketFromUserID(req.user._id)
+              .emit("createdPage", {
+                page: page,
+                userId: req.user._id,
+              });
+            res.send({ created: true, pageId: pg._id, name: page.name });
+          });
         });
-      });
-    } else {
-      res.send({ created: false });
-    }
+      } else {
+        res.send({ created: false });
+      }
+    })
   });
 };
 
@@ -288,8 +303,8 @@ joinPage = (req, res) => {
                   req.body.home && req.user.isSiteAdmin
                     ? { honored: false }
                     : req.body.home
-                    ? { pageId: "!!!!!" }
-                    : {
+                      ? { pageId: "!!!!!" }
+                      : {
                         pageId: page.adminIds.includes(req.user._id) ? page._id : "!!!!!",
                         honored: false,
                       };

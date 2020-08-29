@@ -31,6 +31,10 @@ const UserSchema = new mongoose.Schema({
     type: String, // blank indicates not in lounge
     default: "",
   },
+  signedContract: {
+    type: Boolean,
+    default: false,
+  }
 });
 
 // compile model from schema
