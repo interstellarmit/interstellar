@@ -18,6 +18,7 @@ import TabPage from "../modules/TabPage";
 import SearchBar from "../modules/SearchBar";
 import LoungeList from "../modules/LoungeList";
 import MySpin from "../modules/MySpin";
+import AdminRequests from "../modules/AdminRequests";
 const { Header, Content, Footer, Sider } = Layout;
 const { Title, Text } = Typography;
 class Home extends Component {
@@ -29,11 +30,12 @@ class Home extends Component {
       dueDates: [],
       quickLinks: [],
       lounges: [],
+      showDueDate: true,
     };
     props.updateSelectedPageName("");
   }
 
-  addToLounge = (userId, loungeId, callback = () => {}) => {
+  addToLounge = (userId, loungeId, callback = () => { }) => {
     let lounges = this.state.lounges;
     let lounge = lounges.filter((l) => {
       return l._id + "" === loungeId;
@@ -51,7 +53,7 @@ class Home extends Component {
     this.setState({ lounges: newLounges }, callback);
   };
 
-  removeFromLounge = (userId, loungeId, callback = () => {}) => {
+  removeFromLounge = (userId, loungeId, callback = () => { }) => {
     if (loungeId !== "") {
       let lounges = this.state.lounges;
       let lounge = lounges.filter((l) => {
@@ -91,6 +93,7 @@ class Home extends Component {
         quickLinks: data.quickLinks,
         lounges: data.lounges,
         pageLoaded: true,
+        adminRequests: data.adminRequests,
       });
     });
 
@@ -153,9 +156,15 @@ class Home extends Component {
           }}
         >
           <TabPage
-            labels={["Welcome", "Dashboard", "Privacy"]}
-            routerLinks={["welcome", "dashboard", "privacy"]}
-            defaultRouterLink={"welcome"}
+            labels={["Welcome", "Dashboard", "Settings"].concat(
+              this.props.isSiteAdmin ? ["Admin"] : []
+            )}
+            routerLinks={["welcome", "dashboard", "settings"].concat(
+              this.props.isSiteAdmin ? ["admin"] : []
+            )}
+            defaultRouterLink={
+              this.props.myPages.length <= 2 && this.props.seeHelpText ? "welcome" : "dashboard"
+            }
           >
             <div>
               <SearchBar
@@ -167,7 +176,7 @@ class Home extends Component {
               />
             </div>
             <Row>
-              <Col span={12}>
+              <Col span={14}>
                 <DDQLSection
                   dataSource={this.state.dueDates}
                   users={this.state.users}
@@ -176,22 +185,17 @@ class Home extends Component {
                   home={true}
                   pageMap={pageMap}
                 />
-
-                <DDQLSection
-                  dataSource={this.state.quickLinks}
-                  users={this.state.users}
-                  user={this.props.user}
-                  type="QuickLink"
-                  home={true}
-                  pageMap={pageMap}
-                />
               </Col>
-              <Col span={12}>
+              <Col span={10}>
                 <Title level={4}>{"Open Lounges"}</Title>
-                {this.props.myPages.map((page) => {
-                  let lounges = this.state.lounges.filter((lounge) => {
-                    return lounge.pageId === page._id;
-                  });
+                {this.props.myPages.sort((a, b) => {
+                  return a.name.localeCompare(b.name);
+                }).map((page) => {
+                  let lounges = this.state.lounges
+                    ? this.state.lounges.filter((lounge) => {
+                      return lounge.pageId === page._id;
+                    })
+                    : [];
                   if (lounges.length === 0) return <></>;
                   return (
                     <LoungeList
@@ -203,34 +207,81 @@ class Home extends Component {
                     />
                   );
                 })}
+                <DDQLSection
+                  dataSource={this.state.quickLinks}
+                  users={this.state.users}
+                  user={this.props.user}
+                  type="QuickLink"
+                  home={true}
+                  pageMap={pageMap}
+                />
               </Col>
             </Row>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-              }}
-            >
-              <Switch
-                checked={!this.props.visible}
-                onChange={(checked) => {
-                  this.props.setVisible(!checked);
+            <div>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
                 }}
-                checkedChildren={"On"}
-                unCheckedChildren={"Off"}
-              />
-              <div style={{ paddingLeft: "10px" }}>
-                Toggle privacy mode to appear as anonymous in all of your classes
+              >
+                <Switch
+                  checked={!this.props.visible}
+                  onChange={(checked) => {
+                    this.props.setVisible(!checked);
+                  }}
+                  checkedChildren={"On"}
+                  unCheckedChildren={"Off"}
+                />
+                <div style={{ paddingLeft: "10px" }}>
+                  Toggle privacy mode to appear as anonymous in all of your classes
+                </div>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  marginTop: "10px",
+                }}
+              >
+                <Switch
+                  checked={this.props.seeHelpText}
+                  onChange={(checked) => {
+                    this.props.setSeeHelpText(checked);
+                  }}
+                  checkedChildren={"On"}
+                  unCheckedChildren={"Off"}
+                />
+                <div style={{ paddingLeft: "10px" }}>
+                  Toggle help mode to hide the helper text that appears on dashboard
+                </div>
               </div>
             </div>
+            <AdminRequests adminRequests={this.state.adminRequests} />
           </TabPage>
         </Content>
 
-        <div style={{ bottom: "20px", padding: "10px 10px 10px 10px" }}>
+        <div style={{ bottom: "10px", padding: "10px 300px 10px 300px" }}>
           <center>
-            <Button type="link" target="_blank" href="https://forms.gle/ZSdrfPZfpwngxQ3aA">
-              Please share any bugs or feedback here!
-            </Button>
+            <div>
+              Disclaimer: All material on this site is compiled by students and therefore
+              unofficial. Thanks to{" "}
+              <a href="https://hacklodge.org/" target="_blank">
+                Hacklodge
+              </a>{" "}
+              and{" "}
+              <a href="http://gather.town/" target="_blank">
+                Gather
+              </a>{" "}
+              for their support, and{" "}
+              <a href="https://firehose.guide/" target="_blank">
+                Firehose
+              </a>{" "}
+              for class information. Please share any bugs or feedback{" "}
+              <a href="https://forms.gle/ZSdrfPZfpwngxQ3aA" target="_blank">
+                here
+              </a>
+              !
+            </div>
           </center>
         </div>
       </Layout>

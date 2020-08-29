@@ -10,12 +10,16 @@ const LoungeSchema = new mongoose.Schema({
   pageId: String,
   zoomLink: {
     type: String,
-    default: "",
+    default: "https://gather.town/WoVR9Wc0fMWDiGMt/InterstellarDemo",
   },
   permanent: {
     type: Boolean,
     default: false,
   },
+  main: {
+    type: Boolean,
+    default: false
+  }
 });
 
 // compile model from schema

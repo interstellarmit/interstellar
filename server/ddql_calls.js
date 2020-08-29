@@ -76,12 +76,14 @@ editDDQL = (req, res) => {
         req.user.isSiteAdmin ||
         page.adminIds.includes(req.user._id)
       ) {
-        ddql.title = req.body.title;
-        ddql.dueDate = req.body.dueDate;
-        ddql.url = req.body.url;
         if (req.body.deleted) ddql.deleted = true;
-        ddql.save().then(() => {
-          res.send({ edited: true, DDQL: ddql });
+        else {
+          ddql.title = req.body.title;
+          ddql.dueDate = req.body.dueDate;
+          ddql.url = req.body.url;
+        }
+        ddql.save().then((editedDDQL) => {
+          res.send({ edited: true, DDQL: editedDDQL });
         });
       } else {
         res.send({ edited: false });

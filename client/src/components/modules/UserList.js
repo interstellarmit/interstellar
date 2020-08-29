@@ -30,7 +30,7 @@ export default function UserList(props) {
             return (
               <List.Item
                 actions={
-                  props.adminIds && props.isSiteAdmin
+                  props.adminIds && props.isSiteAdmin && !props.dashboard
                     ? [
                         <Button
                           onClick={() => {

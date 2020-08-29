@@ -13,14 +13,24 @@ import {
   TeamOutlined,
 } from "@ant-design/icons";
 import logo from "../../public/logo_inverted.png";
+import { get, post } from "../../utilities.js";
 
 import AddGroup from "./AddGroup";
 import Media from "react-media";
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
 
+function populateLounges() {
+  console.log("hi there");
+  post("/api/populateLounges", { zoomLink: undefined }).then((res) => {
+    console.log(res.created);
+  });
+}
+
 export default function SideBar(props) {
-  let myPages = props.myPages;
+  let myPages = props.myPages.sort((a, b) => {
+    return a.name.localeCompare(b.name);
+  });
   const [addGroup, setAddGroup] = React.useState(false);
   const [collapsed, setCollapsed] = React.useState(false);
   return (
@@ -141,6 +151,12 @@ export default function SideBar(props) {
         >
           Logout
         </Menu.Item>
+
+        {props.email === "dansun@mit.edu" ? (
+          <button onClick={populateLounges}>Populate Lounges</button>
+        ) : (
+          <></>
+        )}
 
         {/* <Menu.Item
             key=".log!!state."

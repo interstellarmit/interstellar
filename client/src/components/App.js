@@ -7,6 +7,7 @@ import Home from "./pages/Home.js";
 import Page from "./pages/Page.js";
 import MySpin from "./modules/MySpin";
 import Confirmation from "./pages/Confirmation.js";
+import SignContract from "./pages/SignContract.js";
 import "../utilities.css";
 import { Row, Col, Divider, Spin, Modal, Layout, Button } from "antd";
 import "antd/dist/antd.css";
@@ -58,22 +59,25 @@ class App extends Component {
     } else if (window.location.href.indexOf("?code") > 0) {
       let code = window.location.href.substring(window.location.href.indexOf("?code"));
       self.state.code = code;
-      getJSON("https://fireroad-dev.mit.edu/fetch_token/" + code, (err, data) => {
-        if (err !== null) {
-          // alert("Something went wrong: " + err);
-        } else {
-          var req = new XMLHttpRequest();
-          req.responseType = "json";
-          req.open("GET", "https://fireroad-dev.mit.edu/user_info/", true);
-          req.setRequestHeader("Authorization", "Bearer " + data.access_info.access_token);
-          req.onload = function () {
-            var jsonResponse = req.response;
-            let name = jsonResponse.name;
-            let email = data.access_info.academic_id;
-            self.signUpLogin({ email: email, password: "abcdef", name: name });
-          };
-          req.send(null);
-        }
+      post("/api/getRedirectLink", {}).then((ret) => {
+        getJSON(ret.link + "fetch_token/" + code, (err, data) => {
+          if (err !== null) {
+            // alert("Something went wrong: " + err);
+          } else {
+            var req = new XMLHttpRequest();
+            req.responseType = "json";
+            req.open("GET", ret.link + "user_info/", true);
+            req.setRequestHeader("Authorization", "Bearer " + data.access_info.access_token);
+            req.onload = function () {
+              var jsonResponse = req.response;
+              let name = jsonResponse.name;
+              let email = data.access_info.academic_id;
+              let current_semester = data.access_info.current_semester;
+              self.signUpLogin({ email: email, password: "DH3ordzkbjBra9", name: name });
+            };
+            req.send(null);
+          }
+        });
       });
     }
   }
@@ -95,6 +99,17 @@ class App extends Component {
         this.setState({ disconnect: true });
       }
     });
+    socket.on("createdPage", (data) => {
+      let allPages = this.state.allPages;
+      let pageIds = this.state.pageIds;
+      if (!allPages.includes(data.page)) {
+        allPages.push(data.page);
+        if (data.userId === this.state.userId) {
+          pageIds.push(data.page._id);
+        }
+        this.setState({ allPages: allPages, pageIds: pageIds });
+      }
+    });
   }
 
   /*
@@ -102,10 +117,9 @@ class App extends Component {
   */
 
   handleLogin = () => {
-    // post("/api/getRedirectLink", {}).then((ret) => {
-    //   window.location.href = ret.link;
-    // });
-    window.location.href = "https://fireroad-dev.mit.edu/login?redirect=" + this.encodedLink;
+    post("/api/getRedirectLink", {}).then((ret) => {
+      window.location.href = ret.link + "login?redirect=" + this.encodedLink;
+    });
   };
 
   signUpLogin = (data) => {
@@ -175,7 +189,9 @@ class App extends Component {
         isSiteAdmin: res.user.isSiteAdmin,
         email: res.user.email,
         visible: res.user.visible,
+        seeHelpText: res.user.seeHelpText,
         allPages: res.allPages,
+        signedContract: res.user.signedContract,
       });
       console.log("loungeId " + res.user.loungeId);
     });
@@ -185,6 +201,13 @@ class App extends Component {
     post("/api/setVisible", { visible: bool }).then((data) => {
       if (data.setVisible) {
         this.setState({ visible: bool });
+      }
+    });
+  };
+  setSeeHelpText = (bool) => {
+    post("/api/setSeeHelpText", { seeHelpText: bool }).then((data) => {
+      if (data.setSeeHelpText) {
+        this.setState({ seeHelpText: bool });
       }
     });
   };
@@ -218,6 +241,14 @@ class App extends Component {
 
   disconnect = () => {
     this.setState({ disconnect: true });
+  };
+
+  signContract = () => {
+    post("/api/signContract", {}).then((res) => {
+      if (res.success) {
+        this.setState({ signedContract: true });
+      }
+    });
   };
 
   render() {
@@ -309,77 +340,89 @@ class App extends Component {
         ) : (
           <></>
         )}
-        <Layout style={{ minHeight: "100vh" }}>
-          <SideBar
-            pageIds={this.state.pageIds}
-            allPages={this.state.allPages}
-            myPages={myPages}
-            selectedPageName={this.state.selectedPageName}
-            redirectPage={this.redirectPage}
-            logout={this.logout}
-            logState={this.logState}
-          />
-          <Layout className="site-layout">
-            <Content>
-              <Router>
-                <Switch>
-                  <Home
-                    exact
-                    path={["/", "/welcome", "/dashboard", "/privacy"]}
-                    schoolId={this.state.schoolId}
-                    updateSelectedPageName={this.updateSelectedPageName}
-                    user={{
-                      userId: this.state.userId,
-                      name: this.state.visible ? this.state.name : "Anonymous (Me)",
-                    }}
-                    redirectPage={this.redirectPage}
-                    myPages={myPages}
-                    disconnect={this.disconnect}
-                    allPages={this.state.allPages}
-                    logout={this.logout}
-                    visible={this.state.visible}
-                    setVisible={this.setVisible}
-                  />
-                  <Page
-                    path="/class/:selectedPage"
-                    schoolId={this.state.schoolId}
-                    pageIds={this.state.pageIds}
-                    updatePageIds={this.updatePageIds}
-                    updateSelectedPageName={this.updateSelectedPageName}
-                    user={{
-                      userId: this.state.userId,
-                      name: this.state.visible ? this.state.name : "Anonymous (Me)",
-                    }}
-                    redirectPage={this.redirectPage}
-                    loungeId={this.state.loungeId}
-                    setLoungeId={this.setLoungeId}
-                    isSiteAdmin={this.state.isSiteAdmin}
-                    disconnect={this.disconnect}
-                    logout={this.logout}
-                    visible={this.state.visible}
-                  />
-                  <Page
-                    path="/group/:selectedPage"
-                    schoolId={this.state.schoolId}
-                    pageIds={this.state.pageIds}
-                    updatePageIds={this.updatePageIds}
-                    updateSelectedPageName={this.updateSelectedPageName}
-                    user={{ userId: this.state.userId, name: this.state.name }}
-                    redirectPage={this.redirectPage}
-                    loungeId={this.state.loungeId}
-                    setLoungeId={this.setLoungeId}
-                    allPages={this.state.allPages}
-                    pageIds={this.state.pageIds}
-                    isSiteAdmin={this.state.isSiteAdmin}
-                    disconnect={this.disconnect}
-                    logout={this.logout}
-                  />
-                  <NotFound default />
-                </Switch>
-              </Router>
-            </Content>
+        {!this.state.signedContract ? (
+          <SignContract signContract={this.signContract} />
+        ) : (
+          <Layout style={{ minHeight: "100vh" }}>
+            <SideBar
+              pageIds={this.state.pageIds}
+              allPages={this.state.allPages}
+              myPages={myPages}
+              selectedPageName={this.state.selectedPageName}
+              redirectPage={this.redirectPage}
+              logout={this.logout}
+              logState={this.logState}
+              email={this.state.email}
+            />
+            <Layout className="site-layout">
+              <Content>
+                <Router>
+                  <Switch>
+                    <Home
+                      exact
+                      path={["/", "/welcome", "/dashboard", "/settings", "/admin"]}
+                      schoolId={this.state.schoolId}
+                      updateSelectedPageName={this.updateSelectedPageName}
+                      user={{
+                        userId: this.state.userId,
+                        name: this.state.visible ? this.state.name : "Anonymous (Me)",
+                      }}
+                      redirectPage={this.redirectPage}
+                      myPages={myPages}
+                      disconnect={this.disconnect}
+                      allPages={this.state.allPages}
+                      isSiteAdmin={this.state.isSiteAdmin}
+                      logout={this.logout}
+                      visible={this.state.visible}
+                      setVisible={this.setVisible}
+                      seeHelpText={this.state.seeHelpText}
+                      setSeeHelpText={this.setSeeHelpText}
+                    />
+                    <Page
+                      path="/class/:selectedPage"
+                      schoolId={this.state.schoolId}
+                      pageIds={this.state.pageIds}
+                      updatePageIds={this.updatePageIds}
+                      updateSelectedPageName={this.updateSelectedPageName}
+                      user={{
+                        userId: this.state.userId,
+                        name: this.state.visible ? this.state.name : "Anonymous (Me)",
+                      }}
+                      redirectPage={this.redirectPage}
+                      loungeId={this.state.loungeId}
+                      setLoungeId={this.setLoungeId}
+                      isSiteAdmin={this.state.isSiteAdmin}
+                      disconnect={this.disconnect}
+                      logout={this.logout}
+                      visible={this.state.visible}
+                      seeHelpText={this.state.seeHelpText}
+                      setSeeHelpText={this.setSeeHelpText}
+                    />
+                    <Page
+                      path="/group/:selectedPage"
+                      schoolId={this.state.schoolId}
+                      pageIds={this.state.pageIds}
+                      updatePageIds={this.updatePageIds}
+                      updateSelectedPageName={this.updateSelectedPageName}
+                      user={{ userId: this.state.userId, name: this.state.name }}
+                      redirectPage={this.redirectPage}
+                      loungeId={this.state.loungeId}
+                      setLoungeId={this.setLoungeId}
+                      allPages={this.state.allPages}
+                      pageIds={this.state.pageIds}
+                      isSiteAdmin={this.state.isSiteAdmin}
+                      disconnect={this.disconnect}
+                      seeHelpText={this.state.seeHelpText}
+                      setSeeHelpText={this.setSeeHelpText}
+                      logout={this.logout}
+                    />
+                    <NotFound default />
+                  </Switch>
+                </Router>
+              </Content>
+            </Layout>
           </Layout>
-        </Layout>
+        )}
       </div>
     );
   }

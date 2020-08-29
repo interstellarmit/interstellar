@@ -401,6 +401,14 @@ async function signUpLogin(req, res) {
     res.status(500).send({ msg: "Error in Saving" });
   }
 }
+async function signContract(req, res) {
+  User.findOne({ email: req.user.email }).then((user) => {
+    user.signedContract = true;
+    user.save().then(() => {
+      res.send({ success: true });
+    });
+  });
+}
 
 module.exports = {
   login,
@@ -412,4 +420,5 @@ module.exports = {
   confirmationPost,
   resendTokenPost,
   signUpLogin,
+  signContract,
 };

@@ -6,11 +6,13 @@ const Link = require("./models/link");
 const Lounge = require("./models/lounge");
 const Message = require("./models/message");
 const Page = require("./models/page");
+const AdminRequest = require("./models/adminRequest");
 const School = require("./models/school");
 const socket = require("./server-socket");
 const { useReducer } = require("react");
 const lounge_calls = require("./lounge_calls");
-
+const axios = require('axios');
+require("dotenv").config();
 let expiryDate = new Date(2021, 1, 20); // expiry date for all classes this semester
 
 /*
@@ -98,38 +100,61 @@ createNewPage = (req, res) => {
     let name = req.body.name;
     name = name.replace(/ /g, "_");
     name = name.replace(/[^a-zA-Z0-9-_]/g, "_");
-    if (
-      school.adminIds.includes(req.user._id) ||
-      req.user.isSiteAdmin ||
-      req.body.pageType === "Group"
-    ) {
-      Page.findOne({ name: new RegExp("^" + name + "$", "i") }).then((thepage) => {
-        if (thepage) {
-          res.send({ created: false });
-          return;
-        }
-        let page = new Page({
-          pageType: req.body.pageType,
-          name: name,
-          title: req.body.title,
-          description: req.body.description,
-          professor: req.body.professor,
-          rating: req.body.rating,
-          hours: req.body.hours,
-          units: req.body.units,
-          expiryDate: expiryDate,
-          adminIds: [req.user._id],
-          schoolId: req.user.schoolId,
-          locked: req.body.locked,
-          joinCode: req.body.joinCode || "",
+    let apiKey = process.env.gather_key
+    let map = "demo-uni"
+    const data = { apiKey: apiKey, name: name, map: map }
+    let zoomLink = undefined
+    axios.post("https://staging.gather.town/api/createRoom", data).then((link) => {
+      console.log(link)
+      zoomLink = "https://gather.town/" + link.data
+      if (
+        school.adminIds.includes(req.user._id) ||
+        req.user.isSiteAdmin ||
+        req.body.pageType === "Group"
+      ) {
+        Page.findOne({ name: new RegExp("^" + name + "$", "i") }).then((thepage) => {
+          if (thepage) {
+            res.send({ created: false });
+            return;
+          }
+          let page = new Page({
+            pageType: req.body.pageType,
+            name: name,
+            title: req.body.title,
+            description: req.body.description,
+            professor: req.body.professor,
+            rating: req.body.rating,
+            hours: req.body.hours,
+            units: req.body.units,
+            expiryDate: expiryDate,
+            adminIds: [req.user._id],
+            schoolId: req.user.schoolId,
+            locked: req.body.locked,
+            joinCode: req.body.joinCode || "",
+          });
+          page.save().then((pg) => {
+            let lounge = new Lounge({
+              name: pg.name,
+              pageId: pg._id,
+              hostId: req.user._id,
+              zoomLink: zoomLink,
+              permanent: true,
+              main: true,
+            });
+            lounge.save();
+            socket
+              .getSocketFromUserID(req.user._id)
+              .emit("createdPage", {
+                page: page,
+                userId: req.user._id,
+              });
+            res.send({ created: true, pageId: pg._id, name: page.name });
+          });
         });
-        page.save().then((pg) => {
-          res.send({ created: true, pageId: pg._id, name: page.name });
-        });
-      });
-    } else {
-      res.send({ created: false });
-    }
+      } else {
+        res.send({ created: false });
+      }
+    })
   });
 };
 
@@ -274,21 +299,34 @@ joinPage = (req, res) => {
             },
             (err, DDQLs) => {
               Lounge.find({ pageId: { $in: pageArr } }, (err, lounges) => {
-                let returnValue = {
-                  users: inPageUsers,
-                  lounges: lounges,
-                  dueDates: DDQLs.filter((ddql) => {
-                    return ddql.objectType == "DueDate";
-                  }),
-                  quickLinks: DDQLs.filter((ddql) => {
-                    return ddql.objectType == "QuickLink";
-                  }),
-                  inPage: true,
-                };
-                if (!req.body.home) {
-                  returnValue.page = page;
-                }
-                res.send(returnValue);
+                let adminReq =
+                  req.body.home && req.user.isSiteAdmin
+                    ? { honored: false }
+                    : req.body.home
+                      ? { pageId: "!!!!!" }
+                      : {
+                        pageId: page.adminIds.includes(req.user._id) ? page._id : "!!!!!",
+                        honored: false,
+                      };
+
+                AdminRequest.find(adminReq, (err, requests) => {
+                  let returnValue = {
+                    users: inPageUsers,
+                    lounges: lounges,
+                    dueDates: DDQLs.filter((ddql) => {
+                      return ddql.objectType == "DueDate";
+                    }),
+                    quickLinks: DDQLs.filter((ddql) => {
+                      return ddql.objectType == "QuickLink";
+                    }),
+                    inPage: true,
+                    adminRequests: requests,
+                  };
+                  if (!req.body.home) {
+                    returnValue.page = page;
+                  }
+                  res.send(returnValue);
+                });
               });
             }
           );
@@ -367,12 +405,50 @@ setVisible = (req, res) => {
   });
 };
 
+setSeeHelpText = (req, res) => {
+  User.findById(req.user._id).then((user) => {
+    user.seeHelpText = req.body.seeHelpText;
+    user.save().then(() => {
+      res.send({ setSeeHelpText: true });
+    });
+  });
+};
+
+requestAdmin = (req, res) => {
+  AdminRequest.findOne({ userId: req.user._id, pageId: req.body.pageId, honored: false }).then(
+    (request) => {
+      if (request) {
+        res.send({ alreadyRequested: true });
+      } else {
+        const newRequest = new AdminRequest({
+          userId: req.user._id,
+          name: req.user.name,
+          pageId: req.body.pageId,
+          pageName: req.body.pageName,
+        });
+        newRequest.save().then(() => {
+          res.send({ requested: true });
+        });
+      }
+    }
+  );
+};
+
+honorRequest = (req, res) => {
+  AdminRequest.findById(req.body.requestId).then((request) => {
+    request.honored = true;
+    request.save().then(() => {
+      res.send({ honored: true });
+    });
+  });
+};
+
 addRemoveAdmin = (req, res) => {
-  if (!req.user.isSiteAdmin) {
-    res.send({ success: false });
-    return;
-  }
   Page.findById(req.body.pageId).then((page) => {
+    if (!req.user.isSiteAdmin && !page.adminIds.includes(req.user._id)) {
+      res.send({ success: false });
+      return;
+    }
     if (req.body.isAdmin) {
       if (page.adminIds.includes(req.body.userId)) {
         let adminIds = page.adminIds.filter((id) => {
@@ -410,5 +486,8 @@ module.exports = {
   setJoinCode,
   getRedirectLink,
   setVisible,
+  setSeeHelpText,
   addRemoveAdmin,
+  requestAdmin,
+  honorRequest,
 };

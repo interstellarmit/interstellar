@@ -33,6 +33,7 @@ const sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 //initialize socket
 const socket = require("./server-socket");
+const axios = require('axios');
 
 //signin/user stuff
 router.post(
@@ -109,6 +110,7 @@ router.get("/whoami", (req, res) => {
 
 router.post("/confirmation", auth.confirmationPost);
 router.post("/resend", auth.resendTokenPost);
+router.post("/signContract", auth.ensureLoggedIn, auth.signContract)
 
 router.post("/initsocket", (req, res) => {
   // do nothing if user not logged in
@@ -130,6 +132,7 @@ router.post("/test", (req, res) => {
   res.send({});
 });
 
+
 // |------------------------------|
 // | write your API methods below!|
 // |------------------------------|
@@ -143,7 +146,10 @@ router.post("/leavePage", auth.ensureLoggedIn, main_calls.leavePage);
 router.post("/setJoinCode", auth.ensureLoggedIn, main_calls.setJoinCode);
 router.post("/getRedirectLink", main_calls.getRedirectLink);
 router.post("/setVisible", auth.ensureLoggedIn, main_calls.setVisible);
+router.post("/setSeeHelpText", auth.ensureLoggedIn, main_calls.setSeeHelpText);
 router.post("/addRemoveAdmin", auth.ensureLoggedIn, main_calls.addRemoveAdmin);
+router.post("/requestAdmin", auth.ensureLoggedIn, main_calls.requestAdmin);
+router.post("/honorRequest", auth.ensureLoggedIn, main_calls.honorRequest);
 
 router.post("/createNewLounge", auth.ensureLoggedIn, lounge_calls.createNewLounge);
 router.post("/addSelfToLounge", auth.ensureLoggedIn, lounge_calls.addSelfToLounge);
@@ -160,6 +166,79 @@ router.post("/createNewGroupPost", auth.ensureLoggedIn, forum_calls.createNewGro
 router.post("/createNewComment", auth.ensureLoggedIn, forum_calls.createNewComment);
 router.post("/updateGroupPost", auth.ensureLoggedIn, forum_calls.updateGroupPost);
 router.post("/updateComment", auth.ensureLoggedIn, forum_calls.updateComment);
+
+
+// router.post("/gatherKey", auth.ensureLoggedIn, (req, res) => {
+//   let name = req.body.name;
+//   name = name.replace(/ /g, "_");
+//   name = name.replace(/[^a-zA-Z0-9-_]/g, "_");
+//   let apiKey = process.env.gather_key
+//   let map = "demo-uni"
+//   const data = {apiKey: apiKey, name: name, map: map}
+//   axios.post("https://staging.gather.town/api/createRoom", data).then((res1) => {
+//     console.log(res1)
+//     res.send(res1)
+//   })
+// })
+router.post("/populateLounges", auth.ensureLoggedIn, (req, res) => {
+  if (req.user.email === "dansun@mit.edu") {
+    let apiKey = process.env.gather_key
+    let map = "demo-uni"
+    Page.find({}, (err, pages) => {
+      let runLoop = (i) => {
+        console.log(String(i) + " out of " + String(pages.length));
+        let page = pages[i]
+        Lounge.findOne({ name: page.name }).then((existingLounge) => {
+          if (!existingLounge) {
+            console.log("doing something")
+            const data = { apiKey: apiKey, name: page.name, map: map }
+            let zoomLink = undefined
+            axios.post("https://staging.gather.town/api/createRoom", data).then((link) => {
+              zoomLink = "https://gather.town/" + link.data
+              let lounge = new Lounge({
+                name: page.name,
+                pageId: page._id,
+                hostId: req.user._id,
+                zoomLink: zoomLink,
+                permanent: true,
+                main: true,
+              });
+              lounge.save();
+            })
+            if (i + 1 >= pages.length) {
+              return;
+            }
+            setTimeout(() => { runLoop(i + 1) }, 100);
+          }
+          else {
+            if (i + 1 >= pages.length) {
+              return;
+            }
+            setTimeout(() => { runLoop(i + 1) }, 100);
+          }
+        })
+      }
+      runLoop(0)
+      // pages.forEach((page) => {
+      //   const data = { apiKey: apiKey, name: page.name, map: map }
+      //   let zoomLink = undefined
+      //   axios.post("https://staging.gather.town/api/createRoom", data).then((link) => {
+      //     zoomLink = "https://gather.town/" + link.data
+      //     let lounge = new Lounge({
+      //       name: page.name,
+      //       pageId: page._id,
+      //       hostId: req.user._id,
+      //       zoomLink: zoomLink,
+      //       permanent: true,
+      //       main: true,
+      //     });
+      //     console.log(lounge);
+      //     lounge.save();
+      //   })
+      // });
+    });
+  }
+});
 
 // anything else falls to this "not found" case
 router.all("*", (req, res) => {
