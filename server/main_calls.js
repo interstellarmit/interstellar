@@ -131,6 +131,7 @@ createNewPage = (req, res) => {
             hostId: req.user._id,
             zoomLink: req.body.zoomLink,
             permanent: true,
+            main: true,
           });
           lounge.save();
           res.send({ created: true, pageId: pg._id, name: page.name });
