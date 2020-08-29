@@ -6,6 +6,7 @@ import LoungeList from "./LoungeList";
 import Chat from "./Chat";
 import AddLounge from "./AddLounge";
 import UserList from "./UserList";
+import gatherDemo from "../../public/GatherDemo.png";
 export default function LoungesTab(props) {
   const [addNewLounge, setAddNewLounge] = React.useState(false);
 
@@ -42,34 +43,23 @@ export default function LoungesTab(props) {
 
               loungeCode = (
                 <React.Fragment>
-                  {/* <Title level={3}>
-                    <center>{lounge.name}</center>
-                  </Title> */}
-                  <br />
-                  <br />
-                  <center>
-                    {lounge.zoomLink === "" ? (
-                      <></>
-                    ) : (
-                        <a
-                          href={lounge.zoomLink}
-                          target="_blank"
-                          style={{
-                            backgroundColor: "#041528",
-                            padding: "20px",
-                            borderRadius: "10px",
-                            color: "white",
-                            fontSize: 25,
-                          }}
-                        >
-                          Hop In The Lounge
-                        </a>
-                      )}
-                    <br />
-                    <br />
-                    <br />
-                    <br />.
-                  </center>
+                  {lounge.zoomLink === "" ? (
+                    <></>
+                  ) : (
+                    <a
+                      href={lounge.zoomLink}
+                      target="_blank"
+                      style={{
+                        backgroundColor: "#3F90F7",
+                        padding: "20px",
+                        borderRadius: "10px",
+                        color: "white",
+                        fontSize: 50,
+                      }}
+                    >
+                      Hop In The Lounge
+                    </a>
+                  )}
                   {/* <Row>
                     <Col span={6}>
                       <UserList
@@ -89,8 +79,22 @@ export default function LoungesTab(props) {
             }
             return (
               <Switch>
-                <Row>
-                  <Col span={18}>{loungeCode}</Col>
+                <Row gutter={[16, 16]}>
+                  <Col span={18}>
+                    <div
+                      style={{
+                        backgroundImage: "url(" + gatherDemo + ")",
+                        height: "600px",
+                        backgroundSize: "contain",
+                        backgroundRepeat: "no-repeat",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      {loungeCode}
+                    </div>
+                  </Col>
                   <Col span={6}>
                     {/* <Button
                       onClick={() => {
