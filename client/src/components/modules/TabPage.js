@@ -16,7 +16,9 @@ export default function TabPage(props) {
             return (
               <Switch>
                 <Tabs
-                  //type="card"
+                  style={{
+                    height: "100%",
+                  }}
                   defaultActiveKey={match.params.routeLink || props.defaultRouterLink}
                   onChange={(key) => {
                     history.push(url + "/" + key);
@@ -25,7 +27,13 @@ export default function TabPage(props) {
                   {(Array.isArray(props.children) ? props.children : [props.children]).map(
                     (child, index) => {
                       return (
-                        <TabPane tab={props.labels[index]} key={props.routerLinks[index]}>
+                        <TabPane
+                          style={{
+                            height: "100%",
+                          }}
+                          tab={props.labels[index]}
+                          key={props.routerLinks[index]}
+                        >
                           {child}
                         </TabPane>
                       );

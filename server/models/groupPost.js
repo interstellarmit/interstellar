@@ -11,12 +11,12 @@ const GroupPostSchema = new mongoose.Schema({
   pageId: String,
   labels: {
     type: [String],
-    default: []
+    default: [],
   },
   reacts: {
-    type: Number,
-    default: 0
-  }
+    type: [String],
+    default: [],
+  },
 });
 
 // compile model from schema

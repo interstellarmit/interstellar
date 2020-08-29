@@ -1,5 +1,5 @@
 import React, { Component, useState } from "react";
-import { List } from "antd";
+import MediaQuery from "react-responsive";
 import "antd/dist/antd.css";
 import "../../utilities.css";
 //import { redirectPage } from "@reach/router";
@@ -11,11 +11,11 @@ import {
   UsergroupAddOutlined,
   BookOutlined,
   TeamOutlined,
-  SearchOutlined,
 } from "@ant-design/icons";
 import logo from "../../public/logo_inverted.png";
 
 import AddGroup from "./AddGroup";
+import Media from "react-media";
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
 
@@ -32,28 +32,40 @@ export default function SideBar(props) {
       style={{ overflow: "auto", height: "100vh" }}
     >
       {collapsed ? (
-        <></>
+        <div style={{ margin: "25px 10px 15px 10px" }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              width: "100%",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <img src={logo} style={{ height: "30px" }} />
+          </div>
+        </div>
       ) : (
-          <div style={{ margin: "15px 10px 0px 10px" }}>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                fontSize: "30px",
-                fontFamily: "Chakra Petch",
-                color: "#fff",
-                fontWeight: "700",
-                width: "100%",
-                overflow: "hidden",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <img src={logo} style={{ height: "30px" }} /> <div style={{ width: "10px" }} />
+        <div style={{ margin: "15px 10px 0px 10px" }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              width: "100%",
+              overflow: "hidden",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "30px",
+              fontFamily: "Chakra Petch",
+              color: "#fff",
+              fontWeight: "700",
+            }}
+          >
+            <img src={logo} style={{ height: "30px" }} /> <div style={{ width: "10px" }} />
             interstellar
           </div>
-          </div>
-        )}
+        </div>
+      )}
       <SearchBar
         redirectPage={props.redirectPage}
         collapsed={collapsed}

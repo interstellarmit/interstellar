@@ -67,11 +67,11 @@ createNewGroupPost = (req, res) => {
         userId: req.user._id,
         pageId: req.body.pageId,
         labels: req.body.labels,
-        reacts: 0,
+        reacts: [req.user._id],
       });
-      post.save().then(() => {
+      post.save().then((savedPost) => {
         res.send({
-          post: post,
+          post: savedPost,
           created: true,
         });
       });
@@ -84,7 +84,7 @@ createNewGroupPost = (req, res) => {
 /*
 createNewComment
 Input (req.body): {
-	text: String,
+  text: String,
 	pageId: String,
 	postId: String
 }
@@ -126,7 +126,7 @@ Input (req.body): {
 	title: String,
 	text: String,
 	labels: [String],
-	reacts: Number
+	reacting: Boolean
 	delete: Boolean
 }
 Precondition: Post exists, user is in page that the post is in, and is also the poster of the Post
@@ -147,23 +147,40 @@ updateGroupPost = (req, res) => {
         // if post is null
         res.send({ updated: false });
       } else {
-        User.findById(req.user._id).then((user) => {
-          // check if user in page + poster
-          if (user.pageIds.includes(post.pageId) && post.userId === req.user._id) {
-            post.title = req.body.title || post.title;
-            post.text = req.body.text || post.text;
-            post.labels = req.body.labels || post.labels;
-            post.reacts = req.body.reacts || post.reacts;
-            post.save().then(() => {
-              res.send({
-                post: post,
-                updated: true,
-              });
-            });
+        console.log(post);
+        // if handling react, don't care if user is poster
+        if (req.body.reacting) {
+          if (post.reacts.includes(req.user._id)) {
+            post.reacts = post.reacts.filter((x) => x !== req.user._id);
           } else {
-            res.send({ updated: false });
+            post.reacts.push(req.user._id);
           }
-        });
+          post.save().then((savedPost) => {
+            res.send({
+              post: savedPost,
+              updated: true,
+            });
+          });
+        }
+        // else, they need to be poster
+        else {
+          User.findById(req.user._id).then((user) => {
+            // check if user in page + poster
+            if (user.pageIds.includes(post.pageId) && post.userId === req.user._id) {
+              post.title = req.body.title || post.title;
+              post.text = req.body.text || post.text;
+              post.labels = req.body.labels || post.labels;
+              post.save().then((savedPost) => {
+                res.send({
+                  post: savedPost,
+                  updated: true,
+                });
+              });
+            } else {
+              res.send({ updated: false });
+            }
+          });
+        }
       }
     });
   }

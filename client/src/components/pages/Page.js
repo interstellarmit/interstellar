@@ -396,10 +396,10 @@ class Page extends Component {
                 isSiteAdmin={this.props.isSiteAdmin}
                 setLoungeId={this.props.setLoungeId}
               />
+              <ForumTab user={this.props.user} users={this.state.users} page={this.state.page} />
               {
-                // <ForumTab users={this.state.users} page={this.state.page} />)
+                // <TempForumTab page={this.state.page} />
               }
-              <TempForumTab page={this.state.page} />
             </TabPage>
           ) : (
             <TabPage
