@@ -234,6 +234,7 @@ class Home extends Component {
                 style={{
                   display: "flex",
                   flexDirection: "row",
+                  marginTop: "10px",
                 }}
               >
                 <Switch
