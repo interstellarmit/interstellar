@@ -195,9 +195,11 @@ class Home extends Component {
               <Col span={12}>
                 <Title level={4}>{"Open Lounges"}</Title>
                 {this.props.myPages.map((page) => {
-                  let lounges = this.state.lounges.filter((lounge) => {
-                    return lounge.pageId === page._id;
-                  });
+                  let lounges = this.state.lounges
+                    ? this.state.lounges.filter((lounge) => {
+                        return lounge.pageId === page._id;
+                      })
+                    : [];
                   if (lounges.length === 0) return <></>;
                   return (
                     <LoungeList

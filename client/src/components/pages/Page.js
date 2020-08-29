@@ -271,9 +271,11 @@ class Page extends Component {
       return <MySpin />;
     }
 
-    let mainLounge = this.state.lounges.find((lounge) => {
-      return lounge.main;
-    });
+    let mainLounge = this.state.lounges
+      ? this.state.lounges.find((lounge) => {
+          return lounge.main;
+        })
+      : undefined;
     let numInLounge = mainLounge ? mainLounge.userIds.length : 0;
     let removeClassButton = (
       <Button

@@ -8,9 +8,11 @@ import AddLounge from "./AddLounge";
 import UserList from "./UserList";
 import gatherDemo from "../../public/GatherDemo.png";
 export default function LoungesTab(props) {
-  let lounge = props.lounges.filter((lounge) => {
-    return lounge.main;
-  })[0];
+  let lounge = props.lounges
+    ? props.lounges.filter((lounge) => {
+        return lounge.main;
+      })[0]
+    : undefined;
 
   if (!lounge) return <div>No lounge exists</div>;
   if (props.loungeId !== lounge._id) {
