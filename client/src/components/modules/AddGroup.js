@@ -5,35 +5,28 @@ export default function AddGroup(props) {
   const [form] = Form.useForm();
   const [message, setMessage] = useState("");
   let onFinish = (fieldsValue) => {
-    post("/api/gatherKey", { name: fieldsValue.name }).then((res) => {
-      console.log(res)
-      post("https://staging.gather.town/api/createRoom", { apiKey: res.apiKey, name: res.name, map: "demo-uni" }).then((link) => {
-        let zoomLink = "https://gather.town/" + link
-        post("/api/createNewPage", {
-          pageType: "Group",
-          name: res.name,
-          title: fieldsValue.title,
-          description: fieldsValue.description,
-          locked: fieldsValue.joinCode ? fieldsValue.joinCode.length > 0 : false,
+    post("/api/createNewPage", {
+      pageType: "Group",
+      name: fieldsValue.name,
+      title: fieldsValue.title,
+      description: fieldsValue.description,
+      locked: fieldsValue.joinCode ? fieldsValue.joinCode.length > 0 : false,
+      joinCode: fieldsValue.joinCode || "",
+    }).then((data) => {
+      if (data.created) {
+        post("/api/addSelfToPage", {
+          pageId: data.pageId,
           joinCode: fieldsValue.joinCode || "",
-          zoomLink: zoomLink,
-        }).then((data) => {
-          if (data.created) {
-            post("/api/addSelfToPage", {
-              pageId: data.pageId,
-              joinCode: fieldsValue.joinCode || "",
-            }).then((data2) => {
-              if (data2.added) {
-                props.redirectPage("/group/" + data.name);
-              }
-            });
-          } else {
-            form.resetFields();
-            setMessage("Uh oh that group name already exists. Try searching for it in the search bar!");
+        }).then((data2) => {
+          if (data2.added) {
+            props.redirectPage("/group/" + data.name);
           }
         });
-      })
-    })
+      } else {
+        form.resetFields();
+        setMessage("Uh oh that group name already exists. Try searching for it in the search bar!");
+      }
+    });
   };
 
   const layout = {
