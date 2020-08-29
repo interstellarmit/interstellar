@@ -6,11 +6,12 @@ const Link = require("./models/link");
 const Lounge = require("./models/lounge");
 const Message = require("./models/message");
 const Page = require("./models/page");
+const AdminRequest = require("./models/adminRequest");
 const School = require("./models/school");
 const socket = require("./server-socket");
 const { useReducer } = require("react");
 const lounge_calls = require("./lounge_calls");
-require("dotenv").config()
+require("dotenv").config();
 let expiryDate = new Date(2021, 1, 20); // expiry date for all classes this semester
 
 /*
@@ -129,10 +130,9 @@ createNewPage = (req, res) => {
             pageId: pg._id,
             hostId: req.user._id,
             zoomLink: req.body.zoomLink,
-            permanent:
-              true
+            permanent: true,
           });
-          lounge.save()
+          lounge.save();
           res.send({ created: true, pageId: pg._id, name: page.name });
         });
       });
@@ -283,21 +283,32 @@ joinPage = (req, res) => {
             },
             (err, DDQLs) => {
               Lounge.find({ pageId: { $in: pageArr } }, (err, lounges) => {
-                let returnValue = {
-                  users: inPageUsers,
-                  lounges: lounges,
-                  dueDates: DDQLs.filter((ddql) => {
-                    return ddql.objectType == "DueDate";
-                  }),
-                  quickLinks: DDQLs.filter((ddql) => {
-                    return ddql.objectType == "QuickLink";
-                  }),
-                  inPage: true,
-                };
-                if (!req.body.home) {
-                  returnValue.page = page;
-                }
-                res.send(returnValue);
+                let adminReq =
+                  req.body.home && req.user.isSiteAdmin
+                    ? { honored: false }
+                    : {
+                        pageId: page.adminIds.includes(req.user._id) ? page._id : "!!!!!",
+                        honored: false,
+                      };
+
+                AdminRequest.find(adminReq, (err, requests) => {
+                  let returnValue = {
+                    users: inPageUsers,
+                    lounges: lounges,
+                    dueDates: DDQLs.filter((ddql) => {
+                      return ddql.objectType == "DueDate";
+                    }),
+                    quickLinks: DDQLs.filter((ddql) => {
+                      return ddql.objectType == "QuickLink";
+                    }),
+                    inPage: true,
+                    adminRequests: requests,
+                  };
+                  if (!req.body.home) {
+                    returnValue.page = page;
+                  }
+                  res.send(returnValue);
+                });
               });
             }
           );
@@ -385,12 +396,41 @@ setSeeHelpText = (req, res) => {
   });
 };
 
+requestAdmin = (req, res) => {
+  AdminRequest.findOne({ userId: req.user._id, pageId: req.body.pageId, honored: false }).then(
+    (request) => {
+      if (request) {
+        res.send({ alreadyRequested: true });
+      } else {
+        const newRequest = new AdminRequest({
+          userId: req.user._id,
+          name: req.user.name,
+          pageId: req.body.pageId,
+          pageName: req.body.pageName,
+        });
+        newRequest.save().then(() => {
+          res.send({ requested: true });
+        });
+      }
+    }
+  );
+};
+
+honorRequest = (req, res) => {
+  AdminRequest.findById(req.body.requestId).then((request) => {
+    request.honored = true;
+    request.save().then(() => {
+      res.send({ honored: true });
+    });
+  });
+};
+
 addRemoveAdmin = (req, res) => {
-  if (!req.user.isSiteAdmin) {
-    res.send({ success: false });
-    return;
-  }
   Page.findById(req.body.pageId).then((page) => {
+    if (!req.user.isSiteAdmin && !page.adminIds.includes(req.user._id)) {
+      res.send({ success: false });
+      return;
+    }
     if (req.body.isAdmin) {
       if (page.adminIds.includes(req.body.userId)) {
         let adminIds = page.adminIds.filter((id) => {
@@ -430,4 +470,6 @@ module.exports = {
   setVisible,
   setSeeHelpText,
   addRemoveAdmin,
+  requestAdmin,
+  honorRequest,
 };

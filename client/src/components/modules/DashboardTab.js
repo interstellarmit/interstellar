@@ -4,6 +4,7 @@ import { Row, Col, Typography, Alert, Button } from "antd";
 const { Title, Text } = Typography;
 import LoungeList from "./LoungeList";
 import UserList from "./UserList";
+import { post } from "../../utilities";
 export default function DashboardTab(props) {
   let users = props.users.filter((user) => {
     return user.userId !== props.user.userId;
@@ -11,13 +12,14 @@ export default function DashboardTab(props) {
   if (props.inPage) {
     users.push(Object.assign(props.user, { pageIds: props.pageIds }));
   }
+  const [alreadyRequested, setAlreadyRequested] = React.useState(0);
   return (
     <>
       <Row>
         {props.seeHelpText ? (
           <Col span={12}>
             <Alert
-              message="Help create a class calendar"
+              message={"Help create a " + props.page.pageType.toLowerCase() + " calendar"}
               description={
                 <div>
                   The add button lets you: <br /> - add new due dates and quicklinks for everyone to
@@ -36,16 +38,36 @@ export default function DashboardTab(props) {
         ) : (
           <React.Fragment />
         )}
-        {props.page.adminIds.length < 5 ? (
+        {!props.page.adminIds.includes(props.user.userId) && props.page.adminIds.length < 5 ? (
           <Col span={props.seeHelpText ? 12 : 24}>
             <Alert
               message="Request ability to push out due dates from public feed to everyone automatically
       "
               description={
                 <div>
-                  <Button type="primary" style={{ marginTop: "10px" }}>
-                    Become Due Date Verifier
-                  </Button>
+                  {alreadyRequested >= 1 ? (
+                    alreadyRequested === 1 ? (
+                      "You already submitted a request"
+                    ) : (
+                      "Request Sent"
+                    )
+                  ) : (
+                    <Button
+                      type="primary"
+                      style={{ marginTop: "10px" }}
+                      onClick={() => {
+                        post("/api/requestAdmin", {
+                          pageId: props.page._id,
+                          pageName: props.page.name,
+                        }).then((data) => {
+                          if (data.alreadyRequested) setAlreadyRequested(1);
+                          else if (data.requested) setAlreadyRequested(2);
+                        });
+                      }}
+                    >
+                      Become {props.page.name} Due Date Verifier
+                    </Button>
+                  )}
                 </div>
               }
               type="info"

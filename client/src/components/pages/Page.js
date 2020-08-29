@@ -7,6 +7,7 @@ import LoungesTab from "../modules/LoungesTab";
 import InfoTab from "../modules/InfoTab";
 import TabPage from "../modules/TabPage";
 import AddLock from "../modules/AddLock";
+import AdminRequests from "../modules/AdminRequests";
 import AddEnterCode from "../modules/AddEnterCode";
 import MySpin from "../modules/MySpin";
 import { socket } from "../../client-socket.js";
@@ -195,6 +196,7 @@ class Page extends Component {
           page: data.page,
           pageLoaded: true,
           inPage: data.inPage,
+          adminRequests: data.adminRequests,
         });
       }
     );
@@ -322,16 +324,15 @@ class Page extends Component {
       </Button>
     );
 
+    let isPageAdmin =
+      this.state.page.adminIds.includes(this.props.user.userId) || this.props.isSiteAdmin;
     return (
       <Layout style={{ background: "rgba(240, 242, 245, 1)", height: "100vh" }}>
         <PageHeader
           className="site-layout-sub-header-background"
           style={{ padding: "20px 30px 0px 30px", background: "#fff" }}
           extra={[this.state.inPage ? removeClassButton : addClassButton].concat(
-            (this.state.page.adminIds.includes(this.props.user.userId) || this.props.isSiteAdmin) &&
-              this.state.inPage
-              ? [lockButton]
-              : []
+            isPageAdmin && this.state.inPage ? [lockButton] : []
           )}
           title={this.state.page.name}
           subTitle={this.state.page.title}
@@ -358,8 +359,12 @@ class Page extends Component {
         >
           {this.state.inPage ? (
             <TabPage
-              labels={["Info", "Dashboard", "Lounge", "Forum"]}
-              routerLinks={["info", "dashboard", "lounges", "forum"]}
+              labels={["Info", "Dashboard", "Lounge", "Forum"].concat(
+                this.state.adminRequests.length > 0 ? ["Admin"] : []
+              )}
+              routerLinks={["info", "dashboard", "lounges", "forum"].concat(
+                this.state.adminRequests.length > 0 ? ["admin"] : []
+              )}
               defaultRouterLink={this.state.inPage ? "info" : "info"}
               page={this.state.page}
             >
@@ -387,6 +392,7 @@ class Page extends Component {
                 editDDQL={this.editDDQL}
                 user={this.props.user}
                 redirectPage={this.props.redirectPage}
+                isPageAdmin={isPageAdmin}
               />
               <LoungesTab
                 lounges={this.state.lounges}
@@ -404,6 +410,7 @@ class Page extends Component {
                 // <ForumTab users={this.state.users} page={this.state.page} />)
               }
               <TempForumTab page={this.state.page} />
+              <AdminRequests adminRequests={this.state.adminRequests} />
             </TabPage>
           ) : (
             <TabPage

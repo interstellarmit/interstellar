@@ -18,6 +18,7 @@ import TabPage from "../modules/TabPage";
 import SearchBar from "../modules/SearchBar";
 import LoungeList from "../modules/LoungeList";
 import MySpin from "../modules/MySpin";
+import AdminRequests from "../modules/AdminRequests";
 const { Header, Content, Footer, Sider } = Layout;
 const { Title, Text } = Typography;
 class Home extends Component {
@@ -91,6 +92,7 @@ class Home extends Component {
         quickLinks: data.quickLinks,
         lounges: data.lounges,
         pageLoaded: true,
+        adminRequests: data.adminRequests,
       });
     });
 
@@ -153,8 +155,12 @@ class Home extends Component {
           }}
         >
           <TabPage
-            labels={["Welcome", "Dashboard", "Privacy"]}
-            routerLinks={["welcome", "dashboard", "privacy"]}
+            labels={["Welcome", "Dashboard", "Privacy"].concat(
+              this.props.isSiteAdmin ? ["Admin"] : []
+            )}
+            routerLinks={["welcome", "dashboard", "privacy"].concat(
+              this.props.isSiteAdmin ? ["admin"] : []
+            )}
             defaultRouterLink={"welcome"}
           >
             <div>
@@ -243,6 +249,7 @@ class Home extends Component {
                 </div>
               </div>
             </div>
+            <AdminRequests adminRequests={this.state.adminRequests} />
           </TabPage>
         </Content>
 

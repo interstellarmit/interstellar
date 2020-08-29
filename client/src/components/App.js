@@ -77,7 +77,7 @@ class App extends Component {
             req.send(null);
           }
         });
-      })
+      });
     }
   }
 
@@ -106,7 +106,7 @@ class App extends Component {
 
   handleLogin = () => {
     post("/api/getRedirectLink", {}).then((ret) => {
-      window.location.href = ret.link + "login?redirect=" + this.encodedLink;;
+      window.location.href = ret.link + "login?redirect=" + this.encodedLink;
     });
   };
 
@@ -317,8 +317,8 @@ class App extends Component {
             },
           })
         ) : (
-            <></>
-          )}
+          <></>
+        )}
         <Layout style={{ minHeight: "100vh" }}>
           <SideBar
             pageIds={this.state.pageIds}
@@ -336,7 +336,7 @@ class App extends Component {
                 <Switch>
                   <Home
                     exact
-                    path={["/", "/welcome", "/dashboard", "/privacy"]}
+                    path={["/", "/welcome", "/dashboard", "/privacy", "/admin"]}
                     schoolId={this.state.schoolId}
                     updateSelectedPageName={this.updateSelectedPageName}
                     user={{
@@ -347,6 +347,7 @@ class App extends Component {
                     myPages={myPages}
                     disconnect={this.disconnect}
                     allPages={this.state.allPages}
+                    isSiteAdmin={this.state.isSiteAdmin}
                     logout={this.logout}
                     visible={this.state.visible}
                     setVisible={this.setVisible}
