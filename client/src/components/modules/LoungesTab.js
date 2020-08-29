@@ -24,19 +24,21 @@ export default function LoungesTab(props) {
     lounge.zoomLink === "" ? (
       <></>
     ) : (
-      <a
-        href={lounge.zoomLink}
-        target="_blank"
-        style={{
-          backgroundColor: "#3F90F7",
-          padding: "20px",
-          borderRadius: "10px",
-          color: "white",
-          fontSize: 50,
-        }}
-      >
-        Hop In The Lounge
-      </a>
+      <center>
+        <a
+          href={lounge.zoomLink}
+          target="_blank"
+          style={{
+            backgroundColor: "#3F90F7",
+            padding: "20px",
+            borderRadius: "10px",
+            color: "white",
+            fontSize: 50,
+          }}
+        >
+          Hop In The Lounge
+        </a>
+      </center>
     );
   return (
     <Row gutter={[16, 16]}>
@@ -44,12 +46,12 @@ export default function LoungesTab(props) {
         <div
           style={{
             backgroundImage: "url(" + gatherDemo + ")",
-            height: "600px",
-            backgroundSize: "contain",
+            height: "750px",
+            backgroundSize: "cover",
             backgroundRepeat: "no-repeat",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
+            paddingTop: "200px",
+            // display: "flex",
+            //justifyContent: "center",
           }}
         >
           {loungeCode}
