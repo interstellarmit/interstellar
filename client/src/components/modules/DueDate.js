@@ -1,5 +1,5 @@
 import React, { Component, useState } from "react";
-import { List, Avatar, Button, Alert } from "antd";
+import { List, Avatar, Button, Alert, Tooltip } from "antd";
 import {
   PlusOutlined,
   MinusOutlined,
@@ -52,20 +52,21 @@ export default function DueDate(props) {
         hover
           ? (props.verify && props.dueDate.visibility === "Public"
               ? [
-                  <Button
-                    onClick={() => {
-                      props.verifyDDQL({
-                        objectId: props.dueDate._id,
-                        verified: !props.verified,
-                      });
-                    }}
-                    icon={
-                      <CheckCircleTwoTone twoToneColor={props.verified ? "#52c41a" : undefined} />
-                    }
-                    shape={"round"}
-                  >
-                    {props.verified ? "Pushed to Everyone" : "Push to Everyone"}
-                  </Button>,
+                  <Tooltip title={props.verified ? "Pushed to Everyone" : "Push to Everyone"}>
+                    <Button
+                      onClick={() => {
+                        props.verifyDDQL({
+                          objectId: props.dueDate._id,
+                          verified: !props.verified,
+                        });
+                      }}
+                      icon={
+                        <CheckCircleTwoTone twoToneColor={props.verified ? "#52c41a" : undefined} />
+                      }
+                      shape={"circle"}
+                      type="text"
+                    ></Button>
+                  </Tooltip>,
                 ]
               : []
             )
@@ -73,59 +74,65 @@ export default function DueDate(props) {
                 !props.verified && !props.home
                   ? [
                       props.added ? (
-                        <Button
-                          onClick={() => {
-                            props.addOrCompleteDDQL({
-                              objectId: props.dueDate._id,
-                              action: "remove",
-                            });
-                          }}
-                          icon={<MinusOutlined />}
-                          shape={"round"}
-                        >
-                          Remove
-                        </Button>
+                        <Tooltip title="Remove">
+                          <Button
+                            onClick={() => {
+                              props.addOrCompleteDDQL({
+                                objectId: props.dueDate._id,
+                                action: "remove",
+                              });
+                            }}
+                            icon={<MinusOutlined />}
+                            shape={"circle"}
+                            type="text"
+                          ></Button>
+                        </Tooltip>
                       ) : (
-                        <Button
-                          onClick={() => {
-                            props.addOrCompleteDDQL({
-                              objectId: props.dueDate._id,
-                              action: "add",
-                            });
-                          }}
-                          icon={<PlusOutlined />}
-                          shape={"circle"}
-                        ></Button>
+                        <Tooltip title="Add">
+                          <Button
+                            onClick={() => {
+                              props.addOrCompleteDDQL({
+                                objectId: props.dueDate._id,
+                                action: "add",
+                              });
+                            }}
+                            icon={<PlusOutlined />}
+                            shape={"circle"}
+                            type="text"
+                          ></Button>
+                        </Tooltip>
                       ),
                     ]
                   : []
               )
               .concat(
                 props.added && props.dueDate.url ? (
-                  <Button
-                    onClick={() => {
-                      window.open(props.dueDate.url, "_blank");
-                    }}
-                    icon={<LinkOutlined />}
-                    shape={"round"}
-                  >
-                    Link
-                  </Button>
+                  <Tooltip title="Link">
+                    <Button
+                      onClick={() => {
+                        window.open(props.dueDate.url, "_blank");
+                      }}
+                      icon={<LinkOutlined />}
+                      shape={"circle"}
+                      type="text"
+                    ></Button>
+                  </Tooltip>
                 ) : (
                   <></>
                 )
               )
               .concat(
                 (props.verify || props.dueDate.creatorId === props.userId) && !props.home ? (
-                  <Button
-                    onClick={() => {
-                      setShowEdit(true);
-                    }}
-                    shape={"round"}
-                    icon={<EditOutlined />}
-                  >
-                    Edit
-                  </Button>
+                  <Tooltip title="Edit">
+                    <Button
+                      onClick={() => {
+                        setShowEdit(true);
+                      }}
+                      shape={"circle"}
+                      icon={<EditOutlined />}
+                      type="text"
+                    ></Button>
+                  </Tooltip>
                 ) : (
                   <></>
                 )

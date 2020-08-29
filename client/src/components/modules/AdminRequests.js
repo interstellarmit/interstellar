@@ -1,5 +1,5 @@
 import React, { Component, useState } from "react";
-import { List, Avatar, ConfigProvider, Button, Empty } from "antd";
+import { List, Avatar, ConfigProvider, Button, Empty, Alert } from "antd";
 import { get, post } from "../../utilities";
 export default function AdminRequests(props) {
   const [finishedRequests, setFinishedRequests] = React.useState([]);
@@ -15,6 +15,14 @@ export default function AdminRequests(props) {
   };
   return (
     <div style={{ maxHeight: "70vh", overflow: "auto" }}>
+      <Alert
+        message="This is where you approve requests for users who wish to help admin this page"
+        type="info"
+        showIcon
+        closeable
+        style={{ height: "100%" }}
+        closable
+      />
       <ConfigProvider
         renderEmpty={() => {
           return <Empty description="No requests" />;

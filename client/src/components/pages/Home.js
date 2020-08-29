@@ -30,6 +30,7 @@ class Home extends Component {
       dueDates: [],
       quickLinks: [],
       lounges: [],
+      showDueDate: true,
     };
     props.updateSelectedPageName("");
   }
@@ -155,10 +156,10 @@ class Home extends Component {
           }}
         >
           <TabPage
-            labels={["Welcome", "Dashboard", "Privacy"].concat(
+            labels={["Welcome", "Dashboard", "Settings"].concat(
               this.props.isSiteAdmin ? ["Admin"] : []
             )}
-            routerLinks={["welcome", "dashboard", "privacy"].concat(
+            routerLinks={["welcome", "dashboard", "settings"].concat(
               this.props.isSiteAdmin ? ["admin"] : []
             )}
             defaultRouterLink={
@@ -175,7 +176,7 @@ class Home extends Component {
               />
             </div>
             <Row>
-              <Col span={12}>
+              <Col span={14}>
                 <DDQLSection
                   dataSource={this.state.dueDates}
                   users={this.state.users}
@@ -184,17 +185,8 @@ class Home extends Component {
                   home={true}
                   pageMap={pageMap}
                 />
-
-                <DDQLSection
-                  dataSource={this.state.quickLinks}
-                  users={this.state.users}
-                  user={this.props.user}
-                  type="QuickLink"
-                  home={true}
-                  pageMap={pageMap}
-                />
               </Col>
-              <Col span={12}>
+              <Col span={10}>
                 <Title level={4}>{"Open Lounges"}</Title>
                 {this.props.myPages.map((page) => {
                   let lounges = this.state.lounges
@@ -213,6 +205,14 @@ class Home extends Component {
                     />
                   );
                 })}
+                <DDQLSection
+                  dataSource={this.state.quickLinks}
+                  users={this.state.users}
+                  user={this.props.user}
+                  type="QuickLink"
+                  home={true}
+                  pageMap={pageMap}
+                />
               </Col>
             </Row>
             <div>

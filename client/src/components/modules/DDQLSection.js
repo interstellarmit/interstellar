@@ -24,30 +24,38 @@ export default function DDQLSection(props) {
   });
   let initialAdded = props.dataSource
     .filter((ddql) => {
+      // console.log(ddql.title);
+      // console.log(ddql.addedUserIds);
+      //console.log(props.user.userId);
+      // console.log(ddql.addedUserIds.includes(props.user.userId));
       return ddql.addedUserIds.includes(props.user.userId);
     })
     .map((ddql) => {
-      return ddql._id;
+      console.log("mappin id");
+      console.log(ddql._id);
+      return ddql._id + "";
     });
   let initialVerified = props.dataSource
     .filter((ddql) => {
       return ddql.verified;
     })
     .map((ddql) => {
-      return ddql._id;
+      return ddql._id + "";
     });
   let initialCompleted = props.dataSource
     .filter((ddql) => {
       return (ddql.completedUserIds || []).includes(props.user.userId);
     })
     .map((ddql) => {
-      return ddql._id;
+      return ddql._id + "";
     });
   const [showCompleted, setShowCompleted] = React.useState(false);
   const [addedDDQLs, setAddedDDQLs] = React.useState(initialAdded); // ids
   const [verifiedDDQLs, setVerifiedDDQLs] = React.useState(initialVerified); // ids
   const [completedDDQLs, setCompletedDDQLs] = React.useState(initialCompleted); // ids
   const [showAddNewDueDate, setShowAddNewDueDate] = React.useState(false);
+  //console.log("addedDDQLs");
+  // console.log(addedDDQLs);
   const verifyDDQL = (input) => {
     post("/api/verifyDDQL", input).then((data) => {
       if (data.verified) {
@@ -106,7 +114,12 @@ export default function DDQLSection(props) {
   let addNewDueDate = showAddNewDueDate ? (
     <AddNewDDQL
       public={dataSource.filter((ddql) => {
-        return ddql.visibility === "Public" && !addedDDQLs.includes("" + ddql._id);
+        //console.log(addedDDQLs);
+        //console.log(ddql._id);
+        //console.log(addedDDQLs.includes("" + ddql._id));
+        return (
+          ddql.visibility === "Public" && !addedDDQLs.includes("" + ddql._id) && !ddql.verified
+        );
       })}
       createNewDDQL={(input) => {
         props.createNewDDQL(input, (id) => {
@@ -123,6 +136,33 @@ export default function DDQLSection(props) {
   ) : (
     <></>
   );
+
+  let dataSourceFinal = addedDataSource
+    .filter((item) => {
+      if (item.deleted) return false;
+      if (!showCompleted) return !completedDDQLs.includes("" + item._id);
+      return true;
+    })
+    .concat(
+      props.type === "DueDate"
+        ? [
+            {
+              objectType: "DueDate",
+              dueDate: new Date(new Date() - 1000 * 60 * 60 * 24 * 7),
+              marker: true,
+            },
+          ]
+        : []
+    )
+    .sort((a, b) => {
+      let diff = 0;
+      if (a.objectType === "DueDate") {
+        diff = new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
+      } else {
+        diff = (a.addedUserIds.length - b.addedUserIds.length) * -1;
+      }
+      return diff === 0 ? (a._id + "").localeCompare(b._id + "") : diff;
+    });
 
   return (
     <>
@@ -159,7 +199,7 @@ export default function DDQLSection(props) {
       ></PageHeader>
 
       {props.home ? <></> : addNewDueDate}
-      <div style={{ maxHeight: "250px", overflow: "auto" }}>
+      <div style={{ maxHeight: "100%", overflow: "auto" }}>
         <ConfigProvider
           renderEmpty={() => {
             return (
@@ -171,32 +211,13 @@ export default function DDQLSection(props) {
         >
           <List
             size="large"
-            dataSource={addedDataSource
-              .filter((item) => {
-                if (item.deleted) return false;
-                if (!showCompleted) return !completedDDQLs.includes("" + item._id);
-                return true;
-              })
-              .concat(
-                props.type === "DueDate"
-                  ? [
-                      {
-                        objectType: "DueDate",
-                        dueDate: new Date(new Date() - 1000 * 60 * 60 * 24 * 7),
-                        marker: true,
-                      },
-                    ]
-                  : []
-              )
-              .sort((a, b) => {
-                let diff = 0;
-                if (a.objectType === "DueDate") {
-                  diff = new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
-                } else {
-                  diff = (a.addedUserIds.length - b.addedUserIds.length) * -1;
-                }
-                return diff === 0 ? (a._id + "").localeCompare(b._id + "") : diff;
-              })}
+            dataSource={
+              dataSourceFinal.filter((d) => {
+                return d.marker ? false : true;
+              }).length > 0
+                ? dataSourceFinal
+                : []
+            }
             renderItem={(item) => {
               // console.log("hi:" + completedDDQLs.includes("" + item._id));
               if (item.marker) return <div ref={scrollToRef} />;

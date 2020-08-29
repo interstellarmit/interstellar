@@ -6,6 +6,7 @@ import LoungeList from "./LoungeList";
 import UserList from "./UserList";
 import { post } from "../../utilities";
 export default function DashboardTab(props) {
+  const [showDueDate, setShowDueDate] = React.useState(true);
   let users = props.users.filter((user) => {
     return user.userId !== props.user.userId;
   });
@@ -83,7 +84,7 @@ export default function DashboardTab(props) {
       </Row>
 
       <Row gutter={[16, 16]}>
-        <Col span={18}>
+        <Col span={16}>
           <DDQLSection
             dataSource={props.dueDates}
             users={props.users}
@@ -94,7 +95,8 @@ export default function DashboardTab(props) {
             isSiteAdmin={props.isSiteAdmin}
             type="DueDate"
           />
-
+        </Col>
+        <Col span={8}>
           <DDQLSection
             dataSource={props.quickLinks}
             users={props.users}
@@ -104,18 +106,6 @@ export default function DashboardTab(props) {
             editDDQL={props.editDDQL}
             user={props.user}
             type="QuickLink"
-          />
-        </Col>
-        <Col span={6}>
-          <UserList
-            users={users}
-            allPages={props.allPages}
-            showClasses={true}
-            pageIds={props.pageIds}
-            page={props.page}
-            adminIds={props.page.adminIds}
-            isSiteAdmin={props.isSiteAdmin}
-            dashboard={true}
           />
         </Col>
       </Row>
