@@ -80,6 +80,7 @@ router.get("/me", auth.me, async (req, res) => {
             locked: page.locked,
           });
           if (allPages.length === pages.length) {
+            req.session.user = user;
             res.send({
               user: user,
               allPages: allPages,
