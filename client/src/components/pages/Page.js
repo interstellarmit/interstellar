@@ -12,6 +12,7 @@ import AddEnterCode from "../modules/AddEnterCode";
 import MySpin from "../modules/MySpin";
 import { socket } from "../../client-socket.js";
 import { Spin, Space, Button, Typography, Layout, PageHeader, Badge, Row, Col } from "antd";
+import { UserOutlined } from "@ant-design/icons";
 const { Header, Content, Footer, Sider } = Layout;
 const { Title, Text } = Typography;
 import {
@@ -333,14 +334,22 @@ class Page extends Component {
 
     let isPageAdmin =
       this.state.page.adminIds.includes(this.props.user.userId) || this.props.isSiteAdmin;
+
     return (
       <Layout style={{ background: "rgba(240, 242, 245, 1)", height: "100vh" }}>
         <PageHeader
           className="site-layout-sub-header-background"
           style={{ padding: "20px 30px 0px 30px", background: "#fff" }}
-          extra={[this.state.inPage ? removeClassButton : addClassButton].concat(
-            isPageAdmin && this.state.inPage ? [lockButton] : []
-          )}
+          extra={(isPageAdmin && this.state.inPage
+            ? [
+                <Button icon={<UserOutlined />} disabled>
+                  Admin
+                </Button>,
+              ]
+            : []
+          )
+            .concat([this.state.inPage ? removeClassButton : addClassButton])
+            .concat(isPageAdmin && this.state.inPage ? [lockButton] : [])}
           title={this.state.page.name}
           subTitle={this.state.page.title}
         ></PageHeader>
@@ -379,7 +388,7 @@ class Page extends Component {
               routerLinks={["info", "dashboard", "lounge", "forum"].concat(
                 this.state.adminRequests.length > 0 ? ["admin"] : []
               )}
-              defaultRouterLink={this.state.inPage ? "info" : "dashboard"}
+              defaultRouterLink={!this.state.inPage ? "info" : "dashboard"}
               page={this.state.page}
             >
               <InfoTab

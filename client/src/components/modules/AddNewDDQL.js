@@ -66,7 +66,9 @@ export default function AddNewDDQL(props) {
     <Modal
       visible={props.visible}
       title={
-        (props.edit ? "Edit " : "Add New ") + text + (!props.edit ? " or Add Existing " + text : "")
+        (props.edit ? "Edit " : "Add New ") +
+        text +
+        (!props.edit ? " or Select from Public Feed" : "")
       }
       width={props.edit ? undefined : 700}
       onCancel={() => {

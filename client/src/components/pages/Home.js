@@ -161,7 +161,9 @@ class Home extends Component {
             routerLinks={["welcome", "dashboard", "privacy"].concat(
               this.props.isSiteAdmin ? ["admin"] : []
             )}
-            defaultRouterLink={this.props.seeHelpText ? "welcome" : "dashboard"}
+            defaultRouterLink={
+              this.props.myPages.length <= 2 && this.props.seeHelpText ? "welcome" : "dashboard"
+            }
           >
             <div>
               <SearchBar
@@ -256,11 +258,28 @@ class Home extends Component {
           </TabPage>
         </Content>
 
-        <div style={{ bottom: "20px", padding: "10px 10px 10px 10px" }}>
+        <div style={{ bottom: "10px", padding: "10px 300px 10px 300px" }}>
           <center>
-            <Button type="link" target="_blank" href="https://forms.gle/ZSdrfPZfpwngxQ3aA">
-              Please share any bugs or feedback here!
-            </Button>
+            <div>
+              Disclaimer: All material on this site is compiled by students and therefore
+              unofficial. Thanks to{" "}
+              <a href="https://hacklodge.org/" target="_blank">
+                Hacklodge
+              </a>{" "}
+              and{" "}
+              <a href="http://gather.town/" target="_blank">
+                Gather
+              </a>{" "}
+              for their support, and{" "}
+              <a href="https://firehose.guide/" target="_blank">
+                Firehose
+              </a>{" "}
+              for class information. Please share any bugs or feedback{" "}
+              <a href="https://forms.gle/ZSdrfPZfpwngxQ3aA" target="_blank">
+                here
+              </a>
+              !
+            </div>
           </center>
         </div>
       </Layout>
