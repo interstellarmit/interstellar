@@ -145,6 +145,8 @@ router.post("/getRedirectLink", main_calls.getRedirectLink);
 router.post("/setVisible", auth.ensureLoggedIn, main_calls.setVisible);
 router.post("/setSeeHelpText", auth.ensureLoggedIn, main_calls.setSeeHelpText);
 router.post("/addRemoveAdmin", auth.ensureLoggedIn, main_calls.addRemoveAdmin);
+router.post("/requestAdmin", auth.ensureLoggedIn, main_calls.requestAdmin);
+router.post("/honorRequest", auth.ensureLoggedIn, main_calls.honorRequest);
 
 router.post("/createNewLounge", auth.ensureLoggedIn, lounge_calls.createNewLounge);
 router.post("/addSelfToLounge", auth.ensureLoggedIn, lounge_calls.addSelfToLounge);
@@ -170,7 +172,7 @@ router.post("/gatherKey", auth.ensureLoggedIn, (req, res) => {
   res.send({ name: name, apiKey, apiKey })
 })
 router.post("/populateLounges", auth.ensureLoggedIn, (req, res) => {
-  if (req.user.email === 'dansun@mit.edu') {
+  if (req.user.email === "dansun@mit.edu") {
     Page.find({}).then((pages) => {
       pages.forEach((page) => {
         let lounge = new Lounge({
@@ -181,12 +183,12 @@ router.post("/populateLounges", auth.ensureLoggedIn, (req, res) => {
           permanent: true,
           main: true,
         });
-        console.log(lounge)
-        lounge.save()
-      })
+        console.log(lounge);
+        lounge.save();
+      });
     });
   }
-})
+});
 
 // anything else falls to this "not found" case
 router.all("*", (req, res) => {

@@ -18,6 +18,7 @@ import TabPage from "../modules/TabPage";
 import SearchBar from "../modules/SearchBar";
 import LoungeList from "../modules/LoungeList";
 import MySpin from "../modules/MySpin";
+import AdminRequests from "../modules/AdminRequests";
 const { Header, Content, Footer, Sider } = Layout;
 const { Title, Text } = Typography;
 class Home extends Component {
@@ -91,6 +92,7 @@ class Home extends Component {
         quickLinks: data.quickLinks,
         lounges: data.lounges,
         pageLoaded: true,
+        adminRequests: data.adminRequests,
       });
     });
 
@@ -153,9 +155,13 @@ class Home extends Component {
           }}
         >
           <TabPage
-            labels={["Welcome", "Dashboard", "Privacy"]}
-            routerLinks={["welcome", "dashboard", "privacy"]}
-            defaultRouterLink={"welcome"}
+            labels={["Welcome", "Dashboard", "Privacy"].concat(
+              this.props.isSiteAdmin ? ["Admin"] : []
+            )}
+            routerLinks={["welcome", "dashboard", "privacy"].concat(
+              this.props.isSiteAdmin ? ["admin"] : []
+            )}
+            defaultRouterLink={this.props.seeHelpText ? "welcome" : "dashboard"}
           >
             <div>
               <SearchBar
@@ -189,9 +195,11 @@ class Home extends Component {
               <Col span={12}>
                 <Title level={4}>{"Open Lounges"}</Title>
                 {this.props.myPages.map((page) => {
-                  let lounges = this.state.lounges.filter((lounge) => {
-                    return lounge.pageId === page._id;
-                  });
+                  let lounges = this.state.lounges
+                    ? this.state.lounges.filter((lounge) => {
+                        return lounge.pageId === page._id;
+                      })
+                    : [];
                   if (lounges.length === 0) return <></>;
                   return (
                     <LoungeList
@@ -228,6 +236,7 @@ class Home extends Component {
                 style={{
                   display: "flex",
                   flexDirection: "row",
+                  marginTop: "10px",
                 }}
               >
                 <Switch
@@ -243,6 +252,7 @@ class Home extends Component {
                 </div>
               </div>
             </div>
+            <AdminRequests adminRequests={this.state.adminRequests} />
           </TabPage>
         </Content>
 

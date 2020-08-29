@@ -5,6 +5,10 @@ const AdminRequestSchema = new mongoose.Schema({
   name: String,
   pageId: String,
   pageName: String,
+  honored: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 // compile model from schema
