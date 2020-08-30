@@ -396,7 +396,7 @@ class Page extends Component {
                 !this.state.inPage
                   ? "info"
                   : this.state.page.pageType === "Group"
-                  ? "lounge"
+                  ? "info"
                   : "dashboard"
               }
               page={this.state.page}
