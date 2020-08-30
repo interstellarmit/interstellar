@@ -21,9 +21,11 @@ export default function LoungeList(props) {
               <LoungeListItem
                 name={oneLounge.name}
                 users={oneLounge.userIds.map((user) => {
-                  return props.users.find((oneUser) => {
-                    return oneUser.userId === user;
-                  });
+                  return (
+                    props.users.find((oneUser) => {
+                      return oneUser.userId === user;
+                    }) || { userId: "", name: "Former Member" }
+                  );
                 })}
                 home={props.home}
                 pageName={props.page.name}

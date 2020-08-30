@@ -42,7 +42,7 @@ export default function ActivePost(props) {
 
   const poster = props.users.find((oneUser) => {
     return oneUser.userId == props.activePost.post.userId;
-  });
+  }) || { userId: "", name: "Former Member" };
 
   const handleReplyChange = (e) => {
     setReply(e.target.value);
@@ -158,7 +158,7 @@ export default function ActivePost(props) {
             comments={comments.map((c) => {
               var author = props.users.find((oneUser) => {
                 return oneUser.userId == c.userId;
-              });
+              }) || { userId: "", name: "Former Member" };
               return {
                 author: author.name,
                 avatar: <ProfilePic user={author} />,

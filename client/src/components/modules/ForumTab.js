@@ -153,9 +153,11 @@ class ForumTab extends Component {
                     setActivePost={this.setActivePost}
                     groupPost={onePost}
                     user={this.props.user}
-                    poster={this.props.users.find((oneUser) => {
-                      return oneUser.userId == onePost.post.userId;
-                    })}
+                    poster={
+                      this.props.users.find((oneUser) => {
+                        return oneUser.userId == onePost.post.userId;
+                      }) || { userId: "", name: "Former Member" }
+                    }
                   />
                 );
               }}
