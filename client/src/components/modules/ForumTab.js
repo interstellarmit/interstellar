@@ -109,9 +109,11 @@ class ForumTab extends Component {
       pageId: this.props.page._id,
     }).then((data) => {
       let groupPosts = data.groupPosts;
-      groupPosts.sort((a, b) => {
-        return b.post.name < a.post.name;
+      groupPosts = groupPosts.sort((a, b) => {
+        if (a.post.timestamp > b.post.timestamp) return -1;
+        return 1;
       });
+      console.log(groupPosts)
 
       console.log(groupPosts.map((x) => x.post.timestamp));
 

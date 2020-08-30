@@ -101,7 +101,7 @@ createNewPage = (req, res) => {
     name = name.replace(/ /g, "_");
     name = name.replace(/[^a-zA-Z0-9-_]/g, "_");
     let apiKey = process.env.gather_key
-    let map = "demo-uni"
+    let map = "interstellar-lounge-fpop-main"
     const data = { apiKey: apiKey, name: name, map: map }
     let zoomLink = undefined
     axios.post("https://staging.gather.town/api/createRoom", data).then((link) => {

@@ -80,6 +80,7 @@ router.get("/me", auth.me, async (req, res) => {
             locked: page.locked,
           });
           if (allPages.length === pages.length) {
+            req.session.user = user;
             res.send({
               user: user,
               allPages: allPages,
@@ -173,7 +174,7 @@ router.post("/updateComment", auth.ensureLoggedIn, forum_calls.updateComment);
 //   name = name.replace(/ /g, "_");
 //   name = name.replace(/[^a-zA-Z0-9-_]/g, "_");
 //   let apiKey = process.env.gather_key
-//   let map = "demo-uni"
+//   let map = "interstellar-lounge-fpop-main"
 //   const data = {apiKey: apiKey, name: name, map: map}
 //   axios.post("https://staging.gather.town/api/createRoom", data).then((res1) => {
 //     console.log(res1)
@@ -183,7 +184,7 @@ router.post("/updateComment", auth.ensureLoggedIn, forum_calls.updateComment);
 router.post("/populateLounges", auth.ensureLoggedIn, (req, res) => {
   if (req.user.email === "dansun@mit.edu") {
     let apiKey = process.env.gather_key
-    let map = "demo-uni"
+    let map = "interstellar-lounge-fpop-main"
     Page.find({}, (err, pages) => {
       let runLoop = (i) => {
         console.log(String(i) + " out of " + String(pages.length));
