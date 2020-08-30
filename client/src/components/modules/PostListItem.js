@@ -22,6 +22,13 @@ export default function PostListItem(props) {
     })
     .join(" ");
 
+  const handleReact = () => {
+    props.updatePost({
+      postId: props.activePost.post._id,
+      reacting: true,
+    });
+  };
+
   return (
     <div
       onClick={() => {
@@ -44,33 +51,26 @@ export default function PostListItem(props) {
           padding: "15px 20px 15px 20px",
         }}
         key={props.groupPost.post._id}
-        actions={
-          props.groupPost.post.reacts.includes(props.user.userId)
-            ? [
-                <IconText
-                  icon={StarFilled}
-                  text={props.groupPost.post.reacts.length}
-                  key="list-vertical-star-o"
-                />,
-                <IconText
-                  icon={MessageOutlined}
-                  text={props.groupPost.comments.length}
-                  key="list-vertical-message"
-                />,
-              ]
-            : [
-                <IconText
-                  icon={StarOutlined}
-                  text={props.groupPost.post.reacts.length}
-                  key="list-vertical-star-o"
-                />,
-                <IconText
-                  icon={MessageOutlined}
-                  text={props.groupPost.comments.length}
-                  key="list-vertical-message"
-                />,
-              ]
-        }
+        actions={[
+          props.groupPost.post.reacts.includes(props.user.userId) ? (
+            <IconText
+              icon={StarFilled}
+              text={props.groupPost.post.reacts.length}
+              key="list-vertical-star-o"
+            />
+          ) : (
+            <IconText
+              icon={StarOutlined}
+              text={props.groupPost.post.reacts.length}
+              key="list-vertical-star-o"
+            />
+          ),
+          <IconText
+            icon={MessageOutlined}
+            text={props.groupPost.comments.length}
+            key="list-vertical-message"
+          />,
+        ]}
       >
         <List.Item.Meta avatar={<ProfilePic user={props.poster} />} title={postTitle} />
         {props.groupPost.post.text}

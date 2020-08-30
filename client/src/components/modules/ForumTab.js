@@ -145,6 +145,7 @@ class ForumTab extends Component {
               renderItem={(onePost) => {
                 return (
                   <PostListItem
+                    updatePost={this.updatePost}
                     setActivePost={this.setActivePost}
                     groupPost={onePost}
                     user={this.props.user}
@@ -157,16 +158,23 @@ class ForumTab extends Component {
             />
           </div>
         </Col>
-        <Col span={16}>
-          {this.state.activePost !== null && (
-            <ActivePost
-              createNewComment={this.createNewComment}
-              updatePost={this.updatePost}
-              user={this.props.user}
-              activePost={this.state.activePost}
-              users={this.props.users}
-            />
-          )}
+        <Col style={{ height: "100%" }} span={8} span={16}>
+          <div
+            style={{
+              height: "100%",
+              overflow: "auto",
+            }}
+          >
+            {this.state.activePost !== null && (
+              <ActivePost
+                createNewComment={this.createNewComment}
+                updatePost={this.updatePost}
+                user={this.props.user}
+                activePost={this.state.activePost}
+                users={this.props.users}
+              />
+            )}
+          </div>
         </Col>
       </Row>
     );

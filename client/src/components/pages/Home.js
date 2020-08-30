@@ -35,7 +35,7 @@ class Home extends Component {
     props.updateSelectedPageName("");
   }
 
-  addToLounge = (userId, loungeId, callback = () => { }) => {
+  addToLounge = (userId, loungeId, callback = () => {}) => {
     let lounges = this.state.lounges;
     let lounge = lounges.filter((l) => {
       return l._id + "" === loungeId;
@@ -53,7 +53,7 @@ class Home extends Component {
     this.setState({ lounges: newLounges }, callback);
   };
 
-  removeFromLounge = (userId, loungeId, callback = () => { }) => {
+  removeFromLounge = (userId, loungeId, callback = () => {}) => {
     if (loungeId !== "") {
       let lounges = this.state.lounges;
       let lounge = lounges.filter((l) => {
@@ -188,25 +188,27 @@ class Home extends Component {
               </Col>
               <Col span={10}>
                 <Title level={4}>{"Open Lounges"}</Title>
-                {this.props.myPages.sort((a, b) => {
-                  return a.name.localeCompare(b.name);
-                }).map((page) => {
-                  let lounges = this.state.lounges
-                    ? this.state.lounges.filter((lounge) => {
-                      return lounge.pageId === page._id;
-                    })
-                    : [];
-                  if (lounges.length === 0) return <></>;
-                  return (
-                    <LoungeList
-                      redirect={(link) => this.props.redirectPage(link)}
-                      lounges={lounges}
-                      users={this.state.users}
-                      page={page}
-                      home={true}
-                    />
-                  );
-                })}
+                {this.props.myPages
+                  .sort((a, b) => {
+                    return a.name.localeCompare(b.name);
+                  })
+                  .map((page) => {
+                    let lounges = this.state.lounges
+                      ? this.state.lounges.filter((lounge) => {
+                          return lounge.pageId === page._id;
+                        })
+                      : [];
+                    if (lounges.length === 0) return <></>;
+                    return (
+                      <LoungeList
+                        redirect={(link) => this.props.redirectPage(link)}
+                        lounges={lounges}
+                        users={this.state.users}
+                        page={page}
+                        home={true}
+                      />
+                    );
+                  })}
                 <DDQLSection
                   dataSource={this.state.quickLinks}
                   users={this.state.users}
@@ -252,7 +254,7 @@ class Home extends Component {
                   unCheckedChildren={"Off"}
                 />
                 <div style={{ paddingLeft: "10px" }}>
-                  Toggle help mode to hide the helper text that appears on dashboard
+                  Toggle help mode to show the helper text that appears on dashboard
                 </div>
               </div>
             </div>

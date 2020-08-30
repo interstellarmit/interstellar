@@ -19,7 +19,7 @@ const CommentList = ({ comments }) => (
 const Editor = ({ onChange, onSubmit, submitting, value }) => (
   <>
     <Form.Item style={{ marginTop: "0px" }}>
-      <TextArea rows={3} placeholder="Type a reply..." onChange={onChange} value={value} />
+      <TextArea rows={2} placeholder="Type a reply..." onChange={onChange} value={value} />
     </Form.Item>
     <Form.Item style={{ marginBottom: "0px" }}>
       <Button htmlType="submit" loading={submitting} onClick={onSubmit} type="primary">

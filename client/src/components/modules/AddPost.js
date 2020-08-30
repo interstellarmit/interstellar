@@ -45,7 +45,7 @@ export default function AddPost(props) {
               <Input placeholder="Title" />
             </Form.Item>
             <Form.Item name="Text">
-              <Input.TextArea rows={3} placeholder="Text" rules={[{ required: true }]} />
+              <Input.TextArea rows={5} placeholder="Text" rules={[{ required: true }]} />
             </Form.Item>
             <Form.Item style={{ marginBottom: "0px" }}>
               <Button style={{ marginRight: "10px" }} key="submit" type="primary" htmlType="submit">
