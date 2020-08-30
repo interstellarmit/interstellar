@@ -19,30 +19,40 @@ class SignContract extends Component {
     return (
       <>
         <Row justify={"center"}>
-          <Col
-            style={{
-              flexDirection: "column",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <br />
-            <br />
-            <br />
-            <br />
-            <img
-              src={logo}
-              style={{ display: "block", marginLeft: "auto", marginRight: "auto", width: "20%" }}
-            />
-            <br />
-            <br />
-            <h1 style={{ textAlign: "center" }}>Interstellar Policy</h1>
-            <h2 style={{ textAlign: "center" }}>I am a current MIT student.</h2>
-            <h2 style={{ textAlign: "center" }}>I will abide by MIT course policies. </h2>
-            <br />
-            <Button onClick={this.submitForm}>Accept</Button>
-            <br />
+          <Col>
+            <div
+              style={{
+                height: "100vh",
+                flexDirection: "column",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <img src={logo} style={{ height: "200px", marginBottom: "20px" }} />
+              <h1
+                style={{
+                  textAlign: "center",
+                  fontSize: "50px",
+                  fontWeight: "700",
+                  fontFamily: "Chakra Petch",
+                  marginBottom: "0px",
+                }}
+              >
+                interstellar
+              </h1>
+              <br />
+              <h2 style={{ textAlign: "center" }}>I am a current MIT student.</h2>
+              <h2 style={{ textAlign: "center" }}>I will abide by MIT course policies. </h2>
+              <br />
+              <div>
+                <Button style={{ marginRight: "10px" }} type="primary" onClick={this.submitForm}>
+                  Accept
+                </Button>
+                <Button onClick={this.props.logout}>Go Back</Button>
+              </div>
+              <br />
+            </div>
           </Col>
         </Row>
       </>
