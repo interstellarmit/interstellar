@@ -88,12 +88,12 @@ class Home extends Component {
         return;
       }
       this.setState({
-        users: data.users,
-        dueDates: data.dueDates,
-        quickLinks: data.quickLinks,
-        lounges: data.lounges,
+        users: data.users || [],
+        dueDates: data.dueDates || [],
+        quickLinks: data.quickLinks || [],
+        lounges: data.lounges || [],
         pageLoaded: true,
-        adminRequests: data.adminRequests,
+        adminRequests: data.adminRequests || [],
       });
       document.getElementsByClassName("ant-tabs-content")[0].style.height = "100%";
     });

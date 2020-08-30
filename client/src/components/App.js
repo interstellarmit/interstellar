@@ -101,7 +101,7 @@ class App extends Component {
     });
     socket.on("createdPage", (data) => {
       let allPages = this.state.allPages.concat([]);
-      let pageIds = this.state.pageIds.concat([]);
+
       if (
         !allPages
           .map((page) => {
@@ -110,10 +110,8 @@ class App extends Component {
           .includes(data.page._id)
       ) {
         allPages.push(data.page);
-        if (data.userId === this.state.userId) {
-          pageIds.push(data.page._id);
-        }
-        this.setState({ allPages: allPages, pageIds: pageIds });
+
+        this.setState({ allPages: allPages });
       }
     });
   }
@@ -351,6 +349,7 @@ class App extends Component {
           <Layout style={{ minHeight: "100vh" }}>
             <SideBar
               pageIds={this.state.pageIds}
+              updatePageIds={this.updatePageIds}
               allPages={this.state.allPages}
               myPages={myPages}
               selectedPageName={this.state.selectedPageName}

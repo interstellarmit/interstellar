@@ -195,14 +195,14 @@ class Page extends Component {
           return;
         }
         this.setState({
-          users: data.users,
-          dueDates: data.dueDates,
-          quickLinks: data.quickLinks,
-          lounges: data.lounges,
+          users: data.users || [],
+          dueDates: data.dueDates || [],
+          quickLinks: data.quickLinks || [],
+          lounges: data.lounges || [],
           page: data.page,
           pageLoaded: true,
           inPage: data.inPage,
-          adminRequests: data.adminRequests,
+          adminRequests: data.adminRequests || [],
         });
       }
     );

@@ -167,7 +167,13 @@ export default function SideBar(props) {
             Log State
           </Menu.Item> */}
       </Menu>
-      <AddGroup visible={addGroup} setVisible={setAddGroup} redirectPage={props.redirectPage} />
+      <AddGroup
+        visible={addGroup}
+        setVisible={setAddGroup}
+        redirectPage={props.redirectPage}
+        pageIds={props.pageIds}
+        updatePageIds={props.updatePageIds}
+      />
     </Sider>
   );
 }

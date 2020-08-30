@@ -19,6 +19,9 @@ export default function AddGroup(props) {
           joinCode: fieldsValue.joinCode || "",
         }).then((data2) => {
           if (data2.added) {
+            let newPageIds = props.pageIds.concat([]);
+            newPageIds.push(id);
+            props.updatePageIds(newPageIds);
             props.redirectPage("/group/" + data.name);
           }
         });
