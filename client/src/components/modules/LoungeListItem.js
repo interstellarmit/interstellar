@@ -1,14 +1,25 @@
 import React, { Component, useState } from "react";
-import { List, Avatar, Button } from "antd";
+import { List, Avatar, Button, Tooltip } from "antd";
 import ProfilePic from "./ProfilePic";
 import { UsergroupAddOutlined } from "@ant-design/icons";
 export default function LoungeListItem(props) {
+  const [hover, setHover] = React.useState(false);
   return (
     <List.Item
+      onClick={props.redirect}
+      onMouseOver={() => {
+        setHover(true);
+      }}
+      onMouseLeave={() => {
+        setHover(false);
+      }}
+      style={{ backgroundColor: hover ? "#F6F6F6" : undefined }}
       actions={[
-        <Button onClick={props.redirect}>
-          <UsergroupAddOutlined />
-        </Button>,
+        <Tooltip title={"Enter " + props.pageName + " Lounge"}>
+          <Button onClick={props.redirect} icon={<UsergroupAddOutlined />} type="text">
+            Enter
+          </Button>
+        </Tooltip>,
       ]}
     >
       <List.Item.Meta

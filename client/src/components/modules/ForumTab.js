@@ -103,7 +103,7 @@ class ForumTab extends Component {
 
   componentDidMount() {
     // fix height of div
-    var tabDiv = (document.getElementsByClassName("ant-tabs-content")[0].style.height = "100%");
+    document.getElementsByClassName("ant-tabs-content")[0].style.height = "100%";
 
     post("/api/joinForum", {
       pageId: this.props.page._id,

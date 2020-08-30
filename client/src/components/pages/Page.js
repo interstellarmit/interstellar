@@ -169,6 +169,8 @@ class Page extends Component {
     }).then((data) => {
       if (data.added) {
         this.addToLounge(this.props.user.userId, loungeId, callback);
+      } else {
+        callback();
       }
     });
   };
@@ -179,6 +181,8 @@ class Page extends Component {
     }).then((data) => {
       if (data.removed) {
         this.removeFromLounge(this.props.user.userId, loungeId, callback);
+      } else {
+        callback();
       }
     });
   };
