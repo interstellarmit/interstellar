@@ -392,7 +392,13 @@ class Page extends Component {
               routerLinks={["info", "dashboard", "lounge", "forum"].concat(
                 this.state.adminRequests.length > 0 ? ["admin"] : []
               )}
-              defaultRouterLink={!this.state.inPage ? "info" : "dashboard"}
+              defaultRouterLink={
+                !this.state.inPage
+                  ? "info"
+                  : this.state.page.pageType === "Group"
+                  ? "lounge"
+                  : "dashboard"
+              }
               page={this.state.page}
             >
               <InfoTab
