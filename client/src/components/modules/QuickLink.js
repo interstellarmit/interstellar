@@ -31,7 +31,7 @@ export default function QuickLink(props) {
         setHover(false);
       }}
       style={{ backgroundColor: hover ? "#F6F6F6" : undefined }}
-      actions={
+      extra={
         hover
           ? (props.verify && props.quickLink.visibility === "Public"
               ? [

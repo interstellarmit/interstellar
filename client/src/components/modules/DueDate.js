@@ -48,7 +48,7 @@ export default function DueDate(props) {
         setHover(false);
       }}
       style={{ backgroundColor: hover ? "#F6F6F6" : undefined }}
-      actions={
+      extra={
         hover
           ? (props.verify && props.dueDate.visibility === "Public"
               ? [

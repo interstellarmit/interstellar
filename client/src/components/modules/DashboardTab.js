@@ -7,7 +7,9 @@ import UserList from "./UserList";
 import { post } from "../../utilities";
 export default function DashboardTab(props) {
   const [showDueDate, setShowDueDate] = React.useState(true);
-
+  let isSecondOneInitial =
+    !props.page.adminIds.includes(props.user.userId) && props.page.adminIds.length < 5;
+  const [isSecondOne, setIsSecondOne] = React.useState(isSecondOneInitial);
   let users = props.users.filter((user) => {
     return user.userId !== props.user.userId;
   });
@@ -20,17 +22,14 @@ export default function DashboardTab(props) {
     //setHeight(document.getElementsByClassName("alertBoxClassName")[0].style.height);
   });
   //console.log(height);
-  let height =
-    (!props.page.adminIds.includes(props.user.userId) && props.page.adminIds.length < 5) ||
-    props.seeHelpText
-      ? 103
-      : 0;
 
+  let isFirstOne = props.seeHelpText;
+  let height = isFirstOne || isSecondOne ? 149 : 0;
   return (
     <div style={{ height: "100%" }}>
       <Row className={"alertBoxClassName"}>
-        {props.seeHelpText ? (
-          <Col span={12}>
+        {isFirstOne ? (
+          <Col span={isSecondOne ? 12 : 24}>
             <Alert
               message={"Help create a " + props.page.pageType.toLowerCase() + " calendar"}
               description={
@@ -51,7 +50,7 @@ export default function DashboardTab(props) {
         ) : (
           <React.Fragment />
         )}
-        {!props.page.adminIds.includes(props.user.userId) && props.page.adminIds.length < 5 ? (
+        {isSecondOne ? (
           <Col span={props.seeHelpText ? 12 : 24}>
             <Alert
               message="Request ability to push out due dates from public feed to everyone automatically
@@ -85,9 +84,11 @@ export default function DashboardTab(props) {
               }
               type="info"
               showIcon
-              closeable
               style={{ height: "100%" }}
               closable
+              afterClose={() => {
+                setIsSecondOne(false);
+              }}
             />
           </Col>
         ) : (

@@ -153,7 +153,7 @@ class Home extends Component {
           style={{
             padding: "0px 30px 30px 30px",
             background: "#fff",
-            height: "calc(100vh - 64px)",
+            height: "calc(100% - 64px)",
           }}
         >
           <TabPage
