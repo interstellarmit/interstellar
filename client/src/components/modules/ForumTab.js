@@ -113,9 +113,6 @@ class ForumTab extends Component {
         if (a.post.timestamp > b.post.timestamp) return -1;
         return 1;
       });
-      console.log(groupPosts)
-
-      console.log(groupPosts.map((x) => x.post.timestamp));
 
       let activePost = null;
       if (groupPosts.length !== 0) {
