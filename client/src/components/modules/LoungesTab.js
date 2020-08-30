@@ -10,8 +10,8 @@ import gatherDemo from "../../public/GatherDemo.png";
 export default function LoungesTab(props) {
   let lounge = props.lounges
     ? props.lounges.filter((lounge) => {
-      return lounge.main;
-    })[0]
+        return lounge.main;
+      })[0]
     : undefined;
 
   if (!lounge) return <div>No lounge exists</div>;
@@ -20,50 +20,50 @@ export default function LoungesTab(props) {
     lounge.zoomLink === "" ? (
       <></>
     ) : (
-        <center>
-          {
-            lounge._id !== props.loungeId ?
-              <a
-                href={lounge.zoomLink}
-                target="_blank"
-                style={{
-                  backgroundColor: "#3F90F7",
-                  padding: "20px",
-                  borderRadius: "10px",
-                  color: "white",
-                  fontSize: 50,
-                }}
-                onClick={() => {
-                  if (props.loungeId !== lounge._id) {
-                    props.removeSelfFromLounge(props.loungeId, () => {
-                      props.addSelfToLounge(lounge._id, () => {
-                        props.setLoungeId(lounge._id);
-                      });
-                    });
-                  }
-                }}
-              >
-                Hop In The Lounge
-              </a> :
-              <a
-                target="_blank"
-                style={{
-                  backgroundColor: "#3F90F7",
-                  padding: "20px",
-                  borderRadius: "10px",
-                  color: "white",
-                  fontSize: 50,
-                }}
-                onClick={() => {
-                  props.removeSelfFromLounge(props.loungeId, () => {
-                    props.setLoungeId("");
+      <center>
+        {lounge._id !== props.loungeId ? (
+          <a
+            href={lounge.zoomLink}
+            target="_blank"
+            style={{
+              backgroundColor: "#3F90F7",
+              padding: "20px",
+              borderRadius: "10px",
+              color: "white",
+              fontSize: 50,
+            }}
+            onClick={() => {
+              if (props.loungeId !== lounge._id) {
+                props.removeSelfFromLounge(props.loungeId, () => {
+                  props.addSelfToLounge(lounge._id, () => {
+                    props.setLoungeId(lounge._id);
                   });
-                }}
-              >
-                Remove From Lounge
-            </a>
-          }
-          {/* <a
+                });
+              }
+            }}
+          >
+            Hop In The Lounge
+          </a>
+        ) : (
+          <a
+            target="_blank"
+            style={{
+              backgroundColor: "#3F90F7",
+              padding: "20px",
+              borderRadius: "10px",
+              color: "white",
+              fontSize: 50,
+            }}
+            onClick={() => {
+              props.removeSelfFromLounge(props.loungeId, () => {
+                props.setLoungeId("");
+              });
+            }}
+          >
+            Remove From Lounge
+          </a>
+        )}
+        {/* <a
             href={lounge.zoomLink}
             target="_blank"
             style={{
@@ -85,8 +85,8 @@ export default function LoungesTab(props) {
           >
             Hop In The Lounge
         </a> */}
-        </center>
-      );
+      </center>
+    );
   useEffect(() => {
     document.getElementsByClassName("ant-tabs-content")[0].style.height = "100%";
   });
@@ -110,9 +110,11 @@ export default function LoungesTab(props) {
       <Col span={6} style={{ height: "100%" }}>
         <UserList
           users={lounge.userIds.map((user) => {
-            return props.users.filter((oneUser) => {
-              return oneUser.userId === user;
-            })[0];
+            return (
+              props.users.find((oneUser) => {
+                return oneUser.userId === user;
+              }) || { userId: "", name: "Former Member" }
+            );
           })}
         />
       </Col>

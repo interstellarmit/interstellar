@@ -18,10 +18,8 @@ import { get, post } from "../../utilities";
 import { PlusOutlined, MinusOutlined } from "@ant-design/icons";
 export default function DDQLSection(props) {
   const scrollToRef = useRef(null);
-  useEffect(() => {
-    if (!scrollToRef.current) return;
-    scrollToRef.current.scrollIntoView({ behavior: "smooth" });
-  });
+  const [scrolled, setScrolled] = useState(false);
+
   let initialAdded = props.dataSource
     .filter((ddql) => {
       // console.log(ddql.title);
@@ -57,6 +55,7 @@ export default function DDQLSection(props) {
   //console.log("addedDDQLs");
   // console.log(addedDDQLs);
   const verifyDDQL = (input) => {
+    setScrolled(true);
     post("/api/verifyDDQL", input).then((data) => {
       if (data.verified) {
         if (input.verified) {
@@ -77,6 +76,7 @@ export default function DDQLSection(props) {
     });
   };
   const addOrCompleteDDQL = (input) => {
+    setScrolled(true);
     post("/api/addOrCompleteDDQL", Object.assign(input, { amount: "single" })).then((result) => {
       if (!result.done) return;
       if (input.action === "add") {
@@ -164,6 +164,11 @@ export default function DDQLSection(props) {
       return diff === 0 ? (a._id + "").localeCompare(b._id + "") : diff;
     });
 
+  useEffect(() => {
+    if (scrolled) return;
+    if (!scrollToRef.current) return;
+    scrollToRef.current.scrollIntoView({ behavior: "smooth" });
+  });
   return (
     <div style={{ height: "100%" }}>
       <PageHeader
@@ -174,6 +179,7 @@ export default function DDQLSection(props) {
           ) : (
             <Button
               onClick={() => {
+                setScrolled(true);
                 setShowCompleted(!showCompleted);
               }}
               shape={"round"}
@@ -184,6 +190,7 @@ export default function DDQLSection(props) {
           !props.home ? (
             <Button
               onClick={() => {
+                setScrolled(true);
                 setShowAddNewDueDate(true);
               }}
               type="primary"
@@ -223,6 +230,7 @@ export default function DDQLSection(props) {
             renderItem={(item) => {
               // console.log("hi:" + completedDDQLs.includes("" + item._id));
               if (item.marker) return <div ref={scrollToRef} />;
+
               return props.type === "DueDate" ? (
                 <DueDate
                   dueDate={item}
