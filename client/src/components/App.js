@@ -102,9 +102,15 @@ class App extends Component {
     socket.on("createdPage", (data) => {
       let allPages = this.state.allPages.concat([]);
       let pageIds = this.state.pageIds.concat([]);
-      if (!allPages.includes(data.page)) {
+      if (
+        !allPages
+          .map((page) => {
+            return page._id;
+          })
+          .includes(data.page._id)
+      ) {
         allPages.push(data.page);
-        if (data.user_id === this.state.userId) {
+        if (data.userId === this.state.userId) {
           pageIds.push(data.page._id);
         }
         this.setState({ allPages: allPages, pageIds: pageIds });
