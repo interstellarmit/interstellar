@@ -16,6 +16,7 @@ import {
 import DDQLSection from "../modules/DDQLSection";
 import TabPage from "../modules/TabPage";
 import SearchBar from "../modules/SearchBar";
+import MultipleSearchBar from "../modules/MultipleSearchBar";
 import LoungeList from "../modules/LoungeList";
 import MySpin from "../modules/MySpin";
 import AdminRequests from "../modules/AdminRequests";
@@ -168,7 +169,7 @@ class Home extends Component {
             }
           >
             <div style={{ height: "100%" }}>
-              <SearchBar
+              <MultipleSearchBar
                 size="large"
                 allPages={this.props.allPages}
                 placeholder="Search for a class or group to join!"
