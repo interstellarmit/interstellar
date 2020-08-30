@@ -20,8 +20,8 @@ export default function InfoTab(props) {
   //let admin = adminUser ? adminUser.name.split(" ")[0] : "the group creator";
   return (
     <>
-      <Row>
-        <Col span={12}>
+      <Row style={{ height: "100%" }} gutter={[16, 16]}>
+        <Col span={12} style={{ height: "100%" }}>
           {props.page.pageType === "Class" ? (
             <React.Fragment>
               <Row>{"Professor: " + props.page.professor}</Row>
@@ -45,7 +45,7 @@ export default function InfoTab(props) {
             )}
           </Row>
         </Col>
-        <Col span={12}>
+        <Col span={12} style={{ height: "100%" }}>
           <UserList
             users={users}
             allPages={props.allPages}

@@ -17,7 +17,7 @@ export default function UserList(props) {
   let userList2 = props.users.slice(firstSplit, secondSplit);
   let userList3 = props.users.slice(secondSplit, props.users.length);
   return (
-    <div style={{ maxHeight: "70vh", overflow: "auto" }}>
+    <div style={{ maxHeight: "100%", overflow: "auto" }}>
       <ConfigProvider
         renderEmpty={() => {
           return <Empty description="No users" />;

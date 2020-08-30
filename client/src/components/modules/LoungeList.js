@@ -3,12 +3,12 @@ import { List, Avatar, ConfigProvider, Empty } from "antd";
 import LoungeListItem from "./LoungeListItem";
 export default function LoungeList(props) {
   let datasource = props.lounges.sort((a, b) => {
-    if (a.userIds.length > b.userIds.length) return 1;
-    if (a.userIds.length < b.userIds.length) return -1;
+    if (a.userIds.length > b.userIds.length) return -1;
+    if (a.userIds.length < b.userIds.length) return 1;
     return a.name.localeCompare(b.name);
   });
   return (
-    <div style={{ maxHeight: "70vh", overflow: "auto" }}>
+    <div style={{ maxHeight: "100%", overflow: "auto" }}>
       <ConfigProvider
         renderEmpty={() => {
           return <Empty description="No lounges" />;

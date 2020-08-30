@@ -95,6 +95,7 @@ class Home extends Component {
         pageLoaded: true,
         adminRequests: data.adminRequests,
       });
+      document.getElementsByClassName("ant-tabs-content")[0].style.height = "100%";
     });
 
     socket.on("userAddedToLounge", (data) => {
@@ -150,7 +151,7 @@ class Home extends Component {
 
         <Content
           style={{
-            padding: "30px 30px 30px 30px",
+            padding: "0px 30px 30px 30px",
             background: "#fff",
             height: "calc(100vh - 64px)",
           }}
@@ -166,7 +167,7 @@ class Home extends Component {
               this.props.myPages.length <= 2 && this.props.seeHelpText ? "welcome" : "dashboard"
             }
           >
-            <div>
+            <div style={{ height: "100%" }}>
               <SearchBar
                 size="large"
                 allPages={this.props.allPages}
@@ -175,8 +176,8 @@ class Home extends Component {
                 defaultOpen={true}
               />
             </div>
-            <Row>
-              <Col span={14}>
+            <Row style={{ height: "100%" }} gutter={[16, 16]}>
+              <Col span={14} style={{ height: "100%" }}>
                 <DDQLSection
                   dataSource={this.state.dueDates}
                   users={this.state.users}
@@ -186,6 +187,7 @@ class Home extends Component {
                   pageMap={pageMap}
                 />
               </Col>
+<<<<<<< HEAD
               <Col span={10}>
                 <Title level={4}>{"Open Lounges"}</Title>
                 {this.props.myPages
@@ -217,6 +219,54 @@ class Home extends Component {
                   home={true}
                   pageMap={pageMap}
                 />
+=======
+              <Col span={10} style={{ height: "100%" }}>
+                <div style={{ height: "45%" }}>
+                  <PageHeader title={"My Lounges"} />
+                  <div style={{ height: "calc(100% - 72px)", overflow: "auto" }}>
+                    {this.props.myPages
+                      .sort((a, b) => {
+                        return a.name.localeCompare(b.name);
+                      })
+                      .map((page) => {
+                        let lounge = this.state.lounges
+                          ? this.state.lounges.find((lounge) => {
+                              return lounge.main && page._id === lounge.pageId;
+                            })
+                          : undefined;
+                        console.log(lounge);
+                        if (lounge) return { lounge: lounge, page: page };
+                        return { lounge: { userIds: [] }, bad: true };
+                      })
+                      .sort((a, b) => {
+                        return b.lounge.userIds.length - a.lounge.userIds.length;
+                      })
+                      .map((data) => {
+                        if (data.bad) return <></>;
+
+                        return (
+                          <LoungeList
+                            redirect={(link) => this.props.redirectPage(link)}
+                            lounges={[data.lounge]}
+                            users={this.state.users}
+                            page={data.page}
+                            home={true}
+                          />
+                        );
+                      })}
+                  </div>
+                </div>
+                <div style={{ height: "45%" }}>
+                  <DDQLSection
+                    dataSource={this.state.quickLinks}
+                    users={this.state.users}
+                    user={this.props.user}
+                    type="QuickLink"
+                    home={true}
+                    pageMap={pageMap}
+                  />
+                </div>
+>>>>>>> 76eafd155ab99e05148aefbad6f4856a9afcafd0
               </Col>
             </Row>
             <div>
@@ -262,7 +312,7 @@ class Home extends Component {
           </TabPage>
         </Content>
 
-        <div style={{ bottom: "10px", padding: "10px 300px 10px 300px" }}>
+        <div style={{ bottom: "10px", padding: "10px 20% 10px 20%" }}>
           <center>
             <div>
               Disclaimer: All material on this site is compiled by students and therefore

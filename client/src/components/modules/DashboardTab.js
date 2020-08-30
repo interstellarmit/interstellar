@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { Component, useState, useEffect } from "react";
 import DDQLSection from "./DDQLSection";
 import { Row, Col, Typography, Alert, Button } from "antd";
 const { Title, Text } = Typography;
@@ -7,6 +7,7 @@ import UserList from "./UserList";
 import { post } from "../../utilities";
 export default function DashboardTab(props) {
   const [showDueDate, setShowDueDate] = React.useState(true);
+
   let users = props.users.filter((user) => {
     return user.userId !== props.user.userId;
   });
@@ -14,9 +15,20 @@ export default function DashboardTab(props) {
     users.push(Object.assign(props.user, { pageIds: props.pageIds }));
   }
   const [alreadyRequested, setAlreadyRequested] = React.useState(0);
+  useEffect(() => {
+    document.getElementsByClassName("ant-tabs-content")[0].style.height = "100%";
+    //setHeight(document.getElementsByClassName("alertBoxClassName")[0].style.height);
+  });
+  //console.log(height);
+  let height =
+    (!props.page.adminIds.includes(props.user.userId) && props.page.adminIds.length < 5) ||
+    props.seeHelpText
+      ? 103
+      : 0;
+
   return (
-    <>
-      <Row>
+    <div style={{ height: "100%" }}>
+      <Row className={"alertBoxClassName"}>
         {props.seeHelpText ? (
           <Col span={12}>
             <Alert
@@ -83,8 +95,8 @@ export default function DashboardTab(props) {
         )}
       </Row>
 
-      <Row gutter={[16, 16]}>
-        <Col span={16}>
+      <Row gutter={[16, 16]} style={{ height: "calc(100% - " + Math.floor(height) + "px)" }}>
+        <Col span={16} style={{ height: "100%" }}>
           <DDQLSection
             dataSource={props.dueDates}
             users={props.users}
@@ -96,7 +108,7 @@ export default function DashboardTab(props) {
             type="DueDate"
           />
         </Col>
-        <Col span={8}>
+        <Col span={8} style={{ height: "100%" }}>
           <DDQLSection
             dataSource={props.quickLinks}
             users={props.users}
@@ -109,7 +121,7 @@ export default function DashboardTab(props) {
           />
         </Col>
       </Row>
-    </>
+    </div>
   );
   /*
         <Col span={12}>
