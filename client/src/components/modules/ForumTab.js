@@ -108,7 +108,7 @@ class ForumTab extends Component {
     post("/api/joinForum", {
       pageId: this.props.page._id,
     }).then((data) => {
-      let groupPosts = data.groupPosts;
+      let groupPosts = data.groupPosts || [];
       groupPosts = groupPosts.sort((a, b) => {
         if (a.post.timestamp > b.post.timestamp) return -1;
         return 1;
@@ -144,7 +144,11 @@ class ForumTab extends Component {
               renderItem={(onePost) => {
                 return (
                   <PostListItem
-                    isActivePost={onePost.post._id === this.state.activePost.post._id}
+                    isActivePost={
+                      this.state.activePost
+                        ? onePost.post._id === this.state.activePost.post._id
+                        : false
+                    }
                     updatePost={this.updatePost}
                     setActivePost={this.setActivePost}
                     groupPost={onePost}
