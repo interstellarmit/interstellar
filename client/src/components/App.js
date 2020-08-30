@@ -365,7 +365,7 @@ class App extends Component {
                   <Switch>
                     <Home
                       exact
-                      path={["/", "/welcome", "/dashboard", "/privacy", "/admin"]}
+                      path={["/", "/welcome", "/dashboard", "/settings", "/admin"]}
                       schoolId={this.state.schoolId}
                       updateSelectedPageName={this.updateSelectedPageName}
                       user={{
