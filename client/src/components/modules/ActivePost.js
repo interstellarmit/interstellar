@@ -19,7 +19,7 @@ const CommentList = ({ comments }) => (
 const Editor = ({ onChange, onSubmit, submitting, value }) => (
   <>
     <Form.Item style={{ marginTop: "0px" }}>
-      <TextArea rows={3} placeholder="Type a reply..." onChange={onChange} value={value} />
+      <TextArea rows={2} placeholder="Type a reply..." onChange={onChange} value={value} />
     </Form.Item>
     <Form.Item style={{ marginBottom: "0px" }}>
       <Button htmlType="submit" loading={submitting} onClick={onSubmit} type="primary">
@@ -83,6 +83,7 @@ export default function ActivePost(props) {
           borderRadius: "10px",
           padding: "20px 20px 20px 20px",
           margin: "0px 0px 0px 10px",
+          boxShadow: "0 10px 25px rgba(0,0,0,.02), 0 4px 10px rgba(0,0,0,.02)",
         }}
       >
         {/* Poster + Stardust */}

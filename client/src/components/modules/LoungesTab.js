@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { Component, useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, NavLink, Switch } from "react-router-dom";
 import { List, Avatar, Row, Col, Button, Typography, Divider } from "antd";
 const { Title, Text } = Typography;
@@ -42,13 +42,16 @@ export default function LoungesTab(props) {
         </a>
       </center>
     );
+  useEffect(() => {
+    document.getElementsByClassName("ant-tabs-content")[0].style.height = "100%";
+  });
   return (
-    <Row gutter={[16, 16]}>
-      <Col span={18}>
+    <Row gutter={[16, 16]} style={{ height: "100%" }}>
+      <Col span={18} style={{ height: "100%" }}>
         <div
           style={{
             backgroundImage: "url(" + gatherDemo + ")",
-            height: "750px",
+            height: "100%",
             backgroundSize: "cover",
             backgroundRepeat: "no-repeat",
             paddingTop: "200px",
@@ -59,7 +62,7 @@ export default function LoungesTab(props) {
           {loungeCode}
         </div>
       </Col>
-      <Col span={6}>
+      <Col span={6} style={{ height: "100%" }}>
         <UserList
           users={lounge.userIds.map((user) => {
             return props.users.filter((oneUser) => {

@@ -147,7 +147,6 @@ updateGroupPost = (req, res) => {
         // if post is null
         res.send({ updated: false });
       } else {
-        console.log(post);
         // if handling react, don't care if user is poster
         if (req.body.reacting) {
           if (post.reacts.includes(req.user._id)) {

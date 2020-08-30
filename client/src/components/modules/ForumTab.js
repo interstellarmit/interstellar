@@ -103,7 +103,7 @@ class ForumTab extends Component {
 
   componentDidMount() {
     // fix height of div
-    var tabDiv = (document.getElementsByClassName("ant-tabs-content")[0].style.height = "100%");
+    document.getElementsByClassName("ant-tabs-content")[0].style.height = "100%";
 
     post("/api/joinForum", {
       pageId: this.props.page._id,
@@ -144,6 +144,8 @@ class ForumTab extends Component {
               renderItem={(onePost) => {
                 return (
                   <PostListItem
+                    isActivePost={onePost.post._id === this.state.activePost.post._id}
+                    updatePost={this.updatePost}
                     setActivePost={this.setActivePost}
                     groupPost={onePost}
                     user={this.props.user}
@@ -156,16 +158,23 @@ class ForumTab extends Component {
             />
           </div>
         </Col>
-        <Col span={16}>
-          {this.state.activePost !== null && (
-            <ActivePost
-              createNewComment={this.createNewComment}
-              updatePost={this.updatePost}
-              user={this.props.user}
-              activePost={this.state.activePost}
-              users={this.props.users}
-            />
-          )}
+        <Col style={{ height: "100%" }} span={16}>
+          <div
+            style={{
+              height: "100%",
+              overflow: "auto",
+            }}
+          >
+            {this.state.activePost !== null && (
+              <ActivePost
+                createNewComment={this.createNewComment}
+                updatePost={this.updatePost}
+                user={this.props.user}
+                activePost={this.state.activePost}
+                users={this.props.users}
+              />
+            )}
+          </div>
         </Col>
       </Row>
     );

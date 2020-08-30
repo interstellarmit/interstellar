@@ -7,7 +7,7 @@ import Home from "./pages/Home.js";
 import Page from "./pages/Page.js";
 import MySpin from "./modules/MySpin";
 import Confirmation from "./pages/Confirmation.js";
-import SignContract from "./pages/SignContract.js"
+import SignContract from "./pages/SignContract.js";
 import "../utilities.css";
 import { Row, Col, Divider, Spin, Modal, Layout, Button } from "antd";
 import "antd/dist/antd.css";
@@ -100,14 +100,20 @@ class App extends Component {
       }
     });
     socket.on("createdPage", (data) => {
-      let allPages = this.state.allPages
-      let pageIds = this.state.pageIds
-      if (!allPages.includes(data.page)) {
-        allPages.push(data.page)
-        if (data.user_id === this.state.userId) {
-          pageIds.push(data.page._id)
+      let allPages = this.state.allPages.concat([]);
+      let pageIds = this.state.pageIds.concat([]);
+      if (
+        !allPages
+          .map((page) => {
+            return page._id;
+          })
+          .includes(data.page._id)
+      ) {
+        allPages.push(data.page);
+        if (data.userId === this.state.userId) {
+          pageIds.push(data.page._id);
         }
-        this.setState({ allPages: allPages, pageIds: pageIds })
+        this.setState({ allPages: allPages, pageIds: pageIds });
       }
     });
   }
@@ -245,10 +251,10 @@ class App extends Component {
   signContract = () => {
     post("/api/signContract", {}).then((res) => {
       if (res.success) {
-        this.setState({ signedContract: true })
+        this.setState({ signedContract: true });
       }
-    })
-  }
+    });
+  };
 
   render() {
     if (!this.state.userId) {
@@ -337,13 +343,11 @@ class App extends Component {
             },
           })
         ) : (
-            <></>
-          )}
-        {!this.state.signedContract ?
-          <SignContract
-            signContract={this.signContract}
-          />
-          :
+          <></>
+        )}
+        {!this.state.signedContract ? (
+          <SignContract signContract={this.signContract} />
+        ) : (
           <Layout style={{ minHeight: "100vh" }}>
             <SideBar
               pageIds={this.state.pageIds}
@@ -361,7 +365,7 @@ class App extends Component {
                   <Switch>
                     <Home
                       exact
-                      path={["/", "/welcome", "/dashboard", "/privacy", "/admin"]}
+                      path={["/", "/welcome", "/dashboard", "/settings", "/admin"]}
                       schoolId={this.state.schoolId}
                       updateSelectedPageName={this.updateSelectedPageName}
                       user={{
@@ -423,7 +427,7 @@ class App extends Component {
               </Content>
             </Layout>
           </Layout>
-        }
+        )}
       </div>
     );
   }

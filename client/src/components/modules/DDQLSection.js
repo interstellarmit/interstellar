@@ -31,8 +31,8 @@ export default function DDQLSection(props) {
       return ddql.addedUserIds.includes(props.user.userId);
     })
     .map((ddql) => {
-      console.log("mappin id");
-      console.log(ddql._id);
+      //console.log("mappin id");
+      // console.log(ddql._id);
       return ddql._id + "";
     });
   let initialVerified = props.dataSource
@@ -165,7 +165,7 @@ export default function DDQLSection(props) {
     });
 
   return (
-    <>
+    <div style={{ height: "100%" }}>
       <PageHeader
         title={props.type === "DueDate" ? "Due Dates" : "Quicklinks"}
         extra={[
@@ -199,7 +199,7 @@ export default function DDQLSection(props) {
       ></PageHeader>
 
       {props.home ? <></> : addNewDueDate}
-      <div style={{ maxHeight: "100%", overflow: "auto" }}>
+      <div style={{ height: "calc(100% - 72px)", overflow: "auto" }}>
         <ConfigProvider
           renderEmpty={() => {
             return (
@@ -208,8 +208,10 @@ export default function DDQLSection(props) {
               />
             );
           }}
+          style={{ height: "100%" }}
         >
           <List
+            style={{ height: "100%" }}
             size="large"
             dataSource={
               dataSourceFinal.filter((d) => {
@@ -261,6 +263,6 @@ export default function DDQLSection(props) {
           />
         </ConfigProvider>
       </div>
-    </>
+    </div>
   );
 }

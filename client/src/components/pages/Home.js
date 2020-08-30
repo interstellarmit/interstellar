@@ -35,7 +35,7 @@ class Home extends Component {
     props.updateSelectedPageName("");
   }
 
-  addToLounge = (userId, loungeId, callback = () => { }) => {
+  addToLounge = (userId, loungeId, callback = () => {}) => {
     let lounges = this.state.lounges;
     let lounge = lounges.filter((l) => {
       return l._id + "" === loungeId;
@@ -53,7 +53,7 @@ class Home extends Component {
     this.setState({ lounges: newLounges }, callback);
   };
 
-  removeFromLounge = (userId, loungeId, callback = () => { }) => {
+  removeFromLounge = (userId, loungeId, callback = () => {}) => {
     if (loungeId !== "") {
       let lounges = this.state.lounges;
       let lounge = lounges.filter((l) => {
@@ -95,6 +95,7 @@ class Home extends Component {
         pageLoaded: true,
         adminRequests: data.adminRequests,
       });
+      document.getElementsByClassName("ant-tabs-content")[0].style.height = "100%";
     });
 
     socket.on("userAddedToLounge", (data) => {
@@ -150,9 +151,9 @@ class Home extends Component {
 
         <Content
           style={{
-            padding: "30px 30px 30px 30px",
+            padding: "0px 30px 30px 30px",
             background: "#fff",
-            height: "calc(100vh - 64px)",
+            height: "calc(100% - 64px)",
           }}
         >
           <TabPage
@@ -166,7 +167,7 @@ class Home extends Component {
               this.props.myPages.length <= 2 && this.props.seeHelpText ? "welcome" : "dashboard"
             }
           >
-            <div>
+            <div style={{ height: "100%" }}>
               <SearchBar
                 size="large"
                 allPages={this.props.allPages}
@@ -175,8 +176,8 @@ class Home extends Component {
                 defaultOpen={true}
               />
             </div>
-            <Row>
-              <Col span={14}>
+            <Row style={{ height: "100%" }} gutter={[16, 16]}>
+              <Col span={14} style={{ height: "100%" }}>
                 <DDQLSection
                   dataSource={this.state.dueDates}
                   users={this.state.users}
@@ -186,35 +187,52 @@ class Home extends Component {
                   pageMap={pageMap}
                 />
               </Col>
-              <Col span={10}>
-                <Title level={4}>{"Open Lounges"}</Title>
-                {this.props.myPages.sort((a, b) => {
-                  return a.name.localeCompare(b.name);
-                }).map((page) => {
-                  let lounges = this.state.lounges
-                    ? this.state.lounges.filter((lounge) => {
-                      return lounge.pageId === page._id;
-                    })
-                    : [];
-                  if (lounges.length === 0) return <></>;
-                  return (
-                    <LoungeList
-                      redirect={(link) => this.props.redirectPage(link)}
-                      lounges={lounges}
-                      users={this.state.users}
-                      page={page}
-                      home={true}
-                    />
-                  );
-                })}
-                <DDQLSection
-                  dataSource={this.state.quickLinks}
-                  users={this.state.users}
-                  user={this.props.user}
-                  type="QuickLink"
-                  home={true}
-                  pageMap={pageMap}
-                />
+              <Col span={10} style={{ height: "100%" }}>
+                <div style={{ height: "45%" }}>
+                  <PageHeader title={"My Lounges"} />
+                  <div style={{ height: "calc(100% - 72px)", overflow: "auto" }}>
+                    {this.props.myPages
+                      .sort((a, b) => {
+                        return a.name.localeCompare(b.name);
+                      })
+                      .map((page) => {
+                        let lounge = this.state.lounges
+                          ? this.state.lounges.find((lounge) => {
+                              return lounge.main && page._id === lounge.pageId;
+                            })
+                          : undefined;
+                        console.log(lounge);
+                        if (lounge) return { lounge: lounge, page: page };
+                        return { lounge: { userIds: [] }, bad: true };
+                      })
+                      .sort((a, b) => {
+                        return b.lounge.userIds.length - a.lounge.userIds.length;
+                      })
+                      .map((data) => {
+                        if (data.bad) return <></>;
+
+                        return (
+                          <LoungeList
+                            redirect={(link) => this.props.redirectPage(link)}
+                            lounges={[data.lounge]}
+                            users={this.state.users}
+                            page={data.page}
+                            home={true}
+                          />
+                        );
+                      })}
+                  </div>
+                </div>
+                <div style={{ height: "45%" }}>
+                  <DDQLSection
+                    dataSource={this.state.quickLinks}
+                    users={this.state.users}
+                    user={this.props.user}
+                    type="QuickLink"
+                    home={true}
+                    pageMap={pageMap}
+                  />
+                </div>
               </Col>
             </Row>
             <div>
@@ -252,7 +270,7 @@ class Home extends Component {
                   unCheckedChildren={"Off"}
                 />
                 <div style={{ paddingLeft: "10px" }}>
-                  Toggle help mode to hide the helper text that appears on dashboard
+                  Toggle help mode to show the helper text that appears on dashboard
                 </div>
               </div>
             </div>
@@ -260,7 +278,7 @@ class Home extends Component {
           </TabPage>
         </Content>
 
-        <div style={{ bottom: "10px", padding: "10px 300px 10px 300px" }}>
+        <div style={{ bottom: "10px", padding: "10px 20% 10px 20%" }}>
           <center>
             <div>
               Disclaimer: All material on this site is compiled by students and therefore
