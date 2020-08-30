@@ -22,29 +22,31 @@ export default function PostListItem(props) {
     })
     .join(" ");
 
+  var mainDivStyle = {
+    display: "flex",
+    background: "#FFFFFF",
+    border: "1px solid #d9d9d9",
+    boxSizing: "borderBox",
+    borderRadius: "10px",
+    padding: "0px",
+    marginRight: "10px",
+    marginTop: "10px",
+    boxShadow: "0 10px 25px rgba(0,0,0,.02), 0 4px 10px rgba(0,0,0,.02)",
+  };
+
+  if (props.isActivePost) {
+    mainDivStyle.border = "1px solid #1f1f1f";
+  }
+
   const handleReact = () => {
     props.updatePost({
-      postId: props.activePost.post._id,
+      postId: props.groupPost.post._id,
       reacting: true,
     });
   };
 
   return (
-    <div
-      onClick={() => {
-        props.setActivePost(props.groupPost);
-      }}
-      style={{
-        display: "flex",
-        background: "#FFFFFF",
-        border: "1px solid #d9d9d9",
-        boxSizing: "borderBox",
-        borderRadius: "10px",
-        padding: "0px",
-        marginRight: "10px",
-        marginTop: "10px",
-      }}
-    >
+    <div style={mainDivStyle}>
       <List.Item
         style={{
           width: "100%",
@@ -52,19 +54,21 @@ export default function PostListItem(props) {
         }}
         key={props.groupPost.post._id}
         actions={[
-          props.groupPost.post.reacts.includes(props.user.userId) ? (
-            <IconText
-              icon={StarFilled}
-              text={props.groupPost.post.reacts.length}
-              key="list-vertical-star-o"
-            />
-          ) : (
-            <IconText
-              icon={StarOutlined}
-              text={props.groupPost.post.reacts.length}
-              key="list-vertical-star-o"
-            />
-          ),
+          <div onClick={handleReact}>
+            {props.groupPost.post.reacts.includes(props.user.userId) ? (
+              <IconText
+                icon={StarFilled}
+                text={props.groupPost.post.reacts.length}
+                key="list-vertical-star-o"
+              />
+            ) : (
+              <IconText
+                icon={StarOutlined}
+                text={props.groupPost.post.reacts.length}
+                key="list-vertical-star-o"
+              />
+            )}
+          </div>,
           <IconText
             icon={MessageOutlined}
             text={props.groupPost.comments.length}
@@ -72,8 +76,15 @@ export default function PostListItem(props) {
           />,
         ]}
       >
-        <List.Item.Meta avatar={<ProfilePic user={props.poster} />} title={postTitle} />
-        {props.groupPost.post.text}
+        <div
+          style={{ cursor: "pointer" }}
+          onClick={() => {
+            props.setActivePost(props.groupPost);
+          }}
+        >
+          <List.Item.Meta avatar={<ProfilePic user={props.poster} />} title={postTitle} />
+          {props.groupPost.post.text}
+        </div>
       </List.Item>
     </div>
   );

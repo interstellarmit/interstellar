@@ -187,39 +187,6 @@ class Home extends Component {
                   pageMap={pageMap}
                 />
               </Col>
-<<<<<<< HEAD
-              <Col span={10}>
-                <Title level={4}>{"Open Lounges"}</Title>
-                {this.props.myPages
-                  .sort((a, b) => {
-                    return a.name.localeCompare(b.name);
-                  })
-                  .map((page) => {
-                    let lounges = this.state.lounges
-                      ? this.state.lounges.filter((lounge) => {
-                          return lounge.pageId === page._id;
-                        })
-                      : [];
-                    if (lounges.length === 0) return <></>;
-                    return (
-                      <LoungeList
-                        redirect={(link) => this.props.redirectPage(link)}
-                        lounges={lounges}
-                        users={this.state.users}
-                        page={page}
-                        home={true}
-                      />
-                    );
-                  })}
-                <DDQLSection
-                  dataSource={this.state.quickLinks}
-                  users={this.state.users}
-                  user={this.props.user}
-                  type="QuickLink"
-                  home={true}
-                  pageMap={pageMap}
-                />
-=======
               <Col span={10} style={{ height: "100%" }}>
                 <div style={{ height: "45%" }}>
                   <PageHeader title={"My Lounges"} />
@@ -266,7 +233,6 @@ class Home extends Component {
                     pageMap={pageMap}
                   />
                 </div>
->>>>>>> 76eafd155ab99e05148aefbad6f4856a9afcafd0
               </Col>
             </Row>
             <div>

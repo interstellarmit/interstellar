@@ -61,6 +61,7 @@ export default function AddPost(props) {
         <div
           onClick={() => setEditing(true)}
           style={{
+            cursor: "pointer",
             display: "flex",
             background: "#FFFFFF",
             border: "1px solid #d9d9d9",

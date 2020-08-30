@@ -83,6 +83,7 @@ export default function ActivePost(props) {
           borderRadius: "10px",
           padding: "20px 20px 20px 20px",
           margin: "0px 0px 0px 10px",
+          boxShadow: "0 10px 25px rgba(0,0,0,.02), 0 4px 10px rgba(0,0,0,.02)",
         }}
       >
         {/* Poster + Stardust */}

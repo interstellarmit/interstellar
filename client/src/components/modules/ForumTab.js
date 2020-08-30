@@ -113,9 +113,6 @@ class ForumTab extends Component {
         if (a.post.timestamp > b.post.timestamp) return -1;
         return 1;
       });
-      console.log(groupPosts)
-
-      console.log(groupPosts.map((x) => x.post.timestamp));
 
       let activePost = null;
       if (groupPosts.length !== 0) {
@@ -147,6 +144,7 @@ class ForumTab extends Component {
               renderItem={(onePost) => {
                 return (
                   <PostListItem
+                    isActivePost={onePost.post._id === this.state.activePost.post._id}
                     updatePost={this.updatePost}
                     setActivePost={this.setActivePost}
                     groupPost={onePost}
@@ -160,7 +158,7 @@ class ForumTab extends Component {
             />
           </div>
         </Col>
-        <Col style={{ height: "100%" }} span={8} span={16}>
+        <Col style={{ height: "100%" }} span={16}>
           <div
             style={{
               height: "100%",
