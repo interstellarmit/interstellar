@@ -35,7 +35,7 @@ class Home extends Component {
     props.updateSelectedPageName("");
   }
 
-  addToLounge = (userId, loungeId, callback = () => {}) => {
+  addToLounge = (userId, loungeId, callback = () => { }) => {
     let lounges = this.state.lounges;
     let lounge = lounges.filter((l) => {
       return l._id + "" === loungeId;
@@ -53,7 +53,7 @@ class Home extends Component {
     this.setState({ lounges: newLounges }, callback);
   };
 
-  removeFromLounge = (userId, loungeId, callback = () => {}) => {
+  removeFromLounge = (userId, loungeId, callback = () => { }) => {
     if (loungeId !== "") {
       let lounges = this.state.lounges;
       let lounge = lounges.filter((l) => {
@@ -198,8 +198,8 @@ class Home extends Component {
                       .map((page) => {
                         let lounge = this.state.lounges
                           ? this.state.lounges.find((lounge) => {
-                              return lounge.main && page._id === lounge.pageId;
-                            })
+                            return lounge.main && page._id === lounge.pageId;
+                          })
                           : undefined;
                         console.log(lounge);
                         if (lounge) return { lounge: lounge, page: page };
@@ -285,6 +285,9 @@ class Home extends Component {
               unofficial. Thanks to{" "}
               <a href="https://hacklodge.org/" target="_blank">
                 Hacklodge
+              </a>{", "}
+              <a href="https://fireroad.mit.edu/" target="_blank">
+                FireRoad
               </a>{" "}
               and{" "}
               <a href="http://gather.town/" target="_blank">
