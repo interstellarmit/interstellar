@@ -84,7 +84,6 @@ export default function Public(props) {
                 </Space>
               </h1>
             </div>
-            {/* <img width={"70%"} src={public1}></img> */}
           </div>
         </Col>
         <Col span={12}>

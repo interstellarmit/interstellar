@@ -171,9 +171,6 @@ class App extends Component {
     cookies.set("token", "", { path: "/" });
     post("/api/logout", {}).then((res) => {
       window.location.href = "/";
-      //this.setState({ userId: undefined, tryingToLogin: false }, () => {
-
-      //});
     });
   };
 
@@ -344,7 +341,7 @@ class App extends Component {
           <></>
         )}
         {!this.state.signedContract ? (
-          <SignContract signContract={this.signContract} />
+          <SignContract logout={this.logout} signContract={this.signContract} />
         ) : (
           <Layout style={{ minHeight: "100vh" }}>
             <SideBar
