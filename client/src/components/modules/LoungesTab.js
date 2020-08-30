@@ -10,38 +10,83 @@ import gatherDemo from "../../public/GatherDemo.png";
 export default function LoungesTab(props) {
   let lounge = props.lounges
     ? props.lounges.filter((lounge) => {
-        return lounge.main;
-      })[0]
+      return lounge.main;
+    })[0]
     : undefined;
 
   if (!lounge) return <div>No lounge exists</div>;
-  if (props.loungeId !== lounge._id) {
-    props.removeSelfFromLounge(props.loungeId, () => {
-      props.addSelfToLounge(lounge._id, () => {
-        props.setLoungeId(lounge._id);
-      });
-    });
-  }
+
   let loungeCode =
     lounge.zoomLink === "" ? (
       <></>
     ) : (
-      <center>
-        <a
-          href={lounge.zoomLink}
-          target="_blank"
-          style={{
-            backgroundColor: "#3F90F7",
-            padding: "20px",
-            borderRadius: "10px",
-            color: "white",
-            fontSize: 50,
-          }}
-        >
-          Hop In The Lounge
-        </a>
-      </center>
-    );
+        <center>
+          {
+            lounge._id !== props.loungeId ?
+              <a
+                href={lounge.zoomLink}
+                target="_blank"
+                style={{
+                  backgroundColor: "#3F90F7",
+                  padding: "20px",
+                  borderRadius: "10px",
+                  color: "white",
+                  fontSize: 50,
+                }}
+                onClick={() => {
+                  if (props.loungeId !== lounge._id) {
+                    props.removeSelfFromLounge(props.loungeId, () => {
+                      props.addSelfToLounge(lounge._id, () => {
+                        props.setLoungeId(lounge._id);
+                      });
+                    });
+                  }
+                }}
+              >
+                Hop In The Lounge
+              </a> :
+              <a
+                target="_blank"
+                style={{
+                  backgroundColor: "#3F90F7",
+                  padding: "20px",
+                  borderRadius: "10px",
+                  color: "white",
+                  fontSize: 50,
+                }}
+                onClick={() => {
+                  props.removeSelfFromLounge(props.loungeId, () => {
+                    props.setLoungeId("");
+                  });
+                }}
+              >
+                Remove From Lounge
+            </a>
+          }
+          {/* <a
+            href={lounge.zoomLink}
+            target="_blank"
+            style={{
+              backgroundColor: "#3F90F7",
+              padding: "20px",
+              borderRadius: "10px",
+              color: "white",
+              fontSize: 50,
+            }}
+            onClick={() => { 
+              if (props.loungeId !== lounge._id) {
+                props.removeSelfFromLounge(props.loungeId, () => {
+                  props.addSelfToLounge(lounge._id, () => {
+                    props.setLoungeId(lounge._id);
+                  });
+                });
+              }
+            }}
+          >
+            Hop In The Lounge
+        </a> */}
+        </center>
+      );
   useEffect(() => {
     document.getElementsByClassName("ant-tabs-content")[0].style.height = "100%";
   });
