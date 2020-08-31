@@ -18,6 +18,77 @@ class ForumTab extends Component {
     };
   }
 
+  /** SOCKET CALLS **/
+  addPostSocket = (post) => {
+    this.setState({
+      groupPosts: [
+        {
+          post: post,
+          comments: [],
+        },
+        ...this.state.groupPosts,
+      ],
+    });
+  };
+
+  addCommentSocket = (comment) => {
+    let groupPosts = this.state.groupPosts;
+    let commentedPost = groupPosts.find((onePost) => {
+      return onePost.post._id == comment.postId;
+    });
+    commentedPost.comments.push(comment);
+    this.setState({ groupPosts: groupPosts });
+  };
+
+  deletePostSocket = (postId) => {
+    let updatedGroupPosts = this.state.groupPosts.filter((x) => x.post._id !== postId);
+
+    this.setState({
+      groupPosts: updatedGroupPosts,
+    });
+
+    // TODO: say post was deleted
+    // check if user is currently viewing this post, change it
+    if (this.state.activePost.post._id === postId) {
+      if (updatedGroupPosts.length > 0) {
+        this.setState({
+          activePost: updatedGroupPosts[0],
+        });
+      } else {
+        this.setState({
+          activePost: null,
+        });
+      }
+    }
+  };
+
+  updatePostSocket = (post) => {
+    let updatedGroupPosts = this.state.groupPosts.map((x) => {
+      if (x.post._id === post._id) {
+        // TODO: say post was updated
+        // check if user is currently viewing this post, change it
+        if (this.state.activePost.post._id === post._id) {
+          this.setState({
+            activePost: {
+              post: post,
+              comments: x.comments,
+            },
+          });
+        }
+        return {
+          post: post,
+          comments: x.comments,
+        };
+      } else {
+        return x;
+      }
+    });
+
+    this.setState({
+      groupPosts: updatedGroupPosts,
+    });
+  };
+
   /** API Calls **/
   createNewPost = (data) => {
     post("/api/createNewGroupPost", {
@@ -27,18 +98,12 @@ class ForumTab extends Component {
       pageId: this.props.page._id,
     }).then((ret) => {
       if (!ret.created) return;
+      this.addPostSocket(ret.post);
       this.setState({
         activePost: {
           post: ret.post,
           comments: [],
         },
-        groupPosts: [
-          {
-            post: ret.post,
-            comments: [],
-          },
-          ...this.state.groupPosts,
-        ],
       });
     });
   };
@@ -54,12 +119,7 @@ class ForumTab extends Component {
           isError: true,
         });
       } else {
-        let groupPosts = this.state.groupPosts;
-        let commentedPost = groupPosts.find((onePost) => {
-          return onePost.post._id == ret.comment.postId;
-        });
-        commentedPost.comments.push(ret.comment);
-        this.setState({ groupPosts: groupPosts });
+        this.addCommentSocket(ret.comment);
       }
     });
   };
@@ -71,12 +131,7 @@ class ForumTab extends Component {
           isError: true,
         });
       } else {
-        let updatedGroupPosts = this.state.groupPosts.filter((x) => x.post._id !== data.postId);
-
-        this.setState({
-          groupPosts: updatedGroupPosts,
-          activePost: updatedGroupPosts[0],
-        });
+        this.deletePostSocket(data.postId);
       }
     });
   };
@@ -88,26 +143,7 @@ class ForumTab extends Component {
           isError: true,
         });
       } else {
-        let updatedGroupPosts = this.state.groupPosts.map((x) => {
-          if (x.post._id === ret.post._id) {
-            this.setState({
-              activePost: {
-                post: ret.post,
-                comments: x.comments,
-              },
-            });
-            return {
-              post: ret.post,
-              comments: x.comments,
-            };
-          } else {
-            return x;
-          }
-        });
-
-        this.setState({
-          groupPosts: updatedGroupPosts,
-        });
+        this.updatePostSocket(ret.post);
       }
     });
   };
@@ -169,7 +205,7 @@ class ForumTab extends Component {
             content: (
               <div>
                 <p>This post has been deleted, and your action did not go through.</p>
-                <p>Hit OK to reload the forum!</p>
+                <p>Hit OK to reload Interstellar!</p>
               </div>
             ),
             onOk() {

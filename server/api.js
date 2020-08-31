@@ -167,10 +167,7 @@ router.post("/createNewGroupPost", auth.ensureLoggedIn, forum_calls.createNewGro
 router.post("/createNewComment", auth.ensureLoggedIn, forum_calls.createNewComment);
 router.post("/updateGroupPost", auth.ensureLoggedIn, forum_calls.updateGroupPost);
 router.post("/updateComment", auth.ensureLoggedIn, forum_calls.updateComment);
-<<<<<<< HEAD
 router.post("/deleteGroupPost", auth.ensureLoggedIn, forum_calls.deleteGroupPost);
-=======
->>>>>>> 0575442e6c22e328a60e6c3a8886b3204af377ee
 
 // router.post("/gatherKey", auth.ensureLoggedIn, (req, res) => {
 //   let name = req.body.name;
