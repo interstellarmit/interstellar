@@ -33,7 +33,7 @@ export default function DueDate(props) {
       editDDQL={props.editDDQL}
       visible={showEdit}
       setVisible={setShowEdit}
-      DDQL={props.dueDate}
+      ddql={props.dueDate}
       type={"DueDate"}
       edit={true}
     />

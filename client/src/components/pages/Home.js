@@ -13,6 +13,7 @@ import {
   Col,
   PageHeader,
   Descriptions,
+  notification,
 } from "antd";
 import DDQLSection from "../modules/DDQLSection";
 import TabPage from "../modules/TabPage";
@@ -63,6 +64,30 @@ class Home extends Component {
     lounge.userIds = userIds;
     newLounges.push(lounge);
     this.setState({ lounges: newLounges }, callback);
+
+    if (this.props.user.userId !== userId) {
+      notification.info({
+        message:
+          (
+            this.state.users.find((user) => {
+              return user.userId === userId;
+            }) || { name: "User Name" }
+          ).name.split(" ")[0] +
+          " entered the " +
+          lounge.name +
+          " lounge",
+
+        description: "",
+        placement: "bottomRight",
+        onClick: () => {
+          let page = this.props.myPages.find((pagee) => {
+            return pagee._id === lounge.pageId;
+          });
+          if (!page) return;
+          this.props.redirectPage("/" + page.pageType.toLowerCase() + "/" + page.name + "/lounge");
+        },
+      });
+    }
   };
 
   removeFromLounge = (userId, loungeId, callback = () => {}) => {
@@ -88,6 +113,32 @@ class Home extends Component {
       this.setState({ lounges: newLounges }, () => {
         callback();
       });
+
+      if (this.props.user.userId !== userId) {
+        notification.info({
+          message:
+            (
+              this.state.users.find((user) => {
+                return user.userId === userId;
+              }) || { name: "User Name" }
+            ).name.split(" ")[0] +
+            " left the " +
+            lounge.name +
+            " lounge",
+
+          description: "",
+          placement: "bottomRight",
+          onClick: () => {
+            let page = this.props.myPages.find((pagee) => {
+              return pagee._id === lounge.pageId;
+            });
+            if (!page) return;
+            this.props.redirectPage(
+              "/" + page.pageType.toLowerCase() + "/" + page.name + "/lounge"
+            );
+          },
+        });
+      }
     } else {
       callback();
     }
@@ -170,7 +221,9 @@ class Home extends Component {
             }}
           >
             <TabPage
-              labels={["Dashboard", "Settings"].concat(this.props.isSiteAdmin ? ["Admin"] : [])}
+              labels={["Dashboard", "Settings/Privacy"].concat(
+                this.props.isSiteAdmin ? ["Admin"] : []
+              )}
               routerLinks={["dashboard", "settings"].concat(
                 this.props.isSiteAdmin ? ["admin"] : []
               )}
@@ -357,7 +410,7 @@ class Home extends Component {
 
           <div style={{ bottom: "10px", padding: "10px 20% 10px 20%" }}>
             <center>
-              <div>
+              <div style={{ fontSize: "10px" }}>
                 Disclaimer: All material on this site is compiled by students and therefore
                 unofficial. Thanks to{" "}
                 <a href="https://hacklodge.org/" target="_blank">

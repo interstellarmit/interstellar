@@ -181,6 +181,7 @@ class ForumTab extends Component {
   };
 
   componentDidMount() {
+    this.props.clearForumCounter();
     // fix height of div
     document.getElementsByClassName("ant-tabs-content")[0].style.height = "100%";
 
@@ -216,6 +217,7 @@ class ForumTab extends Component {
     socket.on("createNewGroupPost", (data) => {
       if (userId === data.userId) return;
       this.addPostSocket(data.post);
+      this.props.incrementForumCounter();
     });
     socket.on("createNewComment", (data) => {
       if (userId === data.userId) return;
