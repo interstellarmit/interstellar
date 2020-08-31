@@ -125,6 +125,7 @@ export default function AddGroup(props) {
         >
           <Input placeholder={"Optional password for your group"} />
         </Form.Item>
+
         <Form.Item>
           <div style={{ color: "red" }}>{message}</div>
         </Form.Item>

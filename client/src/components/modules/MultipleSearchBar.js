@@ -2,14 +2,15 @@ import React, { useState } from "react";
 import { AutoComplete, Input, Select, Button } from "antd";
 import Search from "antd/lib/input/Search";
 const { Option, OptGroup } = Select;
-
+import { SendOutlined } from "@ant-design/icons";
 export default function MultipleSearchBar(props) {
   const [query, setQuery] = useState("");
   const [classList, setClassList] = useState([]);
 
   let search = () => {
-    console.log("what's good")
-    props.addClasses(classList)
+    if (classList.length === 0) return;
+    console.log("what's good");
+    props.addClasses(classList);
   };
   if (props.collapsed) {
     return <></>;
@@ -20,11 +21,7 @@ export default function MultipleSearchBar(props) {
       label: "Classes",
       options: props.allPages
         .filter((page) => {
-          return (
-            (page.name.toLowerCase().startsWith(query.toLowerCase()) ||
-              page.title.toLowerCase().includes(query.toLowerCase())) &&
-            page.pageType == "Class"
-          );
+          return page.pageType == "Class";
         })
         .map((page) => {
           return {
@@ -36,18 +33,12 @@ export default function MultipleSearchBar(props) {
             ),
           };
         }),
-    },
+    } /*,
     {
       label: "Groups",
       options: props.allPages
         .filter((page) => {
-          return (
-            ((page.name.toLowerCase().includes(query.toLowerCase()) ||
-              page.title.toLowerCase().includes(query.toLowerCase())) &&
-              page.pageType == "Group" &&
-              !page.locked) ||
-            (page.pageType == "Group" && page.name.toLowerCase() === query.toLowerCase())
-          );
+          return page.pageType == "Group";
         })
         .map((page) => {
           return {
@@ -59,19 +50,20 @@ export default function MultipleSearchBar(props) {
             ),
           };
         }),
-    },
+    },*/,
   ];
 
   return (
-    <div>
+    <div style={{ display: "flex", flexDirection: "row" }}>
       <Select
         mode="multiple"
-        style={{ width: "100%" }}
-        placeholder="Please select"
+        style={{ width: "calc(100% - 46px)" }}
+        placeholder="Start by entering your schedule"
         defaultValue={[]}
+        defaultOpen
         onChange={(value) => {
-          console.log(value)
-          setClassList(value)
+          console.log(value);
+          setClassList(value);
         }}
       >
         <OptGroup label="Classes">
@@ -79,13 +71,15 @@ export default function MultipleSearchBar(props) {
             return <Option key={option.value}> {option.label} </Option>;
           })}
         </OptGroup>
-        <OptGroup label="Groups">
-          {options[1].options.map((option) => {
-            return <Option key={option.value}> {option.label} </Option>;
-          })}
-        </OptGroup>
       </Select>
-      <Button onClick={() => { search() }}>Submit Schedule</Button>
+      <Button
+        onClick={() => {
+          search();
+        }}
+        type="primary"
+        style={{ width: "46px" }}
+        icon={<SendOutlined />}
+      ></Button>
     </div>
   );
 }

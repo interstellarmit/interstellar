@@ -20,6 +20,7 @@ import {
   UserDeleteOutlined,
   LockOutlined,
   UnlockOutlined,
+  EyeOutlined,
 } from "@ant-design/icons";
 class Page extends Component {
   constructor(props) {
@@ -203,6 +204,7 @@ class Page extends Component {
           pageLoaded: true,
           inPage: data.inPage,
           adminRequests: data.adminRequests || [],
+          showClasses: data.page.showClasses,
         });
       }
     );
@@ -344,14 +346,35 @@ class Page extends Component {
         <PageHeader
           className="site-layout-sub-header-background"
           style={{ padding: "20px 30px 0px 30px", background: "#fff" }}
-          extra={(isPageAdmin && this.state.inPage
+          extra={(this.state.page.pageType === "Group"
             ? [
-                <Button icon={<UserOutlined />} disabled>
-                  Admin
+                <Button
+                  icon={<EyeOutlined />}
+                  onClick={() => {
+                    let sc = this.state.showClasses;
+                    post("/api/setShowClasses", {
+                      pageId: this.state.page._id,
+                      showClasses: !sc,
+                    }).then((data) => {
+                      if (data.set) this.setState({ showClasses: !sc });
+                    });
+                  }}
+                  disabled={!isPageAdmin}
+                >
+                  {!this.state.showClasses ? "Classes Hidden" : "Classes Visible"}
                 </Button>,
               ]
             : []
           )
+            .concat(
+              isPageAdmin && this.state.inPage
+                ? [
+                    <Button icon={<UserOutlined />} disabled>
+                      Admin
+                    </Button>,
+                  ]
+                : []
+            )
             .concat([this.state.inPage ? removeClassButton : addClassButton])
             .concat(isPageAdmin && this.state.inPage ? [lockButton] : [])}
           title={this.state.page.name}
@@ -409,6 +432,7 @@ class Page extends Component {
                 pageIds={this.props.pageIds}
                 allPages={this.props.allPages}
                 isSiteAdmin={this.props.isSiteAdmin}
+                showClasses={this.state.showClasses}
               />
               <DashboardTab
                 dueDates={this.state.dueDates}

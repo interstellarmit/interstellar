@@ -74,8 +74,8 @@ export default function SearchBar(props) {
         setQuery(queryy);
       }}
       defaultOpen={props.defaultOpen}
-      onSelect={() => {
-        search(query);
+      onSelect={(selected) => {
+        search(selected);
       }}
       options={options}
     >

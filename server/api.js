@@ -150,6 +150,7 @@ router.post("/setSeeHelpText", auth.ensureLoggedIn, main_calls.setSeeHelpText);
 router.post("/addRemoveAdmin", auth.ensureLoggedIn, main_calls.addRemoveAdmin);
 router.post("/requestAdmin", auth.ensureLoggedIn, main_calls.requestAdmin);
 router.post("/honorRequest", auth.ensureLoggedIn, main_calls.honorRequest);
+router.post("/setShowClasses", auth.ensureLoggedIn, main_calls.setShowClasses);
 
 router.post("/createNewLounge", auth.ensureLoggedIn, lounge_calls.createNewLounge);
 router.post("/addSelfToLounge", auth.ensureLoggedIn, lounge_calls.addSelfToLounge);
@@ -166,7 +167,10 @@ router.post("/createNewGroupPost", auth.ensureLoggedIn, forum_calls.createNewGro
 router.post("/createNewComment", auth.ensureLoggedIn, forum_calls.createNewComment);
 router.post("/updateGroupPost", auth.ensureLoggedIn, forum_calls.updateGroupPost);
 router.post("/updateComment", auth.ensureLoggedIn, forum_calls.updateComment);
+<<<<<<< HEAD
 router.post("/deleteGroupPost", auth.ensureLoggedIn, forum_calls.deleteGroupPost);
+=======
+>>>>>>> 0575442e6c22e328a60e6c3a8886b3204af377ee
 
 // router.post("/gatherKey", auth.ensureLoggedIn, (req, res) => {
 //   let name = req.body.name;
@@ -180,6 +184,7 @@ router.post("/deleteGroupPost", auth.ensureLoggedIn, forum_calls.deleteGroupPost
 //     res.send(res1)
 //   })
 // })
+
 router.post("/addClasses", auth.ensureLoggedIn, (req, res) => {
   let pageNames = req.body.pageNames;
   let userPageIds = [];
@@ -212,8 +217,16 @@ router.post("/addClasses", auth.ensureLoggedIn, (req, res) => {
                   addPage(i + 1);
                 }, 10);
               });
+            } else {
+              setTimeout(() => {
+                addPage(i + 1);
+              }, 10);
             }
           });
+        } else {
+          setTimeout(() => {
+            addPage(i + 1);
+          }, 10);
         }
       }
     });

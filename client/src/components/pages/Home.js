@@ -4,6 +4,7 @@ import { socket } from "../../client-socket.js";
 import {
   Spin,
   Space,
+  Modal,
   Switch,
   Button,
   Typography,
@@ -36,7 +37,7 @@ class Home extends Component {
     props.updateSelectedPageName("");
   }
 
-  addToLounge = (userId, loungeId, callback = () => { }) => {
+  addToLounge = (userId, loungeId, callback = () => {}) => {
     let lounges = this.state.lounges;
     let lounge = lounges.filter((l) => {
       return l._id + "" === loungeId;
@@ -54,7 +55,7 @@ class Home extends Component {
     this.setState({ lounges: newLounges }, callback);
   };
 
-  removeFromLounge = (userId, loungeId, callback = () => { }) => {
+  removeFromLounge = (userId, loungeId, callback = () => {}) => {
     if (loungeId !== "") {
       let lounges = this.state.lounges;
       let lounge = lounges.filter((l) => {
@@ -137,177 +138,188 @@ class Home extends Component {
       pageMap[page._id] = page.name;
     }
     return (
-      <Layout style={{ background: "rgba(240, 242, 245, 1)", height: "100vh" }}>
-        <PageHeader
-          className="site-layout-sub-header-background"
-          style={{
-            padding: "20px 30px 0px 30px",
-            backgroundColor: "#fff",
-            color: "white",
-            height: "64px",
-          }}
-          title={"Home"}
-          subTitle={this.props.user.name}
-        ></PageHeader>
+      <>
+        <Layout style={{ background: "rgba(240, 242, 245, 1)", height: "100vh" }}>
+          <PageHeader
+            className="site-layout-sub-header-background"
+            style={{
+              padding: "20px 30px 0px 30px",
+              backgroundColor: "#fff",
+              color: "white",
+              height: "64px",
+            }}
+            title={"Home"}
+            subTitle={this.props.user.name}
+          ></PageHeader>
 
-        <Content
-          style={{
-            padding: "0px 30px 30px 30px",
-            background: "#fff",
-            height: "calc(100% - 64px)",
-          }}
-        >
-          <TabPage
-            labels={["Welcome", "Dashboard", "Settings"].concat(
-              this.props.isSiteAdmin ? ["Admin"] : []
-            )}
-            routerLinks={["welcome", "dashboard", "settings"].concat(
-              this.props.isSiteAdmin ? ["admin"] : []
-            )}
-            defaultRouterLink={
-              this.props.myPages.length <= 2 && this.props.seeHelpText ? "welcome" : "dashboard"
-            }
+          <Content
+            style={{
+              padding: "0px 30px 30px 30px",
+              background: "#fff",
+              height: "calc(100% - 64px)",
+            }}
           >
-            <div style={{ height: "100%" }}>
-              <MultipleSearchBar
-                size="large"
-                allPages={this.props.allPages}
-                placeholder="Search for a class or group to join!"
-                redirectPage={this.props.redirectPage}
-                defaultOpen={true}
-                addClasses={this.props.addClasses}
-              />
-            </div>
-            <Row style={{ height: "100%" }} gutter={[16, 16]}>
-              <Col span={14} style={{ height: "100%" }}>
-                <DDQLSection
-                  dataSource={this.state.dueDates}
-                  users={this.state.users}
-                  user={this.props.user}
-                  type="DueDate"
-                  home={true}
-                  pageMap={pageMap}
-                />
-              </Col>
-              <Col span={10} style={{ height: "100%" }}>
-                <div style={{ height: "45%" }}>
-                  <PageHeader title={"My Lounges"} />
-                  <div style={{ height: "calc(100% - 72px)", overflow: "auto" }}>
-                    {this.props.myPages
-                      .sort((a, b) => {
-                        return a.name.localeCompare(b.name);
-                      })
-                      .map((page) => {
-                        let lounge = this.state.lounges
-                          ? this.state.lounges.find((lounge) => {
-                            return lounge.main && page._id === lounge.pageId;
-                          })
-                          : undefined;
-                        console.log(lounge);
-                        if (lounge) return { lounge: lounge, page: page };
-                        return { lounge: { userIds: [] }, bad: true };
-                      })
-                      .sort((a, b) => {
-                        return b.lounge.userIds.length - a.lounge.userIds.length;
-                      })
-                      .map((data) => {
-                        if (data.bad) return <></>;
-
-                        return (
-                          <LoungeList
-                            redirect={(link) => this.props.redirectPage(link)}
-                            lounges={[data.lounge]}
-                            users={this.state.users}
-                            page={data.page}
-                            home={true}
-                          />
-                        );
-                      })}
-                  </div>
-                </div>
-                <div style={{ height: "45%" }}>
+            <TabPage
+              labels={["Dashboard", "Settings"].concat(this.props.isSiteAdmin ? ["Admin"] : [])}
+              routerLinks={["dashboard", "settings"].concat(
+                this.props.isSiteAdmin ? ["admin"] : []
+              )}
+              defaultRouterLink={"dashboard"}
+            >
+              <Row style={{ height: "100%" }} gutter={[16, 16]}>
+                <Col span={14} style={{ height: "100%" }}>
                   <DDQLSection
-                    dataSource={this.state.quickLinks}
+                    dataSource={this.state.dueDates}
                     users={this.state.users}
                     user={this.props.user}
-                    type="QuickLink"
+                    type="DueDate"
                     home={true}
                     pageMap={pageMap}
                   />
-                </div>
-              </Col>
-            </Row>
-            <div>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                }}
-              >
-                <Switch
-                  checked={!this.props.visible}
-                  onChange={(checked) => {
-                    this.props.setVisible(!checked);
-                  }}
-                  checkedChildren={"On"}
-                  unCheckedChildren={"Off"}
-                />
-                <div style={{ paddingLeft: "10px" }}>
-                  Toggle privacy mode to appear as anonymous in all of your classes
-                </div>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  marginTop: "10px",
-                }}
-              >
-                <Switch
-                  checked={this.props.seeHelpText}
-                  onChange={(checked) => {
-                    this.props.setSeeHelpText(checked);
-                  }}
-                  checkedChildren={"On"}
-                  unCheckedChildren={"Off"}
-                />
-                <div style={{ paddingLeft: "10px" }}>
-                  Toggle help mode to show the helper text that appears on dashboard
-                </div>
-              </div>
-            </div>
-            <AdminRequests adminRequests={this.state.adminRequests} />
-          </TabPage>
-        </Content>
+                </Col>
+                <Col span={10} style={{ height: "100%" }}>
+                  <div style={{ height: "45%" }}>
+                    <PageHeader title={"My Lounges"} />
+                    <div style={{ height: "calc(100% - 72px)", overflow: "auto" }}>
+                      {this.props.myPages
+                        .sort((a, b) => {
+                          return a.name.localeCompare(b.name);
+                        })
+                        .map((page) => {
+                          let lounge = this.state.lounges
+                            ? this.state.lounges.find((lounge) => {
+                                return lounge.main && page._id === lounge.pageId;
+                              })
+                            : undefined;
+                          console.log(lounge);
+                          if (lounge) return { lounge: lounge, page: page };
+                          return { lounge: { userIds: [] }, bad: true };
+                        })
+                        .sort((a, b) => {
+                          return b.lounge.userIds.length - a.lounge.userIds.length;
+                        })
+                        .map((data) => {
+                          if (data.bad) return <></>;
 
-        <div style={{ bottom: "10px", padding: "10px 20% 10px 20%" }}>
-          <center>
-            <div>
-              Disclaimer: All material on this site is compiled by students and therefore
-              unofficial. Thanks to{" "}
-              <a href="https://hacklodge.org/" target="_blank">
-                Hacklodge
-              </a>{", "}
-              <a href="https://fireroad.mit.edu/" target="_blank">
-                FireRoad
-              </a>{" "}
-              and{" "}
-              <a href="http://gather.town/" target="_blank">
-                Gather
-              </a>{" "}
-              for their support, and{" "}
-              <a href="https://firehose.guide/" target="_blank">
-                Firehose
-              </a>{" "}
-              for class information. Please share any bugs or feedback{" "}
-              <a href="https://forms.gle/ZSdrfPZfpwngxQ3aA" target="_blank">
-                here
-              </a>
-              !
-            </div>
-          </center>
-        </div>
-      </Layout>
+                          return (
+                            <LoungeList
+                              redirect={(link) => this.props.redirectPage(link)}
+                              lounges={[data.lounge]}
+                              users={this.state.users}
+                              page={data.page}
+                              home={true}
+                            />
+                          );
+                        })}
+                    </div>
+                  </div>
+                  <div style={{ height: "45%" }}>
+                    <DDQLSection
+                      dataSource={this.state.quickLinks}
+                      users={this.state.users}
+                      user={this.props.user}
+                      type="QuickLink"
+                      home={true}
+                      pageMap={pageMap}
+                    />
+                  </div>
+                </Col>
+              </Row>
+              <div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                  }}
+                >
+                  <Switch
+                    checked={!this.props.visible}
+                    onChange={(checked) => {
+                      this.props.setVisible(!checked);
+                    }}
+                    checkedChildren={"On"}
+                    unCheckedChildren={"Off"}
+                  />
+                  <div style={{ paddingLeft: "10px" }}>
+                    Toggle privacy mode to appear as anonymous in all of your classes
+                  </div>
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    marginTop: "10px",
+                  }}
+                >
+                  <Switch
+                    checked={this.props.seeHelpText}
+                    onChange={(checked) => {
+                      this.props.setSeeHelpText(checked);
+                    }}
+                    checkedChildren={"On"}
+                    unCheckedChildren={"Off"}
+                  />
+                  <div style={{ paddingLeft: "10px" }}>
+                    Toggle help mode to show the helper text that appears on dashboard
+                  </div>
+                </div>
+              </div>
+              <AdminRequests adminRequests={this.state.adminRequests} />
+            </TabPage>
+          </Content>
+
+          <div style={{ bottom: "10px", padding: "10px 20% 10px 20%" }}>
+            <center>
+              <div>
+                Disclaimer: All material on this site is compiled by students and therefore
+                unofficial. Thanks to{" "}
+                <a href="https://hacklodge.org/" target="_blank">
+                  Hacklodge
+                </a>
+                {", "}
+                <a href="https://fireroad.mit.edu/" target="_blank">
+                  FireRoad
+                </a>{" "}
+                and{" "}
+                <a href="http://gather.town/" target="_blank">
+                  Gather
+                </a>{" "}
+                for their support, and{" "}
+                <a href="https://firehose.guide/" target="_blank">
+                  Firehose
+                </a>{" "}
+                for class information. Please share any bugs or feedback{" "}
+                <a href="https://forms.gle/ZSdrfPZfpwngxQ3aA" target="_blank">
+                  here
+                </a>
+                !
+              </div>
+            </center>
+          </div>
+        </Layout>
+        <Modal
+          bodyStyle={{
+            height: "350px",
+          }}
+          visible={this.props.myPages.length === 0}
+          title={"Enter Your Schedule to Get Started"}
+          onCancel={() => {
+            this.props.redirectPage("dashboard");
+          }}
+          footer={null}
+          closable={false}
+          maskClosable={false}
+        >
+          <MultipleSearchBar
+            size="large"
+            allPages={this.props.allPages}
+            placeholder="Search for a class to join!"
+            redirectPage={this.props.redirectPage}
+            defaultOpen={true}
+            addClasses={this.props.addClasses}
+          />
+        </Modal>
+      </>
     );
   }
 }
