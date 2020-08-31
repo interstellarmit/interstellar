@@ -260,7 +260,7 @@ class App extends Component {
           pageIds.push(pageId)
         }
       }
-      this.setState({ pageIds: pageIds, redirectPage: 'dashboard' })
+      this.setState({ pageIds: pageIds, redirectPage: (classList[0] ? '/class/' + classList[0] : '/dashboard') })
     })
   }
 
@@ -374,7 +374,7 @@ class App extends Component {
                     <Switch>
                       <Home
                         exact
-                        path={["/", "/welcome", "/dashboard", "/settings", "/admin"]}
+                        path={["/", "/dashboard", "/settings", "/admin"]}
                         schoolId={this.state.schoolId}
                         updateSelectedPageName={this.updateSelectedPageName}
                         user={{

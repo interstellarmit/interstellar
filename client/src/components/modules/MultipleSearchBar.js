@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { AutoComplete, Input, Select, Button } from "antd";
 import Search from "antd/lib/input/Search";
 const { Option, OptGroup } = Select;
-import { SearchOutlined } from "@ant-design/icons";
+import { SendOutlined } from "@ant-design/icons";
 export default function MultipleSearchBar(props) {
   const [query, setQuery] = useState("");
   const [classList, setClassList] = useState([]);
@@ -77,7 +77,7 @@ export default function MultipleSearchBar(props) {
         }}
         type="primary"
         style={{ width: "46px" }}
-        icon={<SearchOutlined />}
+        icon={<SendOutlined />}
       ></Button>
     </div>
   );
