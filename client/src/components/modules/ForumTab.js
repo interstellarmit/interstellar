@@ -34,6 +34,10 @@ class ForumTab extends Component {
 
   addCommentSocket = (comment) => {
     let groupPosts = this.state.groupPosts;
+    console.log('groupPost')
+    console.log(groupPost)
+    console.log(this.state)
+    console.log(comment)
     let commentedPost = groupPosts.find((onePost) => {
       return onePost.post._id === comment.postId;
     });
@@ -196,6 +200,7 @@ class ForumTab extends Component {
         groupPosts: groupPosts,
         activePost: activePost,
       });
+      console.log(this.state)
     });
 
     let userId = this.props.user.userId;
