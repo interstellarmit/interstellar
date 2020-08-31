@@ -49,7 +49,7 @@ export default function InfoTab(props) {
           <UserList
             users={users}
             allPages={props.allPages}
-            showClasses={true}
+            showClasses={props.showClasses}
             pageIds={props.pageIds}
             page={props.page}
             adminIds={props.page.adminIds}

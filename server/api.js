@@ -150,6 +150,7 @@ router.post("/setSeeHelpText", auth.ensureLoggedIn, main_calls.setSeeHelpText);
 router.post("/addRemoveAdmin", auth.ensureLoggedIn, main_calls.addRemoveAdmin);
 router.post("/requestAdmin", auth.ensureLoggedIn, main_calls.requestAdmin);
 router.post("/honorRequest", auth.ensureLoggedIn, main_calls.honorRequest);
+router.post("/setShowClasses", auth.ensureLoggedIn, main_calls.setShowClasses);
 
 router.post("/createNewLounge", auth.ensureLoggedIn, lounge_calls.createNewLounge);
 router.post("/addSelfToLounge", auth.ensureLoggedIn, lounge_calls.addSelfToLounge);
@@ -179,6 +180,7 @@ router.post("/updateComment", auth.ensureLoggedIn, forum_calls.updateComment);
 //     res.send(res1)
 //   })
 // })
+
 router.post("/addClasses", auth.ensureLoggedIn, (req, res) => {
   let pageNames = req.body.pageNames;
   let userPageIds = [];
