@@ -19,8 +19,6 @@ import { get, post } from "../utilities";
 import Cookies from "universal-cookie";
 const cookies = new Cookies();
 
-// var classes = require("../full.json");
-
 var getJSON = function (url, callback) {
   var xhr = new XMLHttpRequest();
   xhr.open("GET", url, true);
@@ -302,38 +300,6 @@ class App extends Component {
     });
     return (
       <div>
-        {/*
-          // Adding Classes
-          <button
-            onClick={() => {
-              let keys = Object.keys(classes);
-              let runLoop = (i) => {
-                if (i >= keys.length) return;
-                let oneclass = keys[i];
-                let classObj = classes[oneclass];
-                post("/api/createNewPage", {
-                  pageType: "Class",
-                  name: oneclass,
-                  title: classObj.n,
-                  description: classObj.d,
-                  professor: classObj.i,
-                  rating: classObj.ra,
-                  hours: classObj.h,
-                  units: classObj.u1 + classObj.u2 + classObj.u3,
-                  locked: false,
-                  joinCode: "",
-                }).then((created) => {
-                  if (created.created) console.log(oneclass + " " + i + "/" + keys.length);
-                  else console.log("error:" + oneclass);
-                  runLoop(i + 1);
-                });
-              };
-              runLoop(0);
-            }}
-          >
-            Add MIT
-          </button>
-        */}
         {this.state.disconnect ? (
           Modal.error({
             title: "Disconnected",
@@ -392,6 +358,7 @@ class App extends Component {
                         seeHelpText={this.state.seeHelpText}
                         setSeeHelpText={this.setSeeHelpText}
                         addClasses={this.addClasses}
+                        email={this.state.email}
                       />
                       <Page
                         path="/class/:selectedPage"

@@ -11,7 +11,7 @@ import AdminRequests from "../modules/AdminRequests";
 import AddEnterCode from "../modules/AddEnterCode";
 import MySpin from "../modules/MySpin";
 import { socket } from "../../client-socket.js";
-import { Spin, Space, Button, Typography, Layout, PageHeader, Badge, Row, Col } from "antd";
+import { Spin, Space, Button, Typography, Layout, PageHeader, Badge, Row, Col, Alert } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 const { Header, Content, Footer, Sider } = Layout;
 const { Title, Text } = Typography;
@@ -118,7 +118,7 @@ class Page extends Component {
     });
   };
 
-  addToLounge = (userId, loungeId, callback = () => {}) => {
+  addToLounge = (userId, loungeId, callback = () => { }) => {
     let lounges = this.state.lounges;
     let lounge = lounges.filter((l) => {
       return l._id + "" === loungeId;
@@ -136,7 +136,7 @@ class Page extends Component {
     this.setState({ lounges: newLounges }, callback);
   };
 
-  removeFromLounge = (userId, loungeId, callback = () => {}) => {
+  removeFromLounge = (userId, loungeId, callback = () => { }) => {
     if (loungeId !== "") {
       let lounges = this.state.lounges;
       let lounge = lounges.filter((l) => {
@@ -164,7 +164,7 @@ class Page extends Component {
     }
   };
 
-  addSelfToLounge = (loungeId, callback = () => {}) => {
+  addSelfToLounge = (loungeId, callback = () => { }) => {
     post("/api/addSelfToLounge", {
       loungeId: loungeId,
     }).then((data) => {
@@ -176,7 +176,7 @@ class Page extends Component {
     });
   };
 
-  removeSelfFromLounge = (loungeId, callback = () => {}) => {
+  removeSelfFromLounge = (loungeId, callback = () => { }) => {
     post("/api/removeSelfFromLounge", {
       loungeId: loungeId,
     }).then((data) => {
@@ -285,8 +285,8 @@ class Page extends Component {
 
     let mainLounge = this.state.lounges
       ? this.state.lounges.find((lounge) => {
-          return lounge.main;
-        })
+        return lounge.main;
+      })
       : undefined;
     let numInLounge = mainLounge ? mainLounge.userIds.length : 0;
     let removeClassButton = (
@@ -336,16 +336,16 @@ class Page extends Component {
             <LockOutlined /> Locked
           </React.Fragment>
         ) : (
-          <React.Fragment>
-            <UnlockOutlined /> Unlocked
-          </React.Fragment>
-        )}
+            <React.Fragment>
+              <UnlockOutlined /> Unlocked
+            </React.Fragment>
+          )}
       </Button>
     );
 
     let isPageAdmin =
       this.state.page.adminIds.includes(this.props.user.userId) || this.props.isSiteAdmin;
-
+    let sameAs = this.state.page.sameAs && this.state.page.sameAs.length > 0 ? this.state.page.sameAs.split(", ") : [];
     return (
       <Layout style={{ background: "rgba(240, 242, 245, 1)", height: "100vh" }}>
         <PageHeader
@@ -353,29 +353,30 @@ class Page extends Component {
           style={{ padding: "20px 30px 0px 30px", background: "#fff" }}
           extra={(this.state.page.pageType === "Group"
             ? [
-                <Button
-                  icon={<EyeOutlined />}
-                  onClick={() => {
-                    let sc = this.state.showClasses;
-                    post("/api/setShowClasses", {
-                      pageId: this.state.page._id,
-                      showClasses: !sc,
-                    }).then((data) => {
-                      if (data.set) this.setState({ showClasses: !sc });
-                    });
-                  }}
-                  disabled={!isPageAdmin}
-                >
-                  {!this.state.showClasses ? "Classes Hidden" : "Classes Visible"}
-                </Button>,
-              ]
-            : []
+              <Button
+                icon={<EyeOutlined />}
+                onClick={() => {
+                  let sc = this.state.showClasses;
+                  post("/api/setShowClasses", {
+                    pageId: this.state.page._id,
+                    showClasses: !sc,
+                  }).then((data) => {
+                    if (data.set) this.setState({ showClasses: !sc });
+                  });
+                }}
+                disabled={!isPageAdmin}
+              >
+                {!this.state.showClasses ? "Classes Hidden" : "Classes Visible"}
+              </Button>,
+            ]
+            : [sameAs.length > 0 ? <Button onClick={() => { this.props.redirectPage("/class/" + sameAs[0]) }} >Same as {sameAs[0]}</Button> : <></>]
           )
 
             .concat([this.state.inPage ? removeClassButton : addClassButton])
             .concat(isPageAdmin && this.state.inPage ? [lockButton] : [])}
           title={this.state.page.name}
           subTitle={this.state.page.title}
+
         ></PageHeader>
         <AddLock
           lockModal={this.state.lockModal}
@@ -390,6 +391,7 @@ class Page extends Component {
           addSelfToPage={this.addSelfToPage}
           pageId={this.state.page._id}
         />
+
         <Content
           style={{
             padding: "0px 30px 30px 30px",
@@ -416,8 +418,8 @@ class Page extends Component {
                 !this.state.inPage
                   ? "info"
                   : this.state.page.pageType === "Group"
-                  ? "info"
-                  : "dashboard"
+                    ? "info"
+                    : "dashboard"
               }
               page={this.state.page}
             >
@@ -470,22 +472,22 @@ class Page extends Component {
               <AdminRequests adminRequests={this.state.adminRequests} />
             </TabPage>
           ) : (
-            <TabPage
-              labels={["Info"]}
-              routerLinks={["info"]}
-              defaultRouterLink={"info"}
-              page={this.state.page}
-            >
-              <InfoTab
-                users={this.state.users}
-                inPage={false}
+              <TabPage
+                labels={["Info"]}
+                routerLinks={["info"]}
+                defaultRouterLink={"info"}
                 page={this.state.page}
-                user={this.props.user}
-              />
-            </TabPage>
-          )}
+              >
+                <InfoTab
+                  users={this.state.users}
+                  inPage={false}
+                  page={this.state.page}
+                  user={this.props.user}
+                />
+              </TabPage>
+            )}
         </Content>
-      </Layout>
+      </Layout >
     );
   }
 }
