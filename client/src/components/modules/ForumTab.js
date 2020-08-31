@@ -37,8 +37,10 @@ class ForumTab extends Component {
     let commentedPost = groupPosts.find((onePost) => {
       return onePost.post._id === comment.postId;
     });
+
     commentedPost.comments.push(comment);
-    this.setState({ groupPosts: groupPosts });
+
+    this.setState({ groupPosts: groupPosts, activePost: commentedPost });
   };
 
   deletePostSocket = (postId) => {
