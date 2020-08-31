@@ -366,15 +366,7 @@ class Page extends Component {
               ]
             : []
           )
-            .concat(
-              isPageAdmin && this.state.inPage
-                ? [
-                    <Button icon={<UserOutlined />} disabled>
-                      Admin
-                    </Button>,
-                  ]
-                : []
-            )
+
             .concat([this.state.inPage ? removeClassButton : addClassButton])
             .concat(isPageAdmin && this.state.inPage ? [lockButton] : [])}
           title={this.state.page.name}
