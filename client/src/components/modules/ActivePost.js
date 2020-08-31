@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Typography, Comment, Form, Input, Button, List, Divider } from "antd";
+import { Typography, Comment, Form, Input, Button, List, Divider, Tag } from "antd";
 import { StarOutlined, StarFilled, DeleteOutlined } from "@ant-design/icons";
 import ProfilePic from "./ProfilePic";
 import { post } from "../../utilities";
-import Picker, { SKIN_TONE_MEDIUM_DARK } from 'emoji-picker-react';
+import Picker, { SKIN_TONE_MEDIUM_DARK } from "emoji-picker-react";
 
 const { TextArea } = Input;
 const { Title } = Typography;
@@ -41,9 +41,12 @@ export default function ActivePost(props) {
     setReacts(props.activePost.post.reacts);
   });
 
-  const poster = props.users.find((oneUser) => {
-    return oneUser.userId === props.activePost.post.userId;
-  }) || { userId: "", name: "Former Member" };
+  const poster =
+    props.activePost.post.userId === 0
+      ? { userId: 0, name: "Interstellar Team" }
+      : props.users.find((oneUser) => {
+          return oneUser.userId === props.activePost.post.userId;
+        }) || { userId: "", name: "Former Member" };
 
   const handleReplyChange = (e) => {
     setReply(e.target.value);
@@ -93,7 +96,29 @@ export default function ActivePost(props) {
           boxShadow: "0 10px 25px rgba(0,0,0,.02), 0 4px 10px rgba(0,0,0,.02)",
         }}
       >
-        {/* Poster + Stardust */}
+        {/* Labels */}
+        {props.activePost.post.labels.length > 0 ? (
+          <div
+            style={{
+              width: "100%",
+              marginBottom: "20px",
+            }}
+          >
+            {props.activePost.post.labels.map((label) => (
+              <Tag
+                style={{
+                  borderRadius: "5px",
+                }}
+              >
+                {label}
+              </Tag>
+            ))}
+          </div>
+        ) : (
+          ""
+        )}
+
+        {/* Poster + Stardust + Delete */}
         <div
           style={{
             display: "flex",
@@ -124,40 +149,51 @@ export default function ActivePost(props) {
             </div>
           </div>
 
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            <div
-              style={{
-                fontSize: "20px",
-                marginRight: "5px",
-              }}
-            >
-              {reacts.length}
-            </div>
-            <div
-              style={{
-                cursor: "pointer",
-                fontSize: "20px",
-                marginRight: "10px",
-              }}
-              onClick={handleReact}
-            >
-              {reacts.includes(props.user.userId) ? <StarFilled /> : <StarOutlined />}
-            </div>
-            <div
-              style={{
-                cursor: "pointer",
-                fontSize: "20px",
-              }}
-              onClick={handleDelete}
-            >
-              {poster.userId === props.user.userId || props.isPageAdmin ? <DeleteOutlined /> : ""}
-            </div>
-          </div>
+          {
+            // display if not default post
+            poster.userId !== 0 ? (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: "20px",
+                    marginRight: "5px",
+                  }}
+                >
+                  {reacts.length}
+                </div>
+                <div
+                  style={{
+                    cursor: "pointer",
+                    fontSize: "20px",
+                    marginRight: "10px",
+                  }}
+                  onClick={handleReact}
+                >
+                  {reacts.includes(props.user.userId) ? <StarFilled /> : <StarOutlined />}
+                </div>
+                <div
+                  style={{
+                    cursor: "pointer",
+                    fontSize: "20px",
+                  }}
+                  onClick={handleDelete}
+                >
+                  {poster.userId === props.user.userId || props.isPageAdmin ? (
+                    <DeleteOutlined />
+                  ) : (
+                    ""
+                  )}
+                </div>
+              </div>
+            ) : (
+              ""
+            )
+          }
         </div>
 
         {/* Title and Text */}
@@ -171,36 +207,45 @@ export default function ActivePost(props) {
           {props.activePost.post.text}
         </div>
 
-        {/* Comments */}
-        {comments.length > 0 ? (
-          <CommentList
-            comments={comments.map((c) => {
-              var author = props.users.find((oneUser) => {
-                return oneUser.userId === c.userId;
-              }) || { userId: "", name: "Former Member" };
-              return {
-                author: author.name,
-                avatar: <ProfilePic user={author} />,
-                content: <p>{c.text}</p>,
-              };
-            })}
-          />
-        ) : (
-            <Divider />
-          )}
+        {
+          // display if not default post
+          poster.userId !== 0 ? (
+            <>
+              {/* Comments */}
+              {comments.length > 0 ? (
+                <CommentList
+                  comments={comments.map((c) => {
+                    var author = props.users.find((oneUser) => {
+                      return oneUser.userId === c.userId;
+                    }) || { userId: "", name: "Former Member" };
+                    return {
+                      author: author.name,
+                      avatar: <ProfilePic user={author} />,
+                      content: <p>{c.text}</p>,
+                    };
+                  })}
+                />
+              ) : (
+                <Divider />
+              )}
 
-        {/* Editor */}
-        <Comment
-          avatar={<ProfilePic user={props.user} />}
-          content={
-            <Editor
-              onChange={handleReplyChange}
-              onSubmit={handleReplySubmit}
-              submitting={submitting}
-              value={reply}
-            />
-          }
-        />
+              {/* Editor */}
+              <Comment
+                avatar={<ProfilePic user={props.user} />}
+                content={
+                  <Editor
+                    onChange={handleReplyChange}
+                    onSubmit={handleReplySubmit}
+                    submitting={submitting}
+                    value={reply}
+                  />
+                }
+              />
+            </>
+          ) : (
+            ""
+          )
+        }
       </div>
     </>
   );
