@@ -21,14 +21,14 @@ export default function MultipleSearchBar(props) {
       label: "Classes",
       options: props.allPages
         .filter((page) => {
-          return page.pageType == "Class";
+          return page.pageType === "Class";
         })
         .map((page) => {
           return {
             value: page.name,
             label: (
               <div key={page.name} value={page.name}>
-                {page.title == "" ? page.name : page.name + ": " + page.title}
+                {page.title === "" ? page.name : page.name + ": " + page.title}
               </div>
             ),
           };
@@ -38,7 +38,7 @@ export default function MultipleSearchBar(props) {
       label: "Groups",
       options: props.allPages
         .filter((page) => {
-          return page.pageType == "Group";
+          return page.pageType === "Group";
         })
         .map((page) => {
           return {

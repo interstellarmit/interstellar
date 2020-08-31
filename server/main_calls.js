@@ -312,10 +312,10 @@ joinPage = (req, res) => {
                     users: inPageUsers,
                     lounges: lounges,
                     dueDates: DDQLs.filter((ddql) => {
-                      return ddql.objectType == "DueDate";
+                      return ddql.objectType === "DueDate";
                     }),
                     quickLinks: DDQLs.filter((ddql) => {
-                      return ddql.objectType == "QuickLink";
+                      return ddql.objectType === "QuickLink";
                     }),
                     inPage: true,
                     adminRequests: requests,

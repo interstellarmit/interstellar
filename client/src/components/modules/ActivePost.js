@@ -41,7 +41,7 @@ export default function ActivePost(props) {
   });
 
   const poster = props.users.find((oneUser) => {
-    return oneUser.userId == props.activePost.post.userId;
+    return oneUser.userId === props.activePost.post.userId;
   }) || { userId: "", name: "Former Member" };
 
   const handleReplyChange = (e) => {
@@ -154,7 +154,7 @@ export default function ActivePost(props) {
               }}
               onClick={handleDelete}
             >
-              {poster.userId === props.user.userId ? <DeleteOutlined /> : ""}
+              {poster.userId === props.user.userId || props.isPageAdmin ? <DeleteOutlined /> : ""}
             </div>
           </div>
         </div>
@@ -175,7 +175,7 @@ export default function ActivePost(props) {
           <CommentList
             comments={comments.map((c) => {
               var author = props.users.find((oneUser) => {
-                return oneUser.userId == c.userId;
+                return oneUser.userId === c.userId;
               }) || { userId: "", name: "Former Member" };
               return {
                 author: author.name,

@@ -5,6 +5,7 @@ import ActivePost from "./ActivePost";
 import AddPost from "./AddPost";
 import PostListItem from "./PostListItem";
 import MySpin from "./MySpin";
+import { socket } from "../../client-socket.js";
 
 class ForumTab extends Component {
   constructor(props) {
@@ -34,7 +35,7 @@ class ForumTab extends Component {
   addCommentSocket = (comment) => {
     let groupPosts = this.state.groupPosts;
     let commentedPost = groupPosts.find((onePost) => {
-      return onePost.post._id == comment.postId;
+      return onePost.post._id === comment.postId;
     });
     commentedPost.comments.push(comment);
     this.setState({ groupPosts: groupPosts });
@@ -153,10 +154,10 @@ class ForumTab extends Component {
       if (!ret.updated) return;
       let groupPosts = this.state.groupPosts;
       let updatedPost = groupPosts.find((onePost) => {
-        return onePost.post._id == ret.comment.postId;
+        return onePost.post._id === ret.comment.postId;
       });
       let updatedComment = updatedPost.comments.find((oneComment) => {
-        return oneComment._id == ret.commentId;
+        return oneComment._id === ret.commentId;
       });
       updatedComment = ret.comment;
       this.setState({ groupPosts: groupPosts });
@@ -193,6 +194,20 @@ class ForumTab extends Component {
         groupPosts: groupPosts,
         activePost: activePost,
       });
+    });
+
+    let userId = this.props.user.userId;
+    socket.on("createNewGroupPost", (data) => {
+      if (userId === data.userId) return;
+      this.addPostSocket(data.post);
+    });
+    socket.on("createNewComment", (data) => {
+      if (userId === data.userId) return;
+      this.addCommentSocket(data.comment);
+    });
+    socket.on("deleteGroupPost", (data) => {
+      if (userId === data.userId) return;
+      this.deletePostSocket(data.postId);
     });
   }
 
@@ -243,7 +258,7 @@ class ForumTab extends Component {
                           user={this.props.user}
                           poster={
                             this.props.users.find((oneUser) => {
-                              return oneUser.userId == onePost.post.userId;
+                              return oneUser.userId === onePost.post.userId;
                             }) || { userId: "", name: "Former Member" }
                           }
                         />
@@ -268,6 +283,7 @@ class ForumTab extends Component {
                     user={this.props.user}
                     activePost={this.state.activePost}
                     users={this.props.users}
+                    isPageAdmin={this.props.isPageAdmin}
                   />
                 )}
               </div>
