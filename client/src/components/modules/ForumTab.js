@@ -35,7 +35,7 @@ class ForumTab extends Component {
   addCommentSocket = (comment) => {
     let groupPosts = this.state.groupPosts;
     console.log('groupPost')
-    console.log(groupPost)
+    console.log(groupPosts)
     console.log(this.state)
     console.log(comment)
     let commentedPost = groupPosts.find((onePost) => {
