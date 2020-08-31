@@ -37,8 +37,10 @@ class ForumTab extends Component {
     let commentedPost = groupPosts.find((onePost) => {
       return onePost.post._id === comment.postId;
     });
+
     commentedPost.comments.push(comment);
-    this.setState({ groupPosts: groupPosts });
+
+    this.setState({ groupPosts: groupPosts, activePost: commentedPost });
   };
 
   deletePostSocket = (postId) => {
@@ -208,6 +210,11 @@ class ForumTab extends Component {
     socket.on("deleteGroupPost", (data) => {
       if (userId === data.userId) return;
       this.deletePostSocket(data.postId);
+    });
+
+    socket.on("updateGroupPost", (data) => {
+      if (userId === data.userId) return;
+      this.updatePostSocket(data.post);
     });
   }
 

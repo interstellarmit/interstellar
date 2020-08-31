@@ -204,6 +204,10 @@ updateGroupPost = (req, res) => {
           post.reacts.push(req.user._id);
         }
         post.save().then((savedPost) => {
+          socket
+            .getSocketFromUserID(req.user._id)
+            .to("Page: " + post.pageId)
+            .emit("updateGroupPost", { post: savedPost, userId: req.user._id });
           res.send({
             post: savedPost,
             updated: true,
