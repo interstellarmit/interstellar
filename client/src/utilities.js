@@ -43,7 +43,7 @@ export function get(endpoint, params = {}, token = "") {
     method: "get",
     headers: {
       "Content-type": "application/json",
-      "token": token,
+      token: token,
     },
     query: JSON.stringify(params),
   })

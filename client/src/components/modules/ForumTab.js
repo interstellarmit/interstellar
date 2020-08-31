@@ -34,13 +34,18 @@ class ForumTab extends Component {
 
   addCommentSocket = (comment) => {
     let groupPosts = this.state.groupPosts;
+    //console.log("groupPost");
+    //console.log(groupPosts);
+    //console.log(this.state);
+    //console.log(comment);
     let commentedPost = groupPosts.find((onePost) => {
       return onePost.post._id === comment.postId;
     });
 
     commentedPost.comments.push(comment);
-
-    this.setState({ groupPosts: groupPosts, activePost: commentedPost });
+    if (this.state.activePost.post._id === commentedPost.post._id)
+      this.setState({ activePost: commentedPost });
+    this.setState({ groupPosts: groupPosts });
   };
 
   deletePostSocket = (postId) => {
@@ -196,24 +201,29 @@ class ForumTab extends Component {
         groupPosts: groupPosts,
         activePost: activePost,
       });
+      //console.log(this.state);
     });
 
     let userId = this.props.user.userId;
     socket.on("createNewGroupPost", (data) => {
       if (userId === data.userId) return;
+      if (this.state.isLoading) return;
       this.addPostSocket(data.post);
     });
     socket.on("createNewComment", (data) => {
       if (userId === data.userId) return;
+      if (this.state.isLoading) return;
       this.addCommentSocket(data.comment);
     });
     socket.on("deleteGroupPost", (data) => {
       if (userId === data.userId) return;
+      if (this.state.isLoading) return;
       this.deletePostSocket(data.postId);
     });
 
     socket.on("updateGroupPost", (data) => {
       if (userId === data.userId) return;
+      if (this.state.isLoading) return;
       this.updatePostSocket(data.post);
     });
   }

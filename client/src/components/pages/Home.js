@@ -101,7 +101,7 @@ class Home extends Component {
     });
 
     socket.on("userAddedToLounge", (data) => {
-      console.log("user just got added to lounge");
+      //console.log("user just got added to lounge");
       this.addToLounge(data.userId, data.loungeId);
     });
 
@@ -191,7 +191,7 @@ class Home extends Component {
                                 return lounge.main && page._id === lounge.pageId;
                               })
                             : undefined;
-                          console.log(lounge);
+                          //console.log(lounge);
                           if (lounge) return { lounge: lounge, page: page };
                           return { lounge: { userIds: [] }, bad: true };
                         })
