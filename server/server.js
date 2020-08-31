@@ -26,6 +26,9 @@ const session = require("express-session"); // library that stores info about ea
 const mongoose = require("mongoose"); // library to connect to MongoDB
 const path = require("path"); // provide utilities for working with file and directory paths
 const bodyParser = require("body-parser");
+var fs = require('fs');
+// var Schema = mongoose.Schema;
+var multer = require('multer');
 
 const api = require("./api");
 const auth = require("./auth");
@@ -48,6 +51,7 @@ mongoose
   })
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.log(`Error connecting to MongoDB: ${err}`));
+
 
 // create a new express server
 const app = express();
@@ -75,7 +79,52 @@ app.use("/api", api);
 const reactPath = path.resolve(__dirname, "..", "client", "dist");
 app.use(express.static(reactPath));
 
+app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json());
+app.set("view engine", "ejs");
+
+var storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads')
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.fieldname + '-' + Date.now())
+  }
+});
+
+var upload = multer({ storage: storage });
+var imgModel = require('./models/image.js');
+
+app.get('/api/photo', (req, res) => {
+  imgModel.find({}, (err, items) => {
+    if (err) {
+      console.log(err);
+    }
+    else {
+      res.render('app', { items: items });
+    }
+  });
+});
+app.post('/api/photo', upload.single('image'), (req, res, next) => {
+
+  var obj = {
+    name: req.body.name,
+    desc: req.body.desc,
+    img: {
+      data: fs.readFileSync(path.join(__dirname + '/uploads/' + req.file.filename)),
+      contentType: 'image/png'
+    }
+  }
+  imgModel.create(obj, (err, item) => {
+    if (err) {
+      console.log(err);
+    }
+    else {
+      // item.save(); 
+      res.redirect('/');
+    }
+  });
+});
 
 // for all other routes, render index.html and let react router handle it
 app.get("*", (req, res) => {
