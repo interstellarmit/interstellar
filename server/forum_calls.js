@@ -247,9 +247,9 @@ Returns: Comment
 Description: Updates comment with new text and postId. If delete is true, then comment is deleted.
 */
 updateComment = (req, res) => {
-  Comment.findById(req.body.postId).then((comment) => {
+  Comment.findById(req.body.commentId).then((comment) => {
     // if comment is null
-    if (comment == null) {
+    if (!comment) {
       res.send({ updated: false });
     } else {
       User.findById(req.user._id).then((user) => {

@@ -35,7 +35,7 @@ class ForumTab extends Component {
   addCommentSocket = (comment) => {
     let groupPosts = this.state.groupPosts;
     let commentedPost = groupPosts.find((onePost) => {
-      return onePost.post._id == comment.postId;
+      return onePost.post._id === comment.postId;
     });
     commentedPost.comments.push(comment);
     this.setState({ groupPosts: groupPosts });
@@ -154,10 +154,10 @@ class ForumTab extends Component {
       if (!ret.updated) return;
       let groupPosts = this.state.groupPosts;
       let updatedPost = groupPosts.find((onePost) => {
-        return onePost.post._id == ret.comment.postId;
+        return onePost.post._id === ret.comment.postId;
       });
       let updatedComment = updatedPost.comments.find((oneComment) => {
-        return oneComment._id == ret.commentId;
+        return oneComment._id === ret.commentId;
       });
       updatedComment = ret.comment;
       this.setState({ groupPosts: groupPosts });
@@ -258,7 +258,7 @@ class ForumTab extends Component {
                           user={this.props.user}
                           poster={
                             this.props.users.find((oneUser) => {
-                              return oneUser.userId == onePost.post.userId;
+                              return oneUser.userId === onePost.post.userId;
                             }) || { userId: "", name: "Former Member" }
                           }
                         />

@@ -26,7 +26,7 @@ export default function SearchBar(props) {
           return (
             (page.name.toLowerCase().startsWith(query.toLowerCase()) ||
               page.title.toLowerCase().includes(query.toLowerCase())) &&
-            page.pageType == "Class"
+            page.pageType === "Class"
           );
         })
         .map((page) => {
@@ -34,7 +34,7 @@ export default function SearchBar(props) {
             value: page.name,
             label: (
               <div key={page.name} value={page.name}>
-                {page.title == "" ? page.name : page.name + ": " + page.title}
+                {page.title === "" ? page.name : page.name + ": " + page.title}
               </div>
             ),
           };
@@ -47,9 +47,9 @@ export default function SearchBar(props) {
           return (
             ((page.name.toLowerCase().includes(query.toLowerCase()) ||
               page.title.toLowerCase().includes(query.toLowerCase())) &&
-              page.pageType == "Group" &&
+              page.pageType === "Group" &&
               !page.locked) ||
-            (page.pageType == "Group" && page.name.toLowerCase() === query.toLowerCase())
+            (page.pageType === "Group" && page.name.toLowerCase() === query.toLowerCase())
           );
         })
         .map((page) => {
