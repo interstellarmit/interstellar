@@ -23,6 +23,16 @@ import MySpin from "../modules/MySpin";
 import AdminRequests from "../modules/AdminRequests";
 const { Header, Content, Footer, Sider } = Layout;
 const { Title, Text } = Typography;
+
+// var classes = require("../../full.json");
+
+function populateLounges() {
+  console.log("hi there");
+  post("/api/populateLounges", { zoomLink: undefined }).then((res) => {
+    console.log(res.created);
+  });
+}
+
 class Home extends Component {
   constructor(props) {
     super(props);
@@ -313,6 +323,83 @@ class Home extends Component {
                     Toggle help mode to show the helper text that appears on dashboard
                   </div>
                 </div>
+                {/*
+          // Adding Classes
+          */}
+                {this.props.email === "dansun@mit.edu" ? (
+                  <button
+                    onClick={() => {
+                      let keys = Object.keys(classes);
+                      let runLoop = (i) => {
+                        if (i >= keys.length) return;
+                        let oneclass = keys[i];
+                        let classObj = classes[oneclass];
+                        post("/api/createNewPage", {
+                          pageType: "Class",
+                          name: oneclass,
+                          title: classObj.n,
+                          description: classObj.d,
+                          professor: classObj.i,
+                          rating: classObj.ra,
+                          hours: classObj.h,
+                          units: classObj.u1 + classObj.u2 + classObj.u3,
+                          locked: false,
+                          joinCode: "",
+                          sameAs: classObj.sa,
+                        }).then((created) => {
+                          if (created.created) console.log(oneclass + " " + i + "/" + keys.length);
+                          else console.log("error:" + oneclass);
+                          runLoop(i + 1);
+                        });
+                      };
+                      runLoop(0);
+                    }}
+                  >
+                    Add MIT
+                  </button>
+                ) : (
+                  <></>
+                )}
+                {this.props.email === "dansun@mit.edu" ? (
+                  <button
+                    onClick={() => {
+                      let keys = Object.keys(classes);
+                      let runLoop = (i) => {
+                        if (i >= keys.length) return;
+                        let oneclass = keys[i];
+                        let classObj = classes[oneclass];
+                        console.log(classObj.sa);
+                        post("/api/sameAs", {
+                          pageType: "Class",
+                          name: oneclass,
+                          title: classObj.n,
+                          description: classObj.d,
+                          professor: classObj.i,
+                          rating: classObj.ra,
+                          hours: classObj.h,
+                          units: classObj.u1 + classObj.u2 + classObj.u3,
+                          locked: false,
+                          joinCode: "",
+                          sameAs: classObj.sa,
+                        }).then((created) => {
+                          if (created.created) console.log(oneclass + " " + i + "/" + keys.length);
+                          else console.log("error:" + oneclass);
+                          runLoop(i + 1);
+                        });
+                      };
+                      runLoop(0);
+                    }}
+                  >
+                    Same As
+                  </button>
+                ) : (
+                  <></>
+                )}
+                {this.props.email === "dansun@mit.edu" ? (
+                  <button onClick={populateLounges}>Populate Lounges</button>
+                ) : (
+                  <></>
+                )}
               </div>
               <AdminRequests adminRequests={this.state.adminRequests} />
             </TabPage>

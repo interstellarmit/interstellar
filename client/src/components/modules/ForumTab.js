@@ -34,18 +34,13 @@ class ForumTab extends Component {
 
   addCommentSocket = (comment) => {
     let groupPosts = this.state.groupPosts;
-    //console.log("groupPost");
-    //console.log(groupPosts);
-    //console.log(this.state);
-    //console.log(comment);
     let commentedPost = groupPosts.find((onePost) => {
       return onePost.post._id === comment.postId;
     });
 
     commentedPost.comments.push(comment);
-    if (this.state.activePost.post._id === commentedPost.post._id)
-      this.setState({ activePost: commentedPost });
-    this.setState({ groupPosts: groupPosts });
+
+    this.setState({ groupPosts: groupPosts, activePost: commentedPost });
   };
 
   deletePostSocket = (postId) => {
@@ -202,30 +197,26 @@ class ForumTab extends Component {
         groupPosts: groupPosts,
         activePost: activePost,
       });
-      //console.log(this.state);
+      console.log(this.state)
     });
 
     let userId = this.props.user.userId;
     socket.on("createNewGroupPost", (data) => {
       if (userId === data.userId) return;
-      if (this.state.isLoading) return;
       this.addPostSocket(data.post);
       this.props.incrementForumCounter();
     });
     socket.on("createNewComment", (data) => {
       if (userId === data.userId) return;
-      if (this.state.isLoading) return;
       this.addCommentSocket(data.comment);
     });
     socket.on("deleteGroupPost", (data) => {
       if (userId === data.userId) return;
-      if (this.state.isLoading) return;
       this.deletePostSocket(data.postId);
     });
 
     socket.on("updateGroupPost", (data) => {
       if (userId === data.userId) return;
-      if (this.state.isLoading) return;
       this.updatePostSocket(data.post);
     });
   }
@@ -247,68 +238,68 @@ class ForumTab extends Component {
             },
           })
         ) : (
-          <Row style={{ height: "100%" }}>
-            <Col style={{ height: "100%" }} span={9}>
-              <div
-                style={{
-                  height: "100%",
-                  overflow: "auto",
-                }}
-              >
-                <AddPost createNewPost={this.createNewPost} page={this.props.page} />
-                {this.state.isLoading ? (
-                  <MySpin />
-                ) : (
-                  <List
-                    itemLayout="vertical"
-                    size="large"
-                    dataSource={this.state.groupPosts}
-                    renderItem={(onePost) => {
-                      return (
-                        <PostListItem
-                          isActivePost={
-                            this.state.activePost
-                              ? onePost.post._id === this.state.activePost.post._id
-                              : false
-                          }
-                          updatePost={this.updatePost}
-                          setActivePost={this.setActivePost}
-                          groupPost={onePost}
-                          user={this.props.user}
-                          poster={
-                            this.props.users.find((oneUser) => {
-                              return oneUser.userId === onePost.post.userId;
-                            }) || { userId: "", name: "Former Member" }
-                          }
-                        />
-                      );
-                    }}
-                  />
-                )}
-              </div>
-            </Col>
-            <Col style={{ height: "100%" }} span={15}>
-              <div
-                style={{
-                  height: "100%",
-                  overflow: "auto",
-                }}
-              >
-                {this.state.activePost !== null && (
-                  <ActivePost
-                    createNewComment={this.createNewComment}
-                    deletePost={this.deletePost}
-                    updatePost={this.updatePost}
-                    user={this.props.user}
-                    activePost={this.state.activePost}
-                    users={this.props.users}
-                    isPageAdmin={this.props.isPageAdmin}
-                  />
-                )}
-              </div>
-            </Col>
-          </Row>
-        )}
+            <Row style={{ height: "100%" }}>
+              <Col style={{ height: "100%" }} span={9}>
+                <div
+                  style={{
+                    height: "100%",
+                    overflow: "auto",
+                  }}
+                >
+                  <AddPost createNewPost={this.createNewPost} page={this.props.page} />
+                  {this.state.isLoading ? (
+                    <MySpin />
+                  ) : (
+                      <List
+                        itemLayout="vertical"
+                        size="large"
+                        dataSource={this.state.groupPosts}
+                        renderItem={(onePost) => {
+                          return (
+                            <PostListItem
+                              isActivePost={
+                                this.state.activePost
+                                  ? onePost.post._id === this.state.activePost.post._id
+                                  : false
+                              }
+                              updatePost={this.updatePost}
+                              setActivePost={this.setActivePost}
+                              groupPost={onePost}
+                              user={this.props.user}
+                              poster={
+                                this.props.users.find((oneUser) => {
+                                  return oneUser.userId === onePost.post.userId;
+                                }) || { userId: "", name: "Former Member" }
+                              }
+                            />
+                          );
+                        }}
+                      />
+                    )}
+                </div>
+              </Col>
+              <Col style={{ height: "100%" }} span={15}>
+                <div
+                  style={{
+                    height: "100%",
+                    overflow: "auto",
+                  }}
+                >
+                  {this.state.activePost !== null && (
+                    <ActivePost
+                      createNewComment={this.createNewComment}
+                      deletePost={this.deletePost}
+                      updatePost={this.updatePost}
+                      user={this.props.user}
+                      activePost={this.state.activePost}
+                      users={this.props.users}
+                      isPageAdmin={this.props.isPageAdmin}
+                    />
+                  )}
+                </div>
+              </Col>
+            </Row>
+          )}
       </>
     );
   }

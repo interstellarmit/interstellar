@@ -22,6 +22,7 @@ import {
   Badge,
   Row,
   Col,
+  Alert,
 } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 const { Header, Content, Footer, Sider } = Layout;
@@ -409,7 +410,10 @@ class Page extends Component {
 
     let isPageAdmin =
       this.state.page.adminIds.includes(this.props.user.userId) || this.props.isSiteAdmin;
-
+    let sameAs =
+      this.state.page.sameAs && this.state.page.sameAs.length > 0
+        ? this.state.page.sameAs.split(", ")
+        : [];
     return (
       <Layout style={{ background: "rgba(240, 242, 245, 1)", height: "100vh" }}>
         <PageHeader
@@ -433,7 +437,19 @@ class Page extends Component {
                   {!this.state.showClasses ? "Classes Hidden" : "Classes Visible"}
                 </Button>,
               ]
-            : []
+            : [
+                sameAs.length > 0 ? (
+                  <Button
+                    onClick={() => {
+                      this.props.redirectPage("/class/" + sameAs[0]);
+                    }}
+                  >
+                    Same as <a>{" " + sameAs[0] + ""}</a>
+                  </Button>
+                ) : (
+                  <></>
+                ),
+              ]
           )
 
             .concat([this.state.inPage ? removeClassButton : addClassButton])
@@ -454,6 +470,7 @@ class Page extends Component {
           addSelfToPage={this.addSelfToPage}
           pageId={this.state.page._id}
         />
+
         <Content
           style={{
             padding: "0px 30px 30px 30px",

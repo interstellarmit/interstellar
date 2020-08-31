@@ -131,6 +131,7 @@ createNewPage = (req, res) => {
             schoolId: req.user.schoolId,
             locked: req.body.locked,
             joinCode: req.body.joinCode || "",
+            sameAs: req.body.sameAs || "",
           });
           page.save().then((pg) => {
             let lounge = new Lounge({
@@ -301,8 +302,8 @@ joinPage = (req, res) => {
                   req.body.home && req.user.isSiteAdmin
                     ? { honored: false }
                     : req.body.home
-                    ? { pageId: "!!!!!" }
-                    : {
+                      ? { pageId: "!!!!!" }
+                      : {
                         pageId: page.adminIds.includes(req.user._id) ? page._id : "!!!!!",
                         honored: false,
                       };
