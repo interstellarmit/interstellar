@@ -221,7 +221,9 @@ class Home extends Component {
             }}
           >
             <TabPage
-              labels={["Dashboard", "Settings"].concat(this.props.isSiteAdmin ? ["Admin"] : [])}
+              labels={["Dashboard", "Settings/Privacy"].concat(
+                this.props.isSiteAdmin ? ["Admin"] : []
+              )}
               routerLinks={["dashboard", "settings"].concat(
                 this.props.isSiteAdmin ? ["admin"] : []
               )}
