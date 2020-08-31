@@ -33,7 +33,7 @@ const sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 //initialize socket
 const socket = require("./server-socket");
-const axios = require('axios');
+const axios = require("axios");
 
 //signin/user stuff
 router.post(
@@ -111,7 +111,7 @@ router.get("/whoami", (req, res) => {
 
 router.post("/confirmation", auth.confirmationPost);
 router.post("/resend", auth.resendTokenPost);
-router.post("/signContract", auth.ensureLoggedIn, auth.signContract)
+router.post("/signContract", auth.ensureLoggedIn, auth.signContract);
 
 router.post("/initsocket", (req, res) => {
   // do nothing if user not logged in
@@ -132,7 +132,6 @@ router.post("/test", (req, res) => {
   sgMail.send(msg);
   res.send({});
 });
-
 
 // |------------------------------|
 // | write your API methods below!|
@@ -167,7 +166,7 @@ router.post("/createNewGroupPost", auth.ensureLoggedIn, forum_calls.createNewGro
 router.post("/createNewComment", auth.ensureLoggedIn, forum_calls.createNewComment);
 router.post("/updateGroupPost", auth.ensureLoggedIn, forum_calls.updateGroupPost);
 router.post("/updateComment", auth.ensureLoggedIn, forum_calls.updateComment);
-
+router.post("/deleteGroupPost", auth.ensureLoggedIn, forum_calls.deleteGroupPost);
 
 // router.post("/gatherKey", auth.ensureLoggedIn, (req, res) => {
 //   let name = req.body.name;
@@ -182,21 +181,21 @@ router.post("/updateComment", auth.ensureLoggedIn, forum_calls.updateComment);
 //   })
 // })
 router.post("/addClasses", auth.ensureLoggedIn, (req, res) => {
-  let pageNames = req.body.pageNames
-  let userPageIds = []
+  let pageNames = req.body.pageNames;
+  let userPageIds = [];
   let addPage = (i) => {
     if (i >= pageNames.length) {
-      res.send({ userPageIds: userPageIds })
-      return
+      res.send({ userPageIds: userPageIds });
+      return;
     }
-    let pageName = pageNames[i]
+    let pageName = pageNames[i];
     Page.findOne({ name: pageName }).then((page) => {
       if (page.schoolId === req.user.schoolId) {
         if (!page.locked || (page.locked && page.joinCode === req.body.joinCode)) {
           User.findById(req.user._id).then((user) => {
             if (!user.pageIds.includes(page._id)) {
               user.pageIds.push(page._id);
-              userPageIds = user.pageIds
+              userPageIds = user.pageIds;
               user.save().then(() => {
                 socket
                   .getSocketFromUserID(req.user._id)
@@ -209,32 +208,34 @@ router.post("/addClasses", auth.ensureLoggedIn, (req, res) => {
                         req.user.visible || page.pageType === "Group" ? req.user.name : "Anonymous",
                     },
                   });
-                setTimeout(() => { addPage(i + 1) }, 10);
+                setTimeout(() => {
+                  addPage(i + 1);
+                }, 10);
               });
             }
           });
         }
       }
     });
-  }
-  addPage(0)
-})
+  };
+  addPage(0);
+});
 
 router.post("/populateLounges", auth.ensureLoggedIn, (req, res) => {
   if (req.user.email === "dansun@mit.edu") {
-    let apiKey = process.env.gather_key
-    let map = "interstellar-lounge-fpop-main"
+    let apiKey = process.env.gather_key;
+    let map = "interstellar-lounge-fpop-main";
     Page.find({}, (err, pages) => {
       let runLoop = (i) => {
         console.log(String(i) + " out of " + String(pages.length));
-        let page = pages[i]
+        let page = pages[i];
         Lounge.findOne({ name: page.name }).then((existingLounge) => {
           if (!existingLounge) {
-            console.log("doing something")
-            const data = { apiKey: apiKey, name: page.name, map: map }
-            let zoomLink = undefined
+            console.log("doing something");
+            const data = { apiKey: apiKey, name: page.name, map: map };
+            let zoomLink = undefined;
             axios.post("https://staging.gather.town/api/createRoom", data).then((link) => {
-              zoomLink = "https://gather.town/" + link.data
+              zoomLink = "https://gather.town/" + link.data;
               let lounge = new Lounge({
                 name: page.name,
                 pageId: page._id,
@@ -244,21 +245,24 @@ router.post("/populateLounges", auth.ensureLoggedIn, (req, res) => {
                 main: true,
               });
               lounge.save();
-            })
+            });
             if (i + 1 >= pages.length) {
               return;
             }
-            setTimeout(() => { runLoop(i + 1) }, 100);
-          }
-          else {
+            setTimeout(() => {
+              runLoop(i + 1);
+            }, 100);
+          } else {
             if (i + 1 >= pages.length) {
               return;
             }
-            setTimeout(() => { runLoop(i + 1) }, 100);
+            setTimeout(() => {
+              runLoop(i + 1);
+            }, 100);
           }
-        })
-      }
-      runLoop(0)
+        });
+      };
+      runLoop(0);
       // pages.forEach((page) => {
       //   const data = { apiKey: apiKey, name: page.name, map: map }
       //   let zoomLink = undefined

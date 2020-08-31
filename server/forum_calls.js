@@ -94,31 +94,69 @@ Returns: Comment
 Description: Creates, saves, and returns comment
 */
 createNewComment = (req, res) => {
-  User.findById(req.user._id).then((user) => {
-    // make sure User is in page
-    if (user.pageIds.includes(req.body.pageId)) {
-      let comment = new Comment({
-        text: req.body.text,
-        userId: req.user._id,
-        pageId: req.body.pageId,
-        postId: req.body.postId,
-      });
-
-      comment.save().then((commentSaved) => {
-        res.send({
-          comment: commentSaved,
-          created: true,
-        });
-      });
+  // check if Post exists
+  GroupPost.findById(req.body.postId).then((post) => {
+    if (!post) {
+      res.send({ created: false });
     } else {
-      res.send({
-        created: false,
+      User.findById(req.user._id).then((user) => {
+        // make sure User is in page
+        if (user.pageIds.includes(req.body.pageId)) {
+          let comment = new Comment({
+            text: req.body.text,
+            userId: req.user._id,
+            pageId: req.body.pageId,
+            postId: req.body.postId,
+          });
+
+          comment.save().then((commentSaved) => {
+            res.send({
+              comment: commentSaved,
+              created: true,
+            });
+          });
+        } else {
+          res.send({
+            created: false,
+          });
+        }
       });
     }
   });
 };
 
-// TODO: see if you can just input a GroupPost object?
+/*
+deleteGroupPost
+Input (req.body): {
+  postId: String
+}
+Precondition: Post exists, user is in page of post, user is poster
+Socket: none
+Returns: Boolean
+Description: Deletes a post
+*/
+deleteGroupPost = (req, res) => {
+  // check if post exists
+  GroupPost.findById(req.body.postId).then((post) => {
+    if (!post) {
+      res.send({ deleted: false });
+    } else {
+      User.findById(req.user._id).then((user) => {
+        // check if user in page + poster
+        if (user.pageIds.includes(post.pageId) && post.userId === req.user._id) {
+          GroupPost.findByIdAndDelete(req.body.postId).then(() => {
+            Comment.deleteMany({ postId: req.body.postId }).then(() => {
+              res.send({ deleted: true });
+            });
+          });
+        } else {
+          res.send({ deleted: false });
+        }
+      });
+    }
+  });
+};
+
 /*
 updateGroupPost
 Input (req.body): {
@@ -127,62 +165,53 @@ Input (req.body): {
 	text: String,
 	labels: [String],
 	reacting: Boolean
-	delete: Boolean
 }
 Precondition: Post exists, user is in page that the post is in, and is also the poster of the Post
 Socket: none
 Returns: GroupPost
-Description: Update post with new title, text, pageId, labels, etc. if deleted is true, then we delete the post as well
+Description: Update post with new title, text, pageId, labels, etc
 */
 updateGroupPost = (req, res) => {
-  // if delete true, just delete
-  if (req.body.delete) {
-    GroupPost.findByIdAndDelete(req.body.postId).then((post) => {
-      res.send({ updated: true });
-    });
-  } else {
-    // check if post exists
-    GroupPost.findById(req.body.postId).then((post) => {
-      if (!post) {
-        // if post is null
-        res.send({ updated: false });
-      } else {
-        // if handling react, don't care if user is poster
-        if (req.body.reacting) {
-          if (post.reacts.includes(req.user._id)) {
-            post.reacts = post.reacts.filter((x) => x !== req.user._id);
-          } else {
-            post.reacts.push(req.user._id);
-          }
-          post.save().then((savedPost) => {
-            res.send({
-              post: savedPost,
-              updated: true,
-            });
-          });
+  GroupPost.findById(req.body.postId).then((post) => {
+    // if post is null
+    if (!post) {
+      res.send({ updated: false });
+    } else {
+      // if handling react, don't care if user is poster
+      if (req.body.reacting) {
+        if (post.reacts.includes(req.user._id)) {
+          post.reacts = post.reacts.filter((x) => x !== req.user._id);
+        } else {
+          post.reacts.push(req.user._id);
         }
-        // else, they need to be poster
-        else {
-          User.findById(req.user._id).then((user) => {
-            // check if user in page + poster
-            if (user.pageIds.includes(post.pageId) && post.userId === req.user._id) {
-              post.title = req.body.title || post.title;
-              post.text = req.body.text || post.text;
-              post.labels = req.body.labels || post.labels;
-              post.save().then((savedPost) => {
-                res.send({
-                  post: savedPost,
-                  updated: true,
-                });
-              });
-            } else {
-              res.send({ updated: false });
-            }
+        post.save().then((savedPost) => {
+          res.send({
+            post: savedPost,
+            updated: true,
           });
-        }
+        });
       }
-    });
-  }
+      // else, they need to be poster
+      else {
+        User.findById(req.user._id).then((user) => {
+          // check if user in page + poster
+          if (user.pageIds.includes(post.pageId) && post.userId === req.user._id) {
+            post.title = req.body.title || post.title;
+            post.text = req.body.text || post.text;
+            post.labels = req.body.labels || post.labels;
+            post.save().then((savedPost) => {
+              res.send({
+                post: savedPost,
+                updated: true,
+              });
+            });
+          } else {
+            res.send({ updated: false });
+          }
+        });
+      }
+    }
+  });
 };
 
 /*
@@ -199,33 +228,32 @@ Returns: Comment
 Description: Updates comment with new text and postId. If delete is true, then comment is deleted.
 */
 updateComment = (req, res) => {
-  // if delete true, just delete
-  if (req.body.delete) {
-    Comment.findByIdAndDelete(req.body.commentId).then((post) => {
-      res.send({ updated: true });
-    });
-  } else {
-    // check if comment exists
-    Comment.findById(req.body.postId).then((comment) => {
-      if (comment == null) {
-        res.send({ updated: false });
-      } else {
-        User.findById(req.user._id).then((user) => {
-          // check if user in page + poster
-          if (user.pageIds.includes(comment.pageId) && comment.userId === req.user._id) {
+  Comment.findById(req.body.postId).then((comment) => {
+    // if comment is null
+    if (comment == null) {
+      res.send({ updated: false });
+    } else {
+      User.findById(req.user._id).then((user) => {
+        // check if user in page + poster
+        if (user.pageIds.includes(comment.pageId) && comment.userId === req.user._id) {
+          if (req.body.delete) {
+            Comment.findByIdAndDelete(req.body.commentId).then((post) => {
+              res.send({ updated: true });
+            });
+          } else {
             comment.text = req.body.text || comment.text;
             comment.save();
             res.send({
               comment: comment,
               updated: true,
             });
-          } else {
-            res.send({ updated: false });
           }
-        });
-      }
-    });
-  }
+        } else {
+          res.send({ updated: false });
+        }
+      });
+    }
+  });
 };
 
 module.exports = {
@@ -234,4 +262,5 @@ module.exports = {
   createNewComment,
   updateGroupPost,
   updateComment,
+  deleteGroupPost,
 };

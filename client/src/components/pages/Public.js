@@ -115,7 +115,7 @@ export default function Public(props) {
                 }}
                 size="large"
               >
-                Login Via Touchstone/FireRoad
+                Login with Touchstone/FireRoad
               </Button>
             </div>
           </div>

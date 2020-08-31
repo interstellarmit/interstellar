@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Typography, Comment, Form, Input, Button, List, Divider } from "antd";
-import { StarOutlined, StarFilled } from "@ant-design/icons";
+import { StarOutlined, StarFilled, DeleteOutlined } from "@ant-design/icons";
 import ProfilePic from "./ProfilePic";
 import { post } from "../../utilities";
 
@@ -73,6 +73,12 @@ export default function ActivePost(props) {
     });
   };
 
+  const handleDelete = () => {
+    props.deletePost({
+      postId: props.activePost.post._id,
+    });
+  };
+
   return (
     <>
       <div
@@ -131,12 +137,24 @@ export default function ActivePost(props) {
             >
               {reacts.length}
             </div>
-            <div onClick={handleReact}>
-              {reacts.includes(props.user.userId) ? (
-                <StarFilled style={{ fontSize: "25px" }} />
-              ) : (
-                <StarOutlined style={{ fontSize: "25px" }} />
-              )}
+            <div
+              style={{
+                cursor: "pointer",
+                fontSize: "20px",
+                marginRight: "10px",
+              }}
+              onClick={handleReact}
+            >
+              {reacts.includes(props.user.userId) ? <StarFilled /> : <StarOutlined />}
+            </div>
+            <div
+              style={{
+                cursor: "pointer",
+                fontSize: "20px",
+              }}
+              onClick={handleDelete}
+            >
+              {poster.userId === props.user.userId ? <DeleteOutlined /> : ""}
             </div>
           </div>
         </div>

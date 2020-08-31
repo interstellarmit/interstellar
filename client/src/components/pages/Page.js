@@ -439,7 +439,12 @@ class Page extends Component {
                 isSiteAdmin={this.props.isSiteAdmin}
                 setLoungeId={this.props.setLoungeId}
               />
-              <ForumTab user={this.props.user} users={this.state.users} page={this.state.page} />
+              <ForumTab
+                redirectPage={this.props.redirectPage}
+                user={this.props.user}
+                users={this.state.users}
+                page={this.state.page}
+              />
               <AdminRequests adminRequests={this.state.adminRequests} />
             </TabPage>
           ) : (

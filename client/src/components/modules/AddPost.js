@@ -15,7 +15,6 @@ const validateMessages = {
 export default function AddPost(props) {
   const [editing, setEditing] = useState(false);
   const [form] = Form.useForm();
-  const [value, setValue] = useState("");
 
   let onFinish = (fieldsValue) => {
     props.createNewPost({
@@ -24,6 +23,7 @@ export default function AddPost(props) {
       pageId: props.page._id,
     });
     form.resetFields();
+    setEditing(false);
   };
 
   return (
