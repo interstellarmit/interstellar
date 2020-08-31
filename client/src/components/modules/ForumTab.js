@@ -5,6 +5,7 @@ import ActivePost from "./ActivePost";
 import AddPost from "./AddPost";
 import PostListItem from "./PostListItem";
 import MySpin from "./MySpin";
+import { socket } from "../../client-socket.js";
 
 class ForumTab extends Component {
   constructor(props) {
@@ -194,6 +195,20 @@ class ForumTab extends Component {
         activePost: activePost,
       });
     });
+
+    let userId = this.props.user.userId;
+    socket.on("createNewGroupPost", (data) => {
+      if (userId === data.userId) return;
+      this.addPostSocket(data.post);
+    });
+    socket.on("createNewComment", (data) => {
+      if (userId === data.userId) return;
+      this.addCommentSocket(data.comment);
+    });
+    socket.on("deleteGroupPost", (data) => {
+      if (userId === data.userId) return;
+      this.deletePostSocket(data.postId);
+    });
   }
 
   render() {
@@ -268,6 +283,7 @@ class ForumTab extends Component {
                     user={this.props.user}
                     activePost={this.state.activePost}
                     users={this.props.users}
+                    isPageAdmin={this.props.isPageAdmin}
                   />
                 )}
               </div>

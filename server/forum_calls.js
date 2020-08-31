@@ -70,6 +70,10 @@ createNewGroupPost = (req, res) => {
         reacts: [req.user._id],
       });
       post.save().then((savedPost) => {
+        socket
+          .getSocketFromUserID(req.user._id)
+          .to("Page: " + req.body.pageId)
+          .emit("createNewGroupPost", { post: savedPost, userId: req.user._id });
         res.send({
           post: savedPost,
           created: true,
@@ -110,6 +114,10 @@ createNewComment = (req, res) => {
           });
 
           comment.save().then((commentSaved) => {
+            socket
+              .getSocketFromUserID(req.user._id)
+              .to("Page: " + req.body.pageId)
+              .emit("createNewComment", { comment: commentSaved, userId: req.user._id });
             res.send({
               comment: commentSaved,
               created: true,
@@ -143,15 +151,26 @@ deleteGroupPost = (req, res) => {
     } else {
       User.findById(req.user._id).then((user) => {
         // check if user in page + poster
-        if (user.pageIds.includes(post.pageId) && post.userId === req.user._id) {
-          GroupPost.findByIdAndDelete(req.body.postId).then(() => {
-            Comment.deleteMany({ postId: req.body.postId }).then(() => {
-              res.send({ deleted: true });
+        Page.findById(post.pageId).then((page) => {
+          if (
+            user.pageIds.includes(post.pageId) &&
+            (post.userId === req.user._id ||
+              req.user.isSiteAdmin ||
+              page.adminIds.includes(req.user._id))
+          ) {
+            GroupPost.findByIdAndDelete(req.body.postId).then(() => {
+              Comment.deleteMany({ postId: req.body.postId }).then(() => {
+                socket
+                  .getSocketFromUserID(req.user._id)
+                  .to("Page: " + post.pageId)
+                  .emit("deleteGroupPost", { postId: req.body.postId, userId: req.user._id });
+                res.send({ deleted: true });
+              });
             });
-          });
-        } else {
-          res.send({ deleted: false });
-        }
+          } else {
+            res.send({ deleted: false });
+          }
+        });
       });
     }
   });

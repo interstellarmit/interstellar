@@ -460,6 +460,7 @@ class Page extends Component {
                 user={this.props.user}
                 users={this.state.users}
                 page={this.state.page}
+                isPageAdmin={isPageAdmin}
               />
               <AdminRequests adminRequests={this.state.adminRequests} />
             </TabPage>

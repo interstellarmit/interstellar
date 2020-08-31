@@ -154,7 +154,7 @@ export default function ActivePost(props) {
               }}
               onClick={handleDelete}
             >
-              {poster.userId === props.user.userId ? <DeleteOutlined /> : ""}
+              {poster.userId === props.user.userId || props.isPageAdmin ? <DeleteOutlined /> : ""}
             </div>
           </div>
         </div>
