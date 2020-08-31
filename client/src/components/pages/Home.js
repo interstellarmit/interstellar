@@ -410,7 +410,7 @@ class Home extends Component {
 
           <div style={{ bottom: "10px", padding: "10px 20% 10px 20%" }}>
             <center>
-              <div>
+              <div style={{ fontSize: "10px" }}>
                 Disclaimer: All material on this site is compiled by students and therefore
                 unofficial. Thanks to{" "}
                 <a href="https://hacklodge.org/" target="_blank">
