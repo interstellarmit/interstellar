@@ -229,7 +229,7 @@ class ForumTab extends Component {
           })
         ) : (
           <Row style={{ height: "100%" }}>
-            <Col style={{ height: "100%" }} span={8}>
+            <Col style={{ height: "100%" }} span={9}>
               <div
                 style={{
                   height: "100%",
@@ -268,7 +268,7 @@ class ForumTab extends Component {
                 )}
               </div>
             </Col>
-            <Col style={{ height: "100%" }} span={16}>
+            <Col style={{ height: "100%" }} span={15}>
               <div
                 style={{
                   height: "100%",

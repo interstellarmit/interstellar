@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, List, Space } from "antd";
-import { MessageOutlined, StarOutlined, StarFilled } from "@ant-design/icons";
+import { MessageOutlined, StarOutlined, StarFilled, ClockCircleOutlined } from "@ant-design/icons";
 import ProfilePic from "./ProfilePic";
 
 const IconText = ({ icon, text }) => (
@@ -38,6 +38,13 @@ export default function PostListItem(props) {
     mainDivStyle.border = "1px solid #1f1f1f";
   }
 
+  const formatDueDate = (duedate) => {
+    return (
+      new Date(duedate.toString()).toString().substring(4, 11) +
+      new Date(duedate.toString()).toLocaleString([], { hour: "2-digit", minute: "2-digit" })
+    );
+  };
+
   const handleReact = () => {
     props.updatePost({
       postId: props.groupPost.post._id,
@@ -74,6 +81,17 @@ export default function PostListItem(props) {
             text={props.groupPost.comments.length}
             key="list-vertical-message"
           />,
+          <div
+            style={{
+              cursor: "default",
+            }}
+          >
+            <IconText
+              icon={ClockCircleOutlined}
+              text={formatDueDate(props.groupPost.post.timestamp)}
+              key="list-vertical-time"
+            />
+          </div>,
         ]}
       >
         <div
