@@ -1,9 +1,12 @@
-import React, { Component, useState } from "react";
+import React, { Component, useState, useEffect } from "react";
 import { List, Typography, Row, Col, Rate, Divider } from "antd";
 const { Title, Text } = Typography;
 import UserList from "./UserList";
 
 export default function InfoTab(props) {
+  useEffect(() => {
+    document.getElementsByClassName("ant-tabs-content")[0].style.height = "100%";
+  });
   let users = props.users.filter((user) => {
     return user.userId !== props.user.userId;
   });

@@ -9,7 +9,7 @@ export default function MultipleSearchBar(props) {
 
   let search = () => {
     if (classList.length === 0) return;
-    console.log("what's good");
+    //console.log("what's good");
     props.addClasses(classList);
   };
   if (props.collapsed) {
@@ -62,7 +62,7 @@ export default function MultipleSearchBar(props) {
         defaultValue={[]}
         defaultOpen
         onChange={(value) => {
-          console.log(value);
+          //(value);
           setClassList(value);
         }}
       >

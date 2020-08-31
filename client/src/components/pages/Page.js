@@ -211,10 +211,12 @@ class Page extends Component {
     // remember -- api calls go here!
 
     socket.on("userAddedToLounge", (data) => {
+      if (!this.state.pageLoaded) return;
       this.addToLounge(data.userId, data.loungeId);
     });
 
     socket.on("userJoinedPage", (data) => {
+      if (!this.state.pageLoaded) return;
       if (this.state.page._id !== data.pageId) return;
       let users = this.state.users;
       if (
@@ -228,16 +230,19 @@ class Page extends Component {
     });
 
     socket.on("userRemovedFromLounge", (data) => {
+      if (!this.state.pageLoaded) return;
       this.removeFromLounge(data.userId, data.loungeId);
     });
 
     socket.on("newLounge", (lounge) => {
+      if (!this.state.pageLoaded) return;
       let lounges = this.state.lounges;
       lounges.push(lounge);
       this.setState({ lounges: lounges });
     });
 
     socket.on("locked", (data) => {
+      if (!this.state.pageLoaded) return;
       if (data.pageId !== this.state.page._id) return;
       let page = this.state.page;
       page.locked = data.locked;
