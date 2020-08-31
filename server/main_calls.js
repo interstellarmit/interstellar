@@ -11,7 +11,7 @@ const School = require("./models/school");
 const socket = require("./server-socket");
 const { useReducer } = require("react");
 const lounge_calls = require("./lounge_calls");
-const axios = require('axios');
+const axios = require("axios");
 require("dotenv").config();
 let expiryDate = new Date(2021, 1, 20); // expiry date for all classes this semester
 
@@ -100,13 +100,13 @@ createNewPage = (req, res) => {
     let name = req.body.name;
     name = name.replace(/ /g, "_");
     name = name.replace(/[^a-zA-Z0-9-_]/g, "_");
-    let apiKey = process.env.gather_key
-    let map = "interstellar-lounge-fpop-main"
-    const data = { apiKey: apiKey, name: name, map: map }
-    let zoomLink = undefined
+    let apiKey = process.env.gather_key;
+    let map = "interstellar-lounge-fpop-main";
+    const data = { apiKey: apiKey, name: name, map: map };
+    let zoomLink = undefined;
     axios.post("https://staging.gather.town/api/createRoom", data).then((link) => {
-      console.log(link)
-      zoomLink = "https://gather.town/" + link.data
+      console.log(link);
+      zoomLink = "https://gather.town/" + link.data;
       if (
         school.adminIds.includes(req.user._id) ||
         req.user.isSiteAdmin ||
@@ -142,19 +142,17 @@ createNewPage = (req, res) => {
               main: true,
             });
             lounge.save();
-            socket
-              .getSocketFromUserID(req.user._id)
-              .emit("createdPage", {
-                page: page,
-                userId: req.user._id,
-              });
+            socket.getSocketFromUserID(req.user._id).emit("createdPage", {
+              page: page,
+              userId: req.user._id,
+            });
             res.send({ created: true, pageId: pg._id, name: page.name });
           });
         });
       } else {
         res.send({ created: false });
       }
-    })
+    });
   });
 };
 
@@ -303,8 +301,8 @@ joinPage = (req, res) => {
                   req.body.home && req.user.isSiteAdmin
                     ? { honored: false }
                     : req.body.home
-                      ? { pageId: "!!!!!" }
-                      : {
+                    ? { pageId: "!!!!!" }
+                    : {
                         pageId: page.adminIds.includes(req.user._id) ? page._id : "!!!!!",
                         honored: false,
                       };
@@ -476,6 +474,19 @@ addRemoveAdmin = (req, res) => {
   });
 };
 
+setShowClasses = (req, res) => {
+  Page.findById(req.body.pageId).then((page) => {
+    if (!req.user.isSiteAdmin && !page.adminIds.includes(req.user._id)) {
+      res.send({ set: false });
+      return;
+    }
+    page.showClasses = req.body.showClasses;
+    page.save().then(() => {
+      res.send({ set: true });
+    });
+  });
+};
+
 module.exports = {
   createNewSchool,
   createNewPage,
@@ -490,4 +501,5 @@ module.exports = {
   addRemoveAdmin,
   requestAdmin,
   honorRequest,
+  setShowClasses,
 };

@@ -42,6 +42,10 @@ const PageSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
+  showClasses: {
+    type: Boolean,
+    default: true,
+  },
 });
 
 // compile model from schema
