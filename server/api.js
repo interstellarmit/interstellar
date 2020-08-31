@@ -181,6 +181,45 @@ router.post("/updateComment", auth.ensureLoggedIn, forum_calls.updateComment);
 //     res.send(res1)
 //   })
 // })
+router.post("/addClasses", auth.ensureLoggedIn, (req, res) => {
+  let pageNames = req.body.pageNames
+  let userPageIds = []
+  let addPage = (i) => {
+    if (i >= pageNames.length) {
+      res.send({ userPageIds: userPageIds })
+      return
+    }
+    let pageName = pageNames[i]
+    Page.findOne({ name: pageName }).then((page) => {
+      if (page.schoolId === req.user.schoolId) {
+        if (!page.locked || (page.locked && page.joinCode === req.body.joinCode)) {
+          User.findById(req.user._id).then((user) => {
+            if (!user.pageIds.includes(page._id)) {
+              user.pageIds.push(page._id);
+              userPageIds = user.pageIds
+              user.save().then(() => {
+                socket
+                  .getSocketFromUserID(req.user._id)
+                  .to("Page: " + page._id)
+                  .emit("userJoinedPage", {
+                    pageId: page._id,
+                    user: {
+                      userId: req.user._id,
+                      name:
+                        req.user.visible || page.pageType === "Group" ? req.user.name : "Anonymous",
+                    },
+                  });
+                setTimeout(() => { addPage(i + 1) }, 10);
+              });
+            }
+          });
+        }
+      }
+    });
+  }
+  addPage(0)
+})
+
 router.post("/populateLounges", auth.ensureLoggedIn, (req, res) => {
   if (req.user.email === "dansun@mit.edu") {
     let apiKey = process.env.gather_key

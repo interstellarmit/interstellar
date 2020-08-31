@@ -1,18 +1,15 @@
 import React, { useState } from "react";
-import { AutoComplete, Input, Select } from "antd";
+import { AutoComplete, Input, Select, Button } from "antd";
+import Search from "antd/lib/input/Search";
 const { Option, OptGroup } = Select;
 
 export default function MultipleSearchBar(props) {
   const [query, setQuery] = useState("");
+  const [classList, setClassList] = useState([]);
 
-  let search = (name) => {
-    let page = props.allPages.filter((page) => {
-      return page.name === name;
-    })[0];
-    if (!page) return;
-    if (!name) return;
-    setQuery("");
-    props.redirectPage("/" + page.pageType.toLowerCase() + "/" + page.name);
+  let search = () => {
+    console.log("what's good")
+    props.addClasses(classList)
   };
   if (props.collapsed) {
     return <></>;
@@ -66,25 +63,29 @@ export default function MultipleSearchBar(props) {
   ];
 
   return (
-    <Select
-      mode="multiple"
-      style={{ width: "100%" }}
-      placeholder="Please select"
-      defaultValue={[]}
-      onChange={(value) => {
-        console.log(value);
-      }}
-    >
-      <OptGroup label="Classes">
-        {options[0].options.map((option) => {
-          return <Option key={option.value}> {option.label} </Option>;
-        })}
-      </OptGroup>
-      <OptGroup label="Groups">
-        {options[1].options.map((option) => {
-          return <Option key={option.value}> {option.label} </Option>;
-        })}
-      </OptGroup>
-    </Select>
+    <div>
+      <Select
+        mode="multiple"
+        style={{ width: "100%" }}
+        placeholder="Please select"
+        defaultValue={[]}
+        onChange={(value) => {
+          console.log(value)
+          setClassList(value)
+        }}
+      >
+        <OptGroup label="Classes">
+          {options[0].options.map((option) => {
+            return <Option key={option.value}> {option.label} </Option>;
+          })}
+        </OptGroup>
+        <OptGroup label="Groups">
+          {options[1].options.map((option) => {
+            return <Option key={option.value}> {option.label} </Option>;
+          })}
+        </OptGroup>
+      </Select>
+      <Button onClick={() => { search() }}>Submit Schedule</Button>
+    </div>
   );
 }

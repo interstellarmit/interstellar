@@ -175,6 +175,7 @@ class Home extends Component {
                 placeholder="Search for a class or group to join!"
                 redirectPage={this.props.redirectPage}
                 defaultOpen={true}
+                addClasses={this.props.addClasses}
               />
             </div>
             <Row style={{ height: "100%" }} gutter={[16, 16]}>
