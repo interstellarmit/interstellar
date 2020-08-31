@@ -209,6 +209,11 @@ class ForumTab extends Component {
       if (userId === data.userId) return;
       this.deletePostSocket(data.postId);
     });
+
+    socket.on("updateGroupPost", (data) => {
+      if (userId === data.userId) return;
+      this.updatePostSocket(data.post);
+    });
   }
 
   render() {
