@@ -53,6 +53,30 @@ class Home extends Component {
     lounge.userIds = userIds;
     newLounges.push(lounge);
     this.setState({ lounges: newLounges }, callback);
+
+    if (this.props.user.userId !== userId) {
+      notification.info({
+        message:
+          (
+            this.state.users.find((user) => {
+              return user.userId === userId;
+            }) || { name: "User Name" }
+          ).name.split(" ")[0] +
+          " entered the " +
+          lounge.name +
+          " lounge",
+
+        description: "",
+        placement: "bottomRight",
+        onClick: () => {
+          let page = this.props.myPages.find((pagee) => {
+            return pagee._id === lounge.pageId;
+          });
+          if (!page) return;
+          this.props.redirectPage("/" + page.pageType.toLowerCase() + "/" + page.name + "/lounge");
+        },
+      });
+    }
   };
 
   removeFromLounge = (userId, loungeId, callback = () => {}) => {
@@ -78,6 +102,32 @@ class Home extends Component {
       this.setState({ lounges: newLounges }, () => {
         callback();
       });
+
+      if (this.props.user.userId !== userId) {
+        notification.info({
+          message:
+            (
+              this.state.users.find((user) => {
+                return user.userId === userId;
+              }) || { name: "User Name" }
+            ).name.split(" ")[0] +
+            " left the " +
+            lounge.name +
+            " lounge",
+
+          description: "",
+          placement: "bottomRight",
+          onClick: () => {
+            let page = this.props.myPages.find((pagee) => {
+              return pagee._id === lounge.pageId;
+            });
+            if (!page) return;
+            this.props.redirectPage(
+              "/" + page.pageType.toLowerCase() + "/" + page.name + "/lounge"
+            );
+          },
+        });
+      }
     } else {
       callback();
     }

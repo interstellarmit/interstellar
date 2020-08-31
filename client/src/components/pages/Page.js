@@ -11,7 +11,18 @@ import AdminRequests from "../modules/AdminRequests";
 import AddEnterCode from "../modules/AddEnterCode";
 import MySpin from "../modules/MySpin";
 import { socket } from "../../client-socket.js";
-import { Spin, Space, Button, Typography, Layout, PageHeader, Badge, Row, Col } from "antd";
+import {
+  Spin,
+  Space,
+  notification,
+  Button,
+  Typography,
+  Layout,
+  PageHeader,
+  Badge,
+  Row,
+  Col,
+} from "antd";
 import { UserOutlined } from "@ant-design/icons";
 const { Header, Content, Footer, Sider } = Layout;
 const { Title, Text } = Typography;
@@ -35,6 +46,7 @@ class Page extends Component {
       page: {},
       pageLoaded: false,
       lockModal: false,
+      forumCount: 0,
     };
     props.updateSelectedPageName(selectedPage);
   }
@@ -134,6 +146,28 @@ class Page extends Component {
     lounge.userIds = userIds;
     newLounges.push(lounge);
     this.setState({ lounges: newLounges }, callback);
+
+    if (this.props.user.userId !== userId) {
+      notification.info({
+        message:
+          (
+            this.state.users.find((user) => {
+              return user.userId === userId;
+            }) || { name: "User Name" }
+          ).name.split(" ")[0] +
+          " entered the " +
+          lounge.name +
+          " lounge",
+
+        description: "",
+        placement: "bottomRight",
+        onClick: () => {
+          this.props.redirectPage(
+            "/" + this.state.page.pageType.toLowerCase() + "/" + this.state.page.name + "/lounge"
+          );
+        },
+      });
+    }
   };
 
   removeFromLounge = (userId, loungeId, callback = () => {}) => {
@@ -159,6 +193,28 @@ class Page extends Component {
       this.setState({ lounges: newLounges }, () => {
         callback();
       });
+
+      if (this.props.user.userId !== userId) {
+        notification.info({
+          message:
+            (
+              this.state.users.find((user) => {
+                return user.userId === userId;
+              }) || { name: "User Name" }
+            ).name.split(" ")[0] +
+            " left the " +
+            lounge.name +
+            " lounge",
+
+          description: "",
+          placement: "bottomRight",
+          onClick: () => {
+            this.props.redirectPage(
+              "/" + this.state.page.pageType.toLowerCase() + "/" + this.state.page.name + "/lounge"
+            );
+          },
+        });
+      }
     } else {
       callback();
     }
@@ -249,6 +305,14 @@ class Page extends Component {
       this.setState({ page: page });
     });
   }
+
+  incrementForumCounter = () => {
+    let forumCount = this.state.forumCount;
+    this.setState({ forumCount: forumCount + 1 });
+  };
+  clearForumCounter = () => {
+    this.setState({ forumCount: 0 });
+  };
 
   setLockModal = (bol) => {
     this.setState({ lockModal: bol });
@@ -407,7 +471,11 @@ class Page extends Component {
 
                   <Badge count={numInLounge} size="small" style={{ marginLeft: "5px" }} />
                 </div>,
-                "Forum",
+                <div style={{ display: "flex", flexDirection: "row" }}>
+                  <div>{"Forum"}</div>
+
+                  <Badge count={this.state.forumCount} size="small" style={{ marginLeft: "5px" }} />
+                </div>,
               ].concat(this.state.adminRequests.length > 0 ? ["Admin"] : [])}
               routerLinks={["info", "dashboard", "lounge", "forum"].concat(
                 this.state.adminRequests.length > 0 ? ["admin"] : []
@@ -420,6 +488,7 @@ class Page extends Component {
                   : "dashboard"
               }
               page={this.state.page}
+              clearForumCounter={this.clearForumCounter}
             >
               <InfoTab
                 users={this.state.users}
@@ -466,6 +535,8 @@ class Page extends Component {
                 users={this.state.users}
                 page={this.state.page}
                 isPageAdmin={isPageAdmin}
+                incrementForumCounter={this.incrementForumCounter}
+                clearForumCounter={this.clearForumCounter}
               />
               <AdminRequests adminRequests={this.state.adminRequests} />
             </TabPage>
