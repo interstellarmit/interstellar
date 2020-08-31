@@ -232,6 +232,23 @@ router.post("/addClasses", auth.ensureLoggedIn, (req, res) => {
   addPage(0);
 });
 
+router.post("/sameAs", auth.ensureLoggedIn, (req, res) => {
+  if (req.user.email === "dansun@mit.edu") {
+    Page.findOne({ name: req.body.name }).then((page) => {
+
+      console.log(req.body.name)
+      console.log(page)
+      if (!page) {
+        res.send({ created: false })
+        return
+      }
+      page.sameAs = req.body.sameAs
+      page.save().then(() => {
+        res.send({ created: true })
+      })
+    })
+  }
+})
 router.post("/populateLounges", auth.ensureLoggedIn, (req, res) => {
   if (req.user.email === "dansun@mit.edu") {
     let apiKey = process.env.gather_key;
