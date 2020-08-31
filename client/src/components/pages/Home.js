@@ -24,7 +24,7 @@ import AdminRequests from "../modules/AdminRequests";
 const { Header, Content, Footer, Sider } = Layout;
 const { Title, Text } = Typography;
 
-var classes = require("../../full.json");
+// var classes = require("../../full.json");
 
 function populateLounges() {
   console.log("hi there");
@@ -47,7 +47,7 @@ class Home extends Component {
     props.updateSelectedPageName("");
   }
 
-  addToLounge = (userId, loungeId, callback = () => { }) => {
+  addToLounge = (userId, loungeId, callback = () => {}) => {
     let lounges = this.state.lounges;
     let lounge = lounges.filter((l) => {
       return l._id + "" === loungeId;
@@ -65,7 +65,7 @@ class Home extends Component {
     this.setState({ lounges: newLounges }, callback);
   };
 
-  removeFromLounge = (userId, loungeId, callback = () => { }) => {
+  removeFromLounge = (userId, loungeId, callback = () => {}) => {
     if (loungeId !== "") {
       let lounges = this.state.lounges;
       let lounge = lounges.filter((l) => {
@@ -198,8 +198,8 @@ class Home extends Component {
                         .map((page) => {
                           let lounge = this.state.lounges
                             ? this.state.lounges.find((lounge) => {
-                              return lounge.main && page._id === lounge.pageId;
-                            })
+                                return lounge.main && page._id === lounge.pageId;
+                              })
                             : undefined;
                           //console.log(lounge);
                           if (lounge) return { lounge: lounge, page: page };
@@ -276,7 +276,7 @@ class Home extends Component {
                 {/*
           // Adding Classes
           */}
-                {this.props.email === "dansun@mit.edu" ?
+                {this.props.email === "dansun@mit.edu" ? (
                   <button
                     onClick={() => {
                       let keys = Object.keys(classes);
@@ -295,7 +295,7 @@ class Home extends Component {
                           units: classObj.u1 + classObj.u2 + classObj.u3,
                           locked: false,
                           joinCode: "",
-                          sameAs: classObj.sa
+                          sameAs: classObj.sa,
                         }).then((created) => {
                           if (created.created) console.log(oneclass + " " + i + "/" + keys.length);
                           else console.log("error:" + oneclass);
@@ -306,8 +306,11 @@ class Home extends Component {
                     }}
                   >
                     Add MIT
-          </button> : <></>}
-                {this.props.email === "dansun@mit.edu" ?
+                  </button>
+                ) : (
+                  <></>
+                )}
+                {this.props.email === "dansun@mit.edu" ? (
                   <button
                     onClick={() => {
                       let keys = Object.keys(classes);
@@ -315,7 +318,7 @@ class Home extends Component {
                         if (i >= keys.length) return;
                         let oneclass = keys[i];
                         let classObj = classes[oneclass];
-                        console.log(classObj.sa)
+                        console.log(classObj.sa);
                         post("/api/sameAs", {
                           pageType: "Class",
                           name: oneclass,
@@ -327,7 +330,7 @@ class Home extends Component {
                           units: classObj.u1 + classObj.u2 + classObj.u3,
                           locked: false,
                           joinCode: "",
-                          sameAs: classObj.sa
+                          sameAs: classObj.sa,
                         }).then((created) => {
                           if (created.created) console.log(oneclass + " " + i + "/" + keys.length);
                           else console.log("error:" + oneclass);
@@ -338,13 +341,15 @@ class Home extends Component {
                     }}
                   >
                     Same As
-            </button>
-                  : <></>}
+                  </button>
+                ) : (
+                  <></>
+                )}
                 {this.props.email === "dansun@mit.edu" ? (
                   <button onClick={populateLounges}>Populate Lounges</button>
                 ) : (
-                    <></>
-                  )}
+                  <></>
+                )}
               </div>
               <AdminRequests adminRequests={this.state.adminRequests} />
             </TabPage>
