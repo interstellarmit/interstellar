@@ -9,21 +9,16 @@ import { UserOutlined } from "@ant-design/icons";
 export default function UserList(props) {
   const [adminIds, setAdminIds] = React.useState(props.adminIds);
   props.users.sort((a, b) => {
-    if (props.adminIds.includes(a.userId) && props.adminIds.includes(b.userId)) {
-    } else if (props.adminIds.includes(a.userId)) {
-      return -1;
-    } else if (props.adminIds.includes(b.userId)) {
-      return 1;
+    if (props.adminIds) {
+      if (props.adminIds.includes(a.userId) && props.adminIds.includes(b.userId)) {
+      } else if (props.adminIds.includes(a.userId)) {
+        return -1;
+      } else if (props.adminIds.includes(b.userId)) {
+        return 1;
+      }
     }
     return a.name.localeCompare(b.name)
   });
-  let firstSplit = Math.ceil(props.users.length / 3);
-  let secondSplit =
-    Math.ceil(props.users.length / 3) +
-    Math.ceil((props.users.length - Math.ceil(props.users.length / 3)) / 2);
-  let userList1 = props.users.slice(0, firstSplit);
-  let userList2 = props.users.slice(firstSplit, secondSplit);
-  let userList3 = props.users.slice(secondSplit, props.users.length);
   return (
     <div style={{ maxHeight: "100%", overflow: "auto" }}>
       <ConfigProvider
@@ -91,7 +86,7 @@ export default function UserList(props) {
                         })
 
                         .join(", ")
-                      : (adminIds.includes(user.userId) ? " Admin" : "")
+                      : (adminIds ? (adminIds.includes(user.userId) ? " Admin" : "") : "")
                   }
                 />
               </List.Item>
