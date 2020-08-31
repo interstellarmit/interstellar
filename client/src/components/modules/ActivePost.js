@@ -3,6 +3,7 @@ import { Typography, Comment, Form, Input, Button, List, Divider } from "antd";
 import { StarOutlined, StarFilled, DeleteOutlined } from "@ant-design/icons";
 import ProfilePic from "./ProfilePic";
 import { post } from "../../utilities";
+import Picker, { SKIN_TONE_MEDIUM_DARK } from 'emoji-picker-react';
 
 const { TextArea } = Input;
 const { Title } = Typography;
@@ -185,8 +186,8 @@ export default function ActivePost(props) {
             })}
           />
         ) : (
-          <Divider />
-        )}
+            <Divider />
+          )}
 
         {/* Editor */}
         <Comment

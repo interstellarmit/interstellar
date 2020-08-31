@@ -63,28 +63,6 @@ export default function LoungesTab(props) {
             Remove From Lounge
           </a>
         )}
-        {/* <a
-            href={lounge.zoomLink}
-            target="_blank"
-            style={{
-              backgroundColor: "#3F90F7",
-              padding: "20px",
-              borderRadius: "10px",
-              color: "white",
-              fontSize: 50,
-            }}
-            onClick={() => { 
-              if (props.loungeId !== lounge._id) {
-                props.removeSelfFromLounge(props.loungeId, () => {
-                  props.addSelfToLounge(lounge._id, () => {
-                    props.setLoungeId(lounge._id);
-                  });
-                });
-              }
-            }}
-          >
-            Hop In The Lounge
-        </a> */}
       </center>
     );
   useEffect(() => {
@@ -99,9 +77,9 @@ export default function LoungesTab(props) {
             height: "100%",
             backgroundSize: "cover",
             backgroundRepeat: "no-repeat",
-            paddingTop: "200px",
-            // display: "flex",
-            //justifyContent: "center",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
           {loungeCode}
