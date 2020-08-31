@@ -23,7 +23,7 @@ export default function AddNewDDQL(props) {
     }
     if (props.edit) {
       props.editDDQL({
-        DDQLId: props.DDQL._id,
+        DDQLId: props.ddql._id,
         title: values.title,
         objectType: props.type,
         dueDate: values.dueDate,
@@ -31,7 +31,6 @@ export default function AddNewDDQL(props) {
         visibility: values.public ? "Public" : "Only Me",
       });
       props.setVisible(false);
-      form.resetFields();
     } else {
       props.createNewDDQL({
         title: values.title,
@@ -46,7 +45,7 @@ export default function AddNewDDQL(props) {
 
   let onDelete = () => {
     props.editDDQL({
-      DDQLId: props.DDQL._id,
+      DDQLId: props.ddql._id,
       deleted: true,
     });
     props.setVisible(false);
@@ -72,7 +71,7 @@ export default function AddNewDDQL(props) {
       }
       width={props.edit ? undefined : 700}
       onCancel={() => {
-        form.resetFields();
+        //form.resetFields();
         props.setVisible(false);
       }}
       footer={null}
@@ -88,15 +87,13 @@ export default function AddNewDDQL(props) {
             initialValues={
               props.edit
                 ? {
-                    title: props.DDQL.title,
-                    objectType: props.DDQL.objectType,
-                    dueDate: moment(new Date(props.DDQL.dueDate)),
-                    url: props.DDQL.url,
-                    public: props.DDQL.visibility === "Public",
+                    title: props.ddql.title,
+                    objectType: props.ddql.objectType,
+                    dueDate: moment(new Date(props.ddql.dueDate)),
+                    url: props.ddql.url,
+                    public: props.ddql.visibility === "Public",
                   }
-                : {
-                    public: false,
-                  }
+                : undefined
             }
           >
             {text === "Due Date" ? (

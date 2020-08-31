@@ -99,6 +99,9 @@ class Page extends Component {
             return duedate._id !== data.DDQL._id;
           });
           DDQLs.push(data.DDQL);
+          console.log("edited");
+          console.log(data.DDQL);
+
           this.setState({ dueDates: DDQLs });
         } else {
           let DDQLs = this.state.quickLinks.filter((quicklink) => {

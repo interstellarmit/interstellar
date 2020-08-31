@@ -17,7 +17,7 @@ export default function QuickLink(props) {
       editDDQL={props.editDDQL}
       visible={showEdit}
       setVisible={setShowEdit}
-      DDQL={props.quickLink}
+      ddql={props.quickLink}
       type={"QuickLink"}
       edit={true}
     />
