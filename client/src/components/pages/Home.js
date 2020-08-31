@@ -37,7 +37,7 @@ class Home extends Component {
     props.updateSelectedPageName("");
   }
 
-  addToLounge = (userId, loungeId, callback = () => { }) => {
+  addToLounge = (userId, loungeId, callback = () => {}) => {
     let lounges = this.state.lounges;
     let lounge = lounges.filter((l) => {
       return l._id + "" === loungeId;
@@ -55,7 +55,7 @@ class Home extends Component {
     this.setState({ lounges: newLounges }, callback);
   };
 
-  removeFromLounge = (userId, loungeId, callback = () => { }) => {
+  removeFromLounge = (userId, loungeId, callback = () => {}) => {
     if (loungeId !== "") {
       let lounges = this.state.lounges;
       let lounge = lounges.filter((l) => {
@@ -128,7 +128,6 @@ class Home extends Component {
   }
 
   render() {
-
     if (!this.state.pageLoaded) {
       return <MySpin />;
     }
@@ -161,15 +160,11 @@ class Home extends Component {
             }}
           >
             <TabPage
-              labels={["Dashboard", "Settings"].concat(
-                this.props.isSiteAdmin ? ["Admin"] : []
-              )}
+              labels={["Dashboard", "Settings"].concat(this.props.isSiteAdmin ? ["Admin"] : [])}
               routerLinks={["dashboard", "settings"].concat(
                 this.props.isSiteAdmin ? ["admin"] : []
               )}
-              defaultRouterLink={
-                "dashboard"
-              }
+              defaultRouterLink={"dashboard"}
             >
               <Row style={{ height: "100%" }} gutter={[16, 16]}>
                 <Col span={14} style={{ height: "100%" }}>
@@ -193,8 +188,8 @@ class Home extends Component {
                         .map((page) => {
                           let lounge = this.state.lounges
                             ? this.state.lounges.find((lounge) => {
-                              return lounge.main && page._id === lounge.pageId;
-                            })
+                                return lounge.main && page._id === lounge.pageId;
+                              })
                             : undefined;
                           console.log(lounge);
                           if (lounge) return { lounge: lounge, page: page };
@@ -247,7 +242,7 @@ class Home extends Component {
                   />
                   <div style={{ paddingLeft: "10px" }}>
                     Toggle privacy mode to appear as anonymous in all of your classes
-                </div>
+                  </div>
                 </div>
                 <div
                   style={{
@@ -266,7 +261,7 @@ class Home extends Component {
                   />
                   <div style={{ paddingLeft: "10px" }}>
                     Toggle help mode to show the helper text that appears on dashboard
-                </div>
+                  </div>
                 </div>
               </div>
               <AdminRequests adminRequests={this.state.adminRequests} />
@@ -277,40 +272,43 @@ class Home extends Component {
             <center>
               <div>
                 Disclaimer: All material on this site is compiled by students and therefore
-              unofficial. Thanks to{" "}
+                unofficial. Thanks to{" "}
                 <a href="https://hacklodge.org/" target="_blank">
                   Hacklodge
-              </a>{", "}
+                </a>
+                {", "}
                 <a href="https://fireroad.mit.edu/" target="_blank">
                   FireRoad
-              </a>{" "}
-              and{" "}
+                </a>{" "}
+                and{" "}
                 <a href="http://gather.town/" target="_blank">
                   Gather
-              </a>{" "}
-              for their support, and{" "}
+                </a>{" "}
+                for their support, and{" "}
                 <a href="https://firehose.guide/" target="_blank">
                   Firehose
-              </a>{" "}
-              for class information. Please share any bugs or feedback{" "}
+                </a>{" "}
+                for class information. Please share any bugs or feedback{" "}
                 <a href="https://forms.gle/ZSdrfPZfpwngxQ3aA" target="_blank">
                   here
-              </a>
-              !
-            </div>
+                </a>
+                !
+              </div>
             </center>
           </div>
         </Layout>
         <Modal
           bodyStyle={{
-            height: "350px"
+            height: "350px",
           }}
           visible={this.props.myPages.length === 0}
           title={"Enter Your Schedule to Get Started"}
           onCancel={() => {
-            this.props.redirectPage("dashboard")
+            this.props.redirectPage("dashboard");
           }}
           footer={null}
+          closable={false}
+          maskClosable={false}
         >
           <MultipleSearchBar
             size="large"

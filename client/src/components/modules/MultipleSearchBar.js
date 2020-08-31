@@ -8,6 +8,7 @@ export default function MultipleSearchBar(props) {
   const [classList, setClassList] = useState([]);
 
   let search = () => {
+    if (classList.length === 0) return;
     console.log("what's good");
     props.addClasses(classList);
   };
