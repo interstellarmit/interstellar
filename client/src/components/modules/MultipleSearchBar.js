@@ -32,7 +32,7 @@ export default function MultipleSearchBar(props) {
             ),
           };
         }),
-    },
+    } /*,
     {
       label: "Groups",
       options: props.allPages
@@ -49,7 +49,7 @@ export default function MultipleSearchBar(props) {
             ),
           };
         }),
-    },
+    },*/,
   ];
 
   return (
@@ -57,7 +57,7 @@ export default function MultipleSearchBar(props) {
       <Select
         mode="multiple"
         style={{ width: "calc(100% - 46px)" }}
-        placeholder="Search for your classes and groups"
+        placeholder="Start by entering your schedule"
         defaultValue={[]}
         defaultOpen
         onChange={(value) => {
@@ -67,11 +67,6 @@ export default function MultipleSearchBar(props) {
       >
         <OptGroup label="Classes">
           {options[0].options.map((option) => {
-            return <Option key={option.value}> {option.label} </Option>;
-          })}
-        </OptGroup>
-        <OptGroup label="Groups">
-          {options[1].options.map((option) => {
             return <Option key={option.value}> {option.label} </Option>;
           })}
         </OptGroup>
