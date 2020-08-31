@@ -297,28 +297,50 @@ class Home extends Component {
             </center>
           </div>
         </Layout>
-        <Modal
-          bodyStyle={{
-            height: "350px",
-          }}
-          visible={this.props.myPages.length === 0}
-          title={"Enter Your Schedule to Get Started"}
-          onCancel={() => {
-            this.props.redirectPage("dashboard");
-          }}
-          footer={null}
-          closable={false}
-          maskClosable={false}
-        >
-          <MultipleSearchBar
-            size="large"
-            allPages={this.props.allPages}
-            placeholder="Search for a class to join!"
-            redirectPage={this.props.redirectPage}
-            defaultOpen={true}
-            addClasses={this.props.addClasses}
-          />
-        </Modal>
+
+        {
+          // Modal.success({
+          //   title: "Welcome to Interstellar!",
+          //   content: (
+          //     <>
+          //       {"Enter your classes here!"}
+          //       <MultipleSearchBar
+          //         size="large"
+          //         allPages={this.props.allPages}
+          //         placeholder="Search for a class to join!"
+          //         redirectPage={this.props.redirectPage}
+          //         defaultOpen={true}
+          //         addClasses={this.props.addClasses}
+          //       />
+          //     </>
+          //   )
+          // })
+        }
+
+        {
+          <div>
+            <Modal
+              visible={this.props.myPages.length === 0}
+              title={"Enter your schedule to get started!"}
+              onCancel={() => {
+                this.props.redirectPage("dashboard");
+              }}
+              footer={null}
+              closable={false}
+              maskClosable={false}
+              centered
+            >
+              <MultipleSearchBar
+                size="large"
+                allPages={this.props.allPages}
+                placeholder="Search for a class to join!"
+                redirectPage={this.props.redirectPage}
+                defaultOpen={true}
+                addClasses={this.props.addClasses}
+              />
+            </Modal>
+          </div>
+        }
       </>
     );
   }
