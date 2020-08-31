@@ -31,6 +31,7 @@ export default function AddNewDDQL(props) {
         visibility: values.public ? "Public" : "Only Me",
       });
       props.setVisible(false);
+      form.resetFields();
     } else {
       props.createNewDDQL({
         title: values.title,
@@ -41,7 +42,6 @@ export default function AddNewDDQL(props) {
       });
       props.setVisible(false);
     }
-    form.resetFields();
   };
 
   let onDelete = () => {
@@ -167,7 +167,15 @@ export default function AddNewDDQL(props) {
                   {"Delete " + text}
                 </Button>
               ) : (
-                <></>
+                <Button
+                  type="primary"
+                  onClick={() => {
+                    form.resetFields();
+                  }}
+                  style={{ marginLeft: "10px" }}
+                >
+                  {"Clear"}
+                </Button>
               )}
             </Form.Item>
           </Form>
