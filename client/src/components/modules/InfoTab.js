@@ -35,17 +35,17 @@ export default function InfoTab(props) {
               </Row>
             </React.Fragment>
           ) : (
-            <></>
-          )}
+              <></>
+            )}
           <Row>
-            <Text>{props.page.description}</Text>
+            <Text>{(props.page.description).replace(new RegExp("&nbsp;", 'g'), " ").replace(new RegExp("&quot;", 'g'), '"').replace(new RegExp("<\(\[\^>\]\)\*>", 'g'), '')}</Text>
           </Row>
           <Row>
             {props.page.pageType === "Group" && !props.page.locked ? (
               <Text style={{ fontStyle: "italic" }}>{"This is a public group."}</Text>
             ) : (
-              <></>
-            )}
+                <></>
+              )}
           </Row>
         </Col>
         <Col span={12} style={{ height: "100%" }}>

@@ -369,7 +369,7 @@ class Page extends Component {
                 {!this.state.showClasses ? "Classes Hidden" : "Classes Visible"}
               </Button>,
             ]
-            : [sameAs.length > 0 ? <Button onClick={() => { this.props.redirectPage("/class/" + sameAs[0]) }} >Same as {sameAs[0]}</Button> : <></>]
+            : [sameAs.length > 0 ? <Button onClick={() => { this.props.redirectPage("/class/" + sameAs[0]) }} >Same as <a>{" " + sameAs[0] + ("")}</a></Button> : <></>]
           )
 
             .concat([this.state.inPage ? removeClassButton : addClassButton])
