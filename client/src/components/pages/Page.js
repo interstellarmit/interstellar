@@ -147,7 +147,7 @@ class Page extends Component {
     lounge.userIds = userIds;
     newLounges.push(lounge);
     this.setState({ lounges: newLounges }, callback);
-
+    /*
     if (this.props.user.userId !== userId) {
       notification.info({
         message:
@@ -168,7 +168,7 @@ class Page extends Component {
           );
         },
       });
-    }
+    }*/
   };
 
   removeFromLounge = (userId, loungeId, callback = () => {}) => {
@@ -194,7 +194,7 @@ class Page extends Component {
       this.setState({ lounges: newLounges }, () => {
         callback();
       });
-
+      /*
       if (this.props.user.userId !== userId) {
         notification.info({
           message:
@@ -215,7 +215,7 @@ class Page extends Component {
             );
           },
         });
-      }
+      }*/
     } else {
       callback();
     }
@@ -501,7 +501,7 @@ class Page extends Component {
                 !this.state.inPage
                   ? "info"
                   : this.state.page.pageType === "Group"
-                  ? "info"
+                  ? "forum"
                   : "dashboard"
               }
               page={this.state.page}
