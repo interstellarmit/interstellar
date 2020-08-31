@@ -8,7 +8,15 @@ import { UserOutlined } from "@ant-design/icons";
 
 export default function UserList(props) {
   const [adminIds, setAdminIds] = React.useState(props.adminIds);
-  props.users.sort((a, b) => (a.name > b.name ? 1 : -1));
+  props.users.sort((a, b) => {
+    if (props.adminIds.includes(a.userId) && props.adminIds.includes(b.userId)) {
+    } else if (props.adminIds.includes(a.userId)) {
+      return -1;
+    } else if (props.adminIds.includes(b.userId)) {
+      return 1;
+    }
+    return a.name.localeCompare(b.name)
+  });
   let firstSplit = Math.ceil(props.users.length / 3);
   let secondSplit =
     Math.ceil(props.users.length / 3) +
@@ -32,34 +40,34 @@ export default function UserList(props) {
                 actions={
                   props.adminIds && props.isSiteAdmin && !props.dashboard
                     ? [
-                        <Button
-                          onClick={() => {
-                            post("/api/addRemoveAdmin", {
-                              isAdmin: adminIds.includes(user.userId),
-                              userId: user.userId,
-                              pageId: props.page._id,
-                            }).then((data) => {
-                              console.log(data);
-                              if (data.success) {
-                                if (adminIds.includes(user.userId)) {
-                                  let newAdminIds = adminIds.filter((id) => {
-                                    return id !== user.userId;
-                                  });
-                                  setAdminIds(newAdminIds);
-                                } else {
-                                  let newAdminIds = adminIds.map((id) => {
-                                    return id;
-                                  });
-                                  newAdminIds.push(user.userId);
-                                  setAdminIds(newAdminIds);
-                                }
+                      <Button
+                        onClick={() => {
+                          post("/api/addRemoveAdmin", {
+                            isAdmin: adminIds.includes(user.userId),
+                            userId: user.userId,
+                            pageId: props.page._id,
+                          }).then((data) => {
+                            console.log(data);
+                            if (data.success) {
+                              if (adminIds.includes(user.userId)) {
+                                let newAdminIds = adminIds.filter((id) => {
+                                  return id !== user.userId;
+                                });
+                                setAdminIds(newAdminIds);
+                              } else {
+                                let newAdminIds = adminIds.map((id) => {
+                                  return id;
+                                });
+                                newAdminIds.push(user.userId);
+                                setAdminIds(newAdminIds);
                               }
-                            });
-                          }}
-                        >
-                          <UserOutlined /> {adminIds.includes(user.userId) ? "Admin" : "Student"}
-                        </Button>,
-                      ]
+                            }
+                          });
+                        }}
+                      >
+                        <UserOutlined /> {adminIds.includes(user.userId) ? "Admin" : "Student"}
+                      </Button>,
+                    ]
                     : []
                 }
               >
@@ -69,21 +77,21 @@ export default function UserList(props) {
                   description={
                     props.allPages && props.showClasses && user.pageIds
                       ? user.pageIds
-                          .map((id) => {
-                            return props.allPages.find((pg) => {
-                              return pg._id === id;
-                            });
-                          })
-                          .filter((page) => {
-                            if (!page) return false;
-                            return page.pageType === "Class";
-                          })
-                          .map((page) => {
-                            return page.name;
-                          })
+                        .map((id) => {
+                          return props.allPages.find((pg) => {
+                            return pg._id === id;
+                          });
+                        })
+                        .filter((page) => {
+                          if (!page) return false;
+                          return page.pageType === "Class";
+                        })
+                        .map((page) => {
+                          return page.name;
+                        })
 
-                          .join(", ")
-                      : undefined
+                        .join(", ")
+                      : (adminIds.includes(user.userId) ? " Admin" : "")
                   }
                 />
               </List.Item>
