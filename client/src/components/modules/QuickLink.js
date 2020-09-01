@@ -54,7 +54,7 @@ export default function QuickLink(props) {
               : []
             )
               .concat(
-                props.added
+                props.added || props.verified
                   ? [
                       <Tooltip title="Link">
                         <Button

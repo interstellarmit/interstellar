@@ -106,7 +106,7 @@ export default function DueDate(props) {
                   : []
               )
               .concat(
-                props.added && props.dueDate.url ? (
+                (props.added || props.verified) && props.dueDate.url ? (
                   <Tooltip title="Link">
                     <Button
                       onClick={() => {
