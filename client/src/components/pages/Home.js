@@ -25,7 +25,7 @@ import AdminRequests from "../modules/AdminRequests";
 const { Header, Content, Footer, Sider } = Layout;
 const { Title, Text } = Typography;
 
-var classes = require("../../full.json");
+// var classes = require("../../full.json");
 
 function populateLounges() {
   post("/api/populateLounges", { zoomLink: undefined }).then((res) => {
