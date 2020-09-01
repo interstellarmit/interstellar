@@ -242,6 +242,7 @@ router.post("/sameAs", auth.ensureLoggedIn, (req, res) => {
         res.send({ created: false })
         return
       }
+      page.professor = req.body.professor
       page.sameAs = req.body.sameAs
       page.save().then(() => {
         res.send({ created: true })
