@@ -199,7 +199,9 @@ class ForumTab extends Component {
         post: {
           title: `Welcome to the ${this.props.pageName} Forum!`,
           text:
-            "Use the forum to schedule PSET sessions / hangouts in the Lounge, ask questions related to your class/group, or post memes! Image support coming soon, for now just use links. Please be respectful to one another, and have fun!",
+            "Use the forum to schedule PSET sessions / hangouts in the Lounge, ask questions related to your " +
+            this.props.page.pageType.toLowerCase() +
+            ", or post memes! Please be respectful to one another, and have fun!",
           userId: 0,
           labels: [],
           reacts: [],
