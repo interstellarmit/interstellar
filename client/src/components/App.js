@@ -51,6 +51,7 @@ class App extends Component {
       // currentPageName from URL?
     };
     this.encodedLink = encodeURIComponent(window.location.href);
+    this.encodedLink = window.location.href;
     let self = this;
     if (cookies.get("token") != undefined && cookies.get("token").length > 0) {
       self.me();
@@ -321,94 +322,94 @@ class App extends Component {
             },
           })
         ) : (
-          <></>
-        )}
+            <></>
+          )}
         {!this.state.signedContract ? (
           <SignContract logout={this.logout} signContract={this.signContract} />
         ) : (
-          <Layout style={{ minHeight: "100vh" }}>
-            <SideBar
-              pageIds={this.state.pageIds}
-              updatePageIds={this.updatePageIds}
-              allPages={this.state.allPages}
-              myPages={myPages}
-              selectedPageName={this.state.selectedPageName}
-              redirectPage={this.redirectPage}
-              logout={this.logout}
-              logState={this.logState}
-              email={this.state.email}
-            />
-            <Layout className="site-layout">
-              <Content>
-                <Router>
-                  <Switch>
-                    <Home
-                      exact
-                      path={["/", "/dashboard", "/settings", "/admin"]}
-                      schoolId={this.state.schoolId}
-                      updateSelectedPageName={this.updateSelectedPageName}
-                      user={{
-                        userId: this.state.userId,
-                        name: this.state.visible ? this.state.name : "Anonymous (Me)",
-                      }}
-                      redirectPage={this.redirectPage}
-                      myPages={myPages}
-                      disconnect={this.disconnect}
-                      allPages={this.state.allPages}
-                      isSiteAdmin={this.state.isSiteAdmin}
-                      logout={this.logout}
-                      visible={this.state.visible}
-                      setVisible={this.setVisible}
-                      seeHelpText={this.state.seeHelpText}
-                      setSeeHelpText={this.setSeeHelpText}
-                      addClasses={this.addClasses}
-                      email={this.state.email}
-                    />
-                    <Page
-                      path="/class/:selectedPage"
-                      schoolId={this.state.schoolId}
-                      pageIds={this.state.pageIds}
-                      updatePageIds={this.updatePageIds}
-                      updateSelectedPageName={this.updateSelectedPageName}
-                      user={{
-                        userId: this.state.userId,
-                        name: this.state.visible ? this.state.name : "Anonymous (Me)",
-                      }}
-                      redirectPage={this.redirectPage}
-                      loungeId={this.state.loungeId}
-                      setLoungeId={this.setLoungeId}
-                      isSiteAdmin={this.state.isSiteAdmin}
-                      disconnect={this.disconnect}
-                      logout={this.logout}
-                      visible={this.state.visible}
-                      seeHelpText={this.state.seeHelpText}
-                      setSeeHelpText={this.setSeeHelpText}
-                    />
-                    <Page
-                      path="/group/:selectedPage"
-                      schoolId={this.state.schoolId}
-                      pageIds={this.state.pageIds}
-                      updatePageIds={this.updatePageIds}
-                      updateSelectedPageName={this.updateSelectedPageName}
-                      user={{ userId: this.state.userId, name: this.state.name }}
-                      redirectPage={this.redirectPage}
-                      loungeId={this.state.loungeId}
-                      setLoungeId={this.setLoungeId}
-                      allPages={this.state.allPages}
-                      pageIds={this.state.pageIds}
-                      isSiteAdmin={this.state.isSiteAdmin}
-                      disconnect={this.disconnect}
-                      seeHelpText={this.state.seeHelpText}
-                      setSeeHelpText={this.setSeeHelpText}
-                      logout={this.logout}
-                    />
-                    <NotFound default />
-                  </Switch>
-                </Router>
-              </Content>
+            <Layout style={{ minHeight: "100vh" }}>
+              <SideBar
+                pageIds={this.state.pageIds}
+                updatePageIds={this.updatePageIds}
+                allPages={this.state.allPages}
+                myPages={myPages}
+                selectedPageName={this.state.selectedPageName}
+                redirectPage={this.redirectPage}
+                logout={this.logout}
+                logState={this.logState}
+                email={this.state.email}
+              />
+              <Layout className="site-layout">
+                <Content>
+                  <Router>
+                    <Switch>
+                      <Home
+                        exact
+                        path={["/", "/dashboard", "/settings", "/admin"]}
+                        schoolId={this.state.schoolId}
+                        updateSelectedPageName={this.updateSelectedPageName}
+                        user={{
+                          userId: this.state.userId,
+                          name: this.state.visible ? this.state.name : "Anonymous (Me)",
+                        }}
+                        redirectPage={this.redirectPage}
+                        myPages={myPages}
+                        disconnect={this.disconnect}
+                        allPages={this.state.allPages}
+                        isSiteAdmin={this.state.isSiteAdmin}
+                        logout={this.logout}
+                        visible={this.state.visible}
+                        setVisible={this.setVisible}
+                        seeHelpText={this.state.seeHelpText}
+                        setSeeHelpText={this.setSeeHelpText}
+                        addClasses={this.addClasses}
+                        email={this.state.email}
+                      />
+                      <Page
+                        path="/class/:selectedPage"
+                        schoolId={this.state.schoolId}
+                        pageIds={this.state.pageIds}
+                        updatePageIds={this.updatePageIds}
+                        updateSelectedPageName={this.updateSelectedPageName}
+                        user={{
+                          userId: this.state.userId,
+                          name: this.state.visible ? this.state.name : "Anonymous (Me)",
+                        }}
+                        redirectPage={this.redirectPage}
+                        loungeId={this.state.loungeId}
+                        setLoungeId={this.setLoungeId}
+                        isSiteAdmin={this.state.isSiteAdmin}
+                        disconnect={this.disconnect}
+                        logout={this.logout}
+                        visible={this.state.visible}
+                        seeHelpText={this.state.seeHelpText}
+                        setSeeHelpText={this.setSeeHelpText}
+                      />
+                      <Page
+                        path="/group/:selectedPage"
+                        schoolId={this.state.schoolId}
+                        pageIds={this.state.pageIds}
+                        updatePageIds={this.updatePageIds}
+                        updateSelectedPageName={this.updateSelectedPageName}
+                        user={{ userId: this.state.userId, name: this.state.name }}
+                        redirectPage={this.redirectPage}
+                        loungeId={this.state.loungeId}
+                        setLoungeId={this.setLoungeId}
+                        allPages={this.state.allPages}
+                        pageIds={this.state.pageIds}
+                        isSiteAdmin={this.state.isSiteAdmin}
+                        disconnect={this.disconnect}
+                        seeHelpText={this.state.seeHelpText}
+                        setSeeHelpText={this.setSeeHelpText}
+                        logout={this.logout}
+                      />
+                      <NotFound default />
+                    </Switch>
+                  </Router>
+                </Content>
+              </Layout>
             </Layout>
-          </Layout>
-        )}
+          )}
       </div>
     );
   }
