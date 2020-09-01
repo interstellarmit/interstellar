@@ -4,7 +4,12 @@
     <meta charset="UTF-8" />
     <link rel="shortcut icon" href="/favicon.png" type="image/x-icon" />
     <link rel="icon" href="/favicon.png" type="image/x-icon" />
-
+    <script>
+      var host = "www.interstellar.live";
+      if (host == window.location.host && window.location.protocol != "https:") {
+        window.location.protocol = "https";
+      }
+    </script>
     <title>Interstellar</title>
   </head>
 
