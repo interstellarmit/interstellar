@@ -11,7 +11,19 @@ import AdminRequests from "../modules/AdminRequests";
 import AddEnterCode from "../modules/AddEnterCode";
 import MySpin from "../modules/MySpin";
 import { socket } from "../../client-socket.js";
-import { Spin, Space, Button, Typography, Layout, PageHeader, Badge, Row, Col, Alert } from "antd";
+import {
+  Spin,
+  Space,
+  notification,
+  Button,
+  Typography,
+  Layout,
+  PageHeader,
+  Badge,
+  Row,
+  Col,
+  Alert,
+} from "antd";
 import { UserOutlined } from "@ant-design/icons";
 const { Header, Content, Footer, Sider } = Layout;
 const { Title, Text } = Typography;
@@ -35,6 +47,7 @@ class Page extends Component {
       page: {},
       pageLoaded: false,
       lockModal: false,
+      forumCount: 0,
     };
     props.updateSelectedPageName(selectedPage);
   }
@@ -86,6 +99,9 @@ class Page extends Component {
             return duedate._id !== data.DDQL._id;
           });
           DDQLs.push(data.DDQL);
+          console.log("edited");
+          console.log(data.DDQL);
+
           this.setState({ dueDates: DDQLs });
         } else {
           let DDQLs = this.state.quickLinks.filter((quicklink) => {
@@ -118,12 +134,15 @@ class Page extends Component {
     });
   };
 
-  addToLounge = (userId, loungeId, callback = () => { }) => {
+  addToLounge = (userId, loungeId, callback = () => {}) => {
     let lounges = this.state.lounges;
-    let lounge = lounges.filter((l) => {
+    let lounge = lounges.find((l) => {
       return l._id + "" === loungeId;
-    })[0];
-
+    });
+    if (!lounge) {
+      callback();
+      return;
+    }
     let newLounges = lounges.filter((l) => {
       return l._id + "" !== loungeId;
     });
@@ -134,14 +153,36 @@ class Page extends Component {
     lounge.userIds = userIds;
     newLounges.push(lounge);
     this.setState({ lounges: newLounges }, callback);
+    /*
+    if (this.props.user.userId !== userId) {
+      notification.info({
+        message:
+          (
+            this.state.users.find((user) => {
+              return user.userId === userId;
+            }) || { name: "User Name" }
+          ).name.split(" ")[0] +
+          " entered the " +
+          lounge.name +
+          " lounge",
+
+        description: "",
+        placement: "bottomRight",
+        onClick: () => {
+          this.props.redirectPage(
+            "/" + this.state.page.pageType.toLowerCase() + "/" + this.state.page.name + "/lounge"
+          );
+        },
+      });
+    }*/
   };
 
-  removeFromLounge = (userId, loungeId, callback = () => { }) => {
+  removeFromLounge = (userId, loungeId, callback = () => {}) => {
     if (loungeId !== "") {
       let lounges = this.state.lounges;
-      let lounge = lounges.filter((l) => {
+      let lounge = lounges.find((l) => {
         return l._id + "" === loungeId;
-      })[0];
+      });
       if (!lounge) {
         callback();
         return;
@@ -159,12 +200,34 @@ class Page extends Component {
       this.setState({ lounges: newLounges }, () => {
         callback();
       });
+      /*
+      if (this.props.user.userId !== userId) {
+        notification.info({
+          message:
+            (
+              this.state.users.find((user) => {
+                return user.userId === userId;
+              }) || { name: "User Name" }
+            ).name.split(" ")[0] +
+            " left the " +
+            lounge.name +
+            " lounge",
+
+          description: "",
+          placement: "bottomRight",
+          onClick: () => {
+            this.props.redirectPage(
+              "/" + this.state.page.pageType.toLowerCase() + "/" + this.state.page.name + "/lounge"
+            );
+          },
+        });
+      }*/
     } else {
       callback();
     }
   };
 
-  addSelfToLounge = (loungeId, callback = () => { }) => {
+  addSelfToLounge = (loungeId, callback = () => {}) => {
     post("/api/addSelfToLounge", {
       loungeId: loungeId,
     }).then((data) => {
@@ -176,7 +239,7 @@ class Page extends Component {
     });
   };
 
-  removeSelfFromLounge = (loungeId, callback = () => { }) => {
+  removeSelfFromLounge = (loungeId, callback = () => {}) => {
     post("/api/removeSelfFromLounge", {
       loungeId: loungeId,
     }).then((data) => {
@@ -250,6 +313,14 @@ class Page extends Component {
     });
   }
 
+  incrementForumCounter = () => {
+    let forumCount = this.state.forumCount;
+    this.setState({ forumCount: forumCount + 1 });
+  };
+  clearForumCounter = () => {
+    this.setState({ forumCount: 0 });
+  };
+
   setLockModal = (bol) => {
     this.setState({ lockModal: bol });
   };
@@ -285,8 +356,8 @@ class Page extends Component {
 
     let mainLounge = this.state.lounges
       ? this.state.lounges.find((lounge) => {
-        return lounge.main;
-      })
+          return lounge.main;
+        })
       : undefined;
     let numInLounge = mainLounge ? mainLounge.userIds.length : 0;
     let removeClassButton = (
@@ -336,16 +407,19 @@ class Page extends Component {
             <LockOutlined /> Locked
           </React.Fragment>
         ) : (
-            <React.Fragment>
-              <UnlockOutlined /> Unlocked
-            </React.Fragment>
-          )}
+          <React.Fragment>
+            <UnlockOutlined /> Unlocked
+          </React.Fragment>
+        )}
       </Button>
     );
 
     let isPageAdmin =
       this.state.page.adminIds.includes(this.props.user.userId) || this.props.isSiteAdmin;
-    let sameAs = this.state.page.sameAs && this.state.page.sameAs.length > 0 ? this.state.page.sameAs.split(", ") : [];
+    let sameAs =
+      this.state.page.sameAs && this.state.page.sameAs.length > 0
+        ? this.state.page.sameAs.split(", ")
+        : [];
     return (
       <Layout style={{ background: "rgba(240, 242, 245, 1)", height: "100vh" }}>
         <PageHeader
@@ -353,30 +427,41 @@ class Page extends Component {
           style={{ padding: "20px 30px 0px 30px", background: "#fff" }}
           extra={(this.state.page.pageType === "Group"
             ? [
-              <Button
-                icon={<EyeOutlined />}
-                onClick={() => {
-                  let sc = this.state.showClasses;
-                  post("/api/setShowClasses", {
-                    pageId: this.state.page._id,
-                    showClasses: !sc,
-                  }).then((data) => {
-                    if (data.set) this.setState({ showClasses: !sc });
-                  });
-                }}
-                disabled={!isPageAdmin}
-              >
-                {!this.state.showClasses ? "Classes Hidden" : "Classes Visible"}
-              </Button>,
-            ]
-            : [sameAs.length > 0 ? <Button onClick={() => { this.props.redirectPage("/class/" + sameAs[0]) }} >Same as <a>{" " + sameAs[0] + ("")}</a></Button> : <></>]
+                <Button
+                  icon={<EyeOutlined />}
+                  onClick={() => {
+                    let sc = this.state.showClasses;
+                    post("/api/setShowClasses", {
+                      pageId: this.state.page._id,
+                      showClasses: !sc,
+                    }).then((data) => {
+                      if (data.set) this.setState({ showClasses: !sc });
+                    });
+                  }}
+                  disabled={!isPageAdmin}
+                >
+                  {!this.state.showClasses ? "Classes Hidden" : "Classes Visible"}
+                </Button>,
+              ]
+            : [
+                sameAs.length > 0 ? (
+                  <Button
+                    onClick={() => {
+                      this.props.redirectPage("/class/" + sameAs[0]);
+                    }}
+                  >
+                    Same as <a>{" " + sameAs[0] + ""}</a>
+                  </Button>
+                ) : (
+                  <></>
+                ),
+              ]
           )
 
             .concat([this.state.inPage ? removeClassButton : addClassButton])
             .concat(isPageAdmin && this.state.inPage ? [lockButton] : [])}
           title={this.state.page.name}
           subTitle={this.state.page.title}
-
         ></PageHeader>
         <AddLock
           lockModal={this.state.lockModal}
@@ -409,7 +494,11 @@ class Page extends Component {
 
                   <Badge count={numInLounge} size="small" style={{ marginLeft: "5px" }} />
                 </div>,
-                "Forum",
+                <div style={{ display: "flex", flexDirection: "row" }}>
+                  <div>{"Forum"}</div>
+
+                  <Badge count={this.state.forumCount} size="small" style={{ marginLeft: "5px" }} />
+                </div>,
               ].concat(this.state.adminRequests.length > 0 ? ["Admin"] : [])}
               routerLinks={["info", "dashboard", "lounge", "forum"].concat(
                 this.state.adminRequests.length > 0 ? ["admin"] : []
@@ -418,10 +507,11 @@ class Page extends Component {
                 !this.state.inPage
                   ? "info"
                   : this.state.page.pageType === "Group"
-                    ? "info"
-                    : "dashboard"
+                  ? "forum"
+                  : "dashboard"
               }
               page={this.state.page}
+              clearForumCounter={this.clearForumCounter}
             >
               <InfoTab
                 users={this.state.users}
@@ -463,31 +553,34 @@ class Page extends Component {
                 setLoungeId={this.props.setLoungeId}
               />
               <ForumTab
+                pageName={this.state.page.name}
                 redirectPage={this.props.redirectPage}
                 user={this.props.user}
                 users={this.state.users}
                 page={this.state.page}
                 isPageAdmin={isPageAdmin}
+                incrementForumCounter={this.incrementForumCounter}
+                clearForumCounter={this.clearForumCounter}
               />
               <AdminRequests adminRequests={this.state.adminRequests} />
             </TabPage>
           ) : (
-              <TabPage
-                labels={["Info"]}
-                routerLinks={["info"]}
-                defaultRouterLink={"info"}
+            <TabPage
+              labels={["Info"]}
+              routerLinks={["info"]}
+              defaultRouterLink={"info"}
+              page={this.state.page}
+            >
+              <InfoTab
+                users={this.state.users}
+                inPage={false}
                 page={this.state.page}
-              >
-                <InfoTab
-                  users={this.state.users}
-                  inPage={false}
-                  page={this.state.page}
-                  user={this.props.user}
-                />
-              </TabPage>
-            )}
+                user={this.props.user}
+              />
+            </TabPage>
+          )}
         </Content>
-      </Layout >
+      </Layout>
     );
   }
 }

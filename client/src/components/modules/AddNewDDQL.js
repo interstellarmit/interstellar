@@ -23,7 +23,7 @@ export default function AddNewDDQL(props) {
     }
     if (props.edit) {
       props.editDDQL({
-        DDQLId: props.DDQL._id,
+        DDQLId: props.ddql._id,
         title: values.title,
         objectType: props.type,
         dueDate: values.dueDate,
@@ -41,12 +41,11 @@ export default function AddNewDDQL(props) {
       });
       props.setVisible(false);
     }
-    form.resetFields();
   };
 
   let onDelete = () => {
     props.editDDQL({
-      DDQLId: props.DDQL._id,
+      DDQLId: props.ddql._id,
       deleted: true,
     });
     props.setVisible(false);
@@ -72,7 +71,7 @@ export default function AddNewDDQL(props) {
       }
       width={props.edit ? undefined : 700}
       onCancel={() => {
-        form.resetFields();
+        //form.resetFields();
         props.setVisible(false);
       }}
       footer={null}
@@ -88,14 +87,14 @@ export default function AddNewDDQL(props) {
             initialValues={
               props.edit
                 ? {
-                    title: props.DDQL.title,
-                    objectType: props.DDQL.objectType,
-                    dueDate: moment(new Date(props.DDQL.dueDate)),
-                    url: props.DDQL.url,
-                    public: props.DDQL.visibility === "Public",
+                    title: props.ddql.title,
+                    objectType: props.ddql.objectType,
+                    dueDate: moment(new Date(props.ddql.dueDate)),
+                    url: props.ddql.url,
+                    public: props.ddql.visibility === "Public",
                   }
                 : {
-                    public: false,
+                    public: true,
                   }
             }
           >
@@ -155,7 +154,9 @@ export default function AddNewDDQL(props) {
               <></>
             ) : (
               <Form.Item {...tailLayout} name="public" valuePropName="checked">
-                <Checkbox>Public</Checkbox>
+                <Checkbox>
+                  Share with {props.pageType === "Class" ? "Classmates" : "Others"}
+                </Checkbox>
               </Form.Item>
             )}
             <Form.Item {...tailLayout}>
@@ -167,7 +168,15 @@ export default function AddNewDDQL(props) {
                   {"Delete " + text}
                 </Button>
               ) : (
-                <></>
+                <Button
+                  type="primary"
+                  onClick={() => {
+                    form.resetFields();
+                  }}
+                  style={{ marginLeft: "10px" }}
+                >
+                  {"Clear"}
+                </Button>
               )}
             </Form.Item>
           </Form>

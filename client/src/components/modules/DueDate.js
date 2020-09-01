@@ -33,7 +33,7 @@ export default function DueDate(props) {
       editDDQL={props.editDDQL}
       visible={showEdit}
       setVisible={setShowEdit}
-      DDQL={props.dueDate}
+      ddql={props.dueDate}
       type={"DueDate"}
       edit={true}
     />
@@ -106,7 +106,7 @@ export default function DueDate(props) {
                   : []
               )
               .concat(
-                props.added && props.dueDate.url ? (
+                (props.added || props.verified) && props.dueDate.url ? (
                   <Tooltip title="Link">
                     <Button
                       onClick={() => {

@@ -111,7 +111,7 @@ export default function DDQLSection(props) {
     return !ddql.deleted && (addedDDQLs.includes("" + ddql._id) || ddql.verified);
   });
 
-  let addNewDueDate = showAddNewDueDate ? (
+  let addNewDueDate = (
     <AddNewDDQL
       public={dataSource.filter((ddql) => {
         //console.log(addedDDQLs);
@@ -132,9 +132,8 @@ export default function DDQLSection(props) {
       setVisible={setShowAddNewDueDate}
       addOrCompleteDDQL={addOrCompleteDDQL}
       type={props.type}
+      pageType={props.page ? props.page.pageType : undefined}
     />
-  ) : (
-    <></>
   );
 
   let dataSourceFinal = addedDataSource
