@@ -93,7 +93,9 @@ export default function AddNewDDQL(props) {
                     url: props.ddql.url,
                     public: props.ddql.visibility === "Public",
                   }
-                : undefined
+                : {
+                    public: true,
+                  }
             }
           >
             {text === "Due Date" ? (
@@ -152,7 +154,9 @@ export default function AddNewDDQL(props) {
               <></>
             ) : (
               <Form.Item {...tailLayout} name="public" valuePropName="checked">
-                <Checkbox>Public</Checkbox>
+                <Checkbox>
+                  Share with {props.pageType === "Class" ? "Classmates" : "Others"}
+                </Checkbox>
               </Form.Item>
             )}
             <Form.Item {...tailLayout}>

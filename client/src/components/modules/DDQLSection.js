@@ -132,6 +132,7 @@ export default function DDQLSection(props) {
       setVisible={setShowAddNewDueDate}
       addOrCompleteDDQL={addOrCompleteDDQL}
       type={props.type}
+      pageType={props.page.pageType}
     />
   );
 
