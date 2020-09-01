@@ -50,7 +50,9 @@ class App extends Component {
       tryingToLogin: true,
       // currentPageName from URL?
     };
-    let link = window.location.href
+    let link = window.location.origin + "/"
+    // console.log(window.location.origin)
+    // console.log(window.location.href)
     // this.encodedLink = link.charAt(link.length - 1) === "/" ? link.substring(0, link.length - 1) : link;
     this.encodedLink = encodeURIComponent(link);
     let self = this;
