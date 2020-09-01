@@ -37,7 +37,7 @@ class ForumTab extends Component {
     let commentedPost = groupPosts.find((onePost) => {
       return onePost.post._id === comment.postId;
     });
-
+    if (!commentedPost) return;
     commentedPost.comments.push(comment);
     if (this.state.activePost.post._id === commentedPost.post._id)
       this.setState({ activePost: commentedPost });
