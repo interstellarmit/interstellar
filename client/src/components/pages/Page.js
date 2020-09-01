@@ -136,10 +136,13 @@ class Page extends Component {
 
   addToLounge = (userId, loungeId, callback = () => {}) => {
     let lounges = this.state.lounges;
-    let lounge = lounges.filter((l) => {
+    let lounge = lounges.find((l) => {
       return l._id + "" === loungeId;
-    })[0];
-
+    });
+    if (!lounge) {
+      callback();
+      return;
+    }
     let newLounges = lounges.filter((l) => {
       return l._id + "" !== loungeId;
     });
@@ -179,7 +182,7 @@ class Page extends Component {
       let lounges = this.state.lounges;
       let lounge = lounges.filter((l) => {
         return l._id + "" === loungeId;
-      })[0];
+      });
       if (!lounge) {
         callback();
         return;
