@@ -98,6 +98,7 @@ class App extends Component {
       }
     });
     socket.on("createdPage", (data) => {
+      if (!this.state.userId) return;
       let allPages = this.state.allPages.concat([]);
 
       if (

@@ -163,19 +163,23 @@ class Home extends Component {
 
     socket.on("userAddedToLounge", (data) => {
       //console.log("user just got added to lounge");
+      if (!this.state.pageLoaded) return;
       this.addToLounge(data.userId, data.loungeId);
     });
 
     socket.on("userRemovedFromLounge", (data) => {
+      if (!this.state.pageLoaded) return;
       this.removeFromLounge(data.userId, data.loungeId);
     });
 
     socket.on("newLounge", (lounge) => {
+      if (!this.state.pageLoaded) return;
       let lounges = this.state.lounges;
       lounges.push(lounge);
       this.setState({ lounges: lounges });
     });
     socket.on("userJoinedPage", (data) => {
+      if (!this.state.pageLoaded) return;
       let users = this.state.users;
       if (
         users.filter((user) => {
