@@ -180,7 +180,7 @@ class Page extends Component {
   removeFromLounge = (userId, loungeId, callback = () => {}) => {
     if (loungeId !== "") {
       let lounges = this.state.lounges;
-      let lounge = lounges.filter((l) => {
+      let lounge = lounges.find((l) => {
         return l._id + "" === loungeId;
       });
       if (!lounge) {
