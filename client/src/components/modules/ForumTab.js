@@ -41,7 +41,7 @@ class ForumTab extends Component {
     commentedPost.comments.push(comment);
     if (this.state.activePost.post._id === commentedPost.post._id)
       this.setState({ activePost: commentedPost });
-    this.setState({ groupPosts: groupPosts, activePost: commentedPost });
+    this.setState({ groupPosts: groupPosts });
   };
 
   deletePostSocket = (postId) => {
