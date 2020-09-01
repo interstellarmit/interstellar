@@ -73,7 +73,11 @@ createNewGroupPost = (req, res) => {
         socket
           .getSocketFromUserID(req.user._id)
           .to("Page: " + req.body.pageId)
-          .emit("createNewGroupPost", { post: savedPost, userId: req.user._id });
+          .emit("createNewGroupPost", {
+            post: savedPost,
+            userId: req.user._id,
+            pageId: req.body.pageId,
+          });
         res.send({
           post: savedPost,
           created: true,
@@ -117,7 +121,11 @@ createNewComment = (req, res) => {
             socket
               .getSocketFromUserID(req.user._id)
               .to("Page: " + req.body.pageId)
-              .emit("createNewComment", { comment: commentSaved, userId: req.user._id });
+              .emit("createNewComment", {
+                comment: commentSaved,
+                userId: req.user._id,
+                pageId: req.body.pageId,
+              });
             res.send({
               comment: commentSaved,
               created: true,
@@ -163,7 +171,11 @@ deleteGroupPost = (req, res) => {
                 socket
                   .getSocketFromUserID(req.user._id)
                   .to("Page: " + post.pageId)
-                  .emit("deleteGroupPost", { postId: req.body.postId, userId: req.user._id });
+                  .emit("deleteGroupPost", {
+                    postId: req.body.postId,
+                    userId: req.user._id,
+                    pageId: page._id,
+                  });
                 res.send({ deleted: true });
               });
             });
@@ -207,7 +219,11 @@ updateGroupPost = (req, res) => {
           socket
             .getSocketFromUserID(req.user._id)
             .to("Page: " + post.pageId)
-            .emit("updateGroupPost", { post: savedPost, userId: req.user._id });
+            .emit("updateGroupPost", {
+              post: savedPost,
+              userId: req.user._id,
+              pageId: savedPost.pageId,
+            });
           res.send({
             post: savedPost,
             updated: true,

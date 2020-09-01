@@ -216,20 +216,24 @@ class ForumTab extends Component {
     let userId = this.props.user.userId;
     socket.on("createNewGroupPost", (data) => {
       if (userId === data.userId) return;
+      if (data.pageId !== this.props.page._id) return;
       this.addPostSocket(data.post);
       this.props.incrementForumCounter();
     });
     socket.on("createNewComment", (data) => {
       if (userId === data.userId) return;
+      if (data.pageId !== this.props.page._id) return;
       this.addCommentSocket(data.comment);
     });
     socket.on("deleteGroupPost", (data) => {
       if (userId === data.userId) return;
+      if (data.pageId !== this.props.page._id) return;
       this.deletePostSocket(data.postId);
     });
 
     socket.on("updateGroupPost", (data) => {
       if (userId === data.userId) return;
+      if (data.pageId !== this.props.page._id) return;
       this.updatePostSocket(data.post);
     });
   }
