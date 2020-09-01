@@ -50,7 +50,8 @@ class App extends Component {
       tryingToLogin: true,
       // currentPageName from URL?
     };
-    this.encodedLink = window.location.href.substring(0, window.location.href.length - 1);
+    let link = window.location.href.replace("www.", "")
+    this.encodedLink = link.charAt(link.length - 1) === "/" ? link.substring(0, link.length - 1) : link;
     // this.encodedLink = encodeURIComponent(this.encodedLink);
     let self = this;
     if (cookies.get("token") != undefined && cookies.get("token").length > 0) {
