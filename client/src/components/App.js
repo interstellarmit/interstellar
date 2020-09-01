@@ -51,7 +51,7 @@ class App extends Component {
       // currentPageName from URL?
     };
     this.encodedLink = window.location.href.substring(0, window.location.href.length - 1);
-    this.encodedLink = encodeURIComponent(this.encodedLink);
+    // this.encodedLink = encodeURIComponent(this.encodedLink);
     let self = this;
     if (cookies.get("token") != undefined && cookies.get("token").length > 0) {
       self.me();
