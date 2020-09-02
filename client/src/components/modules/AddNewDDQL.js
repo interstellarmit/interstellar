@@ -100,7 +100,13 @@ export default function AddNewDDQL(props) {
           >
             {text === "Due Date" ? (
               <Form.Item name="dueDate" label="Due Date" {...dateConfig}>
-                <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />
+                <DatePicker
+                  showTime={{
+                    use12Hours: true,
+                    format: "h:mm a",
+                  }}
+                  format="YYYY-MM-DD HH:mm:ss"
+                />
               </Form.Item>
             ) : (
               <></>
