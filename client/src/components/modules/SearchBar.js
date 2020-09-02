@@ -7,7 +7,7 @@ export default function SearchBar(props) {
 
   let search = (name) => {
     let page = props.allPages.filter((page) => {
-      return page.name === name;
+      return page.name.toLowerCase() === name.toLowerCase();
     })[0];
     if (!page) return;
     if (!name) return;
