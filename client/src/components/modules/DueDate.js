@@ -61,7 +61,7 @@ export default function DueDate(props) {
                         });
                       }}
                       icon={
-                        <CheckCircleTwoTone twoToneColor={props.verified ? "#52c41a" : undefined} />
+                        <CheckCircleTwoTone twoToneColor={props.verified ? "#52c41a" : "#eb2f96"} />
                       }
                       shape={"circle"}
                       type="text"
@@ -177,7 +177,7 @@ export default function DueDate(props) {
           formatDueDate(props.dueDate.dueDate)
         }
       />
-      {!hover && props.added && !props.completed && timeUntilDue < 24 * 14 ? (
+      {!hover && (props.added || props.verified) && !props.completed && timeUntilDue < 24 * 14 ? (
         timeUntilDue < 24 * 2 ? (
           timeUntilDue < 3 ? (
             timeUntilDue < 0 ? (
