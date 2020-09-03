@@ -62,13 +62,25 @@ export default function LoungesTab(props) {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
+            borderRadius: "10px",
           }}
         >
           {loungeCode}
         </div>
       </Col>
       <Col span={12} style={{ height: "100%" }}>
-        <div style={{ height: "50%" }}>
+        <div
+          style={{
+            background: "#FFFFFF",
+            border: "1px solid #d9d9d9",
+            boxSizing: "borderBox",
+            height: "calc(50% - 10px)",
+            borderRadius: "10px",
+            padding: "20px 20px 20px 20px",
+            margin: "0px 0px 0px 10px",
+            boxShadow: "0 10px 25px rgba(0,0,0,.02), 0 4px 10px rgba(0,0,0,.02)",
+          }}
+        >
           <UserList
             users={lounge.userIds.map((user) => {
               return (
@@ -79,7 +91,18 @@ export default function LoungesTab(props) {
             })}
           />
         </div>
-        <div style={{ height: "50%" }}>
+        <div
+          style={{
+            background: "#FFFFFF",
+            border: "1px solid #d9d9d9",
+            boxSizing: "borderBox",
+            height: "calc(50% - 10px)",
+            borderRadius: "10px",
+            padding: "20px 20px 20px 20px",
+            margin: "20px 0px 0px 10px",
+            boxShadow: "0 10px 25px rgba(0,0,0,.02), 0 4px 10px rgba(0,0,0,.02)",
+          }}
+        >
           <Chat page={props.page} pageId={props.page._id} />
         </div>
       </Col>

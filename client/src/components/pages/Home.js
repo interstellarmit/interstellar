@@ -42,10 +42,14 @@ class Home extends Component {
       quickLinks: [],
       lounges: [],
       showDueDate: true,
+      notify: undefined,
     };
     props.updateSelectedPageName("");
   }
 
+  notify = (data) => {
+    this.setState({ notify: data });
+  };
   addToLounge = (userId, loungeId, callback = () => {}) => {
     let lounges = this.state.lounges;
     let lounge = lounges.find((l) => {
@@ -67,7 +71,7 @@ class Home extends Component {
     this.setState({ lounges: newLounges }, callback);
 
     if (this.props.user.userId !== userId) {
-      notification.info({
+      this.notify({
         message:
           (
             this.state.users.find((user) => {
@@ -79,7 +83,7 @@ class Home extends Component {
           " lounge",
 
         description: "",
-        placement: "bottomRight",
+        //placement: "bottomRight",
         onClick: () => {
           let page = this.props.myPages.find((pagee) => {
             return pagee._id === lounge.pageId;
@@ -116,7 +120,7 @@ class Home extends Component {
       });
 
       if (this.props.user.userId !== userId) {
-        notification.info({
+        this.notify({
           message:
             (
               this.state.users.find((user) => {
@@ -128,7 +132,7 @@ class Home extends Component {
             " lounge",
 
           description: "",
-          placement: "bottomRight",
+          //placement: "bottomRight",
           onClick: () => {
             let page = this.props.myPages.find((pagee) => {
               return pagee._id === lounge.pageId;
@@ -202,6 +206,12 @@ class Home extends Component {
     for (i = 0; i < this.props.myPages.length; i++) {
       let page = this.props.myPages[i];
       pageMap[page._id] = page.name;
+    }
+    if (this.state.notify) {
+      if (this.state.oldKey) notification.close(this.state.oldKey);
+      let key = new Date().toString();
+      notification.info(Object.assign(this.state.notify, key));
+      this.setState({ notify: undefined, oldKey: key });
     }
     return (
       <>
