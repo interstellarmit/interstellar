@@ -14,9 +14,7 @@ class Chat extends Component {
       lastMessage: new Date(),
     };
   }
-  notify = (data) => {
-    this.setState({ notify: data });
-  };
+
   componentDidMount() {
     socket.on("message", (data) => {
       if (data.pageId !== this.props.pageId) return;
@@ -28,27 +26,10 @@ class Chat extends Component {
         pageId: data.pageId,
       });
       this.setState({ messages: messages });
-      let page = this.props.page;
-      this.notify({
-        message: page.name,
-
-        description: data.name + ": " + data.text,
-        // placement: "bottomRight",
-        onClick: () => {
-          if (!page) return;
-          this.props.redirectPage("/" + page.pageType.toLowerCase() + "/" + page.name + "/lounge");
-        },
-      });
     });
   }
 
   render() {
-    if (this.state.notify) {
-      if (this.state.oldKey) notification.close(this.state.oldKey);
-      let key = new Date().toString();
-      notification.info(Object.assign(this.state.notify, key));
-      this.setState({ notify: undefined, oldKey: key });
-    }
     return (
       <div style={{ height: "100%", overflow: "auto" }}>
         <div
