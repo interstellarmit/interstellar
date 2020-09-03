@@ -29,7 +29,7 @@ createNewLounge = (req, res) => {
   }
   User.findById(req.user._id).then((user) => {
     Page.findById(req.body.pageId).then((page) => {
-      let zoomLink = req.body.zoomLink.length > 0 ? req.body.zoomLink.length : undefined
+      let zoomLink = req.body.zoomLink.length > 0 ? req.body.zoomLink.length : undefined;
       if (user.pageIds.includes(req.body.pageId)) {
         let lounge = new Lounge({
           name: req.body.name,
@@ -154,12 +154,12 @@ message = (req, res) => {
   let message = {
     userId: req.user._id,
     name: req.user.name,
-    loungeId: req.body.loungeId,
+    pageId: req.body.pageId,
     text: req.body.text,
   };
   socket
     .getSocketFromUserID(req.user._id)
-    .to("Lounge: " + req.body.loungeId)
+    .to("Page: " + req.body.pageId)
     .emit("message", message);
   res.send(message);
 };

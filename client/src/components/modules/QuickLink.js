@@ -44,7 +44,7 @@ export default function QuickLink(props) {
                         });
                       }}
                       icon={
-                        <CheckCircleTwoTone twoToneColor={props.verified ? "#52c41a" : undefined} />
+                        <CheckCircleTwoTone twoToneColor={props.verified ? "#52c41a" : "#eb2f96"} />
                       }
                       shape="circle"
                       type="text"

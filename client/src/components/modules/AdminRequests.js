@@ -19,7 +19,6 @@ export default function AdminRequests(props) {
         message="This is where you approve requests for users who wish to help admin this page"
         type="info"
         showIcon
-        closeable
         style={{ height: "100%" }}
         closable
       />

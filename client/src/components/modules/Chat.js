@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { get, post } from "../../utilities";
 import ProfilePic from "./ProfilePic";
-import { List, Avatar, Input } from "antd";
+import { List, Avatar, Input, notification, ConfigProvider, Empty } from "antd";
 import { socket } from "../../client-socket.js";
 
 class Chat extends Component {
@@ -17,45 +17,60 @@ class Chat extends Component {
 
   componentDidMount() {
     socket.on("message", (data) => {
-      if (data.loungeId !== this.props.loungeId) console.log("Wrong lounge...");
+      if (data.pageId !== this.props.pageId) return;
       let messages = this.state.messages;
       messages.push({
         userId: data.userId,
         name: data.name,
         text: data.text,
-        loungeId: data.loungeId,
+        pageId: data.pageId,
       });
       this.setState({ messages: messages });
+      let page = this.props.page.name;
+      notification.info({
+        message: page.name,
+
+        description: data.name + ": " + data.text,
+        placement: "bottomRight",
+        onClick: () => {
+          if (!page) return;
+          this.props.redirectPage("/" + page.pageType.toLowerCase() + "/" + page.name + "/lounge");
+        },
+      });
     });
   }
 
   render() {
     return (
-      <div>
+      <div style={{ height: "100%", overflow: "auto" }}>
         <div
           style={{
             overflow: "auto",
-            height: "50vh",
+            height: "calc(100% - 40px)",
             display: "flex",
             flexDirection: "column-reverse",
             margin: "auto",
           }}
         >
-          <List
-            dataSource={this.state.messages.filter((message) => {
-              return message.loungeId === this.props.loungeId;
-            })}
-            renderItem={(message) => {
-              return (
-                <List.Item style={{ display: "flex" }}>
-                  <div style={{ alignItems: "center" }}>
-                    <ProfilePic user={{ userId: message.userId, name: message.name }} />
-                    {"  " + message.name.split(" ")[0] + ": " + message.text}
-                  </div>
-                </List.Item>
-              );
+          <ConfigProvider
+            renderEmpty={() => {
+              return <Empty description="No messages" />;
             }}
-          />
+          >
+            <List
+              dataSource={this.state.messages}
+              renderItem={(message) => {
+                return (
+                  <List.Item style={{ display: "flex" }}>
+                    <div style={{ alignItems: "center" }}>
+                      <ProfilePic user={{ userId: message.userId, name: message.name }} />
+                      {"  " + message.name.split(" ")[0] + ": " + message.text}
+                    </div>
+                  </List.Item>
+                );
+              }}
+            />
+          </ConfigProvider>
         </div>
         <Input
           value={this.state.currentMessage}
@@ -70,7 +85,7 @@ class Chat extends Component {
               new Date().getTime() - new Date(this.state.lastMessage).getTime() >= 500
             ) {
               this.setState({ currentMessage: "", lastMessage: new Date() });
-              post("/api/message", { text: text, loungeId: this.props.loungeId }).then((res) => {
+              post("/api/message", { text: text, pageId: this.props.pageId }).then((res) => {
                 let messages = this.state.messages;
                 messages.push(res);
                 this.setState({ messages: messages });

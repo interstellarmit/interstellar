@@ -9,7 +9,6 @@
 
 const express = require("express");
 
-
 // import models so we can interact with the database
 const User = require("./models/user");
 const Comment = require("./models/comment");
@@ -182,7 +181,12 @@ router.post("/deleteGroupPost", auth.ensureLoggedIn, forum_calls.deleteGroupPost
 //     res.send(res1)
 //   })
 // })
-
+router.post("/getUnverifiedDDQLs", auth.ensureLoggedIn, (req, res) => {
+  if (!req.user.isSiteAdmin) res.send([]);
+  DDQL.find({ verified: false, deleted: false, visibility: "Public" }, (err, ddqls) => {
+    res.send(ddqls);
+  });
+});
 router.post("/addClasses", auth.ensureLoggedIn, (req, res) => {
   let pageNames = req.body.pageNames;
   let userPageIds = [];
@@ -235,21 +239,20 @@ router.post("/addClasses", auth.ensureLoggedIn, (req, res) => {
 router.post("/sameAs", auth.ensureLoggedIn, (req, res) => {
   if (req.user.email === "dansun@mit.edu") {
     Page.findOne({ name: req.body.name }).then((page) => {
-
-      console.log(req.body.name)
-      console.log(page)
+      console.log(req.body.name);
+      console.log(page);
       if (!page) {
-        res.send({ created: false })
-        return
+        res.send({ created: false });
+        return;
       }
-      page.professor = req.body.professor
-      page.sameAs = req.body.sameAs
+      page.professor = req.body.professor;
+      page.sameAs = req.body.sameAs;
       page.save().then(() => {
-        res.send({ created: true })
-      })
-    })
+        res.send({ created: true });
+      });
+    });
   }
-})
+});
 router.post("/populateLounges", auth.ensureLoggedIn, (req, res) => {
   if (req.user.email === "dansun@mit.edu") {
     let apiKey = process.env.gather_key;

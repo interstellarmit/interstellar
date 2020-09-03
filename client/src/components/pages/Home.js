@@ -22,14 +22,14 @@ import MultipleSearchBar from "../modules/MultipleSearchBar";
 import LoungeList from "../modules/LoungeList";
 import MySpin from "../modules/MySpin";
 import AdminRequests from "../modules/AdminRequests";
+import DueDateAdmin from "../modules/DueDateAdmin";
 const { Header, Content, Footer, Sider } = Layout;
 const { Title, Text } = Typography;
 
 // var classes = require("../../full.json");
 
 function populateLounges() {
-  post("/api/populateLounges", { zoomLink: undefined }).then((res) => {
-  });
+  post("/api/populateLounges", { zoomLink: undefined }).then((res) => {});
 }
 
 class Home extends Component {
@@ -46,7 +46,7 @@ class Home extends Component {
     props.updateSelectedPageName("");
   }
 
-  addToLounge = (userId, loungeId, callback = () => { }) => {
+  addToLounge = (userId, loungeId, callback = () => {}) => {
     let lounges = this.state.lounges;
     let lounge = lounges.find((l) => {
       return l._id + "" === loungeId;
@@ -91,7 +91,7 @@ class Home extends Component {
     }
   };
 
-  removeFromLounge = (userId, loungeId, callback = () => { }) => {
+  removeFromLounge = (userId, loungeId, callback = () => {}) => {
     if (loungeId !== "") {
       let lounges = this.state.lounges;
       let lounge = lounges.find((l) => {
@@ -227,10 +227,10 @@ class Home extends Component {
           >
             <TabPage
               labels={["Dashboard", "Settings/Privacy"].concat(
-                this.props.isSiteAdmin ? ["Admin"] : []
+                this.props.isSiteAdmin ? ["Admin", "Due Date Admin"] : []
               )}
               routerLinks={["dashboard", "settings"].concat(
-                this.props.isSiteAdmin ? ["admin"] : []
+                this.props.isSiteAdmin ? ["admin", "dueDateAdmin"] : []
               )}
               defaultRouterLink={"dashboard"}
             >
@@ -256,8 +256,8 @@ class Home extends Component {
                         .map((page) => {
                           let lounge = this.state.lounges
                             ? this.state.lounges.find((lounge) => {
-                              return lounge.main && page._id === lounge.pageId;
-                            })
+                                return lounge.main && page._id === lounge.pageId;
+                              })
                             : undefined;
                           //console.log(lounge);
                           if (lounge) return { lounge: lounge, page: page };
@@ -366,8 +366,8 @@ class Home extends Component {
                     Add MIT
                   </button>
                 ) : (
-                    <></>
-                  )}
+                  <></>
+                )}
                 {this.props.email === "dansun@mit.edu" ? (
                   <button
                     onClick={() => {
@@ -401,15 +401,16 @@ class Home extends Component {
                     Same As
                   </button>
                 ) : (
-                    <></>
-                  )}
+                  <></>
+                )}
                 {this.props.email === "dansun@mit.edu" ? (
                   <button onClick={populateLounges}>Populate Lounges</button>
                 ) : (
-                    <></>
-                  )}
+                  <></>
+                )}
               </div>
               <AdminRequests adminRequests={this.state.adminRequests} />
+              <DueDateAdmin allPages={this.props.allPages} />
             </TabPage>
           </Content>
 

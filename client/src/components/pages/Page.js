@@ -11,19 +11,7 @@ import AdminRequests from "../modules/AdminRequests";
 import AddEnterCode from "../modules/AddEnterCode";
 import MySpin from "../modules/MySpin";
 import { socket } from "../../client-socket.js";
-import {
-  Spin,
-  Space,
-  notification,
-  Button,
-  Typography,
-  Layout,
-  PageHeader,
-  Badge,
-  Row,
-  Col,
-  Alert,
-} from "antd";
+import { Spin, Space, Button, Typography, Layout, PageHeader, Badge, Row, Col, Alert } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 const { Header, Content, Footer, Sider } = Layout;
 const { Title, Text } = Typography;
@@ -269,6 +257,20 @@ class Page extends Component {
           adminRequests: data.adminRequests || [],
           showClasses: data.page.showClasses,
         });
+
+        let lounge = data.lounges
+          ? data.lounges.find((loungee) => {
+              return loungee.main;
+            })
+          : undefined;
+
+        if (lounge && this.props.loungeId !== lounge._id) {
+          this.removeSelfFromLounge(this.props.loungeId, () => {
+            this.addSelfToLounge(lounge._id, () => {
+              this.props.setLoungeId(lounge._id);
+            });
+          });
+        }
       }
     );
     // remember -- api calls go here!

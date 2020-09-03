@@ -21,18 +21,18 @@ export default function LoungesTab(props) {
       <></>
     ) : (
       <center>
-        {lounge._id !== props.loungeId ? (
-          <a
-            href={lounge.zoomLink}
-            target="_blank"
-            style={{
-              backgroundColor: "#3F90F7",
-              padding: "20px",
-              borderRadius: "10px",
-              color: "white",
-              fontSize: 50,
-            }}
-            onClick={() => {
+        <a
+          href={lounge.zoomLink}
+          target="_blank"
+          style={{
+            backgroundColor: "#3F90F7",
+            padding: "20px",
+            borderRadius: "10px",
+            color: "white",
+            fontSize: 25,
+          }}
+          onClick={() => {
+            /*
               if (props.loungeId !== lounge._id) {
                 props.removeSelfFromLounge(props.loungeId, () => {
                   props.addSelfToLounge(lounge._id, () => {
@@ -40,29 +40,11 @@ export default function LoungesTab(props) {
                   });
                 });
               }
-            }}
-          >
-            Hop In The Lounge
-          </a>
-        ) : (
-          <a
-            target="_blank"
-            style={{
-              backgroundColor: "#3F90F7",
-              padding: "20px",
-              borderRadius: "10px",
-              color: "white",
-              fontSize: 50,
-            }}
-            onClick={() => {
-              props.removeSelfFromLounge(props.loungeId, () => {
-                props.setLoungeId("");
-              });
-            }}
-          >
-            Remove From Lounge
-          </a>
-        )}
+              */
+          }}
+        >
+          Hop In The Lounge
+        </a>
       </center>
     );
   useEffect(() => {
@@ -70,7 +52,7 @@ export default function LoungesTab(props) {
   });
   return (
     <Row gutter={[16, 16]} style={{ height: "100%" }}>
-      <Col span={18} style={{ height: "100%" }}>
+      <Col span={12} style={{ height: "100%" }}>
         <div
           style={{
             backgroundImage: "url(" + gatherDemo + ")",
@@ -85,16 +67,21 @@ export default function LoungesTab(props) {
           {loungeCode}
         </div>
       </Col>
-      <Col span={6} style={{ height: "100%" }}>
-        <UserList
-          users={lounge.userIds.map((user) => {
-            return (
-              props.users.find((oneUser) => {
-                return oneUser.userId === user;
-              }) || { userId: "", name: "Former Member" }
-            );
-          })}
-        />
+      <Col span={12} style={{ height: "100%" }}>
+        <div style={{ height: "50%" }}>
+          <UserList
+            users={lounge.userIds.map((user) => {
+              return (
+                props.users.find((oneUser) => {
+                  return oneUser.userId === user;
+                }) || { userId: "", name: "Former Member" }
+              );
+            })}
+          />
+        </div>
+        <div style={{ height: "50%" }}>
+          <Chat page={props.page} pageId={props.page._id} />
+        </div>
       </Col>
     </Row>
   );
