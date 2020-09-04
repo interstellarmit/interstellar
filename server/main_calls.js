@@ -302,8 +302,8 @@ joinPage = (req, res) => {
                   req.body.home && req.user.isSiteAdmin
                     ? { honored: false }
                     : req.body.home
-                      ? { pageId: "!!!!!" }
-                      : {
+                    ? { pageId: "!!!!!" }
+                    : {
                         pageId: page.adminIds.includes(req.user._id) ? page._id : "!!!!!",
                         honored: false,
                       };

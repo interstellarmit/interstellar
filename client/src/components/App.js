@@ -120,7 +120,7 @@ class App extends Component {
 
     socket.on("message", (data) => {
       if (!this.state.userId) return;
-
+      if (!this.state.pageIds.includes(data.pageId)) return;
       let page = this.state.allPages.find((page) => {
         return page._id === data.pageId;
       });
