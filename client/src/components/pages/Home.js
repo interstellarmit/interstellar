@@ -47,9 +47,6 @@ class Home extends Component {
     props.updateSelectedPageName("");
   }
 
-  notify = (data) => {
-    this.setState({ notify: data });
-  };
   addToLounge = (userId, loungeId, callback = () => {}) => {
     let lounges = this.state.lounges;
     let lounge = lounges.find((l) => {
@@ -71,7 +68,7 @@ class Home extends Component {
     this.setState({ lounges: newLounges }, callback);
 
     if (this.props.user.userId !== userId) {
-      this.notify({
+      this.props.notify({
         message:
           (
             this.state.users.find((user) => {
@@ -120,7 +117,7 @@ class Home extends Component {
       });
 
       if (this.props.user.userId !== userId) {
-        this.notify({
+        this.props.notify({
           message:
             (
               this.state.users.find((user) => {
@@ -195,25 +192,6 @@ class Home extends Component {
       users.push(data.user);
       this.setState({ users: users });
     });
-
-    socket.on("message", (data) => {
-      if (!this.state.pageLoaded) return;
-
-      let page = this.props.myPages.find((page) => {
-        return page._id === data.pageId;
-      });
-      if (!page) return;
-      this.notify({
-        message: page.name,
-
-        description: data.name + ": " + data.text,
-        // placement: "bottomRight",
-        onClick: () => {
-          if (!page) return;
-          this.props.redirectPage("/" + page.pageType.toLowerCase() + "/" + page.name + "/lounge");
-        },
-      });
-    });
   }
 
   render() {
@@ -226,12 +204,7 @@ class Home extends Component {
       let page = this.props.myPages[i];
       pageMap[page._id] = page.name;
     }
-    if (this.state.notify) {
-      if (this.state.oldKey) notification.close(this.state.oldKey);
-      let key = new Date().toString();
-      notification.info(Object.assign(this.state.notify, { key: key }));
-      this.setState({ notify: undefined, oldKey: key });
-    }
+
     return (
       <>
         <Layout style={{ background: "rgba(240, 242, 245, 1)", height: "100vh" }}>

@@ -56,7 +56,7 @@ export default function LoungesTab(props) {
         <div
           style={{
             backgroundImage: "url(" + gatherDemo + ")",
-            height: "100%",
+            height: "calc(50% - 10px)",
             backgroundSize: "cover",
             backgroundRepeat: "no-repeat",
             display: "flex",
@@ -67,8 +67,6 @@ export default function LoungesTab(props) {
         >
           {loungeCode}
         </div>
-      </Col>
-      <Col span={12} style={{ height: "100%" }}>
         <div
           style={{
             background: "#FFFFFF",
@@ -77,7 +75,7 @@ export default function LoungesTab(props) {
             height: "calc(50% - 10px)",
             borderRadius: "10px",
             padding: "20px 20px 20px 20px",
-            margin: "0px 0px 0px 10px",
+            margin: "20px 0px 0px 10px",
             boxShadow: "0 10px 25px rgba(0,0,0,.02), 0 4px 10px rgba(0,0,0,.02)",
           }}
         >
@@ -91,15 +89,17 @@ export default function LoungesTab(props) {
             })}
           />
         </div>
+      </Col>
+      <Col span={12} style={{ height: "100%" }}>
         <div
           style={{
             background: "#FFFFFF",
             border: "1px solid #d9d9d9",
             boxSizing: "borderBox",
-            height: "calc(50% - 10px)",
+            height: "calc(100% - 10px)",
             borderRadius: "10px",
             padding: "20px 20px 20px 20px",
-            margin: "20px 0px 0px 10px",
+            margin: "0px 0px 0px 10px",
             boxShadow: "0 10px 25px rgba(0,0,0,.02), 0 4px 10px rgba(0,0,0,.02)",
           }}
         >

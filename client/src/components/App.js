@@ -9,7 +9,7 @@ import MySpin from "./modules/MySpin";
 import Confirmation from "./pages/Confirmation.js";
 import SignContract from "./pages/SignContract.js";
 import "../utilities.css";
-import { Row, Col, Divider, Spin, Modal, Layout, Button } from "antd";
+import { Row, Col, Divider, Spin, Modal, Layout, Button, notification } from "antd";
 import "antd/dist/antd.css";
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -116,6 +116,25 @@ class App extends Component {
 
         this.setState({ allPages: allPages });
       }
+    });
+
+    socket.on("message", (data) => {
+      if (!this.state.userId) return;
+
+      let page = this.state.allPages.find((page) => {
+        return page._id === data.pageId;
+      });
+      if (!page) return;
+      this.notify({
+        message: page.name,
+
+        description: data.name + ": " + data.text,
+        // placement: "bottomRight",
+        onClick: () => {
+          if (!page) return;
+          this.redirectPage("/" + page.pageType.toLowerCase() + "/" + page.name + "/lounge");
+        },
+      });
     });
   }
 
@@ -270,6 +289,10 @@ class App extends Component {
     });
   };
 
+  notify = (data) => {
+    this.setState({ notify: data });
+  };
+
   render() {
     if (!this.state.userId) {
       if (this.state.tryingToLogin) return <MySpin />;
@@ -303,6 +326,14 @@ class App extends Component {
         </Router>
       );
     }
+
+    if (this.state.notify) {
+      if (this.state.oldKey) notification.close(this.state.oldKey);
+      let key = new Date().toString();
+      notification.info(Object.assign(this.state.notify, { key: key }));
+      this.setState({ notify: undefined, oldKey: key });
+    }
+
     let myPages = this.state.allPages.filter((page) => {
       return this.state.pageIds.includes(page._id);
     });
@@ -367,6 +398,7 @@ class App extends Component {
                       setSeeHelpText={this.setSeeHelpText}
                       addClasses={this.addClasses}
                       email={this.state.email}
+                      notify={this.notify}
                     />
                     <Page
                       path="/class/:selectedPage"
