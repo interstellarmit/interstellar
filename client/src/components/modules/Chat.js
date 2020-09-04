@@ -51,10 +51,10 @@ class Chat extends Component {
               renderItem={(message) => {
                 return (
                   <List.Item style={{ display: "flex" }}>
-                    <div style={{ alignItems: "center" }}>
-                      <ProfilePic user={{ userId: message.userId, name: message.name }} />
-                      {"  " + message.name.split(" ")[0] + ": " + message.text}
-                    </div>
+                    <List.Item.Meta
+                      avatar={<ProfilePic user={{ userId: message.userId, name: message.name }} />}
+                      title={message.name.split(" ")[0] + ": " + message.text}
+                    />
                   </List.Item>
                 );
               }}
