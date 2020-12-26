@@ -40,7 +40,7 @@ let addCourse = async (course) => {
       Object.assign(course, {
         name: course.subject_id,
         pageType: "Class",
-        professor: course.instructors[0] || "",
+        professor: (course.instructors || [])[0] || "",
       })
     );
     //console.log(newCourse);
@@ -60,12 +60,19 @@ let clearClasses = async () => {
         keepIds.push(pg._id + "");
       })
   );
+  console.log("saving " + keepIds.length + " groups");
   let users = await User.find({});
   await Promise.all(
     users.map(async (user) => {
       user.pageIds = user.pageIds.filter((id) => {
-        return keepIds.includes(id);
+        return keepIds.includes(id.pageId); // CHANGE TO id.pageId
       });
+      /*.map((id) => {
+          return {
+            pageId: id,
+            semester: "All", // REMOVE THIS MAP ONCE ITS DONE!
+          };
+        });*/
       await user.save();
     })
   );

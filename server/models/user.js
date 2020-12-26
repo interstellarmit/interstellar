@@ -12,7 +12,7 @@ const UserSchema = new mongoose.Schema({
     default: false,
   },
   pageIds: {
-    type: [String],
+    type: Array, //[{ pageId: String, semester: String }],
     default: [],
   },
   visible: {
@@ -34,7 +34,7 @@ const UserSchema = new mongoose.Schema({
   signedContract: {
     type: Boolean,
     default: false,
-  }
+  },
 });
 
 // compile model from schema

@@ -18,6 +18,7 @@ const PageSchema = new mongoose.Schema({
   offered_spring: Boolean,
   offered_IAP: Boolean,
   offered_summer: Boolean,
+  is_historical: Boolean,
   has_final: Boolean,
   joint_subjects: {
     type: [String],

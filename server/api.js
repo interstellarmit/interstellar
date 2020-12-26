@@ -59,7 +59,7 @@ router.get("/me", auth.me, async (req, res) => {
     let pages = await Page.find({
       expiryDate: { $gte: new Date() },
     }).select(
-      "name _id title locked pageType numPeople not_offered_year offered_spring offered_fall offered_IAP offered_summer"
+      "name _id title locked pageType numPeople is_historical not_offered_year offered_spring offered_fall offered_IAP offered_summer"
     );
 
     let allPages = [];
@@ -72,6 +72,7 @@ router.get("/me", auth.me, async (req, res) => {
         if (page.pageType === "Class" && term === "IAP" && !page.offered_IAP) return;
         if (page.pageType === "Class" && term === "Summer" && !page.offered_summer) return;
         if (page.pageType === "Class" && term === "Fall" && !page.offered_fall) return;
+        if (page.pageType === "Class" && page.is_historical) return;
         if (
           page.pageType === "Class" &&
           page.not_offered_year &&
@@ -156,6 +157,7 @@ router.post("/sameAs", auth.ensureLoggedIn, (req, res) => {
 
 router.post("/addClasses", auth.ensureLoggedIn, (req, res) => {
   let pageNames = req.body.pageNames;
+  let semester = req.body.semester || "spring-2021";
   let userPageIds = [];
   let addPage = (i) => {
     if (i >= pageNames.length) {
@@ -167,7 +169,7 @@ router.post("/addClasses", auth.ensureLoggedIn, (req, res) => {
       if (!page.locked || (page.locked && page.joinCode === req.body.joinCode)) {
         User.findById(req.user._id).then((user) => {
           if (!user.pageIds.includes(page._id)) {
-            user.pageIds.push(page._id);
+            user.pageIds.push({ pageId: page._id, semester: semester });
             userPageIds = user.pageIds;
             user.save().then(() => {
               socket

@@ -85,14 +85,24 @@ Socket: "userJoinedPage", {userId: String, name: String}
 Returns: {added: Boolean}
 Description: Checks if joinCode is correct. If so, Adds the user to the page, else doesn't
 */
+let pageIncludes = (list, one) => {
+  return list.find((pg) => {
+    return pg.pageId + "" === one.pageId + "" && pg.semester === one.semester;
+  });
+};
+
 addSelfToPage = (req, res) => {
   Page.findById(req.body.pageId).then((page) => {
     if (!page.locked || (page.locked && page.joinCode === req.body.joinCode)) {
       User.findById(req.user._id).then((user) => {
-        if (user.pageIds.includes(page._id)) {
+        let semester = page.pageType === "Group" ? "All" : req.body.semester || "spring-2021";
+        if (pageIncludes(user.pageIds, { pageId: page._id, semester: semester })) {
           res.send({ added: false });
         } else {
-          user.pageIds.push(page._id);
+          user.pageIds.push({
+            pageId: page._id + "",
+            semester: semester,
+          });
           user.save().then(() => {
             socket
               .getSocketFromUserID(req.user._id)
@@ -127,15 +137,20 @@ Description: Removes user from the page
 removeSelfFromPage = (req, res) => {
   Page.findById(req.body.pageId).then((page) => {
     User.findById(req.user._id).then((user) => {
-      if (user.pageIds.includes(req.body.pageId)) {
+      let semester = page.pageType === "Group" ? "All" : req.body.semester || "spring-2021";
+      console.log(user.pageIds);
+      console.log({ pageId: req.body.pageId, semester: semester });
+      if (pageIncludes(user.pageIds, { pageId: req.body.pageId, semester: semester })) {
+        console.log("found");
         user.pageIds = user.pageIds.filter((id) => {
-          return id !== req.body.pageId;
+          return id.pageId !== req.body.pageId;
         });
 
         user.save().then(() => {
           res.send({ removed: true });
         });
       } else {
+        console.log("not found");
         res.send({ removed: false });
       }
     });
@@ -179,7 +194,9 @@ joinPage = (req, res) => {
       let pageArr = [];
 
       if (req.body.home) {
-        pageArr = user.pageIds;
+        pageArr = user.pageIds.map((pg) => {
+          return pg.pageId;
+        });
         pageArr.forEach((onePageId) => {
           socket.getSocketFromUserID(req.user._id).join("Page: " + onePageId);
         });
@@ -203,7 +220,8 @@ joinPage = (req, res) => {
         });
         page.numPeople = inPageUsers.length;
         page.save();
-        if (req.body.home || user.pageIds.includes(page._id)) {
+        let semester = page.pageType === "Group" ? "All" : req.body.semester || "spring-2021";
+        if (req.body.home || pageIncludes(user.pageIds, { pageId: page._id, semester: semester })) {
           let returnValue = {
             users: inPageUsers,
             inPage: true,
