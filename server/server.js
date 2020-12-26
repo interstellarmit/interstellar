@@ -16,6 +16,7 @@
 // validator runs some basic checks to make sure you've set everything up correctly
 // this is a tool provided by staff, so you don't need to worry about it
 require("dotenv").config();
+const initialise = require("./initialise");
 const validator = require("./validator");
 validator.checkSetup();
 
@@ -109,5 +110,7 @@ const server = http.Server(app);
 socket.init(server);
 
 server.listen(port, () => {
+  //CAREFUL THIS CLEARES ALL THE CLASSES!
+  //initialise.initialise();
   console.log(`Server running on port: ${port}`);
 });

@@ -31,21 +31,28 @@ export default function InfoTab(props) {
               <Row>
                 <Rate allowHalf defaultValue={parseFloat(props.page.rating)} disabled count={7} />
                 <div style={{ padding: "10px" }}>{rating}/7.0</div>
-                <div style={{ padding: "10px" }}>{props.page.hours} hours</div>
+                <div style={{ padding: "10px" }}>
+                  {props.page.in_class_hours + props.page.out_of_class_hours} hours
+                </div>
               </Row>
             </React.Fragment>
           ) : (
-              <></>
-            )}
+            <></>
+          )}
           <Row>
-            <Text>{(props.page.description).replace(new RegExp("&nbsp;", 'g'), " ").replace(new RegExp("&quot;", 'g'), '"').replace(new RegExp("<\(\[\^>\]\)\*>", 'g'), '')}</Text>
+            <Text>
+              {props.page.description
+                .replace(new RegExp("&nbsp;", "g"), " ")
+                .replace(new RegExp("&quot;", "g"), '"')
+                .replace(new RegExp("<([^>])*>", "g"), "")}
+            </Text>
           </Row>
           <Row>
             {props.page.pageType === "Group" && !props.page.locked ? (
               <Text style={{ fontStyle: "italic" }}>{"This is a public group."}</Text>
             ) : (
-                <></>
-              )}
+              <></>
+            )}
           </Row>
         </Col>
         <Col span={12} style={{ height: "100%" }}>

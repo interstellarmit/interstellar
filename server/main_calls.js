@@ -54,9 +54,6 @@ createNewPage = (req, res) => {
         title: req.body.title,
         description: req.body.description,
         professor: req.body.professor,
-        rating: req.body.rating,
-        hours: req.body.hours,
-        units: req.body.units,
         expiryDate: expiryDate,
         adminIds: [req.user._id],
         schoolId: req.user.schoolId,
@@ -204,6 +201,8 @@ joinPage = (req, res) => {
             return { userId: singleUser._id, name: "Anonymous" };
           return { userId: singleUser._id, name: singleUser.name };
         });
+        page.numPeople = inPageUsers.length;
+        page.save();
         if (req.body.home || user.pageIds.includes(page._id)) {
           let returnValue = {
             users: inPageUsers,

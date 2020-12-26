@@ -48,38 +48,53 @@ router.post("/signUpLogin", auth.signUpLogin);
 router.get("/me", auth.me, async (req, res) => {
   try {
     // request.user is getting fetched from Middleware after token authentication
-    console.log("backend requser" + req.user);
-    const user = await User.findById(req.user.id);
-    //,
-    console.log("start slow part");
-    Page.find({
-      expiryDate: { $gte: new Date() },
-      //pageType: "Group",
-    })
-      .select("name _id title locked pageType")
 
-      .then((pages) => {
-        console.log("end slow part");
-        console.log("sending user " + user);
-        let allPages = [];
-        //console.log("sending pages" + pages);
-        pages.forEach((page) => {
-          allPages.push({
-            _id: String(page._id),
-            name: page.name,
-            title: page.title,
-            pageType: page.pageType,
-            locked: page.locked,
-          });
-          if (allPages.length === pages.length) {
-            req.session.user = user;
-            res.send({
-              user: user,
-              allPages: allPages,
-            });
-          }
+    const user = await User.findById(req.user.id);
+
+    // NEW: SEMESTER STUFF!
+    let semester = req.body.semester || "Spring 2021";
+    let term = semester.split(" ")[0];
+
+    let year = parseInt(semester.split(" ")[1]);
+    let pages = await Page.find({
+      expiryDate: { $gte: new Date() },
+    }).select(
+      "name _id title locked pageType numPeople not_offered_year offered_spring offered_fall offered_IAP offered_summer"
+    );
+
+    let allPages = [];
+    let p = 0;
+    await Promise.all(
+      pages.map((page) => {
+        // get classes that are available this semester
+        //console.log(page);
+        if (page.pageType === "Class" && term === "Spring" && !page.offered_spring) return;
+        if (page.pageType === "Class" && term === "IAP" && !page.offered_IAP) return;
+        if (page.pageType === "Class" && term === "Summer" && !page.offered_summer) return;
+        if (page.pageType === "Class" && term === "Fall" && !page.offered_fall) return;
+        if (
+          page.pageType === "Class" &&
+          page.not_offered_year &&
+          parseInt(page.not_offered_year.split("-")[term === "Spring" ? 1 : 0]) <= year
+        )
+          return;
+
+        allPages.push({
+          _id: String(page._id),
+          name: page.name,
+          title: page.title,
+          pageType: page.pageType,
+          locked: page.locked,
+          numPeople: page.numPeople,
         });
-      });
+      })
+    );
+
+    req.session.user = user;
+    res.send({
+      user: user,
+      allPages: allPages,
+    });
   } catch (e) {
     console.log(e);
     res.send({ message: "Error in Fetching user" });
@@ -137,6 +152,53 @@ router.post("/sameAs", auth.ensureLoggedIn, (req, res) => {
       });
     });
   }
+});
+
+router.post("/addClasses", auth.ensureLoggedIn, (req, res) => {
+  let pageNames = req.body.pageNames;
+  let userPageIds = [];
+  let addPage = (i) => {
+    if (i >= pageNames.length) {
+      res.send({ userPageIds: userPageIds });
+      return;
+    }
+    let pageName = pageNames[i];
+    Page.findOne({ name: pageName }).then((page) => {
+      if (!page.locked || (page.locked && page.joinCode === req.body.joinCode)) {
+        User.findById(req.user._id).then((user) => {
+          if (!user.pageIds.includes(page._id)) {
+            user.pageIds.push(page._id);
+            userPageIds = user.pageIds;
+            user.save().then(() => {
+              socket
+                .getSocketFromUserID(req.user._id)
+                .to("Page: " + page._id)
+                .emit("userJoinedPage", {
+                  pageId: page._id,
+                  user: {
+                    userId: req.user._id,
+                    name:
+                      req.user.visible || page.pageType === "Group" ? req.user.name : "Anonymous",
+                  },
+                });
+              setTimeout(() => {
+                addPage(i + 1);
+              }, 10);
+            });
+          } else {
+            setTimeout(() => {
+              addPage(i + 1);
+            }, 10);
+          }
+        });
+      } else {
+        setTimeout(() => {
+          addPage(i + 1);
+        }, 10);
+      }
+    });
+  };
+  addPage(0);
 });
 
 // anything else falls to this "not found" case
