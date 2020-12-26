@@ -3,6 +3,10 @@ const mongoose = require("mongoose");
 const PageSchema = new mongoose.Schema({
   pageType: String, // (ex: either "Class" or "Group"),
   name: String, // (ex: "6.033" or "ZBT"),
+  semesterId: {
+    type: String,
+    default: "all",
+  },
   title: {
     // (ex: "Computer Systems" or "Zeta Beta Tau"),
     type: String,
@@ -48,8 +52,8 @@ const PageSchema = new mongoose.Schema({
   },
   sameAs: {
     type: String,
-    default: ""
-  }
+    default: "",
+  },
 });
 
 // compile model from schema

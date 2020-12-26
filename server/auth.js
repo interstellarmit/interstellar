@@ -1,13 +1,7 @@
 require("dotenv").config();
 const { OAuth2Client } = require("google-auth-library");
 const User = require("./models/user");
-const Comment = require("./models/comment");
-const DDQL = require("./models/DDQL");
-const GroupPost = require("./models/groupPost");
-const Lounge = require("./models/lounge");
-const Message = require("./models/message");
 const Page = require("./models/page");
-const School = require("./models/school");
 const socket = require("./server-socket");
 var crypto = require("crypto");
 var nodemailer = require("nodemailer");
