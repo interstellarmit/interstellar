@@ -86,6 +86,9 @@ let getAllPages = async (semester) => {
   return allPages;
 };
 router.post("/updateSemester", async (req, res) => {
+  if (!req.user || !req.user._id) {
+    res.send({ broken: true });
+  }
   let semester = req.body.semester || "spring-2021";
   let allPages = await getAllPages(semester);
 

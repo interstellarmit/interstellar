@@ -206,6 +206,10 @@ class App extends Component {
       },
       () => {
         post("/api/updateSemester", { semester: this.state.semester }).then((res) => {
+          if (res.broken) {
+            this.disconnect();
+            return;
+          }
           this.setState({
             allPages: res.allPages,
             pageIds: res.user.pageIds,
