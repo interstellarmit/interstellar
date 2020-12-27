@@ -232,9 +232,10 @@ joinPage = (req, res) => {
           }
           res.send(returnValue);
         } else {
+          let hiddenPage = page;
           res.send({
             users: page.locked ? [] : condensedUsers,
-            page: Object.assign(page, { joinCode: "INVISIBLE" }),
+            page: Object.assign(hiddenPage, { joinCode: "INVISIBLE" }),
             inPage: false,
           });
         }
