@@ -220,25 +220,28 @@ joinPage = (req, res) => {
           return { userId: singleUser._id, name: singleUser.name };
         });
         page.numPeople = inPageUsers.length;
-        page.save();
-        let semester = page.pageType === "Group" ? "All" : req.body.semester || "spring-2021";
-        if (req.body.home || pageIncludes(user.pageIds, { pageId: page._id, semester: semester })) {
-          let returnValue = {
-            users: inPageUsers,
-            inPage: true,
-          };
-          if (!req.body.home) {
-            returnValue.page = page;
+        page.save().then(() => {
+          let semester = page.pageType === "Group" ? "All" : req.body.semester || "spring-2021";
+          if (
+            req.body.home ||
+            pageIncludes(user.pageIds, { pageId: page._id, semester: semester })
+          ) {
+            let returnValue = {
+              users: inPageUsers,
+              inPage: true,
+            };
+            if (!req.body.home) {
+              returnValue.page = page;
+            }
+            res.send(returnValue);
+          } else {
+            res.send({
+              users: page.locked ? [] : condensedUsers,
+              page: Object.assign(page, { joinCode: "INVISIBLE" }),
+              inPage: false,
+            });
           }
-          res.send(returnValue);
-        } else {
-          let hiddenPage = page;
-          res.send({
-            users: page.locked ? [] : condensedUsers,
-            page: Object.assign(hiddenPage, { joinCode: "INVISIBLE" }),
-            inPage: false,
-          });
-        }
+        });
       });
     });
   });
