@@ -32,7 +32,8 @@ export default function InfoTab(props) {
                 <Rate allowHalf defaultValue={parseFloat(props.page.rating)} disabled count={7} />
                 <div style={{ padding: "10px" }}>{rating}/7.0</div>
                 <div style={{ padding: "10px" }}>
-                  {props.page.in_class_hours + props.page.out_of_class_hours} hours
+                  {Number(props.page.in_class_hours + props.page.out_of_class_hours).toFixed(1) +
+                    " Hours"}
                 </div>
               </Row>
             </React.Fragment>
