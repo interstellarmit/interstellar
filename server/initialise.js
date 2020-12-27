@@ -54,7 +54,7 @@ let clearClasses = async () => {
   await Promise.all(
     pages
       .filter((pg) => {
-        return pg.pageType && pg.pageType !== "Class";
+        return pg.pageType !== "Class";
       })
       .map(async (pg) => {
         keepIds.push(pg._id + "");
@@ -64,15 +64,18 @@ let clearClasses = async () => {
   let users = await User.find({});
   await Promise.all(
     users.map(async (user) => {
-      user.pageIds = user.pageIds.filter((id) => {
-        return keepIds.includes(id.pageId); // CHANGE TO id.pageId
-      });
-      /*.map((id) => {
-          return {
-            pageId: id,
-            semester: "All", // REMOVE THIS MAP ONCE ITS DONE!
-          };
-        });*/
+      user.pageIds = user.pageIds
+        .filter((id) => {
+          return (id.pageId && keepIds.includes(id.pageId)) || keepIds.includes(id); // CHANGE TO id.pageId
+        })
+        .map((id) => {
+          if (typeof id === "string") {
+            return {
+              pageId: id,
+              semester: "All", // REMOVE THIS MAP ONCE ITS DONE!
+            };
+          } else return id;
+        });
       await user.save();
     })
   );
