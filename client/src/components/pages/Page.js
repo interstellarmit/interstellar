@@ -36,7 +36,8 @@ class Page extends Component {
     post("/api/joinPage", { pageName: this.state.pageName, semester: this.props.semester }).then(
       (data) => {
         if (data.broken) {
-          this.props.disconnect();
+          //this.props.disconnect();
+          this.props.logout();
           return;
         }
         this.setState({

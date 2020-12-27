@@ -33,7 +33,8 @@ class Home extends Component {
   componentDidMount() {
     post("api/joinPage", { home: true, semester: this.props.semester }).then((data) => {
       if (data.broken) {
-        this.props.disconnect();
+        this.props.logout();
+        //this.props.disconnect();
         return;
       }
       this.setState({

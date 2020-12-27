@@ -52,14 +52,9 @@ class App extends Component {
       semester: semester,
       // currentPageName from URL?
     };
-    let link = window.location.origin.replace("http:", "https:") + "/";
-    if (link.includes("localhost:5000")) link = window.location.origin + "/";
-    // console.log(window.location.origin)
-    // console.log(window.location.href)
-    // this.encodedLink = link.charAt(link.length - 1) === "/" ? link.substring(0, link.length - 1) : link;
-    this.encodedLink = encodeURIComponent(link);
+
     let self = this;
-    if (cookies.get("token") != undefined && cookies.get("token").length > 0) {
+    if (cookies.get("token") && cookies.get("token").length > 0) {
       self.me();
     } else if (window.location.href.indexOf("?code") > 0) {
       let code = window.location.href.substring(window.location.href.indexOf("?code"));
@@ -128,8 +123,15 @@ class App extends Component {
   */
 
   handleLogin = () => {
+    let link = window.location.origin.replace("http:", "https:") + window.location.pathname;
+    if (link.includes("localhost:5000")) link = window.location.origin + window.location.pathname;
+    // console.log(window.location.origin)
+    // console.log(window.location.href)
+    // this.encodedLink = link.charAt(link.length - 1) === "/" ? link.substring(0, link.length - 1) : link;
+    let encodedLink = encodeURIComponent(link);
+
     post("/api/getRedirectLink", {}).then((ret) => {
-      window.location.href = ret.link + "login?redirect=" + this.encodedLink;
+      window.location.href = ret.link + "login?redirect=" + encodedLink;
     });
   };
 
