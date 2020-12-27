@@ -6,6 +6,6 @@ export const socket = socketIOClient(endpoint, {
   reconnectionDelay: 500,
   reconnectionAttempts: 10,
 });
-socket.on("connect", () => {
+/*socket.on("connect", () => {
   post("/api/initsocket", { socketid: socket.id });
-});
+});*/
