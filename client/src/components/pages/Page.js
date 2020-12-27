@@ -88,7 +88,11 @@ class Page extends Component {
   };
 
   addSelfToPage = (id, joinCode = "") => {
-    post("/api/addSelfToPage", { pageId: id, joinCode: joinCode }).then((data) => {
+    post("/api/addSelfToPage", {
+      pageId: id,
+      joinCode: joinCode,
+      semester: this.props.semester,
+    }).then((data) => {
       if (data.added) {
         let newPageIds = this.props.pageIds;
         newPageIds.push(id);
@@ -114,7 +118,10 @@ class Page extends Component {
       <Button
         type="primary"
         onClick={() => {
-          post("/api/removeSelfFromPage", { pageId: this.state.page._id }).then((data) => {
+          post("/api/removeSelfFromPage", {
+            pageId: this.state.page._id,
+            semester: this.props.semester,
+          }).then((data) => {
             if (data.removed) {
               this.props.updatePageIds(
                 this.props.pageIds.filter((id) => {

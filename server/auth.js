@@ -45,7 +45,7 @@ function me(req, res, next) {
 
     req.user = decoded.user;
 
-    console.log(req.user);
+    // console.log(req.user);
     console.log("got to next in backend auth me");
     next();
   } catch (e) {

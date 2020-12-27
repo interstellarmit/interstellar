@@ -48,6 +48,7 @@ class App extends Component {
       selectedPageName: "",
       redirectPage: "",
       tryingToLogin: true,
+
       // currentPageName from URL?
     };
     let link = window.location.origin.replace("http:", "https:") + "/";
@@ -196,25 +197,40 @@ class App extends Component {
     });
   };
 
-  me = () => {
+  me = async () => {
     let token = cookies.get("token");
-    get("/api/me", {}, token).then((res) => {
-      if (!res.user) {
-        this.logout();
-        return;
-      }
-      this.setState({
+    let res = await get("/api/me", {}, token);
+    if (!res.user) {
+      this.logout();
+      return;
+    }
+    this.setState(
+      {
         userId: res.user._id,
         schoolId: res.user.schoolId,
         name: res.user.name,
         loungeId: res.user.loungeId,
-        pageIds: res.user.pageIds,
+        //pageIds: res.user.pageIds,
         isSiteAdmin: res.user.isSiteAdmin,
         email: res.user.email,
         visible: res.user.visible,
         seeHelpText: res.user.seeHelpText,
-        allPages: res.allPages,
+        //allPages: res.allPages,
         signedContract: res.user.signedContract,
+      },
+      () => {
+        this.changeSemester("spring-2021");
+      }
+    );
+  };
+
+  changeSemester = (semester) => {
+    console.log("Changing Semester");
+    post("/api/updateSemester", { semester: semester }).then((res) => {
+      this.setState({
+        allPages: res.allPages,
+        pageIds: res.user.pageIds,
+        semester: semester,
       });
     });
   };
@@ -294,7 +310,7 @@ class App extends Component {
   };
 
   render() {
-    if (!this.state.userId) {
+    if (!this.state.userId || !this.state.semester) {
       if (this.state.tryingToLogin) return <MySpin />;
       return (
         <>
@@ -372,6 +388,8 @@ class App extends Component {
               logout={this.logout}
               logState={this.logState}
               email={this.state.email}
+              semester={this.state.semester}
+              changeSemester={this.changeSemester}
             />
             <Layout className="site-layout">
               <Content>
@@ -399,6 +417,7 @@ class App extends Component {
                       addClasses={this.addClasses}
                       email={this.state.email}
                       notify={this.notify}
+                      semester={this.state.semester}
                     />
                     <Page
                       path="/class/:selectedPage"
@@ -419,6 +438,7 @@ class App extends Component {
                       visible={this.state.visible}
                       seeHelpText={this.state.seeHelpText}
                       setSeeHelpText={this.setSeeHelpText}
+                      semester={this.state.semester}
                     />
                     <Page
                       path="/group/:selectedPage"
@@ -437,6 +457,7 @@ class App extends Component {
                       seeHelpText={this.state.seeHelpText}
                       setSeeHelpText={this.setSeeHelpText}
                       logout={this.logout}
+                      semester={this.state.semester}
                     />
                     <NotFound default />
                   </Switch>

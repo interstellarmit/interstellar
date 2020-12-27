@@ -3,7 +3,8 @@ import MediaQuery from "react-responsive";
 import "antd/dist/antd.css";
 import "../../utilities.css";
 //import { redirectPage } from "@reach/router";
-import { Menu, Dropdown, Layout } from "antd";
+import { Menu, Dropdown, Layout, Select } from "antd";
+const { Option } = Select;
 import SearchBar from "./SearchBar";
 import {
   HomeOutlined,
@@ -49,31 +50,43 @@ export default function SideBar(props) {
           </div>
         </div>
       ) : (
-          <div style={{ margin: "15px 10px 0px 10px" }}>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                width: "100%",
-                overflow: "hidden",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "30px",
-                fontFamily: "Chakra Petch",
-                color: "#fff",
-                fontWeight: "700",
-              }}
-            >
-              <img src={logo} style={{ height: "30px" }} /> <div style={{ width: "10px" }} />
+        <div style={{ margin: "15px 10px 0px 10px" }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              width: "100%",
+              overflow: "hidden",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "30px",
+              fontFamily: "Chakra Petch",
+              color: "#fff",
+              fontWeight: "700",
+            }}
+          >
+            <img src={logo} style={{ height: "30px" }} /> <div style={{ width: "10px" }} />
             interstellar
           </div>
-          </div>
-        )}
+        </div>
+      )}
       <SearchBar
         redirectPage={props.redirectPage}
         collapsed={collapsed}
         allPages={props.allPages}
       />
+      <Select
+        defaultValue="spring-2021"
+        onChange={(value) => {
+          props.changeSemester(value);
+        }}
+        style={{ width: "calc(100% - 32px)", margin: "0px 16px 16px 16px" }}
+      >
+        <Option value="spring-2021">Spring 2021</Option>
+        <Option value="iap-2021">IAP 2021</Option>
+        <Option value="fall-2020">Fall 2020</Option>
+      </Select>
+
       <Menu
         theme="dark"
         selectedKeys={[props.selectedPageName === "" ? ".ho!!me." : props.selectedPageName]}

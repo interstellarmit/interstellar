@@ -45,56 +45,77 @@ router.post("/login", [check("email", "Please enter a valid email").isEmail()], 
 
 router.post("/signUpLogin", auth.signUpLogin);
 
+let getAllPages = async (semester) => {
+  let term = semester.split("-")[0];
+
+  let year = parseInt(semester.split("-")[1]);
+  let pages = await Page.find({
+    expiryDate: { $gte: new Date() },
+  }).select(
+    "name _id title locked pageType numPeople is_historical not_offered_year offered_spring offered_fall offered_IAP offered_summer"
+  );
+
+  let allPages = [];
+  await Promise.all(
+    pages.map((page) => {
+      // get classes that are available this semester
+      //console.log(page);
+      if (page.pageType === "Class" && term === "spring" && !page.offered_spring) return;
+      if (page.pageType === "Class" && term === "iap" && !page.offered_IAP) return;
+      if (page.pageType === "Class" && term === "summer" && !page.offered_summer) return;
+      if (page.pageType === "Class" && term === "fall" && !page.offered_fall) return;
+      if (page.pageType === "Class" && page.is_historical) return;
+      if (
+        page.pageType === "Class" &&
+        page.not_offered_year &&
+        parseInt(page.not_offered_year.split("-")[term === "spring" ? 1 : 0]) <= year
+      )
+        return;
+
+      allPages.push({
+        _id: String(page._id),
+        name: page.name,
+        title: page.title,
+        pageType: page.pageType,
+        locked: page.locked,
+        numPeople: page.numPeople,
+      });
+    })
+  );
+
+  return allPages;
+};
+router.post("/updateSemester", async (req, res) => {
+  let semester = req.body.semester || "spring-2021";
+  let allPages = await getAllPages(semester);
+
+  let user = await User.findById(req.user._id);
+  user = Object.assign(user, {
+    pageIds: user.pageIds
+      .filter((id) => {
+        return id.semester === semester || id.semester === "All";
+      })
+      .map((id) => {
+        return id.pageId;
+      }),
+  });
+  res.send({ user: user, allPages: allPages });
+});
+
 router.get("/me", auth.me, async (req, res) => {
   try {
     // request.user is getting fetched from Middleware after token authentication
 
     const user = await User.findById(req.user.id);
 
-    // NEW: SEMESTER STUFF!
-    let semester = req.body.semester || "Spring 2021";
-    let term = semester.split(" ")[0];
-
-    let year = parseInt(semester.split(" ")[1]);
-    let pages = await Page.find({
-      expiryDate: { $gte: new Date() },
-    }).select(
-      "name _id title locked pageType numPeople is_historical not_offered_year offered_spring offered_fall offered_IAP offered_summer"
-    );
-
-    let allPages = [];
-    let p = 0;
-    await Promise.all(
-      pages.map((page) => {
-        // get classes that are available this semester
-        //console.log(page);
-        if (page.pageType === "Class" && term === "Spring" && !page.offered_spring) return;
-        if (page.pageType === "Class" && term === "IAP" && !page.offered_IAP) return;
-        if (page.pageType === "Class" && term === "Summer" && !page.offered_summer) return;
-        if (page.pageType === "Class" && term === "Fall" && !page.offered_fall) return;
-        if (page.pageType === "Class" && page.is_historical) return;
-        if (
-          page.pageType === "Class" &&
-          page.not_offered_year &&
-          parseInt(page.not_offered_year.split("-")[term === "Spring" ? 1 : 0]) <= year
-        )
-          return;
-
-        allPages.push({
-          _id: String(page._id),
-          name: page.name,
-          title: page.title,
-          pageType: page.pageType,
-          locked: page.locked,
-          numPeople: page.numPeople,
-        });
-      })
-    );
+    //let semester = "spring-2021";
+    //let allPages = await getAllPages(semester);
 
     req.session.user = user;
     res.send({
-      user: user,
-      allPages: allPages,
+      user: Object.assign(user, {
+        pageIds: [],
+      }),
     });
   } catch (e) {
     console.log(e);
@@ -161,7 +182,15 @@ router.post("/addClasses", auth.ensureLoggedIn, (req, res) => {
   let userPageIds = [];
   let addPage = (i) => {
     if (i >= pageNames.length) {
-      res.send({ userPageIds: userPageIds });
+      res.send({
+        userPageIds: userPageIds
+          .filter((id) => {
+            return id.semester === semester || id.semester === "All";
+          })
+          .map((id) => {
+            return id.pageId;
+          }),
+      });
       return;
     }
     let pageName = pageNames[i];
