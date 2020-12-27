@@ -190,7 +190,7 @@ router.post("/addClasses", auth.ensureLoggedIn, (req, res) => {
             return id.semester === semester || id.semester === "All";
           })
           .map((id) => {
-            return id.pageId;
+            return id.pageId + "";
           }),
       });
       return;
@@ -200,7 +200,7 @@ router.post("/addClasses", auth.ensureLoggedIn, (req, res) => {
       if (!page.locked || (page.locked && page.joinCode === req.body.joinCode)) {
         User.findById(req.user._id).then((user) => {
           if (!user.pageIds.includes(page._id)) {
-            user.pageIds.push({ pageId: page._id, semester: semester });
+            user.pageIds.push({ pageId: page._id + "", semester: semester });
             userPageIds = user.pageIds;
             user.save().then(() => {
               socket

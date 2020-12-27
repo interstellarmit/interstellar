@@ -58,7 +58,7 @@ export default function MultipleSearchBar(props) {
       <Select
         mode="multiple"
         style={{ width: "calc(100% - 46px)" }}
-        placeholder="Start by entering your schedule"
+        placeholder={props.placeholder}
         defaultValue={[]}
         defaultOpen
         onChange={(value) => {

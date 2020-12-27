@@ -223,7 +223,8 @@ joinPage = (req, res) => {
           page.numPeople = inPageUsers.length;
           await page.save();
         }
-        let semester = page.pageType === "Group" ? "All" : req.body.semester || "spring-2021";
+        let semester =
+          page && page.pageType === "Group" ? "All" : req.body.semester || "spring-2021";
         if (req.body.home || pageIncludes(user.pageIds, { pageId: page._id, semester: semester })) {
           let returnValue = {
             users: inPageUsers,

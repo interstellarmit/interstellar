@@ -33,19 +33,21 @@ class Page extends Component {
   }
 
   componentDidMount() {
-    post("/api/joinPage", { pageName: this.state.pageName }).then((data) => {
-      if (data.broken) {
-        this.props.disconnect();
-        return;
+    post("/api/joinPage", { pageName: this.state.pageName, semester: this.props.semester }).then(
+      (data) => {
+        if (data.broken) {
+          this.props.disconnect();
+          return;
+        }
+        this.setState({
+          users: data.users || [],
+          page: data.page,
+          pageLoaded: true,
+          inPage: data.inPage,
+          showClasses: data.page.showClasses,
+        });
       }
-      this.setState({
-        users: data.users || [],
-        page: data.page,
-        pageLoaded: true,
-        inPage: data.inPage,
-        showClasses: data.page.showClasses,
-      });
-    });
+    );
     // remember -- api calls go here!
 
     socket.on("userJoinedPage", (data) => {
@@ -247,6 +249,7 @@ class Page extends Component {
             routerLinks={["info"]}
             defaultRouterLink={"info"}
             page={this.state.page}
+            semester={this.props.semester}
           >
             <InfoTab
               users={this.state.users}

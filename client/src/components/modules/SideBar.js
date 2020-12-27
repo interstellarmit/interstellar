@@ -76,7 +76,7 @@ export default function SideBar(props) {
         allPages={props.allPages}
       />
       <Select
-        defaultValue="spring-2021"
+        defaultValue={props.semester}
         onChange={(value) => {
           props.changeSemester(value);
         }}

@@ -41,6 +41,7 @@ class App extends Component {
   // makes props available in this component
   constructor(props) {
     super(props);
+    let semester = this.props.computedMatch.params.semester || "spring-2021";
     this.state = {
       userId: undefined,
       allPages: [],
@@ -48,7 +49,7 @@ class App extends Component {
       selectedPageName: "",
       redirectPage: "",
       tryingToLogin: true,
-
+      semester: semester,
       // currentPageName from URL?
     };
     let link = window.location.origin.replace("http:", "https:") + "/";
@@ -202,18 +203,25 @@ class App extends Component {
         signedContract: res.user.signedContract,
       },
       () => {
-        this.changeSemester("spring-2021");
+        post("/api/updateSemester", { semester: this.state.semester }).then((res) => {
+          this.setState({
+            allPages: res.allPages,
+            pageIds: res.user.pageIds,
+          });
+        });
       }
     );
   };
 
   changeSemester = (semester) => {
-    console.log("Changing Semester");
-    post("/api/updateSemester", { semester: semester }).then((res) => {
-      this.setState({
-        allPages: res.allPages,
-        pageIds: res.user.pageIds,
-        semester: semester,
+    this.setState({ pageIds: [] }, () => {
+      post("/api/updateSemester", { semester: semester }).then((res) => {
+        this.setState({
+          allPages: res.allPages,
+          pageIds: res.user.pageIds,
+          redirectPage: window.location.pathname.replace(this.state.semester, semester),
+          semester: semester,
+        });
       });
     });
   };
@@ -249,7 +257,7 @@ class App extends Component {
   };
 
   redirectPage = (link) => {
-    this.setState({ redirectPage: link });
+    this.setState({ redirectPage: "/" + this.state.semester + link });
   };
 
   logState = () => {
@@ -269,7 +277,11 @@ class App extends Component {
   };
 
   addClasses = (classList) => {
-    post("/api/addClasses", { joinCode: "", pageNames: classList }).then((res) => {
+    post("/api/addClasses", {
+      joinCode: "",
+      pageNames: classList,
+      semester: this.state.semester,
+    }).then((res) => {
       let pageIds = this.state.pageIds;
       for (var i = 0; i < res.userPageIds.length; i++) {
         let pageId = res.userPageIds[i];
@@ -279,7 +291,8 @@ class App extends Component {
       }
       this.setState({
         pageIds: pageIds,
-        redirectPage: classList[0] ? "/class/" + classList[0] : "/dashboard",
+        redirectPage:
+          "/" + this.state.semester + (classList[0] ? "/class/" + classList[0] : "/dashboard"),
       });
     });
   };
@@ -289,7 +302,7 @@ class App extends Component {
   };
 
   render() {
-    if (!this.state.userId || !this.state.semester) {
+    if (!this.state.userId || !this.state.allPages) {
       if (this.state.tryingToLogin) return <MySpin />;
       return (
         <>
@@ -376,7 +389,9 @@ class App extends Component {
                   <Switch>
                     <Home
                       exact
-                      path={["/", "/dashboard", "/settings", "/admin", "/dueDateAdmin"]}
+                      path={["/", "/dashboard", "/settings", "/admin", "/dueDateAdmin"].map((s) => {
+                        return "/:semester" + s;
+                      })}
                       schoolId={this.state.schoolId}
                       updateSelectedPageName={this.updateSelectedPageName}
                       user={{
@@ -399,7 +414,7 @@ class App extends Component {
                       semester={this.state.semester}
                     />
                     <Page
-                      path="/class/:selectedPage"
+                      path={"/:semester/class/:selectedPage"}
                       schoolId={this.state.schoolId}
                       pageIds={this.state.pageIds}
                       updatePageIds={this.updatePageIds}
@@ -420,7 +435,7 @@ class App extends Component {
                       semester={this.state.semester}
                     />
                     <Page
-                      path="/group/:selectedPage"
+                      path={"/:semester/group/:selectedPage"}
                       schoolId={this.state.schoolId}
                       pageIds={this.state.pageIds}
                       updatePageIds={this.updatePageIds}

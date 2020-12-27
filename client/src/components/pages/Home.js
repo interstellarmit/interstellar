@@ -31,7 +31,7 @@ class Home extends Component {
   }
 
   componentDidMount() {
-    post("api/joinPage", { home: true }).then((data) => {
+    post("api/joinPage", { home: true, semester: this.props.semester }).then((data) => {
       if (data.broken) {
         this.props.disconnect();
         return;
@@ -51,7 +51,9 @@ class Home extends Component {
       let page = this.props.myPages[i];
       pageMap[page._id] = page.name;
     }
-
+    let semester =
+      this.props.semester.replace("-", " ")[0].toUpperCase() +
+      this.props.semester.replace("-", " ").substring(1);
     return (
       <>
         <Layout style={{ background: "rgba(240, 242, 245, 1)", height: "100vh" }}>
@@ -79,7 +81,16 @@ class Home extends Component {
               routerLinks={["dashboard", "settings"]}
               defaultRouterLink={"dashboard"}
             >
-              <div>Dashboard (what to put here)</div>
+              <div>
+                <MultipleSearchBar
+                  size="large"
+                  allPages={this.props.allPages}
+                  placeholder={"Add classes to your " + semester + " schedule!"}
+                  redirectPage={this.props.redirectPage}
+                  defaultOpen={true}
+                  addClasses={this.props.addClasses}
+                />
+              </div>
               <div>
                 <div
                   style={{
@@ -152,7 +163,8 @@ class Home extends Component {
           </div>
         </Layout>
 
-        {
+        {/*
+
           <div>
             <Modal
               visible={this.props.myPages.length === 0}
@@ -175,7 +187,7 @@ class Home extends Component {
               />
             </Modal>
           </div>
-        }
+          */}
       </>
     );
   }
