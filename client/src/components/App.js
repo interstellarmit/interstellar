@@ -52,6 +52,7 @@ class App extends Component {
       // currentPageName from URL?
     };
     let link = window.location.origin.replace("http:", "https:") + "/";
+    if (link.includes("localhost:5000")) link = window.location.origin + "/";
     // console.log(window.location.origin)
     // console.log(window.location.href)
     // this.encodedLink = link.charAt(link.length - 1) === "/" ? link.substring(0, link.length - 1) : link;
@@ -98,6 +99,7 @@ class App extends Component {
       this.setState({ disconnect: true });
     });
     socket.on("disconnect", (reason) => {
+      console.log(reason);
       if (reason === "io server disconnect") {
         this.setState({ disconnect: true });
       }
@@ -117,25 +119,6 @@ class App extends Component {
 
         this.setState({ allPages: allPages });
       }
-    });
-
-    socket.on("message", (data) => {
-      if (!this.state.userId) return;
-      if (!this.state.pageIds.includes(data.pageId)) return;
-      let page = this.state.allPages.find((page) => {
-        return page._id === data.pageId;
-      });
-      if (!page) return;
-      this.notify({
-        message: page.name,
-
-        description: data.name + ": " + data.text,
-        // placement: "bottomRight",
-        onClick: () => {
-          if (!page) return;
-          this.redirectPage("/" + page.pageType.toLowerCase() + "/" + page.name + "/lounge");
-        },
-      });
     });
   }
 
@@ -267,10 +250,6 @@ class App extends Component {
 
   redirectPage = (link) => {
     this.setState({ redirectPage: link });
-  };
-
-  setLoungeId = (newId) => {
-    this.setState({ loungeId: newId });
   };
 
   logState = () => {

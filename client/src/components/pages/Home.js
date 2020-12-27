@@ -31,7 +31,17 @@ class Home extends Component {
   }
 
   componentDidMount() {
-    document.getElementsByClassName("ant-tabs-content")[0].style.height = "100%";
+    post("api/joinPage", { home: true }).then((data) => {
+      if (data.broken) {
+        this.props.disconnect();
+        return;
+      }
+      this.setState({
+        users: data.users || [],
+        pageLoaded: true,
+      });
+      document.getElementsByClassName("ant-tabs-content")[0].style.height = "100%";
+    });
   }
 
   render() {

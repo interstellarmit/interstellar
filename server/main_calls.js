@@ -180,7 +180,7 @@ Description: If the user is in the page, returns the users, due dates that have 
 joinPage = (req, res) => {
   console.log("joining page with user ");
   console.log(req.user);
-  if (!req.user || !req.user._id) {
+  if (!req.user || !req.user._id || !socket.getSocketFromUserID(req.user._id)) {
     console.log("broken", req.user);
     res.send({ broken: true });
     return;
@@ -205,7 +205,7 @@ joinPage = (req, res) => {
         pageArr = [page._id];
       }
 
-      User.find({ pageIds: { $in: pageArr } }, (err, users) => {
+      User.find({ pageIds: { $in: pageArr } }, async (err, users) => {
         let condensedUsers = users.map((singleUser) => {
           if ((req.body.home || page.pageType === "Class") && !singleUser.visible)
             return { userId: singleUser._id, name: "Anonymous" };
@@ -219,29 +219,27 @@ joinPage = (req, res) => {
             return { userId: singleUser._id, name: "Anonymous" };
           return { userId: singleUser._id, name: singleUser.name };
         });
-        page.numPeople = inPageUsers.length;
-        page.save().then(() => {
-          let semester = page.pageType === "Group" ? "All" : req.body.semester || "spring-2021";
-          if (
-            req.body.home ||
-            pageIncludes(user.pageIds, { pageId: page._id, semester: semester })
-          ) {
-            let returnValue = {
-              users: inPageUsers,
-              inPage: true,
-            };
-            if (!req.body.home) {
-              returnValue.page = page;
-            }
-            res.send(returnValue);
-          } else {
-            res.send({
-              users: page.locked ? [] : condensedUsers,
-              page: Object.assign(page, { joinCode: "INVISIBLE" }),
-              inPage: false,
-            });
+        if (page) {
+          page.numPeople = inPageUsers.length;
+          await page.save();
+        }
+        let semester = page.pageType === "Group" ? "All" : req.body.semester || "spring-2021";
+        if (req.body.home || pageIncludes(user.pageIds, { pageId: page._id, semester: semester })) {
+          let returnValue = {
+            users: inPageUsers,
+            inPage: true,
+          };
+          if (!req.body.home) {
+            returnValue.page = page;
           }
-        });
+          res.send(returnValue);
+        } else {
+          res.send({
+            users: page.locked ? [] : condensedUsers,
+            page: Object.assign(page, { joinCode: "INVISIBLE" }),
+            inPage: false,
+          });
+        }
       });
     });
   });

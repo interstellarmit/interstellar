@@ -129,7 +129,9 @@ router.get("/whoami", (req, res) => {
     // not logged in
     return res.send({});
   }
-  res.send(req.user);
+  User.findById(req.user._id).then((user) => {
+    res.send(user);
+  });
 });
 
 router.post("/confirmation", auth.confirmationPost);
