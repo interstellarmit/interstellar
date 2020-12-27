@@ -206,6 +206,7 @@ router.post("/addClasses", auth.ensureLoggedIn, (req, res) => {
                 .to("Page: " + page._id)
                 .emit("userJoinedPage", {
                   pageId: page._id,
+                  semester: semester,
                   user: {
                     userId: req.user._id,
                     name:

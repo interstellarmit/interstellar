@@ -109,6 +109,7 @@ addSelfToPage = (req, res) => {
               .to("Page: " + page._id)
               .emit("userJoinedPage", {
                 pageId: page._id,
+                semester: semester,
                 user: {
                   userId: req.user._id,
                   name: req.user.visible || page.pageType === "Group" ? req.user.name : "Anonymous",

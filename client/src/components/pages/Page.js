@@ -51,6 +51,7 @@ class Page extends Component {
     socket.on("userJoinedPage", (data) => {
       if (!this.state.pageLoaded) return;
       if (this.state.page._id !== data.pageId) return;
+      if (this.props.semester !== data.semester) return;
       let users = this.state.users;
       if (
         users.filter((user) => {
