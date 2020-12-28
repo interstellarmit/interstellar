@@ -45,6 +45,8 @@ router.post("/login", [check("email", "Please enter a valid email").isEmail()], 
 
 router.post("/signUpLogin", auth.signUpLogin);
 
+let allPagesMap = {};
+
 let getAllPages = async (semester) => {
   let term = semester.split("-")[0];
 
@@ -56,6 +58,9 @@ let getAllPages = async (semester) => {
   );
 
   let allPages = [];
+
+  if (allPagesMap[semester]) return allPagesMap[semester];
+
   await Promise.all(
     pages.map((page) => {
       // get classes that are available this semester
@@ -82,7 +87,7 @@ let getAllPages = async (semester) => {
       });
     })
   );
-
+  allPagesMap[semester] = allPages;
   return allPages;
 };
 router.post("/updateSemester", async (req, res) => {
