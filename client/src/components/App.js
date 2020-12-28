@@ -50,6 +50,7 @@ class App extends Component {
       redirectPage: "",
       tryingToLogin: true,
       semester: semester,
+      loading: false,
       // currentPageName from URL?
     };
 
@@ -213,6 +214,7 @@ class App extends Component {
           this.setState({
             allPages: res.allPages,
             pageIds: res.pageIds,
+            loading: false,
           });
         });
       }
@@ -220,7 +222,7 @@ class App extends Component {
   };
 
   changeSemester = (semester) => {
-    this.setState({ pageIds: [] }, () => {
+    this.setState({ pageIds: [], loading: true }, () => {
       //console.log("Changing semester to ")
       post("/api/updateSemester", { semester: semester }).then((res) => {
         this.setState({
@@ -228,6 +230,7 @@ class App extends Component {
           pageIds: res.pageIds,
           redirectPage: window.location.pathname.replace(this.state.semester, semester),
           semester: semester,
+          loading: false,
         });
       });
     });
@@ -392,77 +395,81 @@ class App extends Component {
             />
             <Layout className="site-layout">
               <Content>
-                <Router>
-                  <Switch>
-                    <Home
-                      exact
-                      path={["/", "/dashboard", "/settings", "/admin", "/dueDateAdmin"].map((s) => {
-                        return "/:semester" + s;
-                      })}
-                      schoolId={this.state.schoolId}
-                      updateSelectedPageName={this.updateSelectedPageName}
-                      user={{
-                        userId: this.state.userId,
-                        name: this.state.visible ? this.state.name : "Anonymous (Me)",
-                      }}
-                      redirectPage={this.redirectPage}
-                      myPages={myPages}
-                      disconnect={this.disconnect}
-                      allPages={this.state.allPages}
-                      isSiteAdmin={this.state.isSiteAdmin}
-                      logout={this.logout}
-                      visible={this.state.visible}
-                      setVisible={this.setVisible}
-                      seeHelpText={this.state.seeHelpText}
-                      setSeeHelpText={this.setSeeHelpText}
-                      addClasses={this.addClasses}
-                      email={this.state.email}
-                      notify={this.notify}
-                      semester={this.state.semester}
-                    />
-                    <Page
-                      path={"/:semester/class/:selectedPage"}
-                      schoolId={this.state.schoolId}
-                      pageIds={this.state.pageIds}
-                      updatePageIds={this.updatePageIds}
-                      updateSelectedPageName={this.updateSelectedPageName}
-                      user={{
-                        userId: this.state.userId,
-                        name: this.state.visible ? this.state.name : "Anonymous (Me)",
-                      }}
-                      redirectPage={this.redirectPage}
-                      loungeId={this.state.loungeId}
-                      setLoungeId={this.setLoungeId}
-                      isSiteAdmin={this.state.isSiteAdmin}
-                      disconnect={this.disconnect}
-                      logout={this.logout}
-                      visible={this.state.visible}
-                      seeHelpText={this.state.seeHelpText}
-                      setSeeHelpText={this.setSeeHelpText}
-                      semester={this.state.semester}
-                    />
-                    <Page
-                      path={"/:semester/group/:selectedPage"}
-                      schoolId={this.state.schoolId}
-                      pageIds={this.state.pageIds}
-                      updatePageIds={this.updatePageIds}
-                      updateSelectedPageName={this.updateSelectedPageName}
-                      user={{ userId: this.state.userId, name: this.state.name }}
-                      redirectPage={this.redirectPage}
-                      loungeId={this.state.loungeId}
-                      setLoungeId={this.setLoungeId}
-                      allPages={this.state.allPages}
-                      pageIds={this.state.pageIds}
-                      isSiteAdmin={this.state.isSiteAdmin}
-                      disconnect={this.disconnect}
-                      seeHelpText={this.state.seeHelpText}
-                      setSeeHelpText={this.setSeeHelpText}
-                      logout={this.logout}
-                      semester={this.state.semester}
-                    />
-                    <NotFound default />
-                  </Switch>
-                </Router>
+                <Spin spinning={this.state.loading}>
+                  <Router>
+                    <Switch>
+                      <Home
+                        exact
+                        path={["/", "/dashboard", "/settings", "/admin", "/dueDateAdmin"].map(
+                          (s) => {
+                            return "/:semester" + s;
+                          }
+                        )}
+                        schoolId={this.state.schoolId}
+                        updateSelectedPageName={this.updateSelectedPageName}
+                        user={{
+                          userId: this.state.userId,
+                          name: this.state.visible ? this.state.name : "Anonymous (Me)",
+                        }}
+                        redirectPage={this.redirectPage}
+                        myPages={myPages}
+                        disconnect={this.disconnect}
+                        allPages={this.state.allPages}
+                        isSiteAdmin={this.state.isSiteAdmin}
+                        logout={this.logout}
+                        visible={this.state.visible}
+                        setVisible={this.setVisible}
+                        seeHelpText={this.state.seeHelpText}
+                        setSeeHelpText={this.setSeeHelpText}
+                        addClasses={this.addClasses}
+                        email={this.state.email}
+                        notify={this.notify}
+                        semester={this.state.semester}
+                      />
+                      <Page
+                        path={"/:semester/class/:selectedPage"}
+                        schoolId={this.state.schoolId}
+                        pageIds={this.state.pageIds}
+                        updatePageIds={this.updatePageIds}
+                        updateSelectedPageName={this.updateSelectedPageName}
+                        user={{
+                          userId: this.state.userId,
+                          name: this.state.visible ? this.state.name : "Anonymous (Me)",
+                        }}
+                        redirectPage={this.redirectPage}
+                        loungeId={this.state.loungeId}
+                        setLoungeId={this.setLoungeId}
+                        isSiteAdmin={this.state.isSiteAdmin}
+                        disconnect={this.disconnect}
+                        logout={this.logout}
+                        visible={this.state.visible}
+                        seeHelpText={this.state.seeHelpText}
+                        setSeeHelpText={this.setSeeHelpText}
+                        semester={this.state.semester}
+                      />
+                      <Page
+                        path={"/:semester/group/:selectedPage"}
+                        schoolId={this.state.schoolId}
+                        pageIds={this.state.pageIds}
+                        updatePageIds={this.updatePageIds}
+                        updateSelectedPageName={this.updateSelectedPageName}
+                        user={{ userId: this.state.userId, name: this.state.name }}
+                        redirectPage={this.redirectPage}
+                        loungeId={this.state.loungeId}
+                        setLoungeId={this.setLoungeId}
+                        allPages={this.state.allPages}
+                        pageIds={this.state.pageIds}
+                        isSiteAdmin={this.state.isSiteAdmin}
+                        disconnect={this.disconnect}
+                        seeHelpText={this.state.seeHelpText}
+                        setSeeHelpText={this.setSeeHelpText}
+                        logout={this.logout}
+                        semester={this.state.semester}
+                      />
+                      <NotFound default />
+                    </Switch>
+                  </Router>
+                </Spin>
               </Content>
             </Layout>
           </Layout>
