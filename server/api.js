@@ -93,16 +93,15 @@ router.post("/updateSemester", async (req, res) => {
   let allPages = await getAllPages(semester);
 
   let user = await User.findById(req.user._id);
-  user = Object.assign(user, {
-    pageIds: user.pageIds
-      .filter((id) => {
-        return id.semester === semester || id.semester === "All";
-      })
-      .map((id) => {
-        return id.pageId;
-      }),
-  });
-  res.send({ user: user, allPages: allPages });
+  let pageIds = user.pageIds
+    .filter((id) => {
+      return id.semester === semester || id.semester === "All";
+    })
+    .map((id) => {
+      return id.pageId;
+    });
+
+  res.send({ pageIds: pageIds, allPages: allPages });
 });
 
 router.get("/me", auth.me, async (req, res) => {

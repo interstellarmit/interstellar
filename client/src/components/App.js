@@ -212,7 +212,7 @@ class App extends Component {
           }
           this.setState({
             allPages: res.allPages,
-            pageIds: res.user.pageIds,
+            pageIds: res.pageIds,
           });
         });
       }
@@ -221,10 +221,11 @@ class App extends Component {
 
   changeSemester = (semester) => {
     this.setState({ pageIds: [] }, () => {
+      //console.log("Changing semester to ")
       post("/api/updateSemester", { semester: semester }).then((res) => {
         this.setState({
           allPages: res.allPages,
-          pageIds: res.user.pageIds,
+          pageIds: res.pageIds,
           redirectPage: window.location.pathname.replace(this.state.semester, semester),
           semester: semester,
         });
@@ -349,7 +350,7 @@ class App extends Component {
     }
 
     let myPages = this.state.allPages.filter((page) => {
-      return this.state.pageIds.includes(page._id);
+      return this.state.pageIds.includes(page._id + "");
     });
     return (
       <div>

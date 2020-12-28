@@ -12,7 +12,7 @@ const UserSchema = new mongoose.Schema({
     default: false,
   },
   pageIds: {
-    type: Array, //[{ pageId: String, semester: String }],
+    type: [{ pageId: String, semester: String }],
     default: [],
   },
   visible: {

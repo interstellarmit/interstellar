@@ -139,8 +139,8 @@ removeSelfFromPage = (req, res) => {
   Page.findById(req.body.pageId).then((page) => {
     User.findById(req.user._id).then((user) => {
       let semester = page.pageType === "Group" ? "All" : req.body.semester || "spring-2021";
-      console.log(user.pageIds);
-      console.log({ pageId: req.body.pageId, semester: semester });
+      //console.log(user.pageIds);
+      //console.log({ pageId: req.body.pageId, semester: semester });
       if (pageIncludes(user.pageIds, { pageId: req.body.pageId, semester: semester })) {
         console.log("found");
         user.pageIds = user.pageIds.filter((id) => {
@@ -205,7 +205,8 @@ joinPage = (req, res) => {
         pageArr = [page._id];
       }
 
-      User.find({ pageIds: { $in: pageArr } }, async (err, users) => {
+      User.find({ "pageIds.pageId": { $in: pageArr } }, async (err, users) => {
+        console.log("LENGTH" + users.length);
         let condensedUsers = users.map((singleUser) => {
           if ((req.body.home || page.pageType === "Class") && !singleUser.visible)
             return { userId: singleUser._id, name: "Anonymous" };
@@ -213,7 +214,13 @@ joinPage = (req, res) => {
         });
         let inPageUsers = users.map((singleUser) => {
           if (!req.body.home && page.pageType === "Group") {
-            return { userId: singleUser._id, name: singleUser.name, pageIds: singleUser.pageIds };
+            return {
+              userId: singleUser._id,
+              name: singleUser.name,
+              pageIds: singleUser.pageIds.map((pg) => {
+                return pg.pageId;
+              }),
+            };
           }
           if ((req.body.home || page.pageType === "Class") && !singleUser.visible)
             return { userId: singleUser._id, name: "Anonymous" };
