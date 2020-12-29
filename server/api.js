@@ -171,8 +171,8 @@ router.post("/addRemoveAdmin", auth.ensureLoggedIn, main_calls.addRemoveAdmin);
 router.post("/sameAs", auth.ensureLoggedIn, (req, res) => {
   if (req.user.isSiteAdmin) {
     Page.findOne({ name: req.body.name }).then((page) => {
-      console.log(req.body.name);
-      console.log(page);
+      //console.log(req.body.name);
+      //console.log(page);
       if (!page) {
         res.send({ created: false });
         return;

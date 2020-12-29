@@ -111,6 +111,6 @@ socket.init(server);
 
 server.listen(port, () => {
   //CAREFUL THIS CLEARES ALL THE CLASSES!
-  //initialise.initialise();
+
   console.log(`Server running on port: ${port}`);
 });

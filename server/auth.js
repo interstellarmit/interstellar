@@ -34,14 +34,14 @@ function ensureLoggedIn(req, res, next) {
 }
 
 function me(req, res, next) {
-  console.log(req.header("token"));
+  //console.log(req.header("token"));
   const token = req.header("token");
   if (!token) return res.status(401).json({ msg: "Auth Error" });
 
   try {
     const decoded = jwt.verify(token, "randomString");
-    console.log("initial req users");
-    console.log(req.user);
+    //console.log("initial req users");
+    //console.log(req.user);
 
     req.user = decoded.user;
 

@@ -32,7 +32,7 @@ export default function Public(props) {
   return (
     <div style={{ width: "100%", height: "100vh" }}>
       <Row>
-        <Col span={12}>
+        {/*<Col span={12}>
           <div
             style={{
               width: "100%",
@@ -85,8 +85,9 @@ export default function Public(props) {
               </h1>
             </div>
           </div>
-        </Col>
-        <Col span={12}>
+        </Col>*/}
+
+        <Col span={24}>
           <div
             style={{
               width: "100%",
@@ -99,7 +100,7 @@ export default function Public(props) {
               backgroundColor: "white",
             }}
           >
-            <div>
+            <div style={{ border: "10px solid #4090F7", borderRadius: "20px", padding: "20px" }}>
               <center>
                 <img src={logo} style={{ height: "200px", marginBottom: "20px" }} />
                 <h1 style={{ fontSize: "50px", fontWeight: "700", fontFamily: "Chakra Petch" }}>

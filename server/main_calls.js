@@ -142,7 +142,7 @@ removeSelfFromPage = (req, res) => {
       //console.log(user.pageIds);
       //console.log({ pageId: req.body.pageId, semester: semester });
       if (pageIncludes(user.pageIds, { pageId: req.body.pageId, semester: semester })) {
-        console.log("found");
+        // console.log("found");
         user.pageIds = user.pageIds.filter((id) => {
           return id.pageId !== req.body.pageId;
         });
@@ -178,8 +178,8 @@ Description: If the user is in the page, returns the users, due dates that have 
 */
 
 joinPage = (req, res) => {
-  console.log("joining page with user ");
-  console.log(req.user);
+  //console.log("joining page with user ");
+  //console.log(req.user);
   if (!req.user || !req.user._id || !socket.getSocketFromUserID(req.user._id)) {
     console.log("broken", req.user);
     res.send({ broken: true });
@@ -213,7 +213,7 @@ joinPage = (req, res) => {
       }
 
       User.find({ "pageIds.pageId": { $in: pageArr } }, async (err, users) => {
-        console.log("LENGTH" + users.length);
+        //console.log("LENGTH" + users.length);
         let condensedUsers = users.map((singleUser) => {
           if ((req.body.home || page.pageType === "Class") && !singleUser.visible)
             return { userId: singleUser._id, name: "Anonymous" };

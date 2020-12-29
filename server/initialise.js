@@ -48,9 +48,12 @@ let addCourse = async (course) => {
   }
 };
 
+let nameToOldId = {};
+
 let clearClasses = async () => {
   let keepIds = [];
   let pages = await Page.find({}).select("_id name pageType");
+
   await Promise.all(
     pages
       .filter((pg) => {
@@ -60,22 +63,37 @@ let clearClasses = async () => {
         keepIds.push(pg._id + "");
       })
   );
+  await Promise.all(
+    pages
+      .filter((pg) => {
+        return pg.pageType === "Class";
+      })
+      .map(async (pg) => {
+        nameToOldId[pg.name] = pg._id + "";
+      })
+  );
+
   console.log("saving " + keepIds.length + " groups");
   let users = await User.find({});
   await Promise.all(
     users.map(async (user) => {
-      user.pageIds = user.pageIds
-        .filter((id) => {
-          return (id.pageId && keepIds.includes(id.pageId)) || keepIds.includes(id); // CHANGE TO id.pageId
-        })
-        .map((id) => {
+      user.pageIds = user.pageIds.map((id) => {
+        if (!((id.pageId && keepIds.includes(id.pageId)) || keepIds.includes(id))) {
           if (typeof id === "string") {
             return {
               pageId: id,
-              semester: "All", // REMOVE THIS MAP ONCE ITS DONE!
+              semester: "CHANGETHISID",
             };
           } else return id;
-        });
+        } // CHANGE TO id.pageId
+
+        if (typeof id === "string") {
+          return {
+            pageId: id,
+            semester: "All",
+          };
+        } else return id;
+      });
       await user.save();
     })
   );
@@ -84,6 +102,7 @@ let clearClasses = async () => {
 
 initialise = async () => {
   console.log("Starting initialization");
+  nameToOldId = {};
   await updateSemesters();
   console.log("Updated Semesters");
   await clearClasses();
@@ -95,7 +114,43 @@ initialise = async () => {
     //await new Promise((resolve) => setTimeout(resolve, 100));
     if (i % 100 == 0) console.log(i);
   }
-  console.log("Done");
+  console.log("Done adding Classes");
+
+  newIdToOldId = {};
+  let pages = await Page.find({}).select("_id name pageType");
+
+  //nameToOldId = {};
+  await Promise.all(
+    pages.map(async (pg) => {
+      if (pg.pageType === "Class") newIdToOldId[pg._id + ""] = nameToOldId[pg.name];
+    })
+  );
+  oldIdToNewId = {};
+  for (var key in newIdToOldId) {
+    if (newIdToOldId[key]) oldIdToNewId[newIdToOldId[key]] = key;
+  }
+
+  let users = await User.find({});
+  await Promise.all(
+    users.map(async (user) => {
+      user.pageIds = user.pageIds
+        .map((id) => {
+          if (id.semester === "CHANGETHISID") {
+            return {
+              semester: "fall-2020",
+              pageId: oldIdToNewId[id.pageId],
+            };
+          }
+          return id;
+        })
+        .filter((id) => {
+          return id.pageId;
+        });
+      await user.save();
+    })
+  );
+  console.log("Done editing Users");
+  console.log(Object.keys(oldIdToNewId).length);
 };
 
 module.exports = {
