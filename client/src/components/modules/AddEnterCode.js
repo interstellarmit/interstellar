@@ -1,5 +1,5 @@
 import React, { Component, useState } from "react";
-import { List, Modal, Row, Col, Button, Form, Input, DatePicker, Checkbox } from "antd";
+import { List, Modal, Alert, Row, Col, Button, Form, Input, DatePicker, Checkbox } from "antd";
 export default function AddLounge(props) {
   const [form] = Form.useForm();
 
@@ -29,6 +29,12 @@ export default function AddLounge(props) {
       footer={null}
     >
       <Form {...layout} form={form} name={"Enter Join Code"} onFinish={onFinish}>
+        <Alert
+          message="If the group creator forgot the join code, they can unlock and re-lock the group with a different code"
+          type="info"
+          showIcon
+          style={{ marginBottom: "10px" }}
+        />
         <Form.Item
           name="joinCode"
           label="Join Code"
@@ -39,7 +45,7 @@ export default function AddLounge(props) {
             },
           ]}
         >
-          <Input />
+          <Input placeholder={"Contact " + props.hostName + " for Join Code"} />
         </Form.Item>
 
         <Form.Item {...tailLayout}>

@@ -46,6 +46,7 @@ class Page extends Component {
           pageLoaded: true,
           inPage: data.inPage,
           showClasses: data.page.showClasses,
+          hostName: data.hostName,
         });
       }
     );
@@ -220,7 +221,7 @@ class Page extends Component {
           )
 
             .concat([this.state.inPage ? removeClassButton : addClassButton])
-            .concat(isPageAdmin && this.state.inPage ? [lockButton] : [])}
+            .concat(isPageAdmin ? [lockButton] : [])}
           title={this.state.page.name}
           subTitle={this.state.page.title}
         ></PageHeader>
@@ -236,6 +237,7 @@ class Page extends Component {
           }}
           addSelfToPage={this.addSelfToPage}
           pageId={this.state.page._id}
+          hostName={this.state.hostName}
         />
 
         <Content

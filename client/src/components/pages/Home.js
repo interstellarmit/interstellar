@@ -11,6 +11,7 @@ import {
   Layout,
   Row,
   Col,
+  Alert,
   PageHeader,
   Descriptions,
   notification,
@@ -83,14 +84,26 @@ class Home extends Component {
               defaultRouterLink={"dashboard"}
             >
               <div>
-                <MultipleSearchBar
-                  size="large"
-                  allPages={this.props.allPages}
-                  placeholder={"Add classes to your " + semester + " schedule!"}
-                  redirectPage={this.props.redirectPage}
-                  defaultOpen={true}
-                  addClasses={this.props.addClasses}
-                />
+                {this.props.myPages.filter((page) => {
+                  return page.pageType === "Class";
+                }).length > 0 ? (
+                  <SearchBar
+                    size="large"
+                    allPages={this.props.allPages}
+                    placeholder={"Search for a " + semester + " class!"}
+                    redirectPage={this.props.redirectPage}
+                    defaultOpen={true}
+                  />
+                ) : (
+                  <MultipleSearchBar
+                    size="large"
+                    allPages={this.props.allPages}
+                    placeholder={"Add classes to your " + semester + " schedule!"}
+                    redirectPage={this.props.redirectPage}
+                    defaultOpen={true}
+                    addClasses={this.props.addClasses}
+                  />
+                )}
               </div>
               <div>
                 <div

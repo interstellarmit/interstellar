@@ -191,7 +191,7 @@ joinPage = (req, res) => {
       socket.getSocketFromUserID(req.user._id).join("Page: " + page._id);
     }
 
-    User.findById(req.user._id).then((user) => {
+    User.findById(req.user._id).then(async (user) => {
       let pageArr = [];
 
       if (req.body.home) {
@@ -203,6 +203,13 @@ joinPage = (req, res) => {
         });
       } else {
         pageArr = [page._id];
+      }
+
+      let admin = undefined;
+      if (page) admin = page.adminIds.length > 0 ? page.adminIds[0] : undefined;
+      if (admin) {
+        admin = await User.findById(admin);
+        admin = admin.name;
       }
 
       User.find({ "pageIds.pageId": { $in: pageArr } }, async (err, users) => {
@@ -236,6 +243,7 @@ joinPage = (req, res) => {
           let returnValue = {
             users: inPageUsers,
             inPage: true,
+            hostName: admin,
           };
           if (!req.body.home) {
             returnValue.page = page;
@@ -246,6 +254,7 @@ joinPage = (req, res) => {
             users: page.locked ? [] : condensedUsers,
             page: Object.assign(page, { joinCode: "INVISIBLE" }),
             inPage: false,
+            hostName: admin,
           });
         }
       });
@@ -325,6 +334,39 @@ setShowClasses = (req, res) => {
   });
 };
 
+addRemoveAdmin = (req, res) => {
+  Page.findById(req.body.pageId).then((page) => {
+    if (!req.user.isSiteAdmin && !page.adminIds.includes(req.user._id)) {
+      res.send({ success: false });
+      return;
+    }
+    if (req.body.isAdmin) {
+      if (page.adminIds.includes(req.body.userId)) {
+        let adminIds = page.adminIds.filter((id) => {
+          return id !== req.body.userId;
+        });
+        page.adminIds = adminIds;
+        page.save().then(() => {
+          res.send({ success: true });
+        });
+      } else {
+        res.send({ success: false });
+      }
+    } else {
+      if (!page.adminIds.includes(req.body.userId)) {
+        let adminIds = page.adminIds;
+        adminIds.push(req.body.userId);
+        page.adminIds = adminIds;
+        page.save().then(() => {
+          res.send({ success: true });
+        });
+      } else {
+        res.send({ success: false });
+      }
+    }
+  });
+};
+
 module.exports = {
   createNewPage,
   addSelfToPage,
@@ -335,4 +377,5 @@ module.exports = {
   getRedirectLink,
   setVisible,
   setShowClasses,
+  addRemoveAdmin,
 };

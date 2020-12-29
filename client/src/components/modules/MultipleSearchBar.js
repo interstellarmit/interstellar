@@ -23,6 +23,9 @@ export default function MultipleSearchBar(props) {
         .filter((page) => {
           return page.pageType === "Class";
         })
+        .sort((a, b) => {
+          return b.numPeople - a.numPeople;
+        })
         .map((page) => {
           return {
             value: page.name,
@@ -30,7 +33,10 @@ export default function MultipleSearchBar(props) {
               <div key={page.name} value={page.name}>
                 {page.title === ""
                   ? page.name
-                  : page.name + ": " + page.title + " (" + page.numPeople + ")"}
+                  : page.name +
+                    ": " +
+                    page.title +
+                    (page.numPeople > 0 ? " (" + page.numPeople + ")" : "")}
               </div>
             ),
           };

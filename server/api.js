@@ -166,6 +166,7 @@ router.post("/setJoinCode", auth.ensureLoggedIn, main_calls.setJoinCode);
 router.post("/getRedirectLink", main_calls.getRedirectLink);
 router.post("/setVisible", auth.ensureLoggedIn, main_calls.setVisible);
 router.post("/setShowClasses", auth.ensureLoggedIn, main_calls.setShowClasses);
+router.post("/addRemoveAdmin", auth.ensureLoggedIn, main_calls.addRemoveAdmin);
 
 router.post("/sameAs", auth.ensureLoggedIn, (req, res) => {
   if (req.user.isSiteAdmin) {
