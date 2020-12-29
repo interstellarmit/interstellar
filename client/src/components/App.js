@@ -124,8 +124,8 @@ class App extends Component {
   */
 
   handleLogin = () => {
-    let link = window.location.origin.replace("http:", "https:") + window.location.pathname;
-    if (link.includes("localhost:5000")) link = window.location.origin + window.location.pathname;
+    let link = window.location.origin.replace("http:", "https:") + "/";
+    if (link.includes("localhost:5000")) link = window.location.origin + "/";
     // console.log(window.location.origin)
     // console.log(window.location.href)
     // this.encodedLink = link.charAt(link.length - 1) === "/" ? link.substring(0, link.length - 1) : link;
