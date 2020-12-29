@@ -39,7 +39,7 @@ export default function SearchBar(props) {
                   : page.name +
                     ": " +
                     page.title +
-                    (page.numPeople > 0 ? " (" + page.numPeople + ")" : "")}
+                    (page.numPeople > 0 && false ? " (" + page.numPeople + ")" : "")}
               </div>
             ),
           };

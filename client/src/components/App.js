@@ -5,6 +5,7 @@ import SideBar from "./modules/SideBar.js";
 import Public from "./pages/Public.js";
 import Home from "./pages/Home.js";
 import Page from "./pages/Page.js";
+import Main from "./pages/Main.js";
 import MySpin from "./modules/MySpin";
 import Confirmation from "./pages/Confirmation.js";
 import SignContract from "./pages/SignContract.js";
@@ -41,15 +42,15 @@ class App extends Component {
   // makes props available in this component
   constructor(props) {
     super(props);
-    let semester = this.props.computedMatch.params.semester || "spring-2021";
+
     this.state = {
       userId: undefined,
       allPages: [],
       school: "",
-      selectedPageName: "",
+
       redirectPage: "",
       tryingToLogin: true,
-      semester: semester,
+
       loading: false,
       // currentPageName from URL?
     };
@@ -191,48 +192,18 @@ class App extends Component {
       this.logout();
       return;
     }
-    this.setState(
-      {
-        userId: res.user._id,
-        schoolId: res.user.schoolId,
-        name: res.user.name,
-        loungeId: res.user.loungeId,
-        //pageIds: res.user.pageIds,
-        isSiteAdmin: res.user.isSiteAdmin,
-        email: res.user.email,
-        visible: res.user.visible,
-        seeHelpText: res.user.seeHelpText,
-        //allPages: res.allPages,
-        signedContract: res.user.signedContract,
-      },
-      () => {
-        post("/api/updateSemester", { semester: this.state.semester }).then((res) => {
-          if (res.broken) {
-            this.disconnect();
-            return;
-          }
-          this.setState({
-            allPages: res.allPages,
-            pageIds: res.pageIds,
-            loading: false,
-          });
-        });
-      }
-    );
-  };
-
-  changeSemester = (semester) => {
-    this.setState({ pageIds: [], loading: true }, () => {
-      //console.log("Changing semester to ")
-      post("/api/updateSemester", { semester: semester }).then((res) => {
-        this.setState({
-          allPages: res.allPages,
-          pageIds: res.pageIds,
-          redirectPage: window.location.pathname.replace(this.state.semester, semester),
-          semester: semester,
-          loading: false,
-        });
-      });
+    this.setState({
+      userId: res.user._id,
+      schoolId: res.user.schoolId,
+      name: res.user.name,
+      loungeId: res.user.loungeId,
+      //pageIds: res.user.pageIds,
+      isSiteAdmin: res.user.isSiteAdmin,
+      email: res.user.email,
+      visible: res.user.visible,
+      seeHelpText: res.user.seeHelpText,
+      //allPages: res.allPages,
+      signedContract: res.user.signedContract,
     });
   };
 
@@ -258,16 +229,8 @@ class App extends Component {
     });
   };
 
-  updatePageIds = (newPageIds) => {
-    this.setState({ pageIds: newPageIds });
-  };
-
-  updateSelectedPageName = (page) => {
-    this.setState({ selectedPageName: page });
-  };
-
   redirectPage = (link) => {
-    this.setState({ redirectPage: "/" + this.state.semester + link });
+    this.setState({ redirectPage: link });
   };
 
   logState = () => {
@@ -283,27 +246,6 @@ class App extends Component {
       if (res.success) {
         this.setState({ signedContract: true });
       }
-    });
-  };
-
-  addClasses = (classList) => {
-    post("/api/addClasses", {
-      joinCode: "",
-      pageNames: classList,
-      semester: this.state.semester,
-    }).then((res) => {
-      let pageIds = this.state.pageIds;
-      for (var i = 0; i < res.userPageIds.length; i++) {
-        let pageId = res.userPageIds[i];
-        if (!pageIds.includes(pageId)) {
-          pageIds.push(pageId);
-        }
-      }
-      this.setState({
-        pageIds: pageIds,
-        redirectPage:
-          "/" + this.state.semester + (classList[0] ? "/class/" + classList[0] : "/dashboard"),
-      });
     });
   };
 
@@ -352,9 +294,6 @@ class App extends Component {
       this.setState({ notify: undefined, oldKey: key });
     }
 
-    let myPages = this.state.allPages.filter((page) => {
-      return this.state.pageIds.includes(page._id + "");
-    });
     return (
       <div>
         {this.state.disconnect ? (
@@ -379,100 +318,25 @@ class App extends Component {
         {!this.state.signedContract ? (
           <SignContract logout={this.logout} signContract={this.signContract} />
         ) : (
-          <Layout style={{ minHeight: "100vh" }}>
-            <SideBar
-              pageIds={this.state.pageIds}
-              updatePageIds={this.updatePageIds}
-              allPages={this.state.allPages}
-              myPages={myPages}
-              selectedPageName={this.state.selectedPageName}
-              redirectPage={this.redirectPage}
-              logout={this.logout}
-              logState={this.logState}
-              email={this.state.email}
-              semester={this.state.semester}
-              changeSemester={this.changeSemester}
-            />
-            <Layout className="site-layout">
-              <Content>
-                <Spin spinning={this.state.loading}>
-                  <Router>
-                    <Switch>
-                      <Home
-                        exact
-                        path={["/", "/dashboard", "/settings", "/admin", "/dueDateAdmin"].map(
-                          (s) => {
-                            return "/:semester" + s;
-                          }
-                        )}
-                        schoolId={this.state.schoolId}
-                        updateSelectedPageName={this.updateSelectedPageName}
-                        user={{
-                          userId: this.state.userId,
-                          name: this.state.visible ? this.state.name : "Anonymous (Me)",
-                        }}
-                        redirectPage={this.redirectPage}
-                        myPages={myPages}
-                        disconnect={this.disconnect}
-                        allPages={this.state.allPages}
-                        isSiteAdmin={this.state.isSiteAdmin}
-                        logout={this.logout}
-                        visible={this.state.visible}
-                        setVisible={this.setVisible}
-                        seeHelpText={this.state.seeHelpText}
-                        setSeeHelpText={this.setSeeHelpText}
-                        addClasses={this.addClasses}
-                        email={this.state.email}
-                        notify={this.notify}
-                        semester={this.state.semester}
-                      />
-                      <Page
-                        path={"/:semester/class/:selectedPage"}
-                        schoolId={this.state.schoolId}
-                        pageIds={this.state.pageIds}
-                        updatePageIds={this.updatePageIds}
-                        updateSelectedPageName={this.updateSelectedPageName}
-                        user={{
-                          userId: this.state.userId,
-                          name: this.state.visible ? this.state.name : "Anonymous (Me)",
-                        }}
-                        redirectPage={this.redirectPage}
-                        loungeId={this.state.loungeId}
-                        setLoungeId={this.setLoungeId}
-                        isSiteAdmin={this.state.isSiteAdmin}
-                        disconnect={this.disconnect}
-                        logout={this.logout}
-                        visible={this.state.visible}
-                        seeHelpText={this.state.seeHelpText}
-                        setSeeHelpText={this.setSeeHelpText}
-                        semester={this.state.semester}
-                      />
-                      <Page
-                        path={"/:semester/group/:selectedPage"}
-                        schoolId={this.state.schoolId}
-                        pageIds={this.state.pageIds}
-                        updatePageIds={this.updatePageIds}
-                        updateSelectedPageName={this.updateSelectedPageName}
-                        user={{ userId: this.state.userId, name: this.state.name }}
-                        redirectPage={this.redirectPage}
-                        loungeId={this.state.loungeId}
-                        setLoungeId={this.setLoungeId}
-                        allPages={this.state.allPages}
-                        pageIds={this.state.pageIds}
-                        isSiteAdmin={this.state.isSiteAdmin}
-                        disconnect={this.disconnect}
-                        seeHelpText={this.state.seeHelpText}
-                        setSeeHelpText={this.setSeeHelpText}
-                        logout={this.logout}
-                        semester={this.state.semester}
-                      />
-                      <NotFound default />
-                    </Switch>
-                  </Router>
-                </Spin>
-              </Content>
-            </Layout>
-          </Layout>
+          <Router>
+            <Switch>
+              <Main
+                path="/:semester"
+                state={this.state}
+                redirectPage={this.redirectPage}
+                disconnect={this.disconnect}
+                setVisible={this.setVisible}
+                setSeeHelpText={this.setSeeHelpText}
+                logout={this.logout}
+              />
+              <Route
+                default
+                render={() => {
+                  return <Redirect to="/spring-2021" />;
+                }}
+              />
+            </Switch>
+          </Router>
         )}
       </div>
     );

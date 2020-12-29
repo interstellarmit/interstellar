@@ -51,7 +51,15 @@ let getAllPages = async (semester) => {
   let term = semester.split("-")[0];
 
   let year = parseInt(semester.split("-")[1]);
-  let pages = await Page.find({
+  let pagesClasses = await Page.find({
+    pageType: "Class",
+    expiryDate: { $gte: new Date() },
+  }).select(
+    "name _id title locked pageType numPeople is_historical not_offered_year offered_spring offered_fall offered_IAP offered_summer"
+  );
+
+  let pagesGroups = await Page.find({
+    pageType: "Group",
     expiryDate: { $gte: new Date() },
   }).select(
     "name _id title locked pageType numPeople is_historical not_offered_year offered_spring offered_fall offered_IAP offered_summer"
@@ -59,25 +67,41 @@ let getAllPages = async (semester) => {
 
   let allPages = [];
 
-  if (allPagesMap[semester]) return allPagesMap[semester];
+  if (allPagesMap[semester]) allPages = allPagesMap[semester];
+  else {
+    await Promise.all(
+      pagesClasses.map((page) => {
+        // get classes that are available this semester
+        //console.log(page);
+        if (page.pageType === "Class" && term === "spring" && !page.offered_spring) return;
+        if (page.pageType === "Class" && term === "iap" && !page.offered_IAP) return;
+        if (page.pageType === "Class" && term === "summer" && !page.offered_summer) return;
+        if (page.pageType === "Class" && term === "fall" && !page.offered_fall) return;
+        if (page.pageType === "Class" && page.is_historical) return;
+        if (
+          page.pageType === "Class" &&
+          page.not_offered_year &&
+          parseInt(page.not_offered_year.split("-")[term === "spring" ? 1 : 0]) <= year
+        )
+          return;
 
+        allPages.push({
+          _id: String(page._id),
+          name: page.name,
+          title: page.title,
+          pageType: page.pageType,
+          locked: page.locked,
+          numPeople: page.numPeople,
+        });
+      })
+    );
+    allPagesMap[semester] = allPages;
+  }
+
+  let myGroups = [];
   await Promise.all(
-    pages.map((page) => {
-      // get classes that are available this semester
-      //console.log(page);
-      if (page.pageType === "Class" && term === "spring" && !page.offered_spring) return;
-      if (page.pageType === "Class" && term === "iap" && !page.offered_IAP) return;
-      if (page.pageType === "Class" && term === "summer" && !page.offered_summer) return;
-      if (page.pageType === "Class" && term === "fall" && !page.offered_fall) return;
-      if (page.pageType === "Class" && page.is_historical) return;
-      if (
-        page.pageType === "Class" &&
-        page.not_offered_year &&
-        parseInt(page.not_offered_year.split("-")[term === "spring" ? 1 : 0]) <= year
-      )
-        return;
-
-      allPages.push({
+    pagesGroups.map((page) => {
+      myGroups.push({
         _id: String(page._id),
         name: page.name,
         title: page.title,
@@ -87,8 +111,7 @@ let getAllPages = async (semester) => {
       });
     })
   );
-  allPagesMap[semester] = allPages;
-  return allPages;
+  return allPages.concat(myGroups);
 };
 router.post("/updateSemester", async (req, res) => {
   if (!req.user || !req.user._id) {

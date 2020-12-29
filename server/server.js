@@ -110,7 +110,7 @@ const server = http.Server(app);
 socket.init(server);
 
 server.listen(port, () => {
-  //CAREFUL THIS CLEARES ALL THE CLASSES!
+  //CAREFUL THIS (initialise.js) CLEARES ALL THE CLASSES!
 
   console.log(`Server running on port: ${port}`);
 });

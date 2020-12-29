@@ -170,7 +170,8 @@ export default function SideBar(props) {
       <AddGroup
         visible={addGroup}
         setVisible={setAddGroup}
-        redirectPage={props.redirectPage}
+        semester={props.semester}
+        redirectPage={props.redirectPageOverall}
         pageIds={props.pageIds}
         updatePageIds={props.updatePageIds}
       />

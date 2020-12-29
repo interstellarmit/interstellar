@@ -124,25 +124,6 @@ class Home extends Component {
                     Toggle privacy mode to appear as anonymous in all of your classes
                   </div>
                 </div>
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    marginTop: "10px",
-                  }}
-                >
-                  <Switch
-                    checked={this.props.seeHelpText}
-                    onChange={(checked) => {
-                      this.props.setSeeHelpText(checked);
-                    }}
-                    checkedChildren={"On"}
-                    unCheckedChildren={"Off"}
-                  />
-                  <div style={{ paddingLeft: "10px" }}>
-                    Toggle help mode to show the helper text that appears on dashboard
-                  </div>
-                </div>
               </div>
             </TabPage>
           </Content>
