@@ -43,9 +43,7 @@ class Main extends Component {
   changeSemester = (semester) => {
     let newLink = window.location.pathname.replace(this.state.semester, semester);
     if (newLink !== window.location.pathname) {
-      this.setState({ semester: semester }, () => {
-        this.props.redirectPage(newLink);
-      });
+      this.setState({ semester: semester, redirectPage: newLink });
     }
     /*
     this.setState({ pageIds: [], loading: true }, () => {
