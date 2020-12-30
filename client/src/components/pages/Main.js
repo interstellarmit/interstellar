@@ -20,7 +20,17 @@ class Main extends Component {
   }
 
   componentDidMount() {
-    this.changeSemester(this.state.semester);
+    this.setState({ pageIds: [] }, () => {
+      //console.log("Changing semester to ")
+      post("/api/updateSemester", { semester: this.state.semester }).then((res) => {
+        this.setState({
+          allPages: res.allPages,
+          pageIds: res.pageIds,
+
+          loading: false,
+        });
+      });
+    });
   }
 
   logout = () => {
@@ -31,6 +41,11 @@ class Main extends Component {
     this.setState({ redirectPage: "/" + this.state.semester + link });
   };
   changeSemester = (semester) => {
+    let newLink = window.location.pathname.replace(this.state.semester, semester);
+    if (newLink !== window.location.pathname) {
+      this.props.redirectPage(newLink);
+    }
+    /*
     this.setState({ pageIds: [], loading: true }, () => {
       //console.log("Changing semester to ")
       post("/api/updateSemester", { semester: semester }).then((res) => {
@@ -52,6 +67,7 @@ class Main extends Component {
         );
       });
     });
+    */
   };
 
   updatePageIds = (newPageIds) => {
@@ -124,7 +140,7 @@ class Main extends Component {
         />
         <Layout className="site-layout">
           <Content>
-            <Spin spinning={this.props.state.loading}>
+            <Spin spinning={this.state.loading}>
               <Router>
                 <Switch>
                   <Home

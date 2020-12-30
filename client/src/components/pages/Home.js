@@ -131,8 +131,7 @@ class Home extends Component {
           <div style={{ bottom: "10px", padding: "10px 20% 10px 20%" }}>
             <center>
               <div style={{ fontSize: "10px" }}>
-                Disclaimer: All material on this site is compiled by students and therefore
-                unofficial. Thanks to{" "}
+                Thanks to{" "}
                 <a href="https://hacklodge.org/" target="_blank">
                   Hacklodge
                 </a>
@@ -140,15 +139,8 @@ class Home extends Component {
                 <a href="https://fireroad.mit.edu/" target="_blank">
                   FireRoad
                 </a>{" "}
-                and{" "}
-                <a href="http://gather.town/" target="_blank">
-                  Gather
-                </a>{" "}
-                for their support, and{" "}
-                <a href="https://firehose.guide/" target="_blank">
-                  Firehose
-                </a>{" "}
-                for class information. Please share any bugs or feedback{" "}
+                for support and class information. This is not a catalog. Please share any bugs or
+                feedback{" "}
                 <a href="https://forms.gle/ZSdrfPZfpwngxQ3aA" target="_blank">
                   here
                 </a>

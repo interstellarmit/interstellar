@@ -51,12 +51,6 @@ let getAllPages = async (semester) => {
   let term = semester.split("-")[0];
 
   let year = parseInt(semester.split("-")[1]);
-  let pagesClasses = await Page.find({
-    pageType: "Class",
-    expiryDate: { $gte: new Date() },
-  }).select(
-    "name _id title locked pageType numPeople is_historical not_offered_year offered_spring offered_fall offered_IAP offered_summer"
-  );
 
   let pagesGroups = await Page.find({
     pageType: "Group",
@@ -69,6 +63,13 @@ let getAllPages = async (semester) => {
 
   if (allPagesMap[semester]) allPages = allPagesMap[semester];
   else {
+    let pagesClasses = await Page.find({
+      pageType: "Class",
+      expiryDate: { $gte: new Date() },
+    }).select(
+      "name _id title locked pageType numPeople is_historical not_offered_year offered_spring offered_fall offered_IAP offered_summer"
+    );
+
     await Promise.all(
       pagesClasses.map((page) => {
         // get classes that are available this semester

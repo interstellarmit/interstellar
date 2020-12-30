@@ -13,7 +13,7 @@ import {
   BookOutlined,
   TeamOutlined,
 } from "@ant-design/icons";
-import logo from "../../public/logo_inverted.png";
+import logo from "../../public/logo.png";
 import { get, post } from "../../utilities.js";
 
 import AddGroup from "./AddGroup";
@@ -34,6 +34,7 @@ export default function SideBar(props) {
       onCollapse={setCollapsed}
       width={"20%"}
       style={{ overflow: "auto", height: "100vh" }}
+      theme={"light"}
     >
       {collapsed ? (
         <div style={{ margin: "25px 10px 15px 10px" }}>
@@ -61,7 +62,7 @@ export default function SideBar(props) {
               justifyContent: "center",
               fontSize: "30px",
               fontFamily: "Chakra Petch",
-              color: "#fff",
+              color: " #4090F7",
               fontWeight: "700",
             }}
           >
@@ -88,7 +89,7 @@ export default function SideBar(props) {
       </Select>
 
       <Menu
-        theme="dark"
+        theme="light"
         selectedKeys={[props.selectedPageName === "" ? ".ho!!me." : props.selectedPageName]}
         defaultOpenKeys={["c", "g"]}
         mode="inline"

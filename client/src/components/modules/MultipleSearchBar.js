@@ -23,9 +23,9 @@ export default function MultipleSearchBar(props) {
         .filter((page) => {
           return page.pageType === "Class";
         })
-        .sort((a, b) => {
-          return b.numPeople - a.numPeople;
-        })
+        // .sort((a, b) => {
+        //   return b.numPeople - a.numPeople;
+        // })
         .map((page) => {
           return {
             value: page.name,
