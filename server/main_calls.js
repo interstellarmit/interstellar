@@ -226,7 +226,7 @@ joinPage = (req, res) => {
               name: singleUser.name,
               pageIds: singleUser.pageIds
                 .filter((pg) => {
-                  pg.semester === "All" || pg.semester === req.body.semester;
+                  return pg.semester === "All" || pg.semester === req.body.semester;
                 })
                 .map((pg) => {
                   return pg.pageId;
