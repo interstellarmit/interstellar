@@ -58,7 +58,7 @@ class Home extends Component {
       this.props.semester.replace("-", " ").substring(1);
     return (
       <>
-        <Layout style={{ background: "rgba(240, 242, 245, 1)", height: "100vh" }}>
+        <Layout style={{ background: "rgba(255, 255, 255, 1)", height: "100vh" }}>
           <PageHeader
             className="site-layout-sub-header-background"
             style={{

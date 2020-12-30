@@ -96,9 +96,7 @@ class Main extends Component {
           pageIds: pageIds,
         },
         () => {
-          this.props.redirectPage(
-            "/" + this.state.semester + classList[0] ? "/class/" + classList[0] : "/dashboard"
-          );
+          this.redirectPage(classList[0] ? "/class/" + classList[0] : "/dashboard");
         }
       );
     });
@@ -116,6 +114,19 @@ class Main extends Component {
         <Router>
           <Redirect to={page} />
         </Router>
+      );
+    }
+    if (
+      !["fall-2021", "spring-2021", "iap-2021", "fall-2020", "spring-2020"].includes(
+        this.state.semester
+      )
+    ) {
+      return (
+        <h3>
+          {"Sorry, " +
+            this.state.semester +
+            " is not a valid semester yet. If you want more semesters, please tell us! We weren't sure how many semesters to include."}
+        </h3>
       );
     }
     let myPages = this.state.allPages.filter((page) => {
