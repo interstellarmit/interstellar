@@ -224,9 +224,13 @@ joinPage = (req, res) => {
             return {
               userId: singleUser._id,
               name: singleUser.name,
-              pageIds: singleUser.pageIds.map((pg) => {
-                return pg.pageId;
-              }),
+              pageIds: singleUser.pageIds
+                .filter((pg) => {
+                  pg.semester === "All" || pg.semester === req.body.semester;
+                })
+                .map((pg) => {
+                  return pg.pageId;
+                }),
             };
           }
           if ((req.body.home || page.pageType === "Class") && !singleUser.visible)
