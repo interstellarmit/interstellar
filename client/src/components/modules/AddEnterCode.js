@@ -46,7 +46,7 @@ export default function AddLounge(props) {
           ]}
         >
           <Input
-            placeholder={"Contact " + props.hostName || "Akshaj Kadaveru" + " for Join Code"}
+            placeholder={"Contact " + (props.hostName || "Akshaj Kadaveru") + " for Join Code"}
           />
         </Form.Item>
 
