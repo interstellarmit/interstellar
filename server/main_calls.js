@@ -214,6 +214,18 @@ joinPage = (req, res) => {
 
       User.find({ "pageIds.pageId": { $in: pageArr } }, async (err, users) => {
         //console.log("LENGTH" + users.length);
+        users = users.filter((user) => {
+          return user.pageIds.find((id) => {
+            return (
+              pageArr
+                .map((s) => {
+                  return s + "";
+                })
+                .includes(id.pageId) &&
+              (id.semester === "All" || id.semester === req.body.semester)
+            );
+          });
+        });
         let condensedUsers = users.map((singleUser) => {
           if ((req.body.home || page.pageType === "Class") && !singleUser.visible)
             return { userId: singleUser._id, name: "Anonymous" };
