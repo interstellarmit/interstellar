@@ -132,7 +132,7 @@ class Main extends Component {
     let myPages = this.state.allPages.filter((page) => {
       return this.state.pageIds.includes(page._id + "");
     });
-    console.log(this.state.pageIds);
+    //console.log(this.state.pageIds);
     return (
       <Layout style={{ minHeight: "100vh" }}>
         <SideBar

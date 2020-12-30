@@ -31,8 +31,7 @@ class Page extends Component {
     };
     props.updateSelectedPageName(selectedPage);
   }
-
-  componentDidMount() {
+  joinPage() {
     post("/api/joinPage", { pageName: this.state.pageName, semester: this.props.semester }).then(
       (data) => {
         if (data.broken) {
@@ -50,6 +49,9 @@ class Page extends Component {
         });
       }
     );
+  }
+  componentDidMount() {
+    this.joinPage();
     // remember -- api calls go here!
 
     socket.on("userJoinedPage", (data) => {
@@ -74,6 +76,14 @@ class Page extends Component {
       page.locked = data.locked;
       this.setState({ page: page });
     });
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.semester !== prevProps.semester) {
+      this.setState({ users: [] }, () => {
+        this.joinPage();
+      });
+    }
   }
 
   setLockModal = (bol) => {
