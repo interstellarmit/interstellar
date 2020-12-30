@@ -27,13 +27,26 @@ export default function InfoTab(props) {
         <Col span={12} style={{ height: "100%" }}>
           {props.page.pageType === "Class" ? (
             <React.Fragment>
-              <Row>{"Professor: " + props.page.professor}</Row>
+              {props.page.professor ? <Row>{"Professor: " + props.page.professor}</Row> : <></>}
               <Row>
-                <Rate allowHalf defaultValue={parseFloat(props.page.rating)} disabled count={7} />
-                <div style={{ padding: "10px" }}>{rating}/7.0</div>
+                {props.page.rating ? (
+                  <React.Fragment>
+                    <Rate
+                      allowHalf
+                      defaultValue={parseFloat(props.page.rating)}
+                      disabled
+                      count={7}
+                    />
+                    <div style={{ padding: "10px" }}>{rating}/7.0</div>
+                  </React.Fragment>
+                ) : (
+                  <></>
+                )}
                 <div style={{ padding: "10px" }}>
-                  {Number(props.page.in_class_hours + props.page.out_of_class_hours).toFixed(1) +
-                    " Hours"}
+                  {props.page.in_class_hours
+                    ? Number(props.page.in_class_hours + props.page.out_of_class_hours).toFixed(1) +
+                      " Hours"
+                    : ""}
                 </div>
               </Row>
             </React.Fragment>

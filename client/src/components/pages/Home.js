@@ -32,7 +32,8 @@ class Home extends Component {
   }
 
   componentDidMount() {
-    post("api/joinPage", { home: true, semester: this.props.semester }).then((data) => {
+    /*
+    post("/api/joinPage", { home: true, semester: this.props.semester }).then((data) => {
       if (data.broken) {
         this.props.logout();
         //this.props.disconnect();
@@ -44,6 +45,8 @@ class Home extends Component {
       });
       document.getElementsByClassName("ant-tabs-content")[0].style.height = "100%";
     });
+    */
+    document.getElementsByClassName("ant-tabs-content")[0].style.height = "100%";
   }
 
   render() {
@@ -82,6 +85,7 @@ class Home extends Component {
               labels={["Dashboard", "Settings/Privacy"]}
               routerLinks={["dashboard", "settings"]}
               defaultRouterLink={"dashboard"}
+              semester={this.props.semester}
             >
               <div>
                 {this.props.myPages.filter((page) => {
@@ -128,7 +132,7 @@ class Home extends Component {
             </TabPage>
           </Content>
 
-          <div style={{ bottom: "10px", padding: "10px 20% 10px 20%" }}>
+          <div style={{ bottom: "10px", padding: "10px 50px 10px 50px" }}>
             <center>
               <div style={{ fontSize: "10px" }}>
                 Thanks to{" "}
