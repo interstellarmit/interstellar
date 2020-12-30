@@ -155,6 +155,7 @@ class Main extends Component {
               <Router>
                 <Switch>
                   <Home
+                    key={this.state.semester}
                     exact
                     path={["/", "/dashboard", "/settings", "/admin", "/dueDateAdmin"].map((s) => {
                       return "/:semester" + s;
@@ -181,6 +182,7 @@ class Main extends Component {
                     semester={this.state.semester}
                   />
                   <Page
+                    key={this.state.semester}
                     path={"/:semester/class/:selectedPage"}
                     schoolId={this.props.state.schoolId}
                     pageIds={this.state.pageIds}
