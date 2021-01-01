@@ -263,7 +263,9 @@ class App extends Component {
             <Layout className="site-layout">
               <Content>
                 <Spin spinning={true}>
-                  <div style={{ minHeight: "100vh" }}></div>
+                  <Layout
+                    style={{ background: "rgba(255, 255, 255, 1)", height: "100vh" }}
+                  ></Layout>
                 </Spin>
               </Content>
             </Layout>
