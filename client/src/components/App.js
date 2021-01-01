@@ -255,7 +255,20 @@ class App extends Component {
 
   render() {
     if (!this.state.userId || !this.state.allPages) {
-      if (this.state.tryingToLogin) return <MySpin />;
+      if (this.state.tryingToLogin)
+        return (
+          <Layout style={{ minHeight: "100vh" }}>
+            <SideBar notLoggedIn={true} />
+
+            <Layout className="site-layout">
+              <Content>
+                <Spin spinning={true}>
+                  <div style={{ minHeight: "100vh" }}></div>
+                </Spin>
+              </Content>
+            </Layout>
+          </Layout>
+        );
       return (
         <>
           <Router>
