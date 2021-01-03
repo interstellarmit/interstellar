@@ -55,7 +55,7 @@ export default function InfoTab(props) {
           )}
           <Row>
             <Text>
-              {props.page.description
+              {(props.page.description || "")
                 .replace(new RegExp("&nbsp;", "g"), " ")
                 .replace(new RegExp("&quot;", "g"), '"')
                 .replace(new RegExp("<([^>])*>", "g"), "")}
