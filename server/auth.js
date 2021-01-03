@@ -349,12 +349,12 @@ async function signUpLogin(req, res) {
       return;
     }
 
-    let schoolEmail = encodeURI(email.split("@")[1].replace(/ /g, "_"));
-    let school = await School.findOne({ email: schoolEmail });
+    //let schoolEmail = encodeURI(email.split("@")[1].replace(/ /g, "_"));
+    // let school = await School.findOne({ email: schoolEmail });
     user = new User({
       name: name,
       email: email,
-      schoolId: school ? school._id : "None",
+      //schoolId: school ? school._id : "None",
       isVerified: true,
     });
 
