@@ -17,23 +17,6 @@ const { Header, Content, Footer, Sider } = Layout;
 import { socket } from "../client-socket.js";
 import { get, post } from "../utilities";
 
-import Cookies from "universal-cookie";
-const cookies = new Cookies();
-
-var getJSON = function (url, callback) {
-  var xhr = new XMLHttpRequest();
-  xhr.open("GET", url, true);
-  xhr.responseType = "json";
-  xhr.onload = function () {
-    var status = xhr.status;
-    if (status === 200) {
-      callback(null, xhr.response);
-    } else {
-      callback(status, xhr.response);
-    }
-  };
-  xhr.send();
-};
 
 /**
  * Define the "App" component as a class.
@@ -55,42 +38,28 @@ class App extends Component {
       // currentPageName from URL?
     };
 
-    let self = this;
-    if (cookies.get("token") && cookies.get("token").length > 0) {
-      self.me();
-    } else if (window.location.href.indexOf("?code") > 0) {
-      let code = window.location.href.substring(window.location.href.indexOf("?code"));
-      self.state.code = code;
-      post("/api/getRedirectLink", {}).then((ret) => {
-        getJSON(ret.link + "fetch_token/" + code, (err, data) => {
-          if (err !== null) {
-            // alert("Something went wrong: " + err);
-          } else {
-            var req = new XMLHttpRequest();
-            req.responseType = "json";
-            req.open("GET", ret.link + "user_info/", true);
-            req.setRequestHeader("Authorization", "Bearer " + data.access_info.access_token);
-            req.onload = function () {
-              var jsonResponse = req.response;
-              let name = jsonResponse.name;
-              let email = data.access_info.academic_id;
-              let current_semester = data.access_info.current_semester;
-              self.signUpLogin({ email: email, password: "DH3ordzkbjBra9", name: name });
-            };
-            req.send(null);
-          }
-        });
-      });
-    }
+
   }
 
   componentDidMount() {
     get("/api/whoami").then((user) => {
-      if (user._id && cookies.get("token") != undefined) {
+      if (user._id) {
         // they are registed in the database, and currently logged in.
-        this.me();
-      } else if (!this.state.code) {
-        this.setState({ tryingToLogin: false });
+        this.setState({
+          userId: user._id,
+          schoolId: user.schoolId,
+          name: user.name,
+          loungeId: user.loungeId,
+          //pageIds: user.pageIds,
+          isSiteAdmin: user.isSiteAdmin,
+          email: user.email,
+          visible: user.visible,
+          seeHelpText: user.seeHelpText,
+          //allPages: allPages,
+          signedContract: user.signedContract,
+        });
+      } else {
+        this.setState({ tryingToLogin: false })
       }
     });
     socket.on("reconnect_failed", () => {
@@ -125,11 +94,8 @@ class App extends Component {
   */
 
   handleLogin = () => {
-    let link = window.location.origin.replace("http:", "https:") + "/";
-    if (link.includes("localhost:5000")) link = window.location.origin + "/";
-    // console.log(window.location.origin)
-    // console.log(window.location.href)
-    // this.encodedLink = link.charAt(link.length - 1) === "/" ? link.substring(0, link.length - 1) : link;
+    let link = window.location.origin.replace("http:", "https:") + "/api/signUpLogin";
+    if (link.includes("localhost:5000")) link = window.location.origin + "/api/signUpLogin";
     let encodedLink = encodeURIComponent(link);
 
     post("/api/getRedirectLink", {}).then((ret) => {
@@ -137,73 +103,9 @@ class App extends Component {
     });
   };
 
-  signUpLogin = (data) => {
-    post("/api/signUpLogin", data).then((res) => {
-      cookies.set("token", res.token, { path: "/" });
-      if (res.msg) {
-        this.setState({ loginMessage: res.msg });
-      }
-      if (res.token) {
-        this.setState({ loginMessage: "Success!" });
-      } else {
-      }
-      post("/api/initsocket", { socketid: socket.id }).then((data) => {
-        if (data.init) this.me();
-        else {
-          this.setState({
-            disconnect: true,
-          });
-        }
-      });
-    });
-  };
-
-  login = (data) => {
-    post("/api/login", data).then((res) => {
-      cookies.set("token", res.token, { path: "/" });
-      if (res.msg) {
-        this.setState({ loginMessage: res.msg });
-      }
-      if (res.token) {
-        this.setState({ loginMessage: "Success!" });
-      }
-      post("/api/initsocket", { socketid: socket.id }).then((data) => {
-        if (data.init) this.me();
-        else {
-          this.setState({
-            disconnect: true,
-          });
-        }
-      });
-    });
-  };
-
   logout = () => {
-    cookies.set("token", "", { path: "/" });
     post("/api/logout", {}).then((res) => {
       window.location.href = "/";
-    });
-  };
-
-  me = async () => {
-    let token = cookies.get("token");
-    let res = await get("/api/me", {}, token);
-    if (!res.user) {
-      this.logout();
-      return;
-    }
-    this.setState({
-      userId: res.user._id,
-      schoolId: res.user.schoolId,
-      name: res.user.name,
-      loungeId: res.user.loungeId,
-      //pageIds: res.user.pageIds,
-      isSiteAdmin: res.user.isSiteAdmin,
-      email: res.user.email,
-      visible: res.user.visible,
-      seeHelpText: res.user.seeHelpText,
-      //allPages: res.allPages,
-      signedContract: res.user.signedContract,
     });
   };
 
@@ -221,14 +123,6 @@ class App extends Component {
       }
     });
   };
-  signup = (data) => {
-    post("/api/signup", data).then((res) => {
-      if (res.msg) {
-        this.setState({ signUpMessage: res.msg });
-      }
-    });
-  };
-
   redirectPage = (link) => {
     this.setState({ redirectPage: link });
   };
@@ -278,13 +172,11 @@ class App extends Component {
               <Confirmation path="/confirmation/:token"></Confirmation>
               <Public
                 visible={true}
-                login={this.login}
+                handleLogin={this.handleLogin}
                 logout={this.logout}
                 me={this.me}
-                signup={this.signup}
                 loginMessage={this.state.loginMessage}
                 signUpMessage={this.state.signUpMessage}
-                handleLogin={this.handleLogin}
               />
             </Switch>
           </Router>
@@ -328,31 +220,31 @@ class App extends Component {
             },
           })
         ) : (
-          <></>
-        )}
+            <></>
+          )}
         {!this.state.signedContract ? (
           <SignContract logout={this.logout} signContract={this.signContract} />
         ) : (
-          <Router>
-            <Switch>
-              <Main
-                path="/:semester"
-                state={this.state}
-                redirectPage={this.redirectPage}
-                disconnect={this.disconnect}
-                setVisible={this.setVisible}
-                setSeeHelpText={this.setSeeHelpText}
-                logout={this.logout}
-              />
-              <Route
-                default
-                render={() => {
-                  return <Redirect to="/spring-2021" />;
-                }}
-              />
-            </Switch>
-          </Router>
-        )}
+            <Router>
+              <Switch>
+                <Main
+                  path="/:semester"
+                  state={this.state}
+                  redirectPage={this.redirectPage}
+                  disconnect={this.disconnect}
+                  setVisible={this.setVisible}
+                  setSeeHelpText={this.setSeeHelpText}
+                  logout={this.logout}
+                />
+                <Route
+                  default
+                  render={() => {
+                    return <Redirect to="/spring-2021" />;
+                  }}
+                />
+              </Switch>
+            </Router>
+          )}
       </div>
     );
   }

@@ -12,10 +12,10 @@ let expiryDate = new Date(2021, 1, 20); // expiry date for all classes this seme
 /*
 createNewPage
 Input (req.body): {
-	pageType: String,
-	name: String,
-	title: String,
-	description: String,
+  pageType: String,
+  name: String,
+  title: String,
+  description: String,
   locked: Boolean,
   joinCode: String
 }
@@ -77,8 +77,8 @@ createNewPage = (req, res) => {
 /*
 addSelfToPage
 Input (req.body): {
-	pageId: String,
-	joinCode: String
+  pageId: String,
+  joinCode: String
 }
 Precondition: User's school is the page's school. User is not in the page. Page is not locked.  
 Socket: "userJoinedPage", {userId: String, name: String}
@@ -128,7 +128,7 @@ addSelfToPage = (req, res) => {
 /*
 removeSelfFromPage
 Input (req.body): {
-	pageId: String
+  pageId: String
 }
 Precondition: User is in the page. 
 Socket: 
@@ -162,7 +162,7 @@ removeSelfFromPage = (req, res) => {
 joinPage
 Input (req.body): {
   schoolId: String
-	pageName: String,
+  pageName: String,
 }
 Socket: 
 Returns: if user is in page {
@@ -281,8 +281,8 @@ joinPage = (req, res) => {
 /*
 leavePage
 Input (req.body): {
-	schoolId: String
-	pageName: String,
+  schoolId: String
+  pageName: String,
 }
 Precondition: User is on the page 
 Socket: 
@@ -323,9 +323,7 @@ setJoinCode = (req, res) => {
 };
 
 getRedirectLink = (req, res) => {
-  Link.findOne({}).then((ret) => {
-    res.send({ link: ret.link });
-  });
+  res.send({ link: process.env.FIREROAD_LINK });
 };
 
 setVisible = (req, res) => {

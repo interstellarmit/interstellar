@@ -29,21 +29,7 @@ const socket = require("./server-socket");
 const axios = require("axios");
 
 //signin/user stuff
-router.post(
-  "/signup",
-  [
-    check("name", "Please Enter a valid name").not().isEmpty(),
-    check("email", "Please enter a valid email").isEmail(),
-    check("password", "Please enter a longer password").isLength({
-      min: 6,
-    }),
-  ],
-  auth.signUp
-);
-
-router.post("/login", [check("email", "Please enter a valid email").isEmail()], auth.login);
-
-router.post("/signUpLogin", auth.signUpLogin);
+router.get("/signUpLogin", auth.signUpLogin);
 
 let allPagesMap = {};
 
@@ -133,26 +119,6 @@ router.post("/updateSemester", async (req, res) => {
   res.send({ pageIds: pageIds, allPages: allPages });
 });
 
-router.get("/me", auth.me, async (req, res) => {
-  try {
-    // request.user is getting fetched from Middleware after token authentication
-
-    const user = await User.findById(req.user.id);
-
-    //let semester = "spring-2021";
-    //let allPages = await getAllPages(semester);
-
-    req.session.user = user;
-    res.send({
-      user: Object.assign(user, {
-        pageIds: [],
-      }),
-    });
-  } catch (e) {
-    console.log(e);
-    res.send({ message: "Error in Fetching user" });
-  }
-});
 
 router.post("/logout", auth.logout);
 router.get("/whoami", (req, res) => {
@@ -165,8 +131,6 @@ router.get("/whoami", (req, res) => {
   });
 });
 
-router.post("/confirmation", auth.confirmationPost);
-router.post("/resend", auth.resendTokenPost);
 router.post("/signContract", auth.ensureLoggedIn, auth.signContract);
 
 router.post("/initsocket", (req, res) => {
