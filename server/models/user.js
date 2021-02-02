@@ -4,6 +4,8 @@ const UserSchema = new mongoose.Schema({
   name: String,
   schoolId: String,
   email: { type: String, unique: true },
+  classYear: Number,
+  accessToken: String,
   password: String,
   passwordResetToken: String,
   passwordResetExpires: Date,

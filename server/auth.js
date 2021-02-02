@@ -52,7 +52,7 @@ const fetchUserInfo = async (code) => {
     })
     userData = userData.data;
     const name = userData.name;
-    return { name, email, password }
+    return { name, email, password, accessToken }
   } catch (e) {
     console.log(e)
   }
@@ -68,35 +68,40 @@ const signUpLogin = async (req, res) => {
     });
   }
   const { code } = req.query;
-  const { name, email, password } = await fetchUserInfo(code)
-  console.log(name, email, password)
+  const { name, email, password, accessToken } = await fetchUserInfo(code)
+  console.log(name, email, password, accessToken)
   try {
     let user = await User.findOne({
       email: email,
     });
     if (user) {
+      user.accessToken = accessToken;
+      user.save().then((user) => {
+        req.session.user = user;
+        return res.redirect("/");
+      })
+    }
+    else {
+      //let schoolEmail = encodeURI(email.split("@")[1].replace(/ /g, "_"));
+      // let school = await School.findOne({ email: schoolEmail });
+      user = new User({
+        name: name,
+        email: email,
+        accessToken: accessToken,
+        //schoolId: school ? school._id : "None",
+        isVerified: true,
+      })
+      console.log(user);
+      await user.save(function (err) {
+        if (err) {
+          console.log(err);
+          return res.status(500).send({ msg: err.message });
+        }
+      });
+
       req.session.user = user;
       return res.redirect("/");
     }
-
-    //let schoolEmail = encodeURI(email.split("@")[1].replace(/ /g, "_"));
-    // let school = await School.findOne({ email: schoolEmail });
-    user = new User({
-      name: name,
-      email: email,
-      //schoolId: school ? school._id : "None",
-      isVerified: true,
-    });
-    console.log(user);
-    await user.save(function (err) {
-      if (err) {
-        console.log(err);
-        return res.status(500).send({ msg: err.message });
-      }
-    });
-
-    req.session.user = user;
-    return res.redirect("/");
   } catch (err) {
     console.log(err.message);
     res.status(500).send({ msg: "Error in Saving" });
@@ -104,12 +109,67 @@ const signUpLogin = async (req, res) => {
 }
 
 async function signContract(req, res) {
-  User.findOne({ email: req.user.email }).then((user) => {
-    user.signedContract = true;
-    user.save().then(() => {
-      res.send({ success: true });
-    });
-  });
+  let semesterTypes = ['fall', 'iap', 'spring']
+  try {
+    User.findById(req.user._id).then(async (user) => {
+      user.signContract = true;
+      user.classYear = req.body.classYear;
+
+      if (!req.body.importClasses) {
+        return user.save().then((user) => {
+          res.send({ user })
+        })
+      }
+
+      const pageIds = user.pageIds;
+      let roadData = await axios({
+        url: process.env.FIREROAD_LINK + "sync/roads",
+        headers: { 'Authorization': "Bearer " + req.user.accessToken },
+      })
+      roadData = roadData.data.files;
+      let id = Object.keys(roadData)[0] || undefined;
+      if (id) {
+        let road = await axios({
+          url: process.env.FIREROAD_LINK + `sync/roads/?id=${id}`,
+          headers: { 'Authorization': "Bearer " + req.user.accessToken },
+        })
+        let contents = road.data.file.contents
+        await Promise.all(contents.selectedSubjects.map(async (subject) => {
+          try {
+            const page = await Page.findOne({ pageType: "Class", name: subject.id })
+            if (!page) {
+              return;
+            }
+            let isUserPage = pageIds.find((element) => {
+              element.pageId == page._id
+            })
+            if (!isUserPage) {
+              const semester = semesterTypes[(subject.semester + 2) % 3]
+              const year = Number(req.body.classYear) - 4 + Math.floor((subject.semester + 1) / 3);
+              user.pageIds.push({
+                pageId: page._id + "",
+                semester: `${semester}-${year}`,
+              })
+            }
+            return page;
+          } catch (err) {
+            console.log(err.message)
+            return;
+          }
+        }))
+        user.save().then((user) => {
+          res.send({ user });
+        })
+      } else {
+        user.save().then((user) => {
+          res.send({ user });
+        })
+      }
+    })
+  } catch (err) {
+    console.log(err.message)
+    res.status(500).send({ msg: "Error in signing contract" });
+  }
 }
 
 module.exports = {

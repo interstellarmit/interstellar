@@ -135,9 +135,9 @@ class App extends Component {
     this.setState({ disconnect: true });
   };
 
-  signContract = () => {
-    post("/api/signContract", {}).then((res) => {
-      if (res.success) {
+  signContract = (importClasses, classYear) => {
+    post("/api/signContract", { importClasses, classYear }).then((res) => {
+      if (res.user) {
         this.setState({ signedContract: true });
       }
     });
@@ -203,6 +203,9 @@ class App extends Component {
 
     return (
       <div>
+        {/* <button onClick={() => { get("/api/sync").then((user) => { console.log(user) }) }}>Test Sync</button>
+        <button onClick={() => { get("/api/verify") }}>Verify Token</button>
+        <button onClick={() => { get("/api/user_info") }}>User Info</button> */}
         {this.state.disconnect ? (
           Modal.error({
             title: "Disconnected",

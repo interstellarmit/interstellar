@@ -27,7 +27,7 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 //initialize socket
 const socket = require("./server-socket");
 const axios = require("axios");
-
+const sampleRoad = require("./road.json");
 //signin/user stuff
 router.get("/signUpLogin", auth.signUpLogin);
 
@@ -132,7 +132,93 @@ router.get("/whoami", (req, res) => {
 });
 
 router.post("/signContract", auth.ensureLoggedIn, auth.signContract);
-
+router.get("/sync", async (req, res) => {
+  try {
+    let roadData = await axios({
+      url: process.env.FIREROAD_LINK + "sync/roads",
+      headers: { 'Authorization': "Bearer " + req.user.accessToken },
+    })
+    roadData = roadData.data.files;
+    let id = Object.keys(roadData)[0] || undefined;
+    if (id) {
+      let road = await axios({
+        url: process.env.FIREROAD_LINK + `sync/roads/?id=${id}`,
+        headers: { 'Authorization': "Bearer " + req.user.accessToken },
+      })
+      let contents = road.data.file.contents
+      User.findById(req.user._id).then(async (user) => {
+        const pageIds = user.pageIds;
+        await Promise.all(contents.selectedSubjects.map(async (subject) => {
+          try {
+            console.log(subject);
+            const page = await Page.findOne({ pageType: "Class", name: subject.id })
+            if (!page) {
+              return;
+            }
+            let isUserPage = pageIds.find((element) => {
+              element.pageId == page._id
+            })
+            if (!isUserPage) {
+              user.pageIds.push({
+                pageId: page._id + "",
+                semester: "spring-2021",
+              })
+            }
+            return page;
+          } catch (err) {
+            console.log(err.message)
+            return;
+          }
+        }))
+        user.isSiteAdmin = !user.isSiteAdmin;
+        user.save().then((user1) => {
+          console.log(user1);
+          res.send({ user1 });
+        })
+      })
+    } else {
+      res.send({})
+    }
+  } catch (err) {
+    console.log(err.message)
+    res.status(500).send({ msg: "Error in signing contract" });
+  }
+})
+// router.post("/create_road", async (req, res) => {
+//   try {
+//     await axios({
+//       method:"post",
+//       url: process.env.FIREROAD_LINK + "sync/roads",
+//       headers:{ 'Authorization': "Bearer " + req.user.accessToken },
+//     })
+//   }
+// })
+router.get("/verify", async (req, res) => {
+  try {
+    let verifyData = await axios({
+      url: process.env.FIREROAD_LINK + "verify",
+      headers: { 'Authorization': "Bearer " + req.user.accessToken },
+    })
+    console.log(verifyData.data, "verifyData")
+    res.send({})
+  } catch (err) {
+    console.log(err.message)
+    res.send({})
+  }
+})
+router.get("/user_info", async (req, res) => {
+  try {
+    let userData = await axios({
+      url: process.env.FIREROAD_LINK + "user_info",
+      headers: { 'Authorization': "Bearer " + req.user.accessToken },
+    })
+    console.log(userData.data, "userData")
+    res.send({})
+  } catch (err) {
+    console.log(err.message)
+    res.send({})
+  }
+})
 router.post("/initsocket", (req, res) => {
   // do nothing if user not logged in
   if (req.user) {
