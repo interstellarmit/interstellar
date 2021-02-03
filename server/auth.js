@@ -112,7 +112,7 @@ async function signContract(req, res) {
   let semesterTypes = ['fall', 'iap', 'spring']
   try {
     User.findById(req.user._id).then(async (user) => {
-      user.signContract = true;
+      user.signedContract = true;
       user.classYear = req.body.classYear;
 
       if (!req.body.importClasses) {
@@ -121,7 +121,6 @@ async function signContract(req, res) {
         })
       }
 
-      const pageIds = user.pageIds;
       let roadData = await axios({
         url: process.env.FIREROAD_LINK + "sync/roads",
         headers: { 'Authorization': "Bearer " + req.user.accessToken },
@@ -140,15 +139,16 @@ async function signContract(req, res) {
             if (!page) {
               return;
             }
-            let isUserPage = pageIds.find((element) => {
-              element.pageId == page._id
+            let isUserPage = user.pageIds.find((element) => {
+              return element.pageId == page._id
             })
             if (!isUserPage) {
-              const semester = semesterTypes[(subject.semester + 2) % 3]
+              const semesterType = semesterTypes[(subject.semester + 2) % 3]
               const year = Number(req.body.classYear) - 4 + Math.floor((subject.semester + 1) / 3);
+              const semester = subject.semester === 0 ? "prereq" : `${semesterType}-${year}`
               user.pageIds.push({
                 pageId: page._id + "",
-                semester: `${semester}-${year}`,
+                semester: semester,
               })
             }
             return page;
