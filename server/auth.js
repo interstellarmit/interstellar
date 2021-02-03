@@ -111,19 +111,15 @@ async function signContract(req, res) {
           res.send({ user })
         })
       }
-
-      let roadData = await axios({
-        url: process.env.FIREROAD_LINK + "sync/roads",
-        headers: { 'Authorization': "Bearer " + req.user.accessToken },
-      })
-      roadData = roadData.data.files;
-      let id = req.body.roadId || Object.keys(roadData)[0] || undefined;
+      console.log(req.body)
+      let id = req.body.roadId || undefined;
       if (id) {
         let road = await axios({
           url: process.env.FIREROAD_LINK + `sync/roads/?id=${id}`,
           headers: { 'Authorization': "Bearer " + req.user.accessToken },
         })
         let contents = road.data.file.contents
+        console.log(contents);
         await Promise.all(contents.selectedSubjects.map(async (subject) => {
           try {
             const page = await Page.findOne({ pageType: "Class", name: subject.id })
