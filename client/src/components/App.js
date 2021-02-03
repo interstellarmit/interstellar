@@ -135,9 +135,9 @@ class App extends Component {
     this.setState({ disconnect: true });
   };
 
-  signContract = (importClasses, classYear) => {
+  signContract = (importClasses, classYear, roadId) => {
     this.setState({ tryingToLogin: true, userId: false })
-    post("/api/signContract", { importClasses, classYear }).then((res) => {
+    post("/api/signContract", { importClasses, classYear, roadId }).then((res) => {
       if (res.user) {
         this.setState({ tryingToLogin: false, userId: res.user._id, signedContract: true });
       }

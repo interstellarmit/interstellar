@@ -1,18 +1,9 @@
 require("dotenv").config();
-const { OAuth2Client } = require("google-auth-library");
 const User = require("./models/user");
 const Page = require("./models/page");
 const socket = require("./server-socket");
-var crypto = require("crypto");
-var nodemailer = require("nodemailer");
-const Token = require("./models/token");
-const sgMail = require("@sendgrid/mail");
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-const { useReducer } = require("react");
 const { check, validationResult } = require("express-validator/check");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 
 const axios = require("axios");
 
@@ -126,7 +117,7 @@ async function signContract(req, res) {
         headers: { 'Authorization': "Bearer " + req.user.accessToken },
       })
       roadData = roadData.data.files;
-      let id = Object.keys(roadData)[0] || undefined;
+      let id = req.body.roadId || Object.keys(roadData)[0] || undefined;
       if (id) {
         let road = await axios({
           url: process.env.FIREROAD_LINK + `sync/roads/?id=${id}`,

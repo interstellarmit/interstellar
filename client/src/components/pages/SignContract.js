@@ -15,12 +15,22 @@ class SignContract extends Component {
       doesAbide: true,
       importClasses: true,
       classYear: undefined,
-      yearOptions: ['2020', '2021', '2022', '2023', '2024']
+      yearOptions: [],
+      road: undefined,
+      roads: undefined,
+      roadOpions: [],
     };
+  }
+  componentDidMount = () => {
+    get("/api/roads").then((data) => {
+      console.log(data.roads)
+      this.setState({ roads: data.roads, roadOptions: Object.values(data.roads).map((element) => element.name), yearOptions: data.yearOptions })
+    })
   }
 
   submitForm = () => {
-    this.props.signContract(this.state.importClasses, this.state.classYear);
+    const roadId = Object.keys(this.state.roads).find((key) => this.state.roads[key].name === this.state.road);
+    this.props.signContract(this.state.importClasses, this.state.classYear, roadId);
   };
 
   handleInputChange = (event) => {
@@ -31,6 +41,9 @@ class SignContract extends Component {
     this.setState({
       [name]: value
     });
+  }
+  onSelectRoad = (event) => {
+    this.setState({ road: event.value })
   }
   onSelect = (event) => {
     this.setState({ classYear: event.value })
@@ -88,10 +101,15 @@ class SignContract extends Component {
                   onChange={this.handleInputChange} />
                 &nbsp; I want to import my previous classes into interstellar from fireroad.
               </label>
-              <Dropdown options={this.state.yearOptions} onChange={this.onSelect} value={this.state.classYear} placeholder="Select an option" />;
+              <Dropdown name="road" options={this.state.roadOptions} onChange={this.onSelectRoad} value={this.state.road} placeholder="FireRoad Name" />
+              <Dropdown name="classYear" options={this.state.yearOptions} onChange={this.onSelect} value={this.state.classYear} placeholder="Class Year" />
               <br />
               <div>
-                <Button style={{ marginRight: "10px" }} type="primary" onClick={this.submitForm} disabled={!this.state.isStudent || !this.state.doesAbide || (this.state.classYear == undefined)}>
+                <Button
+                  style={{ marginRight: "10px" }}
+                  type="primary"
+                  onClick={this.submitForm}
+                  disabled={!this.state.isStudent || !this.state.doesAbide || (this.state.classYear == undefined) || (this.state.importClasses && !this.state.road)}>
                   Accept
                 </Button>
                 <Button onClick={this.props.logout}>Go Back</Button>
