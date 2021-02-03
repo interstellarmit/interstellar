@@ -17,7 +17,7 @@ class SignContract extends Component {
       classYear: undefined,
       yearOptions: [],
       road: undefined,
-      roads: undefined,
+      roads: {},
       roadOpions: [],
     };
   }

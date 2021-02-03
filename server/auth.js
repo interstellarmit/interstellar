@@ -122,7 +122,7 @@ async function signContract(req, res) {
         console.log(contents);
         await Promise.all(contents.selectedSubjects.map(async (subject) => {
           try {
-            const page = await Page.findOne({ pageType: "Class", name: subject.id })
+            const page = await Page.findOne({ pageType: "Class", name: subject.id || subject.subject_id })
             if (!page) {
               console.log(subject)
               return;
