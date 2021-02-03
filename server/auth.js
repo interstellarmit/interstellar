@@ -124,6 +124,7 @@ async function signContract(req, res) {
           try {
             const page = await Page.findOne({ pageType: "Class", name: subject.id })
             if (!page) {
+              console.log(subject)
               return;
             }
             let isUserPage = user.pageIds.find((element) => {
@@ -144,6 +145,8 @@ async function signContract(req, res) {
             return;
           }
         }))
+        console.log(user)
+        user.markModified("pageIds")
         user.save().then((user) => {
           res.send({ user });
         })
