@@ -1,50 +1,18 @@
-# Project Skeleton
+# Interstellar
 
-## What we provide
+## What is Interstellar
 
-- Google Auth (Skeleton.js & auth.js)
-- Socket Infrastructure (client-socket.js & server-socket.js)
-  - Disclaimer: Socket isn't being taught until the second week.
-- User Model (auth.js & user.js)
+If you are a MIT student, check us out at https://www.interstellar.live ! (It requires MIT authentication to view)
+Interstellar is a webapp created by MIT students (Akshaj, Daniel, Vivek, and Guang) for MIT students!
 
-## What you need to change
+We started in January 2020, and the initial version was a site where you could join classes, see who else is in your class, as well as create groups with your friends to see what classes your friends are taking!
 
-- Change the font in utilities.css
-- Change the Frontend CLIENT_ID for Google Auth (Skeleton.js) (we'll talk about it at the end of week 2)
-- Change the Server CLIENT_ID for Google Auth (auth.js) (we'll talk about it at the end of week 2)
-- Change the Database SRV for Atlas (server.js)
-- Change the Database Name for MongoDB (server.js)
-- Add a favicon to your website at the path client/dist/favicon.ico
-- Update website title in client/dist/index.html
-- Update this README file ;)
+We upgraded the site in Fall 2020 to include:
 
-## Socket stuff
-Note: we'll be getting to this in lecture in week 2, so don't worry if you don't know it yet
+Share classes: share what classes you’ve pre-registered for within group pages and see what other people are planning on taking.
+PSET sessions:  Join a Gather.town lounge while you’re working on a class’s PSET
+Share resources: share useful links, study guides, and class due dates
+Student-only forum: ask questions in a forum related to your class or group, or just to post memes that aren’t Piazza-friendly
 
-- If you're not using realtime updating or don't need server->client communication, you can remove socket entirely! (server-socket.js, client-socket.js, and anything that imports them)
-- If you are using socket, consider what you want to do with the FIXME in server-socket.js
+Currently, we axed some features and the site now lets you see the courseroads (what MIT courses your friends are planning on taking/have taken in past and future semesters) of your friends, as well as see who you will share classes with. 
 
-
-## How to integrate into your own project
-
-On GitHub download this repository as a zip file, then extract the files into your own repository.
-Warning: make sure you copy the hidden files too: .babelrc, .gitignore, .npmrc, and .prettierrc
-
-## don't touch
-
-the following files students do not need to edit. feel free to read them if you would like.
-
-```
-client/src/index.js
-client/src/utilities.js
-client/src/client-socket.js
-server/validator.js
-server/server-socket.js
-.babelrc
-.npmrc
-.prettierrc
-package-lock.json
-webpack.config.js
-```
-
-## Good luck on your project :)
