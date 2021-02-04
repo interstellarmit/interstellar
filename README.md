@@ -1,5 +1,7 @@
 # Interstellar
 
+
+![pic of interstellar](https://imgur.com/SyNU3iq)
 ## What is Interstellar
 
 If you are a MIT student, check us out at https://www.interstellar.live ! (It requires MIT authentication to view)
