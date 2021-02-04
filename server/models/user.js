@@ -21,6 +21,10 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
+  // profileVisible: {
+  //   type: Boolean,
+  //   default: true,
+  // },
   seeHelpText: {
     type: Boolean,
     default: true,

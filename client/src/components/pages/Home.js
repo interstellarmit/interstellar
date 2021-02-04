@@ -82,9 +82,9 @@ class Home extends Component {
             }}
           >
             <TabPage
-              labels={["Dashboard", "Settings/Privacy"]}
-              routerLinks={["dashboard", "settings"]}
-              defaultRouterLink={"dashboard"}
+              labels={["Dashboard", "Settings/Privacy", "Profile"]}
+              routerLinks={["dashboard", "settings", "profile"]}
+              defaultRouterLink={"profile"}
               semester={this.props.semester}
             >
               <div>
@@ -113,7 +113,7 @@ class Home extends Component {
                 <div
                   style={{
                     display: "flex",
-                    flexDirection: "row",
+                    // flexDirection: "column",
                   }}
                 >
                   <Switch
@@ -121,13 +121,38 @@ class Home extends Component {
                     onChange={(checked) => {
                       this.props.setVisible(!checked);
                     }}
-                    checkedChildren={"On"}
+                    checkedChildren={"On "}
                     unCheckedChildren={"Off"}
                   />
                   <div style={{ paddingLeft: "10px" }}>
                     Toggle privacy mode to appear as anonymous in all of your classes
                   </div>
+                
                 </div>
+
+                <div
+                  style={{
+                    display: "flex",
+                    marginTop: "10px"
+                  }}
+                >
+                  <Switch
+                    checked={!this.props.profileVisible}
+                    onChange={(checked) => {
+                      this.props.setProfileVisible(!checked);
+                    }}
+                    checkedChildren={"On "}
+                    unCheckedChildren={"Off"}
+                  />
+                  <div style={{ paddingLeft: "10px" }}>
+                    Toggle profile privacy mode to hide your profile from other users
+                  </div>
+
+                </div>
+              </div>
+
+              <div>
+                hi profile test
               </div>
             </TabPage>
           </Content>

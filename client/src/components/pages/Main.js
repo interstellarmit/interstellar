@@ -7,6 +7,7 @@ import { Row, Col, Divider, Spin, Modal, Layout, Button, notification } from "an
 import MySpin from "../modules/MySpin";
 import Home from "./Home.js";
 import Page from "./Page.js";
+import UserPage from "./UserPage.js";
 import NotFound from "../pages/NotFound.js";
 import SideBar from "../modules/SideBar.js";
 const { Header, Content, Footer, Sider } = Layout;
@@ -157,7 +158,7 @@ class Main extends Component {
                   <Home
                     key={this.state.semester}
                     exact
-                    path={["/", "/dashboard", "/settings", "/admin", "/dueDateAdmin"].map((s) => {
+                    path={["/", "/dashboard", "/settings", "/admin", "/profile", "/dueDateAdmin"].map((s) => {
                       return "/:semester" + s;
                     })}
                     schoolId={this.props.state.schoolId}
@@ -174,6 +175,8 @@ class Main extends Component {
                     logout={this.logout}
                     visible={this.props.state.visible}
                     setVisible={this.props.setVisible}
+                    profileVisible={this.props.state.profileVisible}
+                    setProfileVisible={this.props.setProfileVisible}
                     seeHelpText={this.props.state.seeHelpText}
                     setSeeHelpText={this.props.setSeeHelpText}
                     addClasses={this.addClasses}
@@ -205,6 +208,24 @@ class Main extends Component {
                   />
                   <Page
                     path={"/:semester/group/:selectedPage"}
+                    schoolId={this.props.state.schoolId}
+                    pageIds={this.state.pageIds}
+                    updatePageIds={this.updatePageIds}
+                    updateSelectedPageName={this.updateSelectedPageName}
+                    user={{ userId: this.props.state.userId, name: this.props.state.name }}
+                    redirectPage={this.redirectPage}
+                    loungeId={this.props.state.loungeId}
+                    setLoungeId={this.setLoungeId}
+                    allPages={this.state.allPages}
+                    isSiteAdmin={this.props.state.isSiteAdmin}
+                    disconnect={this.props.disconnect}
+                    seeHelpText={this.props.state.seeHelpText}
+                    setSeeHelpText={this.props.setSeeHelpText}
+                    logout={this.logout}
+                    semester={this.state.semester}
+                  />        
+                  <UserPage
+                    path={"/:semester/user/:selectedPage"}
                     schoolId={this.props.state.schoolId}
                     pageIds={this.state.pageIds}
                     updatePageIds={this.updatePageIds}

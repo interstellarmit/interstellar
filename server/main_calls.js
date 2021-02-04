@@ -335,6 +335,15 @@ setVisible = (req, res) => {
   });
 };
 
+setProfileVisible = (req, res) => {
+  User.findById(req.user._id).then((user) => {
+    user.profileVisible = req.body.profileVisible;
+    user.save().then(() => {
+      res.send({ setProfileVisible: true });
+    });
+  });
+};
+
 setShowClasses = (req, res) => {
   Page.findById(req.body.pageId).then((page) => {
     if (!req.user.isSiteAdmin && !page.adminIds.includes(req.user._id)) {
@@ -390,6 +399,7 @@ module.exports = {
   setJoinCode,
   getRedirectLink,
   setVisible,
+  setProfileVisible,
   setShowClasses,
   addRemoveAdmin,
 };

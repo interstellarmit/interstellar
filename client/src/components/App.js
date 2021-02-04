@@ -54,6 +54,7 @@ class App extends Component {
           isSiteAdmin: user.isSiteAdmin,
           email: user.email,
           visible: user.visible,
+          profileVisible: user.profileVisible,
           seeHelpText: user.seeHelpText,
           //allPages: allPages,
           signedContract: user.signedContract,
@@ -116,6 +117,15 @@ class App extends Component {
       }
     });
   };
+
+  setProfileVisible = (bool) => {
+    post("/api/setProfileVisible", { visible: bool }).then((data) => {
+      if (data.setProfileVisible) {
+        this.setState({ visible: bool });
+      }
+    });
+  };
+
   setSeeHelpText = (bool) => {
     post("/api/setSeeHelpText", { seeHelpText: bool }).then((data) => {
       if (data.setSeeHelpText) {
@@ -173,6 +183,7 @@ class App extends Component {
               <Confirmation path="/confirmation/:token"></Confirmation>
               <Public
                 visible={true}
+                profileVisible = {true}
                 handleLogin={this.handleLogin}
                 logout={this.logout}
                 me={this.me}
@@ -237,6 +248,7 @@ class App extends Component {
                   redirectPage={this.redirectPage}
                   disconnect={this.disconnect}
                   setVisible={this.setVisible}
+                  setProfileVisible={this.setProfileVisible}
                   setSeeHelpText={this.setSeeHelpText}
                   logout={this.logout}
                 />
