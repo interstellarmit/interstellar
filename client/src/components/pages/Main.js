@@ -232,6 +232,7 @@ class Main extends Component {
                     semester={this.state.semester}
                   />        
                   <UserPage
+                    style={{ height: "100%" }}
                     path={"/:semester/user/:selectedPage"}
                     schoolId={this.props.state.schoolId}
                     pageIds={this.state.pageIds}

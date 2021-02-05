@@ -154,6 +154,7 @@ router.post("/initsocket", (req, res) => {
 router.post("/createNewPage", auth.ensureLoggedIn, main_calls.createNewPage);
 router.post("/addSelfToPage", auth.ensureLoggedIn, main_calls.addSelfToPage);
 router.post("/joinPage", main_calls.joinPage);
+router.post("/viewProfile", main_calls.viewProfile);
 router.post("/removeSelfFromPage", auth.ensureLoggedIn, main_calls.removeSelfFromPage);
 router.post("/leavePage", auth.ensureLoggedIn, main_calls.leavePage);
 router.post("/setJoinCode", auth.ensureLoggedIn, main_calls.setJoinCode);

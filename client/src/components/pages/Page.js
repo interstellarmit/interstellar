@@ -273,6 +273,7 @@ class Page extends Component {
               allPages={this.props.allPages}
               isSiteAdmin={this.props.isSiteAdmin}
               showClasses={this.state.showClasses}
+              redirectPage={this.props.redirectPage}
             />
           </TabPage>
         </Content>

@@ -177,6 +177,29 @@ else {users: [{userId: String, name: String}], page: Page}
 Description: If the user is in the page, returns the users, due dates that have him in "addedUserIds", quicklinks that have him in "addedUserIds", lounges, and Page. otherwise, just returns users and page. If req.body.home is True, return home stuff! (dueDates for all classes, quickLinks for all classes, lounges for all classes, users for all classes). Note: When returning user list, omit the people who have "visible" false.  (Note: group posts are not included here)
 */
 
+viewProfile = (req, res) => {
+  var mongoose = require('mongoose');
+  var objectId = mongoose.Types.ObjectId(req.body.pageName);
+
+  User.findById(objectId).then((user) => {
+    res.send({ 
+      worked: true,
+      name: user.name,
+      profileVisible: user.profileVisible,
+      curLoc: user.curLoc,
+      hometown: user.hometown,
+      advice: user.advice,
+      bio: user.bio,
+      restaurant: user.restaurant,
+      myPages: user.pageIds,
+      classYear: user.classYear
+    });
+  });
+  // res.send({
+  //   worked: false,
+  // })
+}
+
 joinPage = (req, res) => {
   //console.log("joining page with user ");
   //console.log(req.user);
@@ -451,6 +474,7 @@ module.exports = {
   addSelfToPage,
   removeSelfFromPage,
   joinPage,
+  viewProfile,
   leavePage,
   setJoinCode,
   getRedirectLink,

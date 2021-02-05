@@ -68,7 +68,12 @@ export default function UserList(props) {
               >
                 <List.Item.Meta
                   avatar={<ProfilePic user={user} />}
-                  title={user.name}
+                  title= {user.name}
+                  onClick={() => {
+                    console.log("clicked?")
+                    props.redirectPage("/user/" + user.userId)
+                    // this.props.redirectPage("/" + page.pageType.toLowerCase() + "/" + page.name);
+                  }}
                   description={
                     props.allPages && props.showClasses && user.pageIds
                       ? user.pageIds

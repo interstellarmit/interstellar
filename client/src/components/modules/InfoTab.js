@@ -78,6 +78,7 @@ export default function InfoTab(props) {
             page={props.page}
             adminIds={props.page.adminIds}
             isSiteAdmin={props.isSiteAdmin}
+            redirectPage={props.redirectPage}
           />
         </Col>
       </Row>

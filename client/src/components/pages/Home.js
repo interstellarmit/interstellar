@@ -167,7 +167,9 @@ class Home extends Component {
                 </div>
               </div>
 
-              <div
+              <div 
+              style={{ overflowY: 'scroll' ,
+                      height: "100%"}}
               // style={{
               //   display: "flex",
               //   flexDirection: "column",

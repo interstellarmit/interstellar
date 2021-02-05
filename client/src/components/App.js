@@ -17,7 +17,6 @@ const { Header, Content, Footer, Sider } = Layout;
 import { socket } from "../client-socket.js";
 import { get, post } from "../utilities";
 
-
 /**
  * Define the "App" component as a class.
  */
@@ -37,7 +36,6 @@ class App extends Component {
       loading: false,
       // currentPageName from URL?
     };
-
 
   }
 
