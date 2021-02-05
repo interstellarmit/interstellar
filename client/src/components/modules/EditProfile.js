@@ -7,54 +7,16 @@ const { TextArea } = Input;
 export default function EditProfile(props) {
   const [form] = Form.useForm();
   let onFinish = (fieldsValue) => {
-    // props.setLockCode(true, fieldsValue.joinCode);
-
-
-    // post("/api/setJoinCode", { lock: lock, code: code, pageId: this.state.page._id }).then(
-    //   (data) => {
-    //     if (data.setCode) {
-    //       let page = this.state.page;
-    //       page.locked = lock;
-    //       this.setState({ page: page });
-    //     }
-    //   }
-    // );
-
-    // post("/api/createNewPage", {
-    //   pageType: "Group",
-    //   name: fieldsValue.name,
-    //   title: fieldsValue.title,
-    //   description: fieldsValue.description,
-    //   locked: fieldsValue.joinCode ? fieldsValue.joinCode.length > 0 : false,
-    //   joinCode: fieldsValue.joinCode || "",
-    // }).then((data) => {
-    //   if (data.created) {
-    //     post("/api/addSelfToPage", {
-    //       pageId: data.pageId,
-    //       joinCode: fieldsValue.joinCode || "",
-    //     }).then((data2) => {
-    //       if (data2.added) {
-    //         let newPageIds = props.pageIds.concat([]);
-    //         newPageIds.push(data.pageId);
-    //         props.updatePageIds(newPageIds);
-    //         props.redirectPage("/" + props.semester + "/group/" + data.name);
-    //       }
-    //     });
-    //   } else {
-    //     form.resetFields();
-    //     setMessage("Uh oh that group name already exists. Try searching for it in the search bar!");
-    //   }
-    // });
 
     post("/api/setCurLoc", { curLoc: fieldsValue.curLoc }).then((data) => {
       if (data.setCurLoc) {
-        console.log(data.setCurLoc)
+        // console.log(data.setCurLoc)
       }
     });
 
     post("/api/setHometown", { hometown: fieldsValue.hometown }).then((data) => {
       if (data.setHometown) {
-        console.log(data.setHometown)
+        // console.log(data.setHometown)
       }
     });
 
@@ -66,19 +28,19 @@ export default function EditProfile(props) {
 
     post("/api/setBio", { bio: fieldsValue.bio }).then((data) => {
       if (data.setBio) {
-        console.log(data.setBio)
+        // console.log(data.setBio)
       }
     });
 
     post("/api/setRestaurant", { restaurant: fieldsValue.restaurant }).then((data) => {
       if (data.setRestaurant) {
-        console.log(data.setRestaurant)
+        // console.log(data.setRestaurant)
       }
     });
 
     post("/api/setAdvice", { advice: fieldsValue.advice }).then((data) => {
       if (data.setAdvice) {
-        console.log(data.setAdvice)
+        // console.log(data.setAdvice)
       }
     });
 
@@ -106,7 +68,15 @@ export default function EditProfile(props) {
       }}
       footer={null}
     >
-      <Form {...layout} form={form} name={"Edit Profile"} onFinish={onFinish}>
+      <Form {...layout} form={form} name={"Edit Profile"} onFinish={onFinish}
+        initialValues={{
+          curLoc: props.curLoc,
+          hometown: props.hometown,
+          bio: props.bio,
+          advice: props.advice,
+          restaurant: props.restaurant,
+        }}
+        >
         <Form.Item
           name="curLoc"
           label="Location/Dorm"
@@ -117,7 +87,7 @@ export default function EditProfile(props) {
             },
           ]}
         >
-          <Input />
+          <Input name="curLoc"/>
         </Form.Item>
 
         <Form.Item
@@ -130,7 +100,7 @@ export default function EditProfile(props) {
             },
           ]}
         >
-          <Input />
+          <Input name="hometown"/>
         </Form.Item>
 
         <Form.Item
@@ -143,7 +113,7 @@ export default function EditProfile(props) {
             },
           ]}
         >
-          <TextArea rows={4} />
+          <TextArea name="bio" rows={4} />
         </Form.Item>
 
         <Form.Item
@@ -156,7 +126,7 @@ export default function EditProfile(props) {
             },
           ]}
         >
-          <Input />
+          <Input name="restaurant"/>
         </Form.Item>
 
         <Form.Item
@@ -169,7 +139,7 @@ export default function EditProfile(props) {
             },
           ]}
         >
-          <Input />
+          <Input name="advice"/>
         </Form.Item>
 
         {/* <Form.Item

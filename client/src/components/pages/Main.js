@@ -180,6 +180,7 @@ class Main extends Component {
                     hometown={this.props.state.hometown}
                     curLoc={this.props.state.curLoc}
                     bio={this.props.state.bio}
+                    classYear={this.props.state.classYear}
                     restaurant={this.props.state.restaurant}
                     advice={this.props.state.advice}
                     funFact={this.props.state.funFact}

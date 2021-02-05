@@ -176,6 +176,7 @@ class Home extends Component {
 
                 {/* {this.props.email}, {this.props.useer.userId} */}
                 <div>Name: {this.props.user.name} </div>
+                <div>Class year: {this.props.classYear} </div>
                 <div>Current Location/Dorm: {this.props.curLoc} </div>
                 <div>Hometown: {this.props.hometown} </div>
 
@@ -196,6 +197,7 @@ class Home extends Component {
                   .map((page) => {
                     return (
                       <Menu.Item
+
                         key={page.name}
                         onClick={() => {
                           this.props.redirectPage("/" + page.pageType.toLowerCase() + "/" + page.name);
@@ -248,6 +250,11 @@ class Home extends Component {
                 <EditProfile
                   profileModal={this.state.profileModal}
                   setProfileModal={this.setProfileModal}
+                  hometown={this.props.hometown}
+                  bio={this.props.bio}
+                  advice={this.props.advice}
+                  curLoc={this.props.curLoc}
+                  restaurant={this.props.restaurant}
                 />
 
                 {/* <EditProfile

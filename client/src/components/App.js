@@ -64,6 +64,7 @@ class App extends Component {
           seeHelpText: user.seeHelpText,
           //allPages: allPages,
           signedContract: user.signedContract,
+          classYear: user.classYear
         });
       } else {
         this.setState({ tryingToLogin: false })
