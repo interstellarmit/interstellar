@@ -259,18 +259,6 @@ class Home extends Component {
                   restaurant={this.props.restaurant}
                 />
 
-                {/* <EditProfile
-                  onClick={() => {
-                    setEditProfile(true);
-                  }}
-                  visible={editProfile}
-                  setVisible={setEditProfile}
-                  semester={props.semester}
-                  redirectPage={props.redirectPageOverall}
-                  pageIds={props.pageIds}
-                  updatePageIds={props.updatePageIds}
-                /> */}
-
               </div>
             </TabPage>
           </Content>

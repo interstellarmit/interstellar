@@ -64,63 +64,10 @@ class UserPage extends Component {
     )
     console.log('done?')
   }
-
-  // joinPage() {
-  //   post("/api/joinPage", { pageName: this.state.pageName, semester: this.props.semester }).then(
-  //     (data) => {
-  //       if (data.broken) {
-  //         //this.props.disconnect();
-  //         this.props.logout();
-  //         return;
-  //       }
-  //       this.setState({
-  //         users: data.users || [],
-  //         page: data.page,
-  //         pageLoaded: true,
-  //         inPage: data.inPage,
-  //         showClasses: data.page.showClasses,
-  //         hostName: data.hostName,
-  //       });
-  //     }
-  //   );
-  // }
   
   componentDidMount() {
-    // this.joinPage();
     this.viewProfile()
-    // remember -- api calls go here!
-
-    // socket.on("userJoinedPage", (data) => {
-    //   if (!this.state.pageLoaded) return;
-    //   if (this.state.page._id !== data.pageId) return;
-    //   if (this.props.semester !== data.semester) return;
-    //   let users = this.state.users;
-    //   if (
-    //     users.filter((user) => {
-    //       return user.userId === data.user.userId;
-    //     }).length > 0
-    //   )
-    //     return;
-    //   users.push(data.user);
-    //   this.setState({ users: users });
-    // });
-
-    // socket.on("locked", (data) => {
-    //   if (!this.state.pageLoaded) return;
-    //   if (data.pageId !== this.state.page._id) return;
-    //   let page = this.state.page;
-    //   page.locked = data.locked;
-    //   this.setState({ page: page });
-    // });
   }
-
-  // componentDidUpdate(prevProps, prevState) {
-  //   if (this.props.semester !== prevProps.semester) {
-  //     this.setState({ users: [] }, () => {
-  //       this.joinPage();
-  //     });
-  //   }
-  // }
 
   render() {
 
@@ -183,7 +130,7 @@ class UserPage extends Component {
 
           <br></br>
 
-          <div>Classes taking: </div> 
+          <div>Classes taking: Hidden</div> 
           {console.log(this.state.myPages)}
           <Menu>
             {this.state.myPages
@@ -205,7 +152,7 @@ class UserPage extends Component {
             })}
           </Menu>
 
-          <div>Clubs/groups I'm a part of: </div>
+          <div>Clubs/groups I'm a part of: Hidden</div>
 
           <Menu>
             {this.state.myPages
@@ -231,27 +178,6 @@ class UserPage extends Component {
           <div>My favorite restaurant near MIT: {this.state.restaurant} </div>
           <div>Advice I would give to an incoming freshman: {this.state.advice} </div>
 
-{/* 
-        <TabPage
-            labels={["Info"]}
-            routerLinks={["info"]}
-            defaultRouterLink={"info"}
-            page={this.state.page}
-            semester={this.props.semester}
-          >
-            <InfoTab
-              users={this.state.users}
-              inPage={this.state.inPage}
-              page={this.state.page}
-              user={this.props.user}
-              pageIds={this.props.pageIds}
-              allPages={this.props.allPages}
-              isSiteAdmin={this.props.isSiteAdmin}
-              showClasses={this.state.showClasses}
-            />
-
-            
-          </TabPage> */}
         </Content>
       </Layout>
     );
