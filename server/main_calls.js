@@ -344,6 +344,62 @@ setProfileVisible = (req, res) => {
   });
 };
 
+setHometown = (req, res) => {
+  User.findById(req.user._id).then((user) => {
+    user.hometown = req.body.hometown;
+    user.save().then(() => {
+      res.send({ setHometown: true });
+    });
+  });
+};
+
+setCurLoc = (req, res) => {
+  User.findById(req.user._id).then((user) => {
+    user.curLoc = req.body.curLoc;
+    user.save().then(() => {
+      res.send({ setCurLoc: true });
+    });
+  });
+};
+
+setBio = (req, res) => {
+  User.findById(req.user._id).then((user) => {
+    user.bio = req.body.bio;
+    user.save().then(() => {
+      res.send({ setBio: true });
+    });
+  });
+};
+
+setRestaurant = (req, res) => {
+  User.findById(req.user._id).then((user) => {
+    user.restaurant = req.body.restaurant;
+    user.save().then(() => {
+      res.send({ setRestaurant: true });
+    });
+  });
+};
+
+setAdvice = (req, res) => {
+  console.log('hi?')
+  User.findById(req.user._id).then((user) => {
+    user.advice = req.body.advice;
+    user.save().then(() => {
+      res.send({ setAdvice: true });
+    });
+  });
+};
+
+setFunFact = (req, res) => {
+  console.log('hello?')
+  User.findById(req.user._id).then((user) => {
+    user.setFunFact = req.body.funFact;
+    user.save().then(() => {
+      res.send({ setFunFact: true });
+    });
+  });
+};
+
 setShowClasses = (req, res) => {
   Page.findById(req.body.pageId).then((page) => {
     if (!req.user.isSiteAdmin && !page.adminIds.includes(req.user._id)) {
@@ -400,6 +456,12 @@ module.exports = {
   getRedirectLink,
   setVisible,
   setProfileVisible,
+  setHometown,
+  setCurLoc,
+  setBio,
+  setRestaurant,
+  setAdvice,
+  setFunFact,
   setShowClasses,
   addRemoveAdmin,
 };

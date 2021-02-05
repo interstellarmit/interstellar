@@ -8,6 +8,7 @@ import {
   Switch,
   Button,
   Typography,
+  Menu,
   Layout,
   Row,
   Col,
@@ -19,15 +20,25 @@ import {
 
 import TabPage from "../modules/TabPage";
 import SearchBar from "../modules/SearchBar";
+import EditProfile from "../modules/EditProfile";
 import MultipleSearchBar from "../modules/MultipleSearchBar";
 import MySpin from "../modules/MySpin";
+import {
+  UserOutlined,
+  UserDeleteOutlined,
+  LockOutlined,
+  UnlockOutlined,
+  EyeOutlined,
+} from "@ant-design/icons";
 const { Header, Content, Footer, Sider } = Layout;
 const { Title, Text } = Typography;
 class Home extends Component {
   constructor(props) {
     super(props);
     // Initialize Default State
-    this.state = {};
+    this.state = {
+      profileModal: false
+    };
     props.updateSelectedPageName("");
   }
 
@@ -49,6 +60,10 @@ class Home extends Component {
     document.getElementsByClassName("ant-tabs-content")[0].style.height = "100%";
   }
 
+  setProfileModal = (bool) => {
+    this.setState({ profileModal: bool });
+  };
+
   render() {
     let pageMap = {};
     let i = 0;
@@ -59,6 +74,7 @@ class Home extends Component {
     let semester =
       this.props.semester.replace("-", " ")[0].toUpperCase() +
       this.props.semester.replace("-", " ").substring(1);
+    // const [editProfile, setEditProfile] = React.useState(false);
     return (
       <>
         <Layout style={{ background: "rgba(255, 255, 255, 1)", height: "100vh" }}>
@@ -151,8 +167,101 @@ class Home extends Component {
                 </div>
               </div>
 
-              <div>
-                hi profile test
+              <div
+              // style={{
+              //   display: "flex",
+              //   flexDirection: "column",
+              // }}
+              >
+
+                {/* {this.props.email}, {this.props.useer.userId} */}
+                <div>Name: {this.props.user.name} </div>
+                <div>Current Location/Dorm: {this.props.curLoc} </div>
+                <div>Hometown: {this.props.hometown} </div>
+
+                <br></br>
+
+                <div>Bio: {this.props.bio} </div>
+
+                <br></br>
+
+                <div>Classes taking: </div> 
+                {/* {this.props.myPages[0]} </div> */}
+                {console.log(this.props.myPages)}
+                <Menu>
+                  {this.props.myPages
+                  .filter((page) => {
+                    return page.pageType === "Class";
+                  })
+                  .map((page) => {
+                    return (
+                      <Menu.Item
+                        key={page.name}
+                        onClick={() => {
+                          this.props.redirectPage("/" + page.pageType.toLowerCase() + "/" + page.name);
+                        }}
+                      >
+                        {page.name}
+                      </Menu.Item>
+                    );
+                  })}
+                </Menu>
+
+                <div>Clubs/groups I'm a part of: </div>
+
+                <Menu>
+                  {this.props.myPages
+                    .filter((page) => {
+                      return page.pageType === "Group";
+                    })
+                    .map((page) => {
+                      return (
+                        <Menu.Item
+                          key={page.name}
+                          onClick={() => {
+                            this.props.redirectPage("/" + page.pageType.toLowerCase() + "/" + page.name);
+                          }}
+                        >
+                          {page.name}
+                        </Menu.Item>
+                      );
+                    })}
+                </Menu>
+
+                <br></br>
+
+                <div>My favorite restaurant near MIT: {this.props.restaurant} </div>
+                <div>Advice I would give to an incoming freshman: {this.props.advice} </div>
+                {/* <div>A fun & little-known fact about me: {this.props.funFact} </div> */}
+
+                <Button
+                  type="primary"
+                  style={{top: "10px"}}
+                  // onClick={() => { }}
+                  onClick={() => {
+                    this.setProfileModal(true);
+                  }}
+                >
+                  <UserOutlined /> Edit Profile
+                </Button>
+
+                <EditProfile
+                  profileModal={this.state.profileModal}
+                  setProfileModal={this.setProfileModal}
+                />
+
+                {/* <EditProfile
+                  onClick={() => {
+                    setEditProfile(true);
+                  }}
+                  visible={editProfile}
+                  setVisible={setEditProfile}
+                  semester={props.semester}
+                  redirectPage={props.redirectPageOverall}
+                  pageIds={props.pageIds}
+                  updatePageIds={props.updatePageIds}
+                /> */}
+
               </div>
             </TabPage>
           </Content>

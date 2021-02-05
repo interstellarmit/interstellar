@@ -21,10 +21,10 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
-  // profileVisible: {
-  //   type: Boolean,
-  //   default: true,
-  // },
+  profileVisible: {
+    type: Boolean,
+    default: true,
+  },
   seeHelpText: {
     type: Boolean,
     default: true,
@@ -41,6 +41,30 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  hometown: {
+    type: String,
+    default: "Add a hometown!"
+  },
+  curLoc: {
+    type: String,
+    default: "Add a location/dorm!"
+  },
+  bio: {
+    type: String,
+    default: "Add a bio!"
+  },
+  restaurant: {
+    type: String,
+    default: "Add a favorite restaurant!"
+  },
+  advice: {
+    type: String,
+    default: "Add something!"
+  },
+  funFact: {
+    type: String,
+    default: "Add a fun fact!"
+  }
 });
 
 // compile model from schema

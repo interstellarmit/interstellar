@@ -160,6 +160,12 @@ router.post("/setJoinCode", auth.ensureLoggedIn, main_calls.setJoinCode);
 router.post("/getRedirectLink", main_calls.getRedirectLink);
 router.post("/setVisible", auth.ensureLoggedIn, main_calls.setVisible);
 router.post("/setProfileVisible", auth.ensureLoggedIn, main_calls.setProfileVisible);
+router.post("/setHometown", auth.ensureLoggedIn, main_calls.setHometown);
+router.post("/setCurLoc", auth.ensureLoggedIn, main_calls.setCurLoc);
+router.post("/setAdvice", auth.ensureLoggedIn, main_calls.setAdvice);
+router.post("/setRestaurant", auth.ensureLoggedIn, main_calls.setRestaurant);
+router.post("/setBio", auth.ensureLoggedIn, main_calls.setBio);
+router.post("/setFunFact", auth.ensureLoggedIn, main_calls.setFunFact);
 router.post("/setShowClasses", auth.ensureLoggedIn, main_calls.setShowClasses);
 router.post("/addRemoveAdmin", auth.ensureLoggedIn, main_calls.addRemoveAdmin);
 

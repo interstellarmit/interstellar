@@ -177,6 +177,12 @@ class Main extends Component {
                     setVisible={this.props.setVisible}
                     profileVisible={this.props.state.profileVisible}
                     setProfileVisible={this.props.setProfileVisible}
+                    hometown={this.props.state.hometown}
+                    curLoc={this.props.state.curLoc}
+                    bio={this.props.state.bio}
+                    restaurant={this.props.state.restaurant}
+                    advice={this.props.state.advice}
+                    funFact={this.props.state.funFact}
                     seeHelpText={this.props.state.seeHelpText}
                     setSeeHelpText={this.props.setSeeHelpText}
                     addClasses={this.addClasses}

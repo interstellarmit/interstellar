@@ -55,6 +55,12 @@ class App extends Component {
           email: user.email,
           visible: user.visible,
           profileVisible: user.profileVisible,
+          curLoc: user.curLoc,
+          hometown: user.hometown,
+          bio: user.bio,
+          restaurant: user.restaurant,
+          advice: user.advice,
+          funFact: user.funFact,
           seeHelpText: user.seeHelpText,
           //allPages: allPages,
           signedContract: user.signedContract,
@@ -119,9 +125,9 @@ class App extends Component {
   };
 
   setProfileVisible = (bool) => {
-    post("/api/setProfileVisible", { visible: bool }).then((data) => {
+    post("/api/setProfileVisible", { profileVisible: bool }).then((data) => {
       if (data.setProfileVisible) {
-        this.setState({ visible: bool });
+        this.setState({ profileVisible: bool });
       }
     });
   };
