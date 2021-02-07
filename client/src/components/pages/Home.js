@@ -29,6 +29,12 @@ import {
   LockOutlined,
   UnlockOutlined,
   EyeOutlined,
+  HomeOutlined,
+  TeamOutlined,
+  ReadOutlined,
+  GiftOutlined,
+  ShopOutlined,
+  LaptopOutlined
 } from "@ant-design/icons";
 const { Header, Content, Footer, Sider } = Layout;
 const { Title, Text } = Typography;
@@ -177,18 +183,18 @@ class Home extends Component {
               >
 
                 {/* {this.props.email}, {this.props.useer.userId} */}
-                <div>Name: {this.props.user.name} </div>
-                <div>Class year: {this.props.classYear} </div>
-                <div>Current Location/Dorm: {this.props.curLoc} </div>
-                <div>Hometown: {this.props.hometown} </div>
+                {/* <div>Name: {this.props.user.name} </div> */}
+                <div> <UserOutlined /> Class of {this.props.classYear} </div>
+                <div> <LaptopOutlined /> Currently lives in: {this.props.curLoc} </div>
+                <div> <HomeOutlined /> Originally from: {this.props.hometown} </div>
 
                 <br></br>
 
-                <div>Bio: {this.props.bio} </div>
+                <div> {this.props.bio} </div>
 
                 <br></br>
 
-                <div>Classes taking: </div> 
+                <div> <ReadOutlined /> Classes I'm taking: </div> 
                 {/* {this.props.myPages[0]} </div> */}
                 {console.log(this.props.myPages)}
                 <Menu>
@@ -211,7 +217,7 @@ class Home extends Component {
                   })}
                 </Menu>
 
-                <div>Clubs/groups I'm a part of: </div>
+                <div><TeamOutlined /> Clubs/groups I'm a part of: </div>
 
                 <Menu>
                   {this.props.myPages
@@ -234,8 +240,8 @@ class Home extends Component {
 
                 <br></br>
 
-                <div>My favorite restaurant near MIT: {this.props.restaurant} </div>
-                <div>Advice I would give to an incoming freshman: {this.props.advice} </div>
+                <div> <ShopOutlined /> My favorite restaurant near MIT: {this.props.restaurant} </div>
+                <div> <GiftOutlined /> Advice I would give to an incoming freshman: {this.props.advice} </div>
                 {/* <div>A fun & little-known fact about me: {this.props.funFact} </div> */}
 
                 <Button

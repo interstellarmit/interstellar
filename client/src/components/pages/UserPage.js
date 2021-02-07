@@ -17,6 +17,12 @@ import {
   LockOutlined,
   UnlockOutlined,
   EyeOutlined,
+  HomeOutlined,
+  TeamOutlined,
+  ReadOutlined,
+  GiftOutlined,
+  ShopOutlined,
+  LaptopOutlined
 } from "@ant-design/icons";
 
 class UserPage extends Component {
@@ -119,18 +125,17 @@ class UserPage extends Component {
         >
           <br></br>
 
-          <div>Name: {this.state.name} </div>
-          <div>Class year: {this.state.classYear} </div>
-          <div>Current Location/Dorm: {this.state.curLoc} </div>
-          <div>Hometown: {this.state.hometown} </div>
+          <div> <UserOutlined /> Class of {this.state.classYear} </div>
+          <div> <LaptopOutlined /> Currently lives in: {this.state.curLoc} </div>
+          <div> <HomeOutlined /> Originally from: {this.state.hometown} </div>
 
           <br></br>
 
-          <div>Bio: {this.state.bio} </div>
+          <div> {this.state.bio} </div>
 
           <br></br>
 
-          <div>Classes taking: Hidden</div> 
+          <div> <ReadOutlined /> Classes taking: Hidden</div> 
           {console.log(this.state.myPages)}
           <Menu>
             {this.state.myPages
@@ -152,7 +157,7 @@ class UserPage extends Component {
             })}
           </Menu>
 
-          <div>Clubs/groups I'm a part of: Hidden</div>
+          <div> <TeamOutlined /> Clubs/groups I'm a part of: Hidden</div>
 
           <Menu>
             {this.state.myPages
@@ -175,8 +180,8 @@ class UserPage extends Component {
 
           <br></br>
 
-          <div>My favorite restaurant near MIT: {this.state.restaurant} </div>
-          <div>Advice I would give to an incoming freshman: {this.state.advice} </div>
+          <div> <ShopOutlined /> My favorite restaurant near MIT: {this.state.restaurant} </div>
+          <div> <GiftOutlined /> Advice I would give to an incoming freshman: {this.state.advice} </div>
 
         </Content>
       </Layout>
