@@ -7,7 +7,21 @@ import AddLock from "../modules/AddLock";
 import AddEnterCode from "../modules/AddEnterCode";
 import MySpin from "../modules/MySpin";
 import { socket } from "../../client-socket.js";
-import { Spin, Space, Button, Typography, Layout, PageHeader, Badge, Row, Col, Alert, Menu } from "antd";
+import {
+  Spin,
+  Space,
+  Button,
+  Typography,
+  Layout,
+  PageHeader,
+  Badge,
+  Row,
+  Col,
+  Alert,
+  Menu,
+  Descriptions,
+} from "antd";
+
 import { UserOutlined } from "@ant-design/icons";
 const { Header, Content, Footer, Sider } = Layout;
 const { Title, Text } = Typography;
@@ -22,8 +36,9 @@ import {
   ReadOutlined,
   GiftOutlined,
   ShopOutlined,
-  LaptopOutlined
+  LaptopOutlined,
 } from "@ant-design/icons";
+import DescriptionsItem from "antd/lib/descriptions/Item";
 
 class UserPage extends Component {
   constructor(props) {
@@ -42,41 +57,38 @@ class UserPage extends Component {
       advice: "",
       classYear: "",
       myPages: [],
-      
+
       pageLoaded: false,
     };
     props.updateSelectedPageName(selectedPage);
   }
 
   viewProfile() {
-    post("/api/viewProfile", { pageName: this.state.pageName }).then(
-      (data) => {
-        this.setState({
-          worked: data.worked,
-          name: data.name,
-          profileVisible: data.profileVisible,
-          curLoc: data.curLoc,
-          bio: data.bio,
-          restaurant: data.restaurant,
-          hometown: data.hometown,
-          advice: data.advice,
-          pageLoaded: true,
-          myPages: data.myPages,
-          classYear: data.classYear
-        });
-        console.log(data.name);
-        console.log(data.ans);
-      }
-    )
-    console.log('done?')
+    post("/api/viewProfile", { pageName: this.state.pageName }).then((data) => {
+      this.setState({
+        worked: data.worked,
+        name: data.name,
+        profileVisible: data.profileVisible,
+        curLoc: data.curLoc,
+        bio: data.bio,
+        restaurant: data.restaurant,
+        hometown: data.hometown,
+        advice: data.advice,
+        pageLoaded: true,
+        myPages: data.myPages,
+        classYear: data.classYear,
+      });
+      console.log(data.name);
+      console.log(data.ans);
+    });
+    console.log("done?");
   }
-  
+
   componentDidMount() {
-    this.viewProfile()
+    this.viewProfile();
   }
 
   render() {
-
     if (!this.state.pageLoaded) {
       return <MySpin />;
     }
@@ -84,105 +96,61 @@ class UserPage extends Component {
     if (!this.state.profileVisible) {
       return (
         <Layout style={{ background: "rgba(240, 242, 245, 1)", height: "100vh" }}>
-        <PageHeader
-          className="site-layout-sub-header-background"
-          style={{ padding: "20px 30px 0px 30px", background: "#fff" }}
-          title={this.state.name}
-          subTitle="Profile"
-        ></PageHeader>
+          <PageHeader
+            className="site-layout-sub-header-background"
+            style={{ padding: "20px 30px 0px 30px", background: "#fff" }}
+            title={this.state.name}
+            subTitle={"Profile"}
+          ></PageHeader>
 
-        <Content
-          style={{
-            padding: "0px 30px 30px 30px",
-            background: "#fff",
-            height: "calc(100% - 64px)",
-          }}
-        >
-          <br></br>
-          Sorry, this user's profile is private.
-        </Content>
-      </Layout>
-      )
+          <Content
+            style={{
+              padding: "0px 30px 30px 30px",
+              background: "#fff",
+              height: "calc(100% - 64px)",
+            }}
+          >
+            <br></br>
+            Sorry, this user's profile is private.
+          </Content>
+        </Layout>
+      );
     }
 
+    let userInfo = [
+      { label: "Currently lives in", value: this.state.curLoc },
+      { label: "Originally from", value: this.state.hometown },
+      { label: "Bio", value: this.state.bio },
+      { label: "Favorite MIT Restaurant", value: this.state.restaurant },
+      { label: "Advice", value: this.state.advice },
+    ];
     return (
       <Layout style={{ background: "rgba(240, 242, 245, 1)", height: "100vh" }}>
         <PageHeader
           className="site-layout-sub-header-background"
           style={{ padding: "20px 30px 0px 30px", background: "#fff" }}
           title={this.state.name}
-          subTitle="Profile"
+          subTitle={"Class of " + this.state.classYear}
           // title={this.state.page.name}
           // subTitle={this.state.page.title}
         ></PageHeader>
 
         <Content
           style={{
-            padding: "0px 30px 30px 30px",
+            padding: "20px 30px 30px 30px",
             background: "#fff",
             height: "calc(100% - 64px)",
           }}
         >
-          <br></br>
-
-          <div> <UserOutlined /> Class of {this.state.classYear} </div>
-          <div> <LaptopOutlined /> Currently lives in: {this.state.curLoc} </div>
-          <div> <HomeOutlined /> Originally from: {this.state.hometown} </div>
-
-          <br></br>
-
-          <div> {this.state.bio} </div>
-
-          <br></br>
-
-          <div> <ReadOutlined /> Classes taking: Hidden</div> 
-          {console.log(this.state.myPages)}
-          <Menu>
-            {this.state.myPages
-            .filter((page) => {
-              return page.pageType === "Class";
-            })
-            .map((page) => {
-              return (
-                <Menu.Item
-
-                  key={page.name}
-                  onClick={() => {
-                    this.props.redirectPage("/" + page.pageType.toLowerCase() + "/" + page.name);
-                  }}
-                >
-                  {page.name}
-                </Menu.Item>
-              );
-            })}
-          </Menu>
-
-          <div> <TeamOutlined /> Clubs/groups I'm a part of: Hidden</div>
-
-          <Menu>
-            {this.state.myPages
-              .filter((page) => {
-                return page.pageType === "Group";
+          <Descriptions column={1} bordered>
+            {userInfo
+              .filter((entry) => {
+                return entry.value && entry.value.length > 0;
               })
-              .map((page) => {
-                return (
-                  <Menu.Item
-                    key={page.name}
-                    onClick={() => {
-                      this.props.redirectPage("/" + page.pageType.toLowerCase() + "/" + page.name);
-                    }}
-                  >
-                    {page.name}
-                  </Menu.Item>
-                );
+              .map((entry) => {
+                return <Descriptions.Item label={entry.label}>{entry.value}</Descriptions.Item>;
               })}
-          </Menu>
-
-          <br></br>
-
-          <div> <ShopOutlined /> My favorite restaurant near MIT: {this.state.restaurant} </div>
-          <div> <GiftOutlined /> Advice I would give to an incoming freshman: {this.state.advice} </div>
-
+          </Descriptions>
         </Content>
       </Layout>
     );

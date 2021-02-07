@@ -34,7 +34,7 @@ import {
   ReadOutlined,
   GiftOutlined,
   ShopOutlined,
-  LaptopOutlined
+  LaptopOutlined,
 } from "@ant-design/icons";
 const { Header, Content, Footer, Sider } = Layout;
 const { Title, Text } = Typography;
@@ -43,7 +43,7 @@ class Home extends Component {
     super(props);
     // Initialize Default State
     this.state = {
-      profileModal: false
+      profileModal: false,
     };
     props.updateSelectedPageName("");
   }
@@ -81,6 +81,14 @@ class Home extends Component {
       this.props.semester.replace("-", " ")[0].toUpperCase() +
       this.props.semester.replace("-", " ").substring(1);
     // const [editProfile, setEditProfile] = React.useState(false);
+
+    let userInfo = [
+      { label: "Currently lives in", value: this.props.curLoc },
+      { label: "Originally from", value: this.props.hometown },
+      { label: "Bio", value: this.props.bio },
+      { label: "Favorite MIT Restaurant", value: this.props.restaurant },
+      { label: "Advice", value: this.props.advice },
+    ];
     return (
       <>
         <Layout style={{ background: "rgba(255, 255, 255, 1)", height: "100vh" }}>
@@ -149,13 +157,12 @@ class Home extends Component {
                   <div style={{ paddingLeft: "10px" }}>
                     Toggle privacy mode to appear as anonymous in all of your classes
                   </div>
-                
                 </div>
 
                 <div
                   style={{
                     display: "flex",
-                    marginTop: "10px"
+                    marginTop: "10px",
                   }}
                 >
                   <Switch
@@ -169,91 +176,46 @@ class Home extends Component {
                   <div style={{ paddingLeft: "10px" }}>
                     Toggle profile privacy mode to hide your profile from other users
                   </div>
-
                 </div>
               </div>
 
-              <div 
-              style={{ overflowY: 'scroll' ,
-                      height: "100%"}}
-              // style={{
-              //   display: "flex",
-              //   flexDirection: "column",
-              // }}
+              <div
+                style={{ overflowY: "scroll", height: "100%" }}
+                // style={{
+                //   display: "flex",
+                //   flexDirection: "column",
+                // }}
               >
-
-                {/* {this.props.email}, {this.props.useer.userId} */}
-                {/* <div>Name: {this.props.user.name} </div> */}
-                <div> <UserOutlined /> Class of {this.props.classYear} </div>
-                <div> <LaptopOutlined /> Currently lives in: {this.props.curLoc} </div>
-                <div> <HomeOutlined /> Originally from: {this.props.hometown} </div>
-
-                <br></br>
-
-                <div> {this.props.bio} </div>
-
-                <br></br>
-
-                <div> <ReadOutlined /> Classes I'm taking: </div> 
-                {/* {this.props.myPages[0]} </div> */}
-                {console.log(this.props.myPages)}
-                <Menu>
-                  {this.props.myPages
-                  .filter((page) => {
-                    return page.pageType === "Class";
-                  })
-                  .map((page) => {
-                    return (
-                      <Menu.Item
-
-                        key={page.name}
-                        onClick={() => {
-                          this.props.redirectPage("/" + page.pageType.toLowerCase() + "/" + page.name);
-                        }}
-                      >
-                        {page.name}
-                      </Menu.Item>
-                    );
-                  })}
-                </Menu>
-
-                <div><TeamOutlined /> Clubs/groups I'm a part of: </div>
-
-                <Menu>
-                  {this.props.myPages
-                    .filter((page) => {
-                      return page.pageType === "Group";
+                <Descriptions
+                  column={1}
+                  bordered={
+                    userInfo.filter((entry) => {
+                      return entry.value && entry.value.length > 0;
+                    }).length > 0
+                  }
+                  title="My User Info"
+                  extra={
+                    <Button
+                      type="primary"
+                      // onClick={() => { }}
+                      onClick={() => {
+                        this.setProfileModal(true);
+                      }}
+                    >
+                      <UserOutlined /> Edit Profile
+                    </Button>
+                  }
+                >
+                  {userInfo
+                    .filter((entry) => {
+                      return entry.value && entry.value.length > 0;
                     })
-                    .map((page) => {
+                    .map((entry) => {
                       return (
-                        <Menu.Item
-                          key={page.name}
-                          onClick={() => {
-                            this.props.redirectPage("/" + page.pageType.toLowerCase() + "/" + page.name);
-                          }}
-                        >
-                          {page.name}
-                        </Menu.Item>
+                        <Descriptions.Item label={entry.label}>{entry.value}</Descriptions.Item>
                       );
                     })}
-                </Menu>
-
-                <br></br>
-
-                <div> <ShopOutlined /> My favorite restaurant near MIT: {this.props.restaurant} </div>
-                <div> <GiftOutlined /> Advice I would give to an incoming freshman: {this.props.advice} </div>
-                {/* <div>A fun & little-known fact about me: {this.props.funFact} </div> */}
-
-                <Button
-                  type="primary"
-                  style={{top: "10px"}}
-                  // onClick={() => { }}
-                  onClick={() => {
-                    this.setProfileModal(true);
-                  }}
-                >
-                  <UserOutlined /> Edit Profile
-                </Button>
+                </Descriptions>
 
                 <EditProfile
                   profileModal={this.state.profileModal}
@@ -264,7 +226,6 @@ class Home extends Component {
                   curLoc={this.props.curLoc}
                   restaurant={this.props.restaurant}
                 />
-
               </div>
             </TabPage>
           </Content>
@@ -272,16 +233,16 @@ class Home extends Component {
           <div style={{ bottom: "10px", padding: "10px 50px 10px 50px" }}>
             <center>
               <div style={{ fontSize: "10px" }}>
-                Thanks to{" "}
+                Thanks to
                 <a href="https://hacklodge.org/" target="_blank">
                   Hacklodge
                 </a>
                 {", "}
                 <a href="https://fireroad.mit.edu/" target="_blank">
                   FireRoad
-                </a>{" "}
+                </a>
                 for support and class information. This is not a catalog. Please share any bugs or
-                feedback{" "}
+                feedback
                 <a href="https://forms.gle/ZSdrfPZfpwngxQ3aA" target="_blank">
                   here
                 </a>
