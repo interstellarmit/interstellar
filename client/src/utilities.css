@@ -71,6 +71,10 @@ form {
   text-align: center;
 }
 
+.ant-avatar-circle:hover {
+  background-color: #2593fc;
+}
+
 .u-relative {
   position: relative;
 }

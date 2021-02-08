@@ -36,7 +36,6 @@ class App extends Component {
       loading: false,
       // currentPageName from URL?
     };
-
   }
 
   componentDidMount() {
@@ -63,10 +62,10 @@ class App extends Component {
           seeHelpText: user.seeHelpText,
           //allPages: allPages,
           signedContract: user.signedContract,
-          classYear: user.classYear
+          classYear: user.classYear,
         });
       } else {
-        this.setState({ tryingToLogin: false })
+        this.setState({ tryingToLogin: false });
       }
     });
     socket.on("reconnect_failed", () => {
@@ -152,10 +151,9 @@ class App extends Component {
   };
 
   signContract = (importClasses, classYear, roadId) => {
-    this.setState({ tryingToLogin: true, userId: false })
+    this.setState({ tryingToLogin: true, userId: false });
     post("/api/signContract", { importClasses, classYear, roadId }).then((res) => {
-      window.location.href = "/"
-
+      window.location.href = "/";
     });
   };
 
@@ -240,32 +238,32 @@ class App extends Component {
             },
           })
         ) : (
-            <></>
-          )}
+          <></>
+        )}
         {!this.state.signedContract ? (
           <SignContract logout={this.logout} signContract={this.signContract} />
         ) : (
-            <Router>
-              <Switch>
-                <Main
-                  path="/:semester"
-                  state={this.state}
-                  redirectPage={this.redirectPage}
-                  disconnect={this.disconnect}
-                  setVisible={this.setVisible}
-                  setProfileVisible={this.setProfileVisible}
-                  setSeeHelpText={this.setSeeHelpText}
-                  logout={this.logout}
-                />
-                <Route
-                  default
-                  render={() => {
-                    return <Redirect to="/spring-2021" />;
-                  }}
-                />
-              </Switch>
-            </Router>
-          )}
+          <Router>
+            <Switch>
+              <Main
+                path="/:semester"
+                state={this.state}
+                redirectPage={this.redirectPage}
+                disconnect={this.disconnect}
+                setVisible={this.setVisible}
+                setProfileVisible={this.setProfileVisible}
+                setSeeHelpText={this.setSeeHelpText}
+                logout={this.logout}
+              />
+              <Route
+                default
+                render={() => {
+                  return <Redirect to="/spring-2021" />;
+                }}
+              />
+            </Switch>
+          </Router>
+        )}
       </div>
     );
   }
