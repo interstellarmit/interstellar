@@ -44,6 +44,7 @@ class Home extends Component {
     // Initialize Default State
     this.state = {
       profileModal: false,
+      classes: undefined,
     };
     props.updateSelectedPageName("");
   }
@@ -64,6 +65,13 @@ class Home extends Component {
     });
     */
     document.getElementsByClassName("ant-tabs-content")[0].style.height = "100%";
+    get("/api/allClasses").then((data) => {
+      if (data.classes) {
+        const classString = data.classes
+        this.setState({ classes: classString })
+        console.log(data.classes)
+      }
+    })
   }
 
   setProfileModal = (bool) => {
@@ -89,6 +97,7 @@ class Home extends Component {
       { label: "Activities", value: this.props.activities },
       { label: "Favorite MIT Restaurant", value: this.props.restaurant },
       { label: "Advice", value: this.props.advice },
+      // { label: "Classes Taken", value: this.state.classes }
     ];
     return (
       <>
@@ -122,23 +131,23 @@ class Home extends Component {
                 {this.props.myPages.filter((page) => {
                   return page.pageType === "Class";
                 }).length > 0 ? (
-                  <SearchBar
-                    size="large"
-                    allPages={this.props.allPages}
-                    placeholder={"Search for a " + semester + " class or group!"}
-                    redirectPage={this.props.redirectPage}
-                    defaultOpen={true}
-                  />
-                ) : (
-                  <MultipleSearchBar
-                    size="large"
-                    allPages={this.props.allPages}
-                    placeholder={"Add classes to your " + semester + " schedule!"}
-                    redirectPage={this.props.redirectPage}
-                    defaultOpen={true}
-                    addClasses={this.props.addClasses}
-                  />
-                )}
+                    <SearchBar
+                      size="large"
+                      allPages={this.props.allPages}
+                      placeholder={"Search for a " + semester + " class or group!"}
+                      redirectPage={this.props.redirectPage}
+                      defaultOpen={true}
+                    />
+                  ) : (
+                    <MultipleSearchBar
+                      size="large"
+                      allPages={this.props.allPages}
+                      placeholder={"Add classes to your " + semester + " schedule!"}
+                      redirectPage={this.props.redirectPage}
+                      defaultOpen={true}
+                      addClasses={this.props.addClasses}
+                    />
+                  )}
               </div>
               <div>
                 <div
@@ -182,10 +191,10 @@ class Home extends Component {
 
               <div
                 style={{ overflowY: "scroll", height: "100%" }}
-                // style={{
-                //   display: "flex",
-                //   flexDirection: "column",
-                // }}
+              // style={{
+              //   display: "flex",
+              //   flexDirection: "column",
+              // }}
               >
                 <Descriptions
                   column={1}
@@ -241,7 +250,7 @@ class Home extends Component {
                 </a>
                 {", "}
                 <a href="https://fireroad.mit.edu/" target="_blank">
-                  FireRoad 
+                  FireRoad
                 </a>
                 for support and class information. This is not a catalog. Please share any bugs or
                 feedback

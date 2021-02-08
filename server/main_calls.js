@@ -479,6 +479,32 @@ addRemoveAdmin = (req, res) => {
   });
 };
 
+async function allClasses(req, res) {
+  try {
+    User.findById(req.user._id).then(async (user) => {
+      const classes = []
+      await Promise.all(user.pageIds.map(async (pageInfo) => {
+        const page = await Page.findById(pageInfo.pageId);
+        if (!page) {
+          console.log(pageInfo, "not found");
+          return;
+        }
+        classes.push(page.name)
+        return page
+      }))
+      console.log(classes)
+      if (!user.profileVisible) {
+        res.send({})
+      } else {
+        res.send({ classes })
+      }
+    })
+  } catch (err) {
+    console.log(err.message)
+    res.status(500).send({ msg: "Error in fetching user classes" });
+  }
+}
+
 module.exports = {
   createNewPage,
   addSelfToPage,
@@ -499,4 +525,5 @@ module.exports = {
   setFunFact,
   setShowClasses,
   addRemoveAdmin,
+  allClasses,
 };
