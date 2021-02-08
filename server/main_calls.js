@@ -190,6 +190,7 @@ viewProfile = (req, res) => {
       hometown: user.hometown,
       advice: user.advice,
       bio: user.bio,
+      activities: user.activities,
       restaurant: user.restaurant,
       myPages: user.pageIds,
       classYear: user.classYear
@@ -394,6 +395,15 @@ setBio = (req, res) => {
   });
 };
 
+setActivities = (req, res) => {
+  User.findById(req.user._id).then((user) => {
+    user.activities = req.body.activities;
+    user.save().then(() => {
+      res.send({ setActivities: true });
+    });
+  });
+};
+
 setRestaurant = (req, res) => {
   User.findById(req.user._id).then((user) => {
     user.restaurant = req.body.restaurant;
@@ -483,6 +493,7 @@ module.exports = {
   setHometown,
   setCurLoc,
   setBio,
+  setActivities,
   setRestaurant,
   setAdvice,
   setFunFact,

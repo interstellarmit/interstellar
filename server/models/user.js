@@ -43,28 +43,32 @@ const UserSchema = new mongoose.Schema({
   },
   hometown: {
     type: String,
-    default: "Add a hometown!"
+    default: "",
   },
   curLoc: {
     type: String,
-    default: "Add a location/dorm!"
+    default: "",
   },
   bio: {
     type: String,
-    default: "Add a bio!"
+    default: "",
+  },
+  activities: {
+    type: String,
+    default: ""
   },
   restaurant: {
     type: String,
-    default: "Add a favorite restaurant!"
+    default: "",
   },
   advice: {
     type: String,
-    default: "Add something!"
+    default: "",
   },
   funFact: {
     type: String,
-    default: "Add a fun fact!"
-  }
+    default: "",
+  },
 });
 
 // compile model from schema
