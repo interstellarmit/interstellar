@@ -19,6 +19,8 @@ export default function UserList(props) {
     }
     return a.name.localeCompare(b.name);
   });
+
+
   return (
     <div style={{ maxHeight: "100%", overflow: "auto" }}>
       <ConfigProvider
@@ -29,13 +31,10 @@ export default function UserList(props) {
         <List
           dataSource={props.users}
           size="medium"
+          
           renderItem={(user) => {
             return (
               <List.Item
-                style = {{
-                  // margin: '40px'
-                }}
-
                 actions={
                   props.adminIds && props.isSiteAdmin && !props.dashboard
                     ? [
