@@ -182,7 +182,7 @@ viewProfile = (req, res) => {
   var objectId = mongoose.Types.ObjectId(req.body.pageName);
 
   User.findById(objectId).then((user) => {
-    res.send({ 
+    res.send({
       worked: true,
       name: user.name,
       profileVisible: user.profileVisible,
@@ -232,7 +232,7 @@ joinPage = (req, res) => {
       if (page) admin = page.adminIds.length > 0 ? page.adminIds[0] : undefined;
       if (admin) {
         admin = await User.findById(admin);
-        admin = admin.name;
+        admin = admin ? admin.name : undefined;
       }
 
       User.find({ "pageIds.pageId": { $in: pageArr } }, async (err, users) => {

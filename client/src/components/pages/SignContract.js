@@ -23,7 +23,6 @@ class SignContract extends Component {
   }
   componentDidMount = () => {
     get("/api/roads").then((data) => {
-      console.log(data.roads)
       this.setState({ roads: data.roads, roadOptions: Object.values(data.roads).map((element) => element.name), yearOptions: data.yearOptions })
     })
   }

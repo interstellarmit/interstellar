@@ -153,9 +153,8 @@ class App extends Component {
   signContract = (importClasses, classYear, roadId) => {
     this.setState({ tryingToLogin: true, userId: false })
     post("/api/signContract", { importClasses, classYear, roadId }).then((res) => {
-      if (res.user) {
-        this.setState({ tryingToLogin: false, userId: res.user._id, signedContract: true });
-      }
+      window.location.href = "/"
+
     });
   };
 
@@ -188,7 +187,7 @@ class App extends Component {
               <Confirmation path="/confirmation/:token"></Confirmation>
               <Public
                 visible={true}
-                profileVisible = {true}
+                profileVisible={true}
                 handleLogin={this.handleLogin}
                 logout={this.logout}
                 me={this.me}
