@@ -56,6 +56,7 @@ class App extends Component {
           curLoc: user.curLoc,
           hometown: user.hometown,
           bio: user.bio,
+          activities: user.activities,
           restaurant: user.restaurant,
           advice: user.advice,
           funFact: user.funFact,

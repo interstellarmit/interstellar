@@ -53,6 +53,10 @@ const UserSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
+  activities: {
+    type: String,
+    default: ""
+  },
   restaurant: {
     type: String,
     default: "",

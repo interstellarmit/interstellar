@@ -52,6 +52,7 @@ class UserPage extends Component {
       profileVisible: false,
       curLoc: "",
       bio: "",
+      activities: "",
       restaurant: "",
       hometown: "",
       advice: "",
@@ -71,6 +72,7 @@ class UserPage extends Component {
         profileVisible: data.profileVisible,
         curLoc: data.curLoc,
         bio: data.bio,
+        activities: data.activities,
         restaurant: data.restaurant,
         hometown: data.hometown,
         advice: data.advice,
@@ -121,6 +123,7 @@ class UserPage extends Component {
       { label: "Currently lives in", value: this.state.curLoc },
       { label: "Originally from", value: this.state.hometown },
       { label: "Bio", value: this.state.bio },
+      { label: "Activities", value: this.state.activities },
       { label: "Favorite MIT Restaurant", value: this.state.restaurant },
       { label: "Advice", value: this.state.advice },
     ];

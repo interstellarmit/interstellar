@@ -44,6 +44,12 @@ export default function EditProfile(props) {
       }
     });
 
+    post("/api/setActivities", { activities: fieldsValue.activities }).then((data) => {
+      if (data.setActivities) {
+        // console.log(data.setAdvice)
+      }
+    });
+
     form.resetFields();
     props.setProfileModal(false);
     window.location.reload(false);
@@ -73,6 +79,7 @@ export default function EditProfile(props) {
           curLoc: props.curLoc,
           hometown: props.hometown,
           bio: props.bio,
+          activities: props.activities,
           advice: props.advice,
           restaurant: props.restaurant,
         }}
@@ -114,6 +121,19 @@ export default function EditProfile(props) {
           ]}
         >
           <TextArea name="bio" rows={4} />
+        </Form.Item>
+
+        <Form.Item
+          name="activities"
+          label="Clubs & Activities:"
+          rules={[
+            {
+              max: 200,
+              message: "Activities must be at most 200 characters",
+            },
+          ]}
+        >
+          <Input name="activities"/>
         </Form.Item>
 
         <Form.Item

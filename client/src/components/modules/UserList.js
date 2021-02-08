@@ -1,5 +1,5 @@
 import React, { Component, useState } from "react";
-import { List, Empty, ConfigProvider, Row, Col } from "antd";
+import { List, Empty, ConfigProvider, Row, Col, Menu } from "antd";
 import ProfilePic from "./ProfilePic";
 import { get, post } from "../../utilities";
 import { Button } from "antd";
@@ -32,6 +32,10 @@ export default function UserList(props) {
           renderItem={(user) => {
             return (
               <List.Item
+                style = {{
+                  // margin: '40px'
+                }}
+
                 actions={
                   props.adminIds && props.isSiteAdmin && !props.dashboard
                     ? [

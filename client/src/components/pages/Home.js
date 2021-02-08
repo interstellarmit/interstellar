@@ -86,6 +86,7 @@ class Home extends Component {
       { label: "Currently lives in", value: this.props.curLoc },
       { label: "Originally from", value: this.props.hometown },
       { label: "Bio", value: this.props.bio },
+      { label: "Activities", value: this.props.activities },
       { label: "Favorite MIT Restaurant", value: this.props.restaurant },
       { label: "Advice", value: this.props.advice },
     ];
@@ -222,6 +223,7 @@ class Home extends Component {
                   setProfileModal={this.setProfileModal}
                   hometown={this.props.hometown}
                   bio={this.props.bio}
+                  activities={this.props.activities}
                   advice={this.props.advice}
                   curLoc={this.props.curLoc}
                   restaurant={this.props.restaurant}
@@ -239,7 +241,7 @@ class Home extends Component {
                 </a>
                 {", "}
                 <a href="https://fireroad.mit.edu/" target="_blank">
-                  FireRoad
+                  FireRoad 
                 </a>
                 for support and class information. This is not a catalog. Please share any bugs or
                 feedback
