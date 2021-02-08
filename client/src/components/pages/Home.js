@@ -67,11 +67,11 @@ class Home extends Component {
     document.getElementsByClassName("ant-tabs-content")[0].style.height = "100%";
     get("/api/allClasses").then((data) => {
       if (data.classes) {
-        const classString = data.classes
-        this.setState({ classes: classString })
-        console.log(data.classes)
+        const classString = data.classes;
+        this.setState({ classes: classString });
+        console.log(data.classes);
       }
-    })
+    });
   }
 
   setProfileModal = (bool) => {
@@ -99,6 +99,10 @@ class Home extends Component {
       { label: "Advice", value: this.props.advice },
       // { label: "Classes Taken", value: this.state.classes }
     ];
+    let anyInfo =
+      userInfo.filter((entry) => {
+        return entry.value && entry.value.length > 0;
+      }).length > 0;
     return (
       <>
         <Layout style={{ background: "rgba(255, 255, 255, 1)", height: "100vh" }}>
@@ -131,23 +135,23 @@ class Home extends Component {
                 {this.props.myPages.filter((page) => {
                   return page.pageType === "Class";
                 }).length > 0 ? (
-                    <SearchBar
-                      size="large"
-                      allPages={this.props.allPages}
-                      placeholder={"Search for a " + semester + " class or group!"}
-                      redirectPage={this.props.redirectPage}
-                      defaultOpen={true}
-                    />
-                  ) : (
-                    <MultipleSearchBar
-                      size="large"
-                      allPages={this.props.allPages}
-                      placeholder={"Add classes to your " + semester + " schedule!"}
-                      redirectPage={this.props.redirectPage}
-                      defaultOpen={true}
-                      addClasses={this.props.addClasses}
-                    />
-                  )}
+                  <SearchBar
+                    size="large"
+                    allPages={this.props.allPages}
+                    placeholder={"Search for a " + semester + " class or group!"}
+                    redirectPage={this.props.redirectPage}
+                    defaultOpen={true}
+                  />
+                ) : (
+                  <MultipleSearchBar
+                    size="large"
+                    allPages={this.props.allPages}
+                    placeholder={"Add classes to your " + semester + " schedule!"}
+                    redirectPage={this.props.redirectPage}
+                    defaultOpen={true}
+                    addClasses={this.props.addClasses}
+                  />
+                )}
               </div>
               <div>
                 <div
@@ -191,18 +195,14 @@ class Home extends Component {
 
               <div
                 style={{ overflowY: "scroll", height: "100%" }}
-              // style={{
-              //   display: "flex",
-              //   flexDirection: "column",
-              // }}
+                // style={{
+                //   display: "flex",
+                //   flexDirection: "column",
+                // }}
               >
                 <Descriptions
                   column={1}
-                  bordered={
-                    userInfo.filter((entry) => {
-                      return entry.value && entry.value.length > 0;
-                    }).length > 0
-                  }
+                  bordered={anyInfo}
                   title="My User Info"
                   extra={
                     <Button
@@ -226,6 +226,7 @@ class Home extends Component {
                       );
                     })}
                 </Descriptions>
+                {anyInfo ? "" : "You have not added info to your profile yet!"}
 
                 <EditProfile
                   profileModal={this.state.profileModal}

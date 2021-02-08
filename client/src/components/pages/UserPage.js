@@ -127,6 +127,10 @@ class UserPage extends Component {
       { label: "Favorite MIT Restaurant", value: this.state.restaurant },
       { label: "Advice", value: this.state.advice },
     ];
+    let anyInfo =
+      userInfo.filter((entry) => {
+        return entry.value && entry.value.length > 0;
+      }).length > 0;
     return (
       <Layout style={{ background: "rgba(240, 242, 245, 1)", height: "100vh" }}>
         <PageHeader
@@ -145,7 +149,7 @@ class UserPage extends Component {
             height: "calc(100% - 64px)",
           }}
         >
-          <Descriptions column={1} bordered>
+          <Descriptions column={1} bordered={anyInfo}>
             {userInfo
               .filter((entry) => {
                 return entry.value && entry.value.length > 0;
@@ -154,6 +158,7 @@ class UserPage extends Component {
                 return <Descriptions.Item label={entry.label}>{entry.value}</Descriptions.Item>;
               })}
           </Descriptions>
+          {anyInfo ? "" : "This user has not added a profile yet."}
         </Content>
       </Layout>
     );

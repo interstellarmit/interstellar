@@ -17,6 +17,7 @@
 // this is a tool provided by staff, so you don't need to worry about it
 require("dotenv").config();
 const initialise = require("./initialise");
+
 const validator = require("./validator");
 validator.checkSetup();
 
@@ -112,5 +113,7 @@ socket.init(server);
 server.listen(port, () => {
   //CAREFUL THIS (initialise.js) CLEARES ALL THE CLASSES!
 
+  //careful this resets all constracts
+  //initialise.resetContracts();
   console.log(`Server running on port: ${port}`);
 });

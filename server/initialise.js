@@ -153,6 +153,18 @@ initialise = async () => {
   console.log(Object.keys(oldIdToNewId).length);
 };
 
+resetContracts = async () => {
+  let users = await User.find({});
+  await Promise.all(
+    users.map((user) => {
+      user.signedContract = false;
+      return user.save();
+    })
+  );
+  console.log("reset all the contracts");
+};
+
 module.exports = {
   initialise,
+  resetContracts,
 };
