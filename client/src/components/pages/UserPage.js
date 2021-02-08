@@ -124,7 +124,7 @@ class UserPage extends Component {
       { label: "Originally from", value: this.state.hometown },
       { label: "Bio", value: this.state.bio },
       { label: "Activities", value: this.state.activities },
-      { label: "Favorite MIT Restaurant", value: this.state.restaurant },
+      { label: "Favorite Boston Restaurant", value: this.state.restaurant },
       { label: "Advice", value: this.state.advice },
     ];
     return (

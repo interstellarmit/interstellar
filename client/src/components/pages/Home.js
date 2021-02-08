@@ -91,12 +91,12 @@ class Home extends Component {
     // const [editProfile, setEditProfile] = React.useState(false);
 
     let userInfo = [
-      { label: "Currently lives in", value: this.props.curLoc },
-      { label: "Originally from", value: this.props.hometown },
-      { label: "Bio", value: this.props.bio },
-      { label: "Activities", value: this.props.activities },
-      { label: "Favorite MIT Restaurant", value: this.props.restaurant },
-      { label: "Advice", value: this.props.advice },
+      { icon: <LaptopOutlined/>, label: "Currently lives in", value: this.props.curLoc },
+      { icon: <HomeOutlined/>, label: "Originally from", value: this.props.hometown },
+      { icon: <UserOutlined/>, label: "Bio", value: this.props.bio },
+      { icon: <ReadOutlined/>, label: "Activities", value: this.props.activities },
+      { icon: <ShopOutlined/>, label: "Favorite Boston Restaurant", value: this.props.restaurant },
+      { icon: <GiftOutlined/>, label: "Advice", value: this.props.advice },
       // { label: "Classes Taken", value: this.state.classes }
     ];
     return (
@@ -222,7 +222,7 @@ class Home extends Component {
                     })
                     .map((entry) => {
                       return (
-                        <Descriptions.Item label={entry.label}>{entry.value}</Descriptions.Item>
+                        <Descriptions.Item label={<div>{entry.icon} {entry.label}</div>}>{entry.value}</Descriptions.Item>
                       );
                     })}
                 </Descriptions>
