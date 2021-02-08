@@ -178,28 +178,36 @@ Description: If the user is in the page, returns the users, due dates that have 
 */
 
 viewProfile = (req, res) => {
-  var mongoose = require('mongoose');
+  var mongoose = require("mongoose");
   var objectId = mongoose.Types.ObjectId(req.body.pageName);
 
   User.findById(objectId).then((user) => {
-    res.send({
-      worked: true,
-      name: user.name,
-      profileVisible: user.profileVisible,
-      curLoc: user.curLoc,
-      hometown: user.hometown,
-      advice: user.advice,
-      bio: user.bio,
-      activities: user.activities,
-      restaurant: user.restaurant,
-      myPages: user.pageIds,
-      classYear: user.classYear
-    });
+    if (!user.visible) {
+      res.send({
+        worked: true,
+        name: "Anonymous",
+        profileVisible: false,
+      });
+    } else {
+      res.send({
+        worked: true,
+        name: user.name,
+        profileVisible: user.profileVisible,
+        curLoc: user.curLoc,
+        hometown: user.hometown,
+        advice: user.advice,
+        bio: user.bio,
+        activities: user.activities,
+        restaurant: user.restaurant,
+        myPages: user.pageIds,
+        classYear: user.classYear,
+      });
+    }
   });
   // res.send({
   //   worked: false,
   // })
-}
+};
 
 joinPage = (req, res) => {
   //console.log("joining page with user ");
@@ -396,11 +404,11 @@ setBio = (req, res) => {
 };
 
 setActivities = (req, res) => {
-  console.log(req.body.activities)
+  console.log(req.body.activities);
   User.findById(req.user._id).then((user) => {
     user.activities = req.body.activities;
     user.save().then(() => {
-      console.log('sending stuff')
+      console.log("sending stuff");
       res.send({ setActivities: true });
     });
   });
@@ -416,7 +424,7 @@ setRestaurant = (req, res) => {
 };
 
 setAdvice = (req, res) => {
-  console.log('hi?')
+  console.log("hi?");
   User.findById(req.user._id).then((user) => {
     user.advice = req.body.advice;
     user.save().then(() => {
@@ -426,7 +434,7 @@ setAdvice = (req, res) => {
 };
 
 setFunFact = (req, res) => {
-  console.log('hello?')
+  console.log("hello?");
   User.findById(req.user._id).then((user) => {
     user.setFunFact = req.body.funFact;
     user.save().then(() => {
@@ -484,25 +492,27 @@ addRemoveAdmin = (req, res) => {
 async function allClasses(req, res) {
   try {
     User.findById(req.user._id).then(async (user) => {
-      const classes = []
-      await Promise.all(user.pageIds.map(async (pageInfo) => {
-        const page = await Page.findById(pageInfo.pageId);
-        if (!page) {
-          console.log(pageInfo, "not found");
-          return;
-        }
-        classes.push(page.name)
-        return page
-      }))
-      console.log(classes)
+      const classes = [];
+      await Promise.all(
+        user.pageIds.map(async (pageInfo) => {
+          const page = await Page.findById(pageInfo.pageId);
+          if (!page) {
+            console.log(pageInfo, "not found");
+            return;
+          }
+          classes.push(page.name);
+          return page;
+        })
+      );
+      console.log(classes);
       if (!user.profileVisible) {
-        res.send({})
+        res.send({});
       } else {
-        res.send({ classes })
+        res.send({ classes });
       }
-    })
+    });
   } catch (err) {
-    console.log(err.message)
+    console.log(err.message);
     res.status(500).send({ msg: "Error in fetching user classes" });
   }
 }
@@ -519,12 +529,12 @@ async function editProfile(req, res) {
       user.advice = fieldsValue.advice;
       user.activities = fieldsValue.activities;
       user.save().then((user) => {
-        res.send({ user })
-      })
-    })
+        res.send({ user });
+      });
+    });
   } catch (err) {
     console.log(err.message);
-    res.status(500).send({ msg: "Error in editting profile" })
+    res.status(500).send({ msg: "Error in editting profile" });
   }
 }
 
