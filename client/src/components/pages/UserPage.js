@@ -137,7 +137,7 @@ class UserPage extends Component {
           className="site-layout-sub-header-background"
           style={{ padding: "20px 30px 0px 30px", background: "#fff" }}
           title={this.state.name}
-          subTitle={"Class of " + this.state.classYear}
+          subTitle={this.state.classYear ? "Class of " + this.state.classYear : undefined}
           // title={this.state.page.name}
           // subTitle={this.state.page.title}
         ></PageHeader>
