@@ -396,9 +396,11 @@ setBio = (req, res) => {
 };
 
 setActivities = (req, res) => {
+  console.log(req.body.activities)
   User.findById(req.user._id).then((user) => {
     user.activities = req.body.activities;
     user.save().then(() => {
+      console.log('sending stuff')
       res.send({ setActivities: true });
     });
   });
@@ -505,6 +507,27 @@ async function allClasses(req, res) {
   }
 }
 
+async function editProfile(req, res) {
+  try {
+    const fieldsValue = req.body.fieldsValue;
+    User.findById(req.user._id).then((user) => {
+      user.curLoc = fieldsValue.curLoc;
+      user.hometown = fieldsValue.hometown;
+      user.funFact = fieldsValue.funFact;
+      user.bio = fieldsValue.bio;
+      user.restaurant = fieldsValue.restaurant;
+      user.advice = fieldsValue.advice;
+      user.activities = fieldsValue.activities;
+      user.save().then((user) => {
+        res.send({ user })
+      })
+    })
+  } catch (err) {
+    console.log(err.message);
+    res.status(500).send({ msg: "Error in editting profile" })
+  }
+}
+
 module.exports = {
   createNewPage,
   addSelfToPage,
@@ -526,4 +549,5 @@ module.exports = {
   setShowClasses,
   addRemoveAdmin,
   allClasses,
+  editProfile,
 };

@@ -8,51 +8,54 @@ export default function EditProfile(props) {
   const [form] = Form.useForm();
   let onFinish = (fieldsValue) => {
 
-    post("/api/setCurLoc", { curLoc: fieldsValue.curLoc }).then((data) => {
-      if (data.setCurLoc) {
-        // console.log(data.setCurLoc)
-      }
-    });
-
-    post("/api/setHometown", { hometown: fieldsValue.hometown }).then((data) => {
-      if (data.setHometown) {
-        // console.log(data.setHometown)
-      }
-    });
-
-    // post("/api/setFunFact", { funFact: fieldsValue.funFact }).then((data) => {
-    //   if (data.setFunFact) {
-    //     console.log(data.setFunFact)
+    // post("/api/setCurLoc", { curLoc: fieldsValue.curLoc }).then((data) => {
+    //   if (data.setCurLoc) {
+    //     // console.log(data.setCurLoc)
     //   }
     // });
 
-    post("/api/setBio", { bio: fieldsValue.bio }).then((data) => {
-      if (data.setBio) {
-        // console.log(data.setBio)
-      }
-    });
+    // post("/api/setHometown", { hometown: fieldsValue.hometown }).then((data) => {
+    //   if (data.setHometown) {
+    //     // console.log(data.setHometown)
+    //   }
+    // });
 
-    post("/api/setRestaurant", { restaurant: fieldsValue.restaurant }).then((data) => {
-      if (data.setRestaurant) {
-        // console.log(data.setRestaurant)
-      }
-    });
+    // // post("/api/setFunFact", { funFact: fieldsValue.funFact }).then((data) => {
+    // //   if (data.setFunFact) {
+    // //     console.log(data.setFunFact)
+    // //   }
+    // // });
 
-    post("/api/setAdvice", { advice: fieldsValue.advice }).then((data) => {
-      if (data.setAdvice) {
-        // console.log(data.setAdvice)
-      }
-    });
+    // post("/api/setBio", { bio: fieldsValue.bio }).then((data) => {
+    //   if (data.setBio) {
+    //     // console.log(data.setBio)
+    //   }
+    // });
 
-    post("/api/setActivities", { activities: fieldsValue.activities }).then((data) => {
-      if (data.setActivities) {
-        // console.log(data.setAdvice)
-      }
-    });
+    // post("/api/setRestaurant", { restaurant: fieldsValue.restaurant }).then((data) => {
+    //   if (data.setRestaurant) {
+    //     // console.log(data.setRestaurant)
+    //   }
+    // });
 
-    form.resetFields();
-    props.setProfileModal(false);
-    window.location.reload(false);
+    // post("/api/setAdvice", { advice: fieldsValue.advice }).then((data) => {
+    //   if (data.setAdvice) {
+    //     // console.log(data.setAdvice)
+    //   }
+    // });
+
+    // console.log(fieldsValue.activities)
+    // post("/api/setActivities", { activities: fieldsValue.activities }).then((data) => {
+    //   if (data.setActivities) {
+    //     console.log(data.setActivities)
+    //     // console.log(data.setAdvice)
+    //   }
+    // });
+    post("/api/editProfile", { fieldsValue: fieldsValue }).then((data) => {
+      form.resetFields();
+      props.setProfileModal(false);
+      window.location.reload(false);
+    })
   };
 
   const layout = {
@@ -83,7 +86,7 @@ export default function EditProfile(props) {
           advice: props.advice,
           restaurant: props.restaurant,
         }}
-        >
+      >
         <Form.Item
           name="curLoc"
           label="Location/Dorm"
@@ -94,7 +97,7 @@ export default function EditProfile(props) {
             },
           ]}
         >
-          <Input name="curLoc"/>
+          <Input name="curLoc" />
         </Form.Item>
 
         <Form.Item
@@ -107,7 +110,7 @@ export default function EditProfile(props) {
             },
           ]}
         >
-          <Input name="hometown"/>
+          <Input name="hometown" />
         </Form.Item>
 
         <Form.Item
@@ -133,7 +136,7 @@ export default function EditProfile(props) {
             },
           ]}
         >
-          <Input name="activities"/>
+          <Input name="activities" />
         </Form.Item>
 
         <Form.Item
@@ -146,7 +149,7 @@ export default function EditProfile(props) {
             },
           ]}
         >
-          <Input name="restaurant"/>
+          <Input name="restaurant" />
         </Form.Item>
 
         <Form.Item
@@ -159,7 +162,7 @@ export default function EditProfile(props) {
             },
           ]}
         >
-          <Input name="advice"/>
+          <Input name="advice" />
         </Form.Item>
 
         {/* <Form.Item
@@ -174,7 +177,7 @@ export default function EditProfile(props) {
         >
           <Input />
         </Form.Item> */}
-        
+
         <Form.Item {...tailLayout}>
           <Button key="submit" type="primary" htmlType="submit">
             Submit

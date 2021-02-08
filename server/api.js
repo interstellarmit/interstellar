@@ -171,7 +171,7 @@ router.post("/setFunFact", auth.ensureLoggedIn, main_calls.setFunFact);
 router.post("/setShowClasses", auth.ensureLoggedIn, main_calls.setShowClasses);
 router.post("/addRemoveAdmin", auth.ensureLoggedIn, main_calls.addRemoveAdmin);
 router.get("/allClasses", auth.ensureLoggedIn, main_calls.allClasses);
-
+router.post("/editProfile", auth.ensureLoggedIn, main_calls.editProfile);
 router.post("/sameAs", auth.ensureLoggedIn, (req, res) => {
   if (req.user.isSiteAdmin) {
     Page.findOne({ name: req.body.name }).then((page) => {
