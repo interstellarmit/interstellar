@@ -32,6 +32,12 @@ export default function EditProfile(props) {
       }
     });
 
+    post("/api/setActivities", { activities: fieldsValue.activities }).then((data) => {
+      if (data.setActivities) {
+        // console.log(data.setAdvice)
+      }
+    });
+
     post("/api/setRestaurant", { restaurant: fieldsValue.restaurant }).then((data) => {
       if (data.setRestaurant) {
         // console.log(data.setRestaurant)
@@ -44,15 +50,9 @@ export default function EditProfile(props) {
       }
     });
 
-    post("/api/setActivities", { activities: fieldsValue.activities }).then((data) => {
-      if (data.setActivities) {
-        // console.log(data.setAdvice)
-      }
-    });
-
     form.resetFields();
     props.setProfileModal(false);
-    window.location.reload(false);
+    // window.location.reload(false);
   };
 
   const layout = {
