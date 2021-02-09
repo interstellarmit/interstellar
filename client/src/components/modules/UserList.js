@@ -20,7 +20,6 @@ export default function UserList(props) {
     return a.name.localeCompare(b.name);
   });
 
-
   return (
     <div style={{ maxHeight: "100%", overflow: "auto" }}>
       <ConfigProvider
@@ -31,74 +30,74 @@ export default function UserList(props) {
         <List
           dataSource={props.users}
           size="medium"
-          
           renderItem={(user) => {
             return (
               <List.Item
+                style={{ cursor: "pointer" }}
                 actions={
                   props.adminIds && props.isSiteAdmin && !props.dashboard
                     ? [
-                      <Button
-                        onClick={() => {
-                          post("/api/addRemoveAdmin", {
-                            isAdmin: adminIds.includes(user.userId),
-                            userId: user.userId,
-                            pageId: props.page._id,
-                          }).then((data) => {
-                            //console.log(data);
-                            if (data.success) {
-                              if (adminIds.includes(user.userId)) {
-                                let newAdminIds = adminIds.filter((id) => {
-                                  return id !== user.userId;
-                                });
-                                setAdminIds(newAdminIds);
-                              } else {
-                                let newAdminIds = adminIds.map((id) => {
-                                  return id;
-                                });
-                                newAdminIds.push(user.userId);
-                                setAdminIds(newAdminIds);
+                        <Button
+                          onClick={() => {
+                            post("/api/addRemoveAdmin", {
+                              isAdmin: adminIds.includes(user.userId),
+                              userId: user.userId,
+                              pageId: props.page._id,
+                            }).then((data) => {
+                              //console.log(data);
+                              if (data.success) {
+                                if (adminIds.includes(user.userId)) {
+                                  let newAdminIds = adminIds.filter((id) => {
+                                    return id !== user.userId;
+                                  });
+                                  setAdminIds(newAdminIds);
+                                } else {
+                                  let newAdminIds = adminIds.map((id) => {
+                                    return id;
+                                  });
+                                  newAdminIds.push(user.userId);
+                                  setAdminIds(newAdminIds);
+                                }
                               }
-                            }
-                          });
-                        }}
-                      >
-                        <UserOutlined /> {adminIds.includes(user.userId) ? "Admin" : "Student"}
-                      </Button>,
-                    ]
+                            });
+                          }}
+                        >
+                          <UserOutlined /> {adminIds.includes(user.userId) ? "Admin" : "Student"}
+                        </Button>,
+                      ]
                     : []
                 }
               >
                 <List.Item.Meta
                   avatar={<ProfilePic user={user} />}
-                  title= {user.name}
+                  title={user.name}
                   onClick={() => {
-                    console.log("clicked?")
-                    props.redirectPage("/user/" + user.userId)
+                    //console.log("clicked?");
+                    props.redirectPage("/user/" + user.userId);
                     // this.props.redirectPage("/" + page.pageType.toLowerCase() + "/" + page.name);
                   }}
                   description={
                     props.allPages && props.showClasses && user.pageIds
                       ? user.pageIds
-                        .map((id) => {
-                          return props.allPages.find((pg) => {
-                            return pg._id === id;
-                          });
-                        })
-                        .filter((page) => {
-                          if (!page) return false;
-                          return page.pageType === "Class";
-                        })
-                        .map((page) => {
-                          return page.name;
-                        })
+                          .map((id) => {
+                            return props.allPages.find((pg) => {
+                              return pg._id === id;
+                            });
+                          })
+                          .filter((page) => {
+                            if (!page) return false;
+                            return page.pageType === "Class";
+                          })
+                          .map((page) => {
+                            return page.name;
+                          })
 
-                        .join(", ")
+                          .join(", ")
                       : adminIds
-                        ? adminIds.includes(user.userId)
-                          ? " Admin"
-                          : ""
+                      ? adminIds.includes(user.userId)
+                        ? " Admin"
                         : ""
+                      : ""
                   }
                 />
               </List.Item>

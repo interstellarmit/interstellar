@@ -80,10 +80,10 @@ class UserPage extends Component {
         myPages: data.myPages,
         classYear: data.classYear,
       });
-      console.log(data.name);
-      console.log(data.ans);
+      //console.log(data.name);
+      //console.log(data.ans);
     });
-    console.log("done?");
+    //console.log("done?");
   }
 
   componentDidMount() {
