@@ -24,6 +24,11 @@ class Main extends Component {
     this.setState({ pageIds: [] }, () => {
       //console.log("Changing semester to ")
       post("/api/updateSemester", { semester: this.state.semester }).then((res) => {
+        if (res.broken) {
+          //this.props.disconnect();
+          this.props.logout();
+          return;
+        }
         this.setState({
           allPages: res.allPages,
           pageIds: res.pageIds,
@@ -158,7 +163,14 @@ class Main extends Component {
                   <Home
                     key={this.state.semester}
                     exact
-                    path={["/", "/dashboard", "/settings", "/admin", "/profile", "/dueDateAdmin"].map((s) => {
+                    path={[
+                      "/",
+                      "/dashboard",
+                      "/settings",
+                      "/admin",
+                      "/profile",
+                      "/dueDateAdmin",
+                    ].map((s) => {
                       return "/:semester" + s;
                     })}
                     schoolId={this.props.state.schoolId}
@@ -231,7 +243,7 @@ class Main extends Component {
                     setSeeHelpText={this.props.setSeeHelpText}
                     logout={this.logout}
                     semester={this.state.semester}
-                  />        
+                  />
                   <UserPage
                     style={{ height: "100%" }}
                     path={"/:semester/user/:selectedPage"}
