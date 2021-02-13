@@ -3,8 +3,8 @@ import { Avatar } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 
 export default function ProfilePic(props) {
-  if (props.user.name.startsWith("Anonymous")) return <Avatar icon={<UserOutlined />} />;
-  let initials = props.user.name.split(" ").map((name) => {
+  if ((props.user.name || "").startsWith("Anonymous")) return <Avatar icon={<UserOutlined />} />;
+  let initials = (props.user.name || "0").split(" ").map((name) => {
     return name[0];
   });
   initials = initials[0] + initials[initials.length - 1];
