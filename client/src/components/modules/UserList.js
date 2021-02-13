@@ -17,6 +17,9 @@ export default function UserList(props) {
         return 1;
       }
     }
+    if (!a.name && !b.name) return 0;
+    if (!a.name) return 1;
+    if (!b.name) return -1;
     return a.name.localeCompare(b.name);
   });
 
