@@ -41,7 +41,7 @@ let getAllPages = async (semester) => {
 
   let pagesGroups = await Page.find({
     pageType: "Group",
-    expiryDate: { $gte: new Date() },
+    //expiryDate: { $gte: new Date() },
   }).select(
     "name _id title locked pageType numPeople is_historical not_offered_year offered_spring offered_fall offered_IAP offered_summer"
   );
