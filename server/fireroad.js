@@ -32,7 +32,7 @@ async function sync(req, res) {
                         if (!isUserPage) {
                             user.pageIds.push({
                                 pageId: page._id + "",
-                                semester: "spring-2021",
+                                semester: "fall-2021",
                             })
                         }
                         return page;

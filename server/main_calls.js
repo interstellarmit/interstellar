@@ -95,7 +95,7 @@ addSelfToPage = (req, res) => {
   Page.findById(req.body.pageId).then((page) => {
     if (!page.locked || (page.locked && page.joinCode === req.body.joinCode)) {
       User.findById(req.user._id).then((user) => {
-        let semester = page.pageType === "Group" ? "All" : req.body.semester || "spring-2021";
+        let semester = page.pageType === "Group" ? "All" : req.body.semester || "fall-2021";
         if (pageIncludes(user.pageIds, { pageId: page._id, semester: semester })) {
           res.send({ added: false });
         } else {
@@ -138,7 +138,7 @@ Description: Removes user from the page
 removeSelfFromPage = (req, res) => {
   Page.findById(req.body.pageId).then((page) => {
     User.findById(req.user._id).then((user) => {
-      let semester = page.pageType === "Group" ? "All" : req.body.semester || "spring-2021";
+      let semester = page.pageType === "Group" ? "All" : req.body.semester || "fall-2021";
       //console.log(user.pageIds);
       //console.log({ pageId: req.body.pageId, semester: semester });
       if (pageIncludes(user.pageIds, { pageId: req.body.pageId, semester: semester })) {
@@ -286,7 +286,7 @@ joinPage = (req, res) => {
           await page.save();
         }
         let semester =
-          page && page.pageType === "Group" ? "All" : req.body.semester || "spring-2021";
+          page && page.pageType === "Group" ? "All" : req.body.semester || "fall-2021";
         if (req.body.home || pageIncludes(user.pageIds, { pageId: page._id, semester: semester })) {
           let returnValue = {
             users: inPageUsers,

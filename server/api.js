@@ -106,7 +106,7 @@ router.post("/updateSemester", async (req, res) => {
     res.send({ broken: true });
     return;
   }
-  let semester = req.body.semester || "spring-2021";
+  let semester = req.body.semester || "fall-2021";
   let allPages = await getAllPages(semester);
 
   let user = await User.findById(req.user._id);
@@ -192,7 +192,7 @@ router.post("/sameAs", auth.ensureLoggedIn, (req, res) => {
 
 router.post("/addClasses", auth.ensureLoggedIn, (req, res) => {
   let pageNames = req.body.pageNames;
-  let semester = req.body.semester || "spring-2021";
+  let semester = req.body.semester || "fall-2021";
   let userPageIds = [];
   let addPage = (i) => {
     if (i >= pageNames.length) {

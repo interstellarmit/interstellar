@@ -15,7 +15,7 @@ const { Header, Content, Footer, Sider } = Layout;
 class Main extends Component {
   constructor(props) {
     super(props);
-    let semester = this.props.computedMatch.params.semester || "spring-2021";
+    let semester = this.props.computedMatch.params.semester || "fall-2021";
     // Initialize Default State
     this.state = { semester: semester, allPages: [], redirectPage: "" };
   }
@@ -123,7 +123,7 @@ class Main extends Component {
       );
     }
     if (
-      !["fall-2021", "spring-2021", "iap-2021", "fall-2020", "spring-2020"].includes(
+      !["spring-2022", "iap-2022", "fall-2021", "spring-2021", "iap-2021", "fall-2020", "spring-2020"].includes(
         this.state.semester
       )
     ) {
