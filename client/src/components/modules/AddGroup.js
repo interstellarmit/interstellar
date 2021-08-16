@@ -22,7 +22,7 @@ export default function AddGroup(props) {
             let newPageIds = props.pageIds.concat([]);
             newPageIds.push(data.pageId);
             props.updatePageIds(newPageIds);
-            props.redirectPage("/group/" + data.name);
+            props.redirectPage("/" + props.semester + "/group/" + data.name);
           }
         });
       } else {

@@ -5,7 +5,10 @@ import { Tabs } from "antd";
 const { TabPane } = Tabs;
 
 export default function TabPage(props) {
-  let url = props.page ? "/" + props.page.pageType.toLowerCase() + "/" + props.page.name : "";
+  let url =
+    "/" +
+    props.semester +
+    (props.page ? "/" + props.page.pageType.toLowerCase() + "/" + props.page.name : "");
 
   return (
     <Router>

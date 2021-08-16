@@ -23,12 +23,20 @@ export default function MultipleSearchBar(props) {
         .filter((page) => {
           return page.pageType === "Class";
         })
+        // .sort((a, b) => {
+        //   return b.numPeople - a.numPeople;
+        // })
         .map((page) => {
           return {
             value: page.name,
             label: (
               <div key={page.name} value={page.name}>
-                {page.title === "" ? page.name : page.name + ": " + page.title}
+                {page.title === ""
+                  ? page.name
+                  : page.name +
+                    ": " +
+                    page.title +
+                    (page.numPeople > 0 && false ? " (" + page.numPeople + ")" : "")}
               </div>
             ),
           };
@@ -58,7 +66,7 @@ export default function MultipleSearchBar(props) {
       <Select
         mode="multiple"
         style={{ width: "calc(100% - 46px)" }}
-        placeholder="Start by entering your schedule"
+        placeholder={props.placeholder}
         defaultValue={[]}
         defaultOpen
         onChange={(value) => {

@@ -1,5 +1,5 @@
 import React, { Component, useState } from "react";
-import { List, Empty, ConfigProvider, Row, Col } from "antd";
+import { List, Empty, ConfigProvider, Row, Col, Menu } from "antd";
 import ProfilePic from "./ProfilePic";
 import { get, post } from "../../utilities";
 import { Button } from "antd";
@@ -17,8 +17,12 @@ export default function UserList(props) {
         return 1;
       }
     }
+    if (!a.name && !b.name) return 0;
+    if (!a.name) return 1;
+    if (!b.name) return -1;
     return a.name.localeCompare(b.name);
   });
+
   return (
     <div style={{ maxHeight: "100%", overflow: "auto" }}>
       <ConfigProvider
@@ -32,6 +36,7 @@ export default function UserList(props) {
           renderItem={(user) => {
             return (
               <List.Item
+                style={{ cursor: "pointer" }}
                 actions={
                   props.adminIds && props.isSiteAdmin && !props.dashboard
                     ? [
@@ -69,6 +74,11 @@ export default function UserList(props) {
                 <List.Item.Meta
                   avatar={<ProfilePic user={user} />}
                   title={user.name}
+                  onClick={() => {
+                    //console.log("clicked?");
+                    props.redirectPage("/user/" + user.userId);
+                    // this.props.redirectPage("/" + page.pageType.toLowerCase() + "/" + page.name);
+                  }}
                   description={
                     props.allPages && props.showClasses && user.pageIds
                       ? user.pageIds
@@ -97,113 +107,6 @@ export default function UserList(props) {
             );
           }}
         />
-        {/* <Row>
-          <Col span={8}>
-            <List
-              dataSource={userList1}
-              size="medium"
-              renderItem={(user) => {
-                return (
-                  <List.Item>
-                    <List.Item.Meta
-                      avatar={<ProfilePic user={user} />}
-                      title={user.name}
-                      description={
-                        props.allPages && props.showClasses && user.pageIds
-                          ? user.pageIds
-                            .map((id) => {
-                              return props.allPages.find((pg) => {
-                                return pg._id === id;
-                              });
-                            })
-                            .filter((page) => {
-                              if (!page) return false;
-                              return page.pageType === "Class";
-                            })
-                            .map((page) => {
-                              return page.name;
-                            })
-
-                            .join(", ")
-                          : undefined
-                      }
-                    />
-                  </List.Item>
-                );
-              }}
-            />
-          </Col>
-          <Col span={8}>
-            <List
-              dataSource={userList2}
-              size="medium"
-              renderItem={(user) => {
-                return (
-                  <List.Item>
-                    <List.Item.Meta
-                      avatar={<ProfilePic user={user} />}
-                      title={user.name}
-                      description={
-                        props.allPages && props.showClasses && user.pageIds
-                          ? user.pageIds
-                            .map((id) => {
-                              return props.allPages.find((pg) => {
-                                return pg._id === id;
-                              });
-                            })
-                            .filter((page) => {
-                              if (!page) return false;
-                              return page.pageType === "Class";
-                            })
-                            .map((page) => {
-                              return page.name;
-                            })
-
-                            .join(", ")
-                          : undefined
-                      }
-                    />
-                  </List.Item>
-                );
-              }}
-            />
-          </Col>
-          <Col span={8}>
-            <List
-              dataSource={userList3}
-              size="medium"
-              renderItem={(user) => {
-                return (
-                  <List.Item>
-                    <List.Item.Meta
-                      avatar={<ProfilePic user={user} />}
-                      title={user.name}
-                      description={
-                        props.allPages && props.showClasses && user.pageIds
-                          ? user.pageIds
-                            .map((id) => {
-                              return props.allPages.find((pg) => {
-                                return pg._id === id;
-                              });
-                            })
-                            .filter((page) => {
-                              if (!page) return false;
-                              return page.pageType === "Class";
-                            })
-                            .map((page) => {
-                              return page.name;
-                            })
-
-                            .join(", ")
-                          : undefined
-                      }
-                    />
-                  </List.Item>
-                );
-              }}
-            />
-          </Col>
-        </Row> */}
       </ConfigProvider>
     </div>
   );

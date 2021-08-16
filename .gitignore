@@ -2,3 +2,5 @@ client/dist/bundle.js
 node_modules/
 .env
 client/src/full.json
+mongodump-prod-db
+mongodump-test-db

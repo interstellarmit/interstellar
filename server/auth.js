@@ -1,24 +1,11 @@
 require("dotenv").config();
-const { OAuth2Client } = require("google-auth-library");
 const User = require("./models/user");
-const Comment = require("./models/comment");
-const DDQL = require("./models/DDQL");
-const GroupPost = require("./models/groupPost");
-const Lounge = require("./models/lounge");
-const Message = require("./models/message");
 const Page = require("./models/page");
-const School = require("./models/school");
 const socket = require("./server-socket");
-var crypto = require("crypto");
-var nodemailer = require("nodemailer");
-const Token = require("./models/token");
-const sgMail = require("@sendgrid/mail");
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-const { useReducer } = require("react");
 const { check, validationResult } = require("express-validator/check");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+
+const axios = require("axios");
 
 function logout(req, res) {
   req.session.user = null;
@@ -39,29 +26,31 @@ function ensureLoggedIn(req, res, next) {
   next();
 }
 
-function me(req, res, next) {
-  console.log(req.header("token"));
-  const token = req.header("token");
-  if (!token) return res.status(401).json({ msg: "Auth Error" });
 
+const fetchUserInfo = async (code) => {
+  const password = "DH3ordzkbjBra9";
   try {
-    const decoded = jwt.verify(token, "randomString");
-    console.log("initial req users");
-    console.log(req.user);
+    let data = await axios({
+      url: process.env.FIREROAD_LINK + `fetch_token/?code=${code}`
+    })
+    data = data.data
+    const accessToken = data.access_info.access_token;
+    const email = data.access_info.academic_id;
 
-    req.user = decoded.user;
-
-    console.log(req.user);
-    console.log("got to next in backend auth me");
-    next();
+    let userData = await axios({
+      url: process.env.FIREROAD_LINK + "user_info",
+      headers: { 'Authorization': "Bearer " + accessToken },
+    })
+    userData = userData.data;
+    const name = userData.name;
+    return { name, email, password, accessToken }
   } catch (e) {
-    //console.error(e);
-    console.log("token not verified");
-    res.status(200).send({ msg: "Invalid Token" });
+    console.log(e)
   }
+  return {}
 }
 
-async function signUp(req, res) {
+const signUpLogin = async (req, res) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -69,356 +58,114 @@ async function signUp(req, res) {
       errors: errors.array(),
     });
   }
-  const name = req.body.name;
-  const email = req.body.email;
-  const password = req.body.password;
-
+  const { code } = req.query;
+  const { name, email, password, accessToken } = await fetchUserInfo(code)
+  console.log(name, email, password, accessToken)
   try {
     let user = await User.findOne({
       email: email,
     });
     if (user) {
-      return res.status(200).json({
-        msg: "User Already Exists",
-      });
+      user.accessToken = accessToken;
+      user.save().then((user) => {
+        req.session.user = user;
+        return res.redirect("/");
+      })
     }
-    let schoolEmail = encodeURI(email.split("@")[1].replace(/ /g, "_"));
-    let school = await School.findOne({ email: schoolEmail });
-    user = new User({
-      name: name,
-      email: email,
-      schoolId: school ? school._id : "None",
-    });
-
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(password, salt);
-
-    await user.save(function (err) {
-      if (err) {
-        return res.status(500).send({ msg: err.message });
-      }
-
-      // Create a verification token for this user
-      var token = new Token({ _userId: user._id, token: crypto.randomBytes(16).toString("hex") });
-      console.log(token);
-      // Save the verification token
-      token.save(function (err) {
+    else {
+      //let schoolEmail = encodeURI(email.split("@")[1].replace(/ /g, "_"));
+      // let school = await School.findOne({ email: schoolEmail });
+      user = new User({
+        name: name,
+        email: email,
+        accessToken: accessToken,
+        //schoolId: school ? school._id : "None",
+        isVerified: true,
+      })
+      console.log(user);
+      await user.save(function (err) {
         if (err) {
-          return res.status(500).send({ msg: err.message });
-        }
-
-        // Send the email
-        // console.log( {user: process.env.SENDGRID_USERNAME, pass: process.env.SENDGRID_PASSWORD } )
-        // var transporter = nodemailer.createTransport({ service: 'Sendgrid', auth: { user: process.env.SENDGRID_USERNAME, pass: process.env.SENDGRID_PASSWORD } });
-        // var mailOptions = { from: 'no-reply@scholar.chat', to: user.email, subject: 'Account Verification Token', text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/' + token.token + '.\n' };
-        // transporter.sendMail(mailOptions, function (err) {
-        //     if (err) { return res.status(500).send({ msg: err.message }); }
-        //     res.status(200).send('A verification email has been sent to ' + user.email + '.');
-        // });
-
-        try {
-          console.log("sending");
-          const msg = {
-            to: email,
-            from: process.env.SENDGRID_USERNAME,
-            subject: "Account Verification Token",
-            text:
-              "Hello,\n\n" +
-              "Please verify your account by clicking the link: \nhttp://" +
-              req.headers.host +
-              "/confirmation/" +
-              token.token +
-              "\n",
-          };
-          sgMail.send(msg).catch((err) => {
-            console.log(err);
-          });
-          console.log("sent");
-        } catch (err) {
-          return res.status(500).send({ msg: err.message });
-        }
-      });
-    });
-    res.status(200).send({
-      type: "succes",
-      msg:
-        "A verification email has been sent to " +
-        user.email +
-        ". Please check your spam and/or promotions.",
-    });
-  } catch (err) {
-    console.log(err.message);
-    res.status(500).send({ msg: "Error in Saving" });
-  }
-}
-
-function confirmationPost(req, res, next) {
-  // Check for validation errors
-  console.log("1");
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({
-      errors: errors.array(),
-    });
-  }
-  console.log("2");
-  // Find a matching token
-  Token.findOne({ token: req.body.token }, function (err, token) {
-    if (!token)
-      return res.status(200).send({
-        type: "not-verified",
-        msg: "We were unable to find a valid token. Your token my have expired.",
-      });
-    console.log("3");
-    // If we found a token, find a matching user
-    User.findOne({ _id: token._userId, email: req.body.email }, function (err, user) {
-      if (!user)
-        return res.status(200).send({ msg: "We were unable to find a user for this token." });
-      if (user.isVerified)
-        return res
-          .status(200)
-          .send({ type: "already-verified", msg: "This user has already been verified." });
-
-      // Verify and save the user
-      user.isVerified = true;
-      user.save(function (err) {
-        if (err) {
-          return res.status(500).send({ msg: err.message });
-        }
-        res
-          .status(200)
-          .send({ type: "success", msg: "The account has been verified. Please log in." });
-      });
-    });
-  });
-}
-
-function resendTokenPost(req, res, next) {
-  // Check for validation errors
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({
-      errors: errors.array(),
-    });
-  }
-
-  User.findOne({ email: req.body.email }, function (err, user) {
-    if (!user)
-      return res.status(200).send({ msg: "We were unable to find a user with that email." });
-    if (user.isVerified)
-      return res.status(200).send({ msg: "This account has already been verified." });
-
-    // Create a verification token, save it, and send email
-    var token = new Token({ _userId: user._id, token: crypto.randomBytes(16).toString("hex") });
-
-    // Save the token
-    token.save(function (err) {
-      if (err) {
-        return res.status(500).send({ msg: err.message });
-      }
-
-      // Send the email
-      // var transporter = nodemailer.createTransport({ service: 'Sendgrid', auth: { user: process.env.SENDGRID_USERNAME, pass: process.env.SENDGRID_PASSWORD } });
-      // var mailOptions = { from: 'no-reply@codemoto.io', to: user.email, subject: 'Account Verification Token', text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/' + token.token + '.\n' };
-      // transporter.sendMail(mailOptions, function (err) {
-      //     if (err) { return res.status(500).send({ msg: err.message }); }
-      //     res.status(200).send('A verification email has been sent to ' + user.email + '.');
-      // });
-
-      try {
-        console.log("sending");
-        const msg = {
-          to: email,
-          from: process.env.SENDGRID_USERNAME,
-          subject: "Account Verification Token",
-          text:
-            "Hello,\n\n" +
-            "Please verify your account by clicking the link: \nhttp://" +
-            req.headers.host +
-            "/confirmation/" +
-            token.token +
-            ".\n",
-        };
-        sgMail.send(msg).catch((err) => {
           console.log(err);
-        });
-        console.log("sent");
-      } catch (err) {
-        return res.status(500).send({ msg: err.message });
-      }
-    });
-  });
-}
-
-async function login(req, res) {
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res.status(400).json({
-      errors: errors.array(),
-    });
-  }
-
-  const email = req.body.email;
-  const password = req.body.password;
-
-  try {
-    let user = await User.findOne({
-      email,
-    });
-    if (!user)
-      return res.status(200).json({
-        msg: "User Not Exist",
-      });
-
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch)
-      return res.status(200).json({
-        msg: "Incorrect Password !",
-      });
-
-    if (!user.isVerified)
-      return res.status(200).json({
-        msg: "Email not verified !",
-      });
-
-    req.session.user = user;
-
-    const payload = {
-      user: {
-        id: user.id,
-      },
-    };
-
-    jwt.sign(
-      payload,
-      "randomString",
-      {
-        expiresIn: 360000,
-      },
-      (err, token) => {
-        if (err) throw err;
-
-        res.status(200).json({
-          token,
-        });
-      }
-    );
-  } catch (e) {
-    console.error(e);
-    res.status(500).json({
-      msg: "Server Error",
-    });
-  }
-}
-
-async function signUpLogin(req, res) {
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res.status(400).json({
-      errors: errors.array(),
-    });
-  }
-  const name = req.body.name;
-  const email = req.body.email;
-  const password = req.body.password;
-
-  try {
-    let user = await User.findOne({
-      email: email,
-    });
-    if (user) {
-      console.log("found");
-      req.session.user = user;
-
-      const payload = {
-        user: {
-          id: user.id,
-        },
-      };
-
-      jwt.sign(
-        payload,
-        "randomString",
-        {
-          expiresIn: 360000,
-        },
-        (err, token) => {
-          if (err) throw err;
-
-          res.status(200).json({
-            token,
-          });
+          return res.status(500).send({ msg: err.message });
         }
-      );
-      return;
+      });
+
+      req.session.user = user;
+      return res.redirect("/");
     }
-
-    let schoolEmail = encodeURI(email.split("@")[1].replace(/ /g, "_"));
-    let school = await School.findOne({ email: schoolEmail });
-    user = new User({
-      name: name,
-      email: email,
-      schoolId: school ? school._id : "None",
-      isVerified: true,
-    });
-
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(password, salt);
-    console.log(user);
-
-    await user.save(function (err) {
-      if (err) {
-        console.log(err);
-        return res.status(500).send({ msg: err.message });
-      }
-    });
-
-    req.session.user = user;
-    const payload = {
-      user: {
-        id: user.id,
-      },
-    };
-
-    jwt.sign(
-      payload,
-      "randomString",
-      {
-        expiresIn: 360000,
-      },
-      (err, token) => {
-        if (err) throw err;
-        console.log("yaya");
-        res.status(200).json({
-          token,
-        });
-      }
-    );
   } catch (err) {
     console.log(err.message);
     res.status(500).send({ msg: "Error in Saving" });
   }
 }
+
 async function signContract(req, res) {
-  User.findOne({ email: req.user.email }).then((user) => {
-    user.signedContract = true;
-    user.save().then(() => {
-      res.send({ success: true });
-    });
-  });
+  let semesterTypes = ['fall', 'iap', 'spring']
+  try {
+    User.findById(req.user._id).then(async (user) => {
+      user.signedContract = true;
+      user.classYear = req.body.classYear;
+
+      if (!req.body.importClasses) {
+        return user.save().then((user) => {
+          res.send({ user })
+        })
+      }
+      console.log(req.body)
+      let id = req.body.roadId || undefined;
+      if (id) {
+        let road = await axios({
+          url: process.env.FIREROAD_LINK + `sync/roads/?id=${id}`,
+          headers: { 'Authorization': "Bearer " + req.user.accessToken },
+        })
+        let contents = road.data.file.contents
+        console.log(contents);
+        await Promise.all(contents.selectedSubjects.map(async (subject) => {
+          try {
+            const page = await Page.findOne({ pageType: "Class", name: subject.id || subject.subject_id })
+            if (!page) {
+              console.log(subject)
+              return;
+            }
+            let isUserPage = user.pageIds.find((element) => {
+              return element.pageId == page._id
+            })
+            if (!isUserPage) {
+              const semesterType = semesterTypes[(subject.semester + 2) % 3]
+              const year = Number(req.body.classYear) - 4 + Math.floor((subject.semester + 1) / 3);
+              const semester = subject.semester === 0 ? "prereq" : `${semesterType}-${year}`
+              user.pageIds.push({
+                pageId: page._id + "",
+                semester: semester,
+              })
+            }
+            return page;
+          } catch (err) {
+            console.log(err.message)
+            return;
+          }
+        }))
+        console.log(user)
+        user.markModified("pageIds")
+        user.save().then((user) => {
+          res.send({ user });
+        })
+      } else {
+        user.save().then((user) => {
+          res.send({ user });
+        })
+      }
+    })
+  } catch (err) {
+    console.log(err.message)
+    res.status(500).send({ msg: "Error in signing contract" });
+  }
 }
 
 module.exports = {
-  login,
   logout,
   populateCurrentUser,
   ensureLoggedIn,
-  me,
-  signUp,
-  confirmationPost,
-  resendTokenPost,
   signUpLogin,
   signContract,
 };

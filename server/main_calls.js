@@ -1,80 +1,21 @@
 const User = require("./models/user");
-const Comment = require("./models/comment");
-const DDQL = require("./models/DDQL");
-const GroupPost = require("./models/groupPost");
-const Link = require("./models/link");
-const Lounge = require("./models/lounge");
-const Message = require("./models/message");
+
 const Page = require("./models/page");
-const AdminRequest = require("./models/adminRequest");
-const School = require("./models/school");
+const Link = require("./models/link");
 const socket = require("./server-socket");
 const { useReducer } = require("react");
-const lounge_calls = require("./lounge_calls");
+
 const axios = require("axios");
 require("dotenv").config();
 let expiryDate = new Date(2021, 1, 20); // expiry date for all classes this semester
 
 /*
-createNewSchool
-Input (req.body): {
-	name: String,
-	exampleEmail: String,
-	classesString: String
-}
-Precondition: req.user.isSiteAdmin, name is a valid URL string (if not, replace spaces with '_', and delete other characters)
-Socket: 
-Returns: {created: Boolean}
-Description: Creates a new school. Populates it with whatever classes info is given in classesString 
-(perhaps classesString is "6.033 Computer Systems Engineering\n 24.241 Logic\n ..." or something like that) but this string can be blank. adminIds is [req.user._id]. Returns true if the school is successfully created. 
-*/
-createNewSchool = (req, res) => {
-  if (req.user.isSiteAdmin) {
-    let name = req.body.name;
-    name = name.replace(/ /g, "_");
-    name = name.replace(/[^a-zA-Z0-9-_]/g, "_");
-    let school = new School({
-      name: name,
-      email: req.body.email,
-      adminIds: [req.user._id],
-    });
-    school.save().then(() => {
-      let classes = req.body.classesString.split("\n");
-      if (classes.length === 0) {
-        res.send({ created: true });
-      } else {
-        let added_classes = 0;
-        classes.forEach((indiv_class) => {
-          let params = indiv_class.replace(/ /, "%%^^2%%").split("%%^^2%%"); // just splitting by the first space.. in a hacky way
-          let page = new Page({
-            name: params[0],
-            title: params[1],
-            pageType: "Class",
-            schoolId: req.user.schoolId,
-            adminIds: [req.user._id],
-            expiryDate: expiryDate,
-          });
-          page.save().then(() => {
-            added_classes += 1;
-            if (added_classes === classes.length) {
-              res.send({ created: true });
-            }
-          });
-        });
-      }
-    });
-  } else {
-    res.send({ created: false });
-  }
-};
-
-/*
 createNewPage
 Input (req.body): {
-	pageType: String,
-	name: String,
-	title: String,
-	description: String,
+  pageType: String,
+  name: String,
+  title: String,
+  description: String,
   locked: Boolean,
   joinCode: String
 }
@@ -96,106 +37,88 @@ createNewPage = (req, res) => {
     res.send({ created: false });
     return;
   }
-  School.findById(req.user.schoolId).then((school) => {
-    let name = req.body.name;
-    name = name.replace(/ /g, "_");
-    name = name.replace(/[^a-zA-Z0-9-_]/g, "_");
-    let apiKey = process.env.gather_key;
-    let map = "interstellar-lounge-fpop-main";
-    const data = { apiKey: apiKey, name: name, map: map };
-    let zoomLink = undefined;
-    axios.post("https://staging.gather.town/api/createRoom", data).then((link) => {
-      console.log(link);
-      zoomLink = "https://gather.town/" + link.data;
-      if (
-        school.adminIds.includes(req.user._id) ||
-        req.user.isSiteAdmin ||
-        req.body.pageType === "Group"
-      ) {
-        Page.findOne({ name: new RegExp("^" + name + "$", "i") }).then((thepage) => {
-          if (thepage) {
-            res.send({ created: false });
-            return;
-          }
-          let page = new Page({
-            pageType: req.body.pageType,
-            name: name,
-            title: req.body.title,
-            description: req.body.description,
-            professor: req.body.professor,
-            rating: req.body.rating,
-            hours: req.body.hours,
-            units: req.body.units,
-            expiryDate: expiryDate,
-            adminIds: [req.user._id],
-            schoolId: req.user.schoolId,
-            locked: req.body.locked,
-            joinCode: req.body.joinCode || "",
-            sameAs: req.body.sameAs || "",
-          });
-          page.save().then((pg) => {
-            let lounge = new Lounge({
-              name: pg.name,
-              pageId: pg._id,
-              hostId: req.user._id,
-              zoomLink: zoomLink,
-              permanent: true,
-              main: true,
-            });
-            lounge.save();
-            socket.getSocketFromUserID(req.user._id).emit("createdPage", {
-              page: page,
-              userId: req.user._id,
-            });
-            res.send({ created: true, pageId: pg._id, name: page.name });
-          });
-        });
-      } else {
+
+  let name = req.body.name;
+  name = name.replace(/ /g, "_");
+  name = name.replace(/[^a-zA-Z0-9-_]/g, "_");
+
+  if (req.user.isSiteAdmin || req.body.pageType === "Group") {
+    Page.findOne({ name: new RegExp("^" + name + "$", "i") }).then((thepage) => {
+      if (thepage) {
         res.send({ created: false });
+        return;
       }
+      let page = new Page({
+        pageType: req.body.pageType,
+        name: name,
+        title: req.body.title,
+        description: req.body.description,
+        professor: req.body.professor,
+        expiryDate: expiryDate,
+        adminIds: [req.user._id],
+        schoolId: req.user.schoolId,
+        locked: req.body.locked,
+        joinCode: req.body.joinCode || "",
+        sameAs: req.body.sameAs || "",
+      });
+      page.save().then((pg) => {
+        socket.getSocketFromUserID(req.user._id).emit("createdPage", {
+          page: page,
+          userId: req.user._id,
+        });
+        res.send({ created: true, pageId: pg._id, name: page.name });
+      });
     });
-  });
+  } else {
+    res.send({ created: false });
+  }
 };
 
 /*
 addSelfToPage
 Input (req.body): {
-	pageId: String,
-	joinCode: String
+  pageId: String,
+  joinCode: String
 }
 Precondition: User's school is the page's school. User is not in the page. Page is not locked.  
 Socket: "userJoinedPage", {userId: String, name: String}
 Returns: {added: Boolean}
 Description: Checks if joinCode is correct. If so, Adds the user to the page, else doesn't
 */
+let pageIncludes = (list, one) => {
+  return list.find((pg) => {
+    return pg.pageId + "" === one.pageId + "" && pg.semester === one.semester;
+  });
+};
+
 addSelfToPage = (req, res) => {
   Page.findById(req.body.pageId).then((page) => {
-    if (page.schoolId === req.user.schoolId) {
-      if (!page.locked || (page.locked && page.joinCode === req.body.joinCode)) {
-        User.findById(req.user._id).then((user) => {
-          if (user.pageIds.includes(page._id)) {
-            res.send({ added: false });
-          } else {
-            user.pageIds.push(page._id);
-            user.save().then(() => {
-              socket
-                .getSocketFromUserID(req.user._id)
-                .to("Page: " + page._id)
-                .emit("userJoinedPage", {
-                  pageId: page._id,
-                  user: {
-                    userId: req.user._id,
-                    name:
-                      req.user.visible || page.pageType === "Group" ? req.user.name : "Anonymous",
-                  },
-                });
-              res.send({ added: true });
-            });
-          }
-        });
-      } else {
-        res.send({ added: false });
-      }
+    if (!page.locked || (page.locked && page.joinCode === req.body.joinCode)) {
+      User.findById(req.user._id).then((user) => {
+        let semester = page.pageType === "Group" ? "All" : req.body.semester || "spring-2021";
+        if (pageIncludes(user.pageIds, { pageId: page._id, semester: semester })) {
+          res.send({ added: false });
+        } else {
+          user.pageIds.push({
+            pageId: page._id + "",
+            semester: semester,
+          });
+          user.save().then(() => {
+            socket
+              .getSocketFromUserID(req.user._id)
+              .to("Page: " + page._id)
+              .emit("userJoinedPage", {
+                pageId: page._id,
+                semester: semester,
+                user: {
+                  userId: req.user._id,
+                  name: req.user.visible || page.pageType === "Group" ? req.user.name : "Anonymous",
+                },
+              });
+            res.send({ added: true });
+          });
+        }
+      });
     } else {
       res.send({ added: false });
     }
@@ -205,7 +128,7 @@ addSelfToPage = (req, res) => {
 /*
 removeSelfFromPage
 Input (req.body): {
-	pageId: String
+  pageId: String
 }
 Precondition: User is in the page. 
 Socket: 
@@ -215,15 +138,20 @@ Description: Removes user from the page
 removeSelfFromPage = (req, res) => {
   Page.findById(req.body.pageId).then((page) => {
     User.findById(req.user._id).then((user) => {
-      if (user.pageIds.includes(req.body.pageId)) {
+      let semester = page.pageType === "Group" ? "All" : req.body.semester || "spring-2021";
+      //console.log(user.pageIds);
+      //console.log({ pageId: req.body.pageId, semester: semester });
+      if (pageIncludes(user.pageIds, { pageId: req.body.pageId, semester: semester })) {
+        // console.log("found");
         user.pageIds = user.pageIds.filter((id) => {
-          return id !== req.body.pageId;
+          return id.pageId !== req.body.pageId;
         });
 
         user.save().then(() => {
           res.send({ removed: true });
         });
       } else {
+        console.log("not found");
         res.send({ removed: false });
       }
     });
@@ -234,7 +162,7 @@ removeSelfFromPage = (req, res) => {
 joinPage
 Input (req.body): {
   schoolId: String
-	pageName: String,
+  pageName: String,
 }
 Socket: 
 Returns: if user is in page {
@@ -249,25 +177,59 @@ else {users: [{userId: String, name: String}], page: Page}
 Description: If the user is in the page, returns the users, due dates that have him in "addedUserIds", quicklinks that have him in "addedUserIds", lounges, and Page. otherwise, just returns users and page. If req.body.home is True, return home stuff! (dueDates for all classes, quickLinks for all classes, lounges for all classes, users for all classes). Note: When returning user list, omit the people who have "visible" false.  (Note: group posts are not included here)
 */
 
+viewProfile = (req, res) => {
+  var mongoose = require("mongoose");
+  var objectId = mongoose.Types.ObjectId(req.body.pageName);
+
+  User.findById(objectId).then((user) => {
+    if (!user.visible) {
+      res.send({
+        worked: true,
+        name: "Anonymous",
+        profileVisible: false,
+      });
+    } else {
+      res.send({
+        worked: true,
+        name: user.name,
+        profileVisible: user.profileVisible,
+        curLoc: user.curLoc,
+        hometown: user.hometown,
+        advice: user.advice,
+        bio: user.bio,
+        activities: user.activities,
+        restaurant: user.restaurant,
+        myPages: user.pageIds,
+        classYear: user.classYear,
+      });
+    }
+  });
+  // res.send({
+  //   worked: false,
+  // })
+};
+
 joinPage = (req, res) => {
-  console.log("joining page with user ");
-  console.log(req.user);
-  if (!req.user || !req.user._id) {
+  //console.log("joining page with user ");
+  //console.log(req.user);
+  if (!req.user || !req.user._id || !socket.getSocketFromUserID(req.user._id)) {
     console.log("broken", req.user);
     res.send({ broken: true });
     return;
   }
 
-  Page.findOne({ name: req.body.pageName, schoolId: req.body.schoolId }).then((page) => {
+  Page.findOne({ name: req.body.pageName }).then((page) => {
     if (page) {
       socket.getSocketFromUserID(req.user._id).join("Page: " + page._id);
     }
 
-    User.findById(req.user._id).then((user) => {
+    User.findById(req.user._id).then(async (user) => {
       let pageArr = [];
 
       if (req.body.home) {
-        pageArr = user.pageIds;
+        pageArr = user.pageIds.map((pg) => {
+          return pg.pageId;
+        });
         pageArr.forEach((onePageId) => {
           socket.getSocketFromUserID(req.user._id).join("Page: " + onePageId);
         });
@@ -275,7 +237,27 @@ joinPage = (req, res) => {
         pageArr = [page._id];
       }
 
-      User.find({ pageIds: { $in: pageArr } }, (err, users) => {
+      let admin = undefined;
+      if (page) admin = page.adminIds.length > 0 ? page.adminIds[0] : undefined;
+      if (admin) {
+        admin = await User.findById(admin);
+        admin = admin ? admin.name : undefined;
+      }
+
+      User.find({ "pageIds.pageId": { $in: pageArr } }, async (err, users) => {
+        //console.log("LENGTH" + users.length);
+        users = users.filter((user) => {
+          return user.pageIds.find((id) => {
+            return (
+              pageArr
+                .map((s) => {
+                  return s + "";
+                })
+                .includes(id.pageId) &&
+              (id.semester === "All" || id.semester === req.body.semester)
+            );
+          });
+        });
         let condensedUsers = users.map((singleUser) => {
           if ((req.body.home || page.pageType === "Class") && !singleUser.visible)
             return { userId: singleUser._id, name: "Anonymous" };
@@ -283,57 +265,44 @@ joinPage = (req, res) => {
         });
         let inPageUsers = users.map((singleUser) => {
           if (!req.body.home && page.pageType === "Group") {
-            return { userId: singleUser._id, name: singleUser.name, pageIds: singleUser.pageIds };
+            return {
+              userId: singleUser._id,
+              name: singleUser.name,
+              pageIds: singleUser.pageIds
+                .filter((pg) => {
+                  return pg.semester === "All" || pg.semester === req.body.semester;
+                })
+                .map((pg) => {
+                  return pg.pageId;
+                }),
+            };
           }
           if ((req.body.home || page.pageType === "Class") && !singleUser.visible)
             return { userId: singleUser._id, name: "Anonymous" };
           return { userId: singleUser._id, name: singleUser.name };
         });
-        if (req.body.home || user.pageIds.includes(page._id)) {
-          DDQL.find(
-            {
-              pageId: { $in: pageArr },
-              $or: [{ addedUserIds: req.user._id }, { visibility: "Public" }, { verified: true }],
-              deleted: false,
-            },
-            (err, DDQLs) => {
-              Lounge.find({ pageId: { $in: pageArr } }, (err, lounges) => {
-                let adminReq =
-                  req.body.home && req.user.isSiteAdmin
-                    ? { honored: false }
-                    : req.body.home
-                    ? { pageId: "!!!!!" }
-                    : {
-                        pageId: page.adminIds.includes(req.user._id) ? page._id : "!!!!!",
-                        honored: false,
-                      };
-
-                AdminRequest.find(adminReq, (err, requests) => {
-                  let returnValue = {
-                    users: inPageUsers,
-                    lounges: lounges,
-                    dueDates: DDQLs.filter((ddql) => {
-                      return ddql.objectType === "DueDate";
-                    }),
-                    quickLinks: DDQLs.filter((ddql) => {
-                      return ddql.objectType === "QuickLink";
-                    }),
-                    inPage: true,
-                    adminRequests: requests,
-                  };
-                  if (!req.body.home) {
-                    returnValue.page = page;
-                  }
-                  res.send(returnValue);
-                });
-              });
-            }
-          );
+        if (page) {
+          page.numPeople = inPageUsers.length;
+          await page.save();
+        }
+        let semester =
+          page && page.pageType === "Group" ? "All" : req.body.semester || "spring-2021";
+        if (req.body.home || pageIncludes(user.pageIds, { pageId: page._id, semester: semester })) {
+          let returnValue = {
+            users: inPageUsers,
+            inPage: true,
+            hostName: admin,
+          };
+          if (!req.body.home) {
+            returnValue.page = page;
+          }
+          res.send(returnValue);
         } else {
           res.send({
             users: page.locked ? [] : condensedUsers,
             page: Object.assign(page, { joinCode: "INVISIBLE" }),
             inPage: false,
+            hostName: admin,
           });
         }
       });
@@ -344,8 +313,8 @@ joinPage = (req, res) => {
 /*
 leavePage
 Input (req.body): {
-	schoolId: String
-	pageName: String,
+  schoolId: String
+  pageName: String,
 }
 Precondition: User is on the page 
 Socket: 
@@ -357,13 +326,9 @@ leavePage = (req, res) => {
     res.send({});
     return;
   }
-  Page.findOne({ name: req.body.pageName, schoolId: req.body.schoolId }).then((page) => {
+  Page.findOne({ name: req.body.pageName }).then((page) => {
     socket.getSocketFromUserID(req.user._id).leave("Page: " + page._id);
-    User.findById(req.user._id).then((user) => {
-      lounge_calls.removeSelfFromLounge(user.loungeId).then(() => {
-        res.send({});
-      });
-    });
+    res.send({});
   });
 };
 
@@ -390,9 +355,7 @@ setJoinCode = (req, res) => {
 };
 
 getRedirectLink = (req, res) => {
-  Link.findOne({}).then((ret) => {
-    res.send({ link: ret.link });
-  });
+  res.send({ link: process.env.FIREROAD_LINK });
 };
 
 setVisible = (req, res) => {
@@ -404,40 +367,91 @@ setVisible = (req, res) => {
   });
 };
 
-setSeeHelpText = (req, res) => {
+setProfileVisible = (req, res) => {
   User.findById(req.user._id).then((user) => {
-    user.seeHelpText = req.body.seeHelpText;
+    user.profileVisible = req.body.profileVisible;
     user.save().then(() => {
-      res.send({ setSeeHelpText: true });
+      res.send({ setProfileVisible: true });
     });
   });
 };
 
-requestAdmin = (req, res) => {
-  AdminRequest.findOne({ userId: req.user._id, pageId: req.body.pageId, honored: false }).then(
-    (request) => {
-      if (request) {
-        res.send({ alreadyRequested: true });
-      } else {
-        const newRequest = new AdminRequest({
-          userId: req.user._id,
-          name: req.user.name,
-          pageId: req.body.pageId,
-          pageName: req.body.pageName,
-        });
-        newRequest.save().then(() => {
-          res.send({ requested: true });
-        });
-      }
-    }
-  );
+setHometown = (req, res) => {
+  User.findById(req.user._id).then((user) => {
+    user.hometown = req.body.hometown;
+    user.save().then(() => {
+      res.send({ setHometown: true });
+    });
+  });
 };
 
-honorRequest = (req, res) => {
-  AdminRequest.findById(req.body.requestId).then((request) => {
-    request.honored = true;
-    request.save().then(() => {
-      res.send({ honored: true });
+setCurLoc = (req, res) => {
+  User.findById(req.user._id).then((user) => {
+    user.curLoc = req.body.curLoc;
+    user.save().then(() => {
+      res.send({ setCurLoc: true });
+    });
+  });
+};
+
+setBio = (req, res) => {
+  User.findById(req.user._id).then((user) => {
+    user.bio = req.body.bio;
+    user.save().then(() => {
+      res.send({ setBio: true });
+    });
+  });
+};
+
+setActivities = (req, res) => {
+  console.log(req.body.activities);
+  User.findById(req.user._id).then((user) => {
+    user.activities = req.body.activities;
+    user.save().then(() => {
+      console.log("sending stuff");
+      res.send({ setActivities: true });
+    });
+  });
+};
+
+setRestaurant = (req, res) => {
+  User.findById(req.user._id).then((user) => {
+    user.restaurant = req.body.restaurant;
+    user.save().then(() => {
+      res.send({ setRestaurant: true });
+    });
+  });
+};
+
+setAdvice = (req, res) => {
+  console.log("hi?");
+  User.findById(req.user._id).then((user) => {
+    user.advice = req.body.advice;
+    user.save().then(() => {
+      res.send({ setAdvice: true });
+    });
+  });
+};
+
+setFunFact = (req, res) => {
+  console.log("hello?");
+  User.findById(req.user._id).then((user) => {
+    user.setFunFact = req.body.funFact;
+    user.save().then(() => {
+      res.send({ setFunFact: true });
+    });
+  });
+};
+
+setShowClasses = (req, res) => {
+  Page.findById(req.body.pageId).then((page) => {
+    if (!req.user.isSiteAdmin && !page.adminIds.includes(req.user._id)) {
+      res.send({ set: false });
+      return;
+    }
+    page.showClasses = req.body.showClasses;
+    page.save().then(() => {
+      res.send({ set: true });
     });
   });
 };
@@ -475,32 +489,75 @@ addRemoveAdmin = (req, res) => {
   });
 };
 
-setShowClasses = (req, res) => {
-  Page.findById(req.body.pageId).then((page) => {
-    if (!req.user.isSiteAdmin && !page.adminIds.includes(req.user._id)) {
-      res.send({ set: false });
-      return;
-    }
-    page.showClasses = req.body.showClasses;
-    page.save().then(() => {
-      res.send({ set: true });
+async function allClasses(req, res) {
+  try {
+    User.findById(req.user._id).then(async (user) => {
+      const classes = [];
+      await Promise.all(
+        user.pageIds.map(async (pageInfo) => {
+          const page = await Page.findById(pageInfo.pageId);
+          if (!page) {
+            console.log(pageInfo, "not found");
+            return;
+          }
+          classes.push(page.name);
+          return page;
+        })
+      );
+      console.log(classes);
+      if (!user.profileVisible) {
+        res.send({});
+      } else {
+        res.send({ classes });
+      }
     });
-  });
-};
+  } catch (err) {
+    console.log(err.message);
+    res.status(500).send({ msg: "Error in fetching user classes" });
+  }
+}
+
+async function editProfile(req, res) {
+  try {
+    const fieldsValue = req.body.fieldsValue;
+    User.findById(req.user._id).then((user) => {
+      user.curLoc = fieldsValue.curLoc;
+      user.hometown = fieldsValue.hometown;
+      user.funFact = fieldsValue.funFact;
+      user.bio = fieldsValue.bio;
+      user.restaurant = fieldsValue.restaurant;
+      user.advice = fieldsValue.advice;
+      user.activities = fieldsValue.activities;
+      user.save().then((user) => {
+        res.send({ user });
+      });
+    });
+  } catch (err) {
+    console.log(err.message);
+    res.status(500).send({ msg: "Error in editting profile" });
+  }
+}
 
 module.exports = {
-  createNewSchool,
   createNewPage,
   addSelfToPage,
   removeSelfFromPage,
   joinPage,
+  viewProfile,
   leavePage,
   setJoinCode,
   getRedirectLink,
   setVisible,
-  setSeeHelpText,
-  addRemoveAdmin,
-  requestAdmin,
-  honorRequest,
+  setProfileVisible,
+  setHometown,
+  setCurLoc,
+  setBio,
+  setActivities,
+  setRestaurant,
+  setAdvice,
+  setFunFact,
   setShowClasses,
+  addRemoveAdmin,
+  allClasses,
+  editProfile,
 };

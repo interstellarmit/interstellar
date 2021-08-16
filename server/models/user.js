@@ -4,6 +4,8 @@ const UserSchema = new mongoose.Schema({
   name: String,
   schoolId: String,
   email: { type: String, unique: true },
+  classYear: Number,
+  accessToken: String,
   password: String,
   passwordResetToken: String,
   passwordResetExpires: Date,
@@ -12,10 +14,14 @@ const UserSchema = new mongoose.Schema({
     default: false,
   },
   pageIds: {
-    type: [String],
+    type: [{ pageId: String, semester: String }],
     default: [],
   },
   visible: {
+    type: Boolean,
+    default: true,
+  },
+  profileVisible: {
     type: Boolean,
     default: true,
   },
@@ -34,7 +40,35 @@ const UserSchema = new mongoose.Schema({
   signedContract: {
     type: Boolean,
     default: false,
-  }
+  },
+  hometown: {
+    type: String,
+    default: "",
+  },
+  curLoc: {
+    type: String,
+    default: "",
+  },
+  bio: {
+    type: String,
+    default: "",
+  },
+  activities: {
+    type: String,
+    default: ""
+  },
+  restaurant: {
+    type: String,
+    default: "",
+  },
+  advice: {
+    type: String,
+    default: "",
+  },
+  funFact: {
+    type: String,
+    default: "",
+  },
 });
 
 // compile model from schema

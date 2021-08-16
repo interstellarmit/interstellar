@@ -3,32 +3,38 @@ const mongoose = require("mongoose");
 const PageSchema = new mongoose.Schema({
   pageType: String, // (ex: either "Class" or "Group"),
   name: String, // (ex: "6.033" or "ZBT"),
-  title: {
-    // (ex: "Computer Systems" or "Zeta Beta Tau"),
-    type: String,
-    default: "",
-  },
-  schoolId: String,
-  professor: {
-    type: String,
-    default: "",
-  },
-  rating: {
+  title: String, // (ex: "Computer Systems" or "Zeta Beta Tau"),
+  numPeople: {
     type: Number,
     default: 0,
   },
-  hours: {
-    type: Number,
-    default: 0,
+  professor: String,
+  rating: Number,
+  in_class_hours: Number,
+  out_of_class_hours: Number,
+  total_units: Number,
+  description: String,
+  offered_fall: Boolean,
+  offered_spring: Boolean,
+  offered_IAP: Boolean,
+  offered_summer: Boolean,
+  is_historical: Boolean,
+  has_final: Boolean,
+  joint_subjects: {
+    type: [String],
+    default: [],
   },
-  units: {
-    type: Number,
-    default: 0,
+  meets_with_subjects: {
+    type: [String],
+    default: [],
   },
-  description: {
-    type: String,
-    default: "",
+  related_subjects: {
+    type: [String],
+    default: [],
   },
+  url: String,
+  schedule: String,
+  not_offered_year: String,
   expiryDate: {
     type: Date,
     default: new Date(2085, 11, 24),
@@ -46,10 +52,6 @@ const PageSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
-  sameAs: {
-    type: String,
-    default: ""
-  }
 });
 
 // compile model from schema
