@@ -112,7 +112,7 @@ socket.init(server);
 
 server.listen(port, () => {
   //CAREFUL THIS (initialise.js) CLEARES ALL THE CLASSES!
-
+  //initialise.initialiseClasses("fall-2021");
   //careful this resets all constracts
   //initialise.resetContracts();
   console.log(`Server running on port: ${port}`);

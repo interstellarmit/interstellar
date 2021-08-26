@@ -43,7 +43,7 @@ let getAllPages = async (semester) => {
     pageType: "Group",
     //expiryDate: { $gte: new Date() },
   }).select(
-    "name _id title locked pageType numPeople is_historical not_offered_year offered_spring offered_fall offered_IAP offered_summer"
+    "lastUpdated name _id title locked pageType numPeople is_historical not_offered_year offered_spring offered_fall offered_IAP offered_summer"
   );
 
   let allPages = [];
@@ -54,13 +54,19 @@ let getAllPages = async (semester) => {
       pageType: "Class",
       expiryDate: { $gte: new Date() },
     }).select(
-      "name _id title locked pageType numPeople is_historical not_offered_year offered_spring offered_fall offered_IAP offered_summer"
+      "lastUpdated name _id title locked pageType numPeople is_historical not_offered_year offered_spring offered_fall offered_IAP offered_summer"
     );
 
     await Promise.all(
       pagesClasses.map((page) => {
         // get classes that are available this semester
         //console.log(page);
+        if (
+          semester === "fall-2021" &&
+          page.pageType === "Class" &&
+          page.lastUpdated !== "fall-2021"
+        )
+          return;
         if (page.pageType === "Class" && term === "spring" && !page.offered_spring) return;
         if (page.pageType === "Class" && term === "iap" && !page.offered_IAP) return;
         if (page.pageType === "Class" && term === "summer" && !page.offered_summer) return;

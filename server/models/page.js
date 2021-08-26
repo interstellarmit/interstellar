@@ -52,6 +52,10 @@ const PageSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
+  lastUpdated: {
+    type: String,
+    default: "spring-2021",
+  },
 });
 
 // compile model from schema

@@ -29,18 +29,23 @@ let updateSemesters = async () => {
   }
 };
 
-let addCourse = async (course) => {
+let addCourse = async (course, currentSem) => {
   let existingPage = await Page.findOne({ name: course.subject_id });
   if (existingPage) {
     // update course
     //existingPage.pageType = "Class";
-    //await existingPage.save();
+    Object.assign(existingPage, course);
+    existingPage.professor = (course.instructors || [])[0] || "";
+    existingPage.name = course.subject_id;
+    existingPage.lastUpdated = currentSem;
+    await existingPage.save();
   } else {
     let newCourse = new Page(
       Object.assign(course, {
         name: course.subject_id,
         pageType: "Class",
         professor: (course.instructors || [])[0] || "",
+        lastUpdated: currentSem,
       })
     );
     //console.log(newCourse);
@@ -100,57 +105,18 @@ let clearClasses = async () => {
   await Page.remove({ pageType: "Class" });
 };
 
-initialise = async () => {
+initialiseClasses = async (currentSem) => {
   console.log("Starting initialization");
-  nameToOldId = {};
   await updateSemesters();
   console.log("Updated Semesters");
-  await clearClasses();
-  console.log("Cleared Classes");
   let data = await axios.get("https://fireroad.mit.edu/courses/all?full=true");
   let courses = data.data;
   for (var i = 0; i < courses.length; i++) {
-    await addCourse(courses[i]);
+    await addCourse(courses[i], currentSem);
     //await new Promise((resolve) => setTimeout(resolve, 100));
     if (i % 100 == 0) console.log(i);
   }
   console.log("Done adding Classes");
-
-  newIdToOldId = {};
-  let pages = await Page.find({}).select("_id name pageType");
-
-  //nameToOldId = {};
-  await Promise.all(
-    pages.map(async (pg) => {
-      if (pg.pageType === "Class") newIdToOldId[pg._id + ""] = nameToOldId[pg.name];
-    })
-  );
-  oldIdToNewId = {};
-  for (var key in newIdToOldId) {
-    if (newIdToOldId[key]) oldIdToNewId[newIdToOldId[key]] = key;
-  }
-
-  let users = await User.find({});
-  await Promise.all(
-    users.map(async (user) => {
-      user.pageIds = user.pageIds
-        .map((id) => {
-          if (id.semester === "CHANGETHISID") {
-            return {
-              semester: "fall-2020",
-              pageId: oldIdToNewId[id.pageId],
-            };
-          }
-          return id;
-        })
-        .filter((id) => {
-          return id.pageId;
-        });
-      await user.save();
-    })
-  );
-  console.log("Done editing Users");
-  console.log(Object.keys(oldIdToNewId).length);
 };
 
 resetContracts = async () => {
@@ -165,6 +131,6 @@ resetContracts = async () => {
 };
 
 module.exports = {
-  initialise,
+  initialiseClasses,
   resetContracts,
 };
