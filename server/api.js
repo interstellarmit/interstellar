@@ -75,7 +75,8 @@ let getAllPages = async (semester) => {
         if (
           page.pageType === "Class" &&
           page.not_offered_year &&
-          parseInt(page.not_offered_year.split("-")[term === "spring" ? 1 : 0]) <= year
+          parseInt(page.not_offered_year.split("-")[term === "spring" || term === "iap" ? 1 : 0]) ==
+            year
         )
           return;
 
