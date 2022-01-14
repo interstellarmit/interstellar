@@ -1,7 +1,6 @@
 require("dotenv").config();
 const User = require("./models/user");
 const Page = require("./models/page");
-const socket = require("./server-socket");
 
 const { check, validationResult } = require("express-validator/check");
 

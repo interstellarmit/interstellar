@@ -1,11 +1,6 @@
 const User = require("./models/user");
-
 const Page = require("./models/page");
-const Link = require("./models/link");
-const socket = require("./server-socket");
-const { useReducer } = require("react");
 
-const axios = require("axios");
 require("dotenv").config();
 let expiryDate = new Date(2021, 1, 20); // expiry date for all classes this semester
 
@@ -100,17 +95,6 @@ addSelfToPage = (req, res) => {
             semester: semester,
           });
           user.save().then(() => {
-            socket
-              .getSocketFromUserID(req.user._id)
-              .to("Page: " + page._id)
-              .emit("userJoinedPage", {
-                pageId: page._id,
-                semester: semester,
-                user: {
-                  userId: req.user._id,
-                  name: req.user.visible || page.pageType === "Group" ? req.user.name : "Anonymous",
-                },
-              });
             res.send({ added: true });
           });
         }
@@ -329,10 +313,6 @@ setJoinCode = (req, res) => {
       page.locked = req.body.lock;
       page.joinCode = req.body.lock ? req.body.code : "";
       page.save().then(() => {
-        socket
-          .getSocketFromUserID(req.user._id)
-          .to("Page: " + page._id)
-          .emit("locked", { pageId: page._id, locked: page.locked });
         res.send({ setCode: true });
       });
     } else {

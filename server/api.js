@@ -20,8 +20,7 @@ const main_calls = require("./main_calls");
 
 // api endpoints: all these paths will be prefixed with "/api/"
 const router = express.Router();
-//initialize socket
-const socket = require("./server-socket");
+
 //signin/user stuff
 router.get("/signUpLogin", auth.signUpLogin);
 
@@ -139,13 +138,6 @@ router.get("/verify", fireroad.verify);
 router.get("/userInfo", fireroad.userInfo);
 router.get("/roads", fireroad.roads);
 
-router.post("/initsocket", (req, res) => {
-  // do nothing if user not logged in
-  if (req.user) {
-    res.send({ init: true });
-  } else res.send({ init: false });
-});
-
 // |------------------------------|
 // | write your API methods below!|
 // |------------------------------|
@@ -214,18 +206,6 @@ router.post("/addClasses", auth.ensureLoggedIn, (req, res) => {
             user.pageIds.push({ pageId: page._id + "", semester: semester });
             userPageIds = user.pageIds;
             user.save().then(() => {
-              socket
-                .getSocketFromUserID(req.user._id)
-                .to("Page: " + page._id)
-                .emit("userJoinedPage", {
-                  pageId: page._id,
-                  semester: semester,
-                  user: {
-                    userId: req.user._id,
-                    name:
-                      req.user.visible || page.pageType === "Group" ? req.user.name : "Anonymous",
-                  },
-                });
               setTimeout(() => {
                 addPage(i + 1);
               }, 10);
