@@ -76,7 +76,6 @@ const signUpLogin = async (req, res) => {
         name: name,
         email: email,
         accessToken: accessToken,
-        //schoolId: school ? school._id : "None",
         isVerified: true,
       });
       console.log(user);

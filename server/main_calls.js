@@ -51,7 +51,6 @@ createNewPage = (req, res) => {
         professor: req.body.professor,
         expiryDate: expiryDate,
         adminIds: [req.user._id],
-        schoolId: req.user.schoolId,
         locked: req.body.locked,
         joinCode: req.body.joinCode || "",
         sameAs: req.body.sameAs || "",

@@ -148,7 +148,6 @@ class Main extends Component {
                     ].map((s) => {
                       return "/:semester" + s;
                     })}
-                    schoolId={this.props.state.schoolId}
                     updateSelectedPageName={this.updateSelectedPageName}
                     user={{
                       userId: this.props.state.userId,
@@ -180,7 +179,6 @@ class Main extends Component {
                   <Page
                     key={this.state.semester}
                     path={"/:semester/class/:selectedPage"}
-                    schoolId={this.props.state.schoolId}
                     pageIds={this.state.pageIds}
                     updatePageIds={this.updatePageIds}
                     updateSelectedPageName={this.updateSelectedPageName}
@@ -198,7 +196,6 @@ class Main extends Component {
                   />
                   <Page
                     path={"/:semester/group/:selectedPage"}
-                    schoolId={this.props.state.schoolId}
                     pageIds={this.state.pageIds}
                     updatePageIds={this.updatePageIds}
                     updateSelectedPageName={this.updateSelectedPageName}
@@ -214,7 +211,6 @@ class Main extends Component {
                   <UserPage
                     style={{ height: "100%" }}
                     path={"/:semester/user/:selectedPage"}
-                    schoolId={this.props.state.schoolId}
                     pageIds={this.state.pageIds}
                     updatePageIds={this.updatePageIds}
                     updateSelectedPageName={this.updateSelectedPageName}

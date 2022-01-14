@@ -34,7 +34,6 @@ class App extends Component {
         // they are registed in the database, and currently logged in.
         this.setState({
           userId: user._id,
-          schoolId: user.schoolId,
           name: user.name,
           isSiteAdmin: user.isSiteAdmin,
           email: user.email,
