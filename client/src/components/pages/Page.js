@@ -33,7 +33,6 @@ class Page extends Component {
     post("/api/joinPage", { pageName: this.state.pageName, semester: this.props.semester }).then(
       (data) => {
         if (data.broken) {
-          //this.props.disconnect();
           this.props.logout();
           return;
         }
@@ -98,12 +97,6 @@ class Page extends Component {
       return <MySpin />;
     }
 
-    let mainLounge = this.state.lounges
-      ? this.state.lounges.find((lounge) => {
-          return lounge.main;
-        })
-      : undefined;
-    let numInLounge = mainLounge ? mainLounge.userIds.length : 0;
     let removeClassButton = (
       <Button
         type="primary"

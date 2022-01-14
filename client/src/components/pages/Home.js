@@ -6,7 +6,7 @@ import {
   ShopOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Button, Descriptions, Layout, PageHeader, Switch, Typography } from "antd";
+import { Button, Descriptions, Layout, PageHeader, Switch } from "antd";
 import React, { Component } from "react";
 import { get } from "../../utilities";
 import EditProfile from "../modules/EditProfile";
@@ -14,8 +14,7 @@ import MultipleSearchBar from "../modules/MultipleSearchBar";
 import SearchBar from "../modules/SearchBar";
 import TabPage from "../modules/TabPage";
 
-const { Header, Content, Footer, Sider } = Layout;
-const { Title, Text } = Typography;
+const { Content } = Layout;
 class Home extends Component {
   constructor(props) {
     super(props);
@@ -28,26 +27,11 @@ class Home extends Component {
   }
 
   componentDidMount() {
-    /*
-    post("/api/joinPage", { home: true, semester: this.props.semester }).then((data) => {
-      if (data.broken) {
-        this.props.logout();
-        //this.props.disconnect();
-        return;
-      }
-      this.setState({
-        users: data.users || [],
-        pageLoaded: true,
-      });
-      document.getElementsByClassName("ant-tabs-content")[0].style.height = "100%";
-    });
-    */
     document.getElementsByClassName("ant-tabs-content")[0].style.height = "100%";
     get("/api/allClasses").then((data) => {
       if (data.classes) {
         const classString = data.classes;
         this.setState({ classes: classString });
-        //console.log(data.classes);
       }
     });
   }
@@ -66,7 +50,6 @@ class Home extends Component {
     let semester =
       this.props.semester.replace("-", " ")[0].toUpperCase() +
       this.props.semester.replace("-", " ").substring(1);
-    // const [editProfile, setEditProfile] = React.useState(false);
 
     let userInfo = [
       { icon: <LaptopOutlined />, label: "Currently lives in", value: this.props.curLoc },
@@ -75,7 +58,6 @@ class Home extends Component {
       { icon: <ReadOutlined />, label: "Activities", value: this.props.activities },
       { icon: <ShopOutlined />, label: "Favorite Boston Restaurant", value: this.props.restaurant },
       { icon: <GiftOutlined />, label: "Advice", value: this.props.advice },
-      // { label: "Classes Taken", value: this.state.classes }
     ];
     let anyInfo =
       userInfo.filter((entry) => {
@@ -135,7 +117,6 @@ class Home extends Component {
                 <div
                   style={{
                     display: "flex",
-                    // flexDirection: "column",
                   }}
                 >
                   <Switch
@@ -171,13 +152,7 @@ class Home extends Component {
                 </div>
               </div>
 
-              <div
-                style={{ overflowY: "scroll", height: "100%" }}
-                // style={{
-                //   display: "flex",
-                //   flexDirection: "column",
-                // }}
-              >
+              <div style={{ overflowY: "scroll", height: "100%" }}>
                 <Descriptions
                   column={1}
                   bordered={anyInfo}
@@ -185,7 +160,6 @@ class Home extends Component {
                   extra={
                     <Button
                       type="primary"
-                      // onClick={() => { }}
                       onClick={() => {
                         this.setProfileModal(true);
                       }}
@@ -249,32 +223,6 @@ class Home extends Component {
             </center>
           </div>
         </Layout>
-
-        {/*
-
-          <div>
-            <Modal
-              visible={this.props.myPages.length === 0}
-              title={"Enter your schedule to get started!"}
-              onCancel={() => {
-                this.props.redirectPage("dashboard");
-              }}
-              footer={null}
-              closable={false}
-              maskClosable={false}
-              centered
-            >
-              <MultipleSearchBar
-                size="large"
-                allPages={this.props.allPages}
-                placeholder="Search for a class to join!"
-                redirectPage={this.props.redirectPage}
-                defaultOpen={true}
-                addClasses={this.props.addClasses}
-              />
-            </Modal>
-          </div>
-          */}
       </>
     );
   }

@@ -33,10 +33,6 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  loungeId: {
-    type: String, // blank indicates not in lounge
-    default: "",
-  },
   signedContract: {
     type: Boolean,
     default: false,
@@ -55,7 +51,7 @@ const UserSchema = new mongoose.Schema({
   },
   activities: {
     type: String,
-    default: ""
+    default: "",
   },
   restaurant: {
     type: String,

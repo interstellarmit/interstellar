@@ -190,8 +190,6 @@ viewProfile = (req, res) => {
 };
 
 joinPage = (req, res) => {
-  //console.log("joining page with user ");
-  //console.log(req.user);
   if (!req.user || !req.user._id) {
     console.log("broken", req.user);
     res.send({ broken: true });

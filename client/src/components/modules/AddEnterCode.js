@@ -1,6 +1,6 @@
 import { Alert, Button, Form, Input, Modal } from "antd";
 import React from "react";
-export default function AddLounge(props) {
+export default function AddEnterCode(props) {
   const [form] = Form.useForm();
 
   let onFinish = (fieldsValue) => {

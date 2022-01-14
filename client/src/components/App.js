@@ -1,4 +1,4 @@
-import { Layout, Modal, notification, Spin } from "antd";
+import { Layout, notification, Spin } from "antd";
 import "antd/dist/antd.css";
 import React, { Component } from "react";
 import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom";
@@ -12,11 +12,7 @@ import SignContract from "./pages/SignContract.js";
 
 const { Header, Content, Footer, Sider } = Layout;
 
-/**
- * Define the "App" component as a class.
- */
 class App extends Component {
-  // makes props available in this component
   constructor(props) {
     super(props);
 
@@ -29,8 +25,7 @@ class App extends Component {
       tryingToLogin: true,
 
       loading: false,
-      // currentPageName from URL?
-    };
+=    };
   }
 
   componentDidMount() {
@@ -41,8 +36,6 @@ class App extends Component {
           userId: user._id,
           schoolId: user.schoolId,
           name: user.name,
-          loungeId: user.loungeId,
-          //pageIds: user.pageIds,
           isSiteAdmin: user.isSiteAdmin,
           email: user.email,
           visible: user.visible,
@@ -55,7 +48,6 @@ class App extends Component {
           advice: user.advice,
           funFact: user.funFact,
           seeHelpText: user.seeHelpText,
-          //allPages: allPages,
           signedContract: user.signedContract,
           classYear: user.classYear,
         });
@@ -110,10 +102,6 @@ class App extends Component {
   };
   redirectPage = (link) => {
     this.setState({ redirectPage: link });
-  };
-
-  disconnect = () => {
-    this.setState({ disconnect: true });
   };
 
   signContract = (importClasses, classYear, roadId) => {
@@ -184,28 +172,8 @@ class App extends Component {
 
     return (
       <div>
-        {/* <button onClick={() => { get("/api/sync").then((user) => { console.log(user) }) }}>Test Sync</button>
-        <button onClick={() => { get("/api/verify") }}>Verify Token</button>
-        <button onClick={() => { get("/api/user_info") }}>User Info</button> */}
-        {this.state.disconnect ? (
-          Modal.error({
-            title: "Disconnected",
-            content: (
-              <div>
-                <p>
-                  You have disconnected. Maybe you opened Interstellar in another tab, or you have
-                  been inactive for a long period of time.
-                </p>
-                <p>Hit OK to relaunch Interstellar!</p>
-              </div>
-            ),
-            onOk() {
-              window.location.href = "/";
-            },
-          })
-        ) : (
-          <></>
-        )}
+    
+        
         {!this.state.signedContract ? (
           <SignContract logout={this.logout} signContract={this.signContract} />
         ) : (
@@ -215,7 +183,6 @@ class App extends Component {
                 path="/:semester"
                 state={this.state}
                 redirectPage={this.redirectPage}
-                disconnect={this.disconnect}
                 setVisible={this.setVisible}
                 setProfileVisible={this.setProfileVisible}
                 setSeeHelpText={this.setSeeHelpText}

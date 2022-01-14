@@ -8,7 +8,7 @@ import Home from "./Home.js";
 import Page from "./Page.js";
 import UserPage from "./UserPage.js";
 
-const { Header, Content, Footer, Sider } = Layout;
+const { Content } = Layout;
 
 class Main extends Component {
   constructor(props) {
@@ -23,7 +23,6 @@ class Main extends Component {
       //console.log("Changing semester to ")
       post("/api/updateSemester", { semester: this.state.semester }).then((res) => {
         if (res.broken) {
-          //this.props.disconnect();
           this.props.logout();
           return;
         }
@@ -49,29 +48,6 @@ class Main extends Component {
     if (newLink !== window.location.pathname) {
       this.props.redirectPage(newLink);
     }
-    /*
-    this.setState({ pageIds: [], loading: true }, () => {
-      //console.log("Changing semester to ")
-      post("/api/updateSemester", { semester: semester }).then((res) => {
-        let oldSemester = this.state.semester;
-        this.setState(
-          {
-            allPages: res.allPages,
-            pageIds: res.pageIds,
-
-            semester: semester,
-            loading: false,
-          },
-          () => {
-            let newLink = window.location.pathname.replace(oldSemester, semester);
-            if (newLink !== window.location.pathname) {
-              this.props.redirectPage(newLink);
-            }
-          }
-        );
-      });
-    });
-    */
   };
 
   updatePageIds = (newPageIds) => {
@@ -142,7 +118,6 @@ class Main extends Component {
     let myPages = this.state.allPages.filter((page) => {
       return this.state.pageIds.includes(page._id + "");
     });
-    //console.log(this.state.pageIds);
     return (
       <Layout style={{ minHeight: "100vh" }}>
         <SideBar
@@ -185,7 +160,6 @@ class Main extends Component {
                     }}
                     redirectPage={this.redirectPage}
                     myPages={myPages}
-                    disconnect={this.props.disconnect}
                     allPages={this.state.allPages}
                     isSiteAdmin={this.props.state.isSiteAdmin}
                     logout={this.logout}
@@ -220,10 +194,7 @@ class Main extends Component {
                       name: this.props.state.visible ? this.props.state.name : "Anonymous (Me)",
                     }}
                     redirectPage={this.redirectPage}
-                    loungeId={this.props.state.loungeId}
-                    setLoungeId={this.setLoungeId}
                     isSiteAdmin={this.props.state.isSiteAdmin}
-                    disconnect={this.props.disconnect}
                     logout={this.logout}
                     visible={this.props.state.visible}
                     seeHelpText={this.props.state.seeHelpText}
@@ -238,11 +209,8 @@ class Main extends Component {
                     updateSelectedPageName={this.updateSelectedPageName}
                     user={{ userId: this.props.state.userId, name: this.props.state.name }}
                     redirectPage={this.redirectPage}
-                    loungeId={this.props.state.loungeId}
-                    setLoungeId={this.setLoungeId}
                     allPages={this.state.allPages}
                     isSiteAdmin={this.props.state.isSiteAdmin}
-                    disconnect={this.props.disconnect}
                     seeHelpText={this.props.state.seeHelpText}
                     setSeeHelpText={this.props.setSeeHelpText}
                     logout={this.logout}
@@ -257,11 +225,8 @@ class Main extends Component {
                     updateSelectedPageName={this.updateSelectedPageName}
                     user={{ userId: this.props.state.userId, name: this.props.state.name }}
                     redirectPage={this.redirectPage}
-                    loungeId={this.props.state.loungeId}
-                    setLoungeId={this.setLoungeId}
                     allPages={this.state.allPages}
                     isSiteAdmin={this.props.state.isSiteAdmin}
-                    disconnect={this.props.disconnect}
                     seeHelpText={this.props.state.seeHelpText}
                     setSeeHelpText={this.props.setSeeHelpText}
                     logout={this.logout}
