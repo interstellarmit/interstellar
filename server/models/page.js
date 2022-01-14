@@ -35,10 +35,6 @@ const PageSchema = new mongoose.Schema({
   url: String,
   schedule: String,
   not_offered_year: String,
-  expiryDate: {
-    type: Date,
-    default: new Date(2085, 11, 24),
-  },
   adminIds: [String],
   locked: {
     type: Boolean,

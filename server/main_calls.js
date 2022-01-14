@@ -2,7 +2,6 @@ const User = require("./models/user");
 const Page = require("./models/page");
 
 require("dotenv").config();
-let expiryDate = new Date(2021, 1, 20); // expiry date for all classes this semester
 
 /*
 createNewPage
@@ -49,7 +48,6 @@ createNewPage = (req, res) => {
         title: req.body.title,
         description: req.body.description,
         professor: req.body.professor,
-        expiryDate: expiryDate,
         adminIds: [req.user._id],
         locked: req.body.locked,
         joinCode: req.body.joinCode || "",
@@ -340,73 +338,6 @@ setProfileVisible = (req, res) => {
   });
 };
 
-setHometown = (req, res) => {
-  User.findById(req.user._id).then((user) => {
-    user.hometown = req.body.hometown;
-    user.save().then(() => {
-      res.send({ setHometown: true });
-    });
-  });
-};
-
-setCurLoc = (req, res) => {
-  User.findById(req.user._id).then((user) => {
-    user.curLoc = req.body.curLoc;
-    user.save().then(() => {
-      res.send({ setCurLoc: true });
-    });
-  });
-};
-
-setBio = (req, res) => {
-  User.findById(req.user._id).then((user) => {
-    user.bio = req.body.bio;
-    user.save().then(() => {
-      res.send({ setBio: true });
-    });
-  });
-};
-
-setActivities = (req, res) => {
-  console.log(req.body.activities);
-  User.findById(req.user._id).then((user) => {
-    user.activities = req.body.activities;
-    user.save().then(() => {
-      console.log("sending stuff");
-      res.send({ setActivities: true });
-    });
-  });
-};
-
-setRestaurant = (req, res) => {
-  User.findById(req.user._id).then((user) => {
-    user.restaurant = req.body.restaurant;
-    user.save().then(() => {
-      res.send({ setRestaurant: true });
-    });
-  });
-};
-
-setAdvice = (req, res) => {
-  console.log("hi?");
-  User.findById(req.user._id).then((user) => {
-    user.advice = req.body.advice;
-    user.save().then(() => {
-      res.send({ setAdvice: true });
-    });
-  });
-};
-
-setFunFact = (req, res) => {
-  console.log("hello?");
-  User.findById(req.user._id).then((user) => {
-    user.setFunFact = req.body.funFact;
-    user.save().then(() => {
-      res.send({ setFunFact: true });
-    });
-  });
-};
-
 setShowClasses = (req, res) => {
   Page.findById(req.body.pageId).then((page) => {
     if (!req.user.isSiteAdmin && !page.adminIds.includes(req.user._id)) {
@@ -513,13 +444,6 @@ module.exports = {
   getRedirectLink,
   setVisible,
   setProfileVisible,
-  setHometown,
-  setCurLoc,
-  setBio,
-  setActivities,
-  setRestaurant,
-  setAdvice,
-  setFunFact,
   setShowClasses,
   addRemoveAdmin,
   allClasses,

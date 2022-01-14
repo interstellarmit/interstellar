@@ -189,34 +189,3 @@ export default function SideBar(props) {
     </Sider>
   );
 }
-
-/*
-    <List>
-        <List.Item onClick={() => {
-
-                    props.redirectPage("/")
-                }}>
-                    Home
-        </List.Item>
-
-    </List>
-
-    <List
-        dataSource = {props.pageIds}
-        renderItem = {(pageId) => {
-            let page = props.allPages.filter((page) => {
-                return page._id === pageId
-            })[0]
-            let name = page.name
-
-            let isSelected = (name === props.selectedPageName)
-            return <List.Item
-                onClick={() => {
-
-                    props.redirectPage("/" + page.pageType.toLowerCase() + "/"+name)
-                }}
-            >
-                {isSelected ? <b>{name}</b> : name}
-            </List.Item>;
-        }}
-    />  */

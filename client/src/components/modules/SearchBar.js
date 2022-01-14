@@ -45,29 +45,6 @@ export default function SearchBar(props) {
           };
         }),
     },
-    {
-      label: "Groups",
-      options: props.allPages
-        .filter((page) => {
-          return (
-            ((page.name.toLowerCase().includes(query.toLowerCase()) ||
-              page.title.toLowerCase().includes(query.toLowerCase())) &&
-              page.pageType === "Group" &&
-              !page.locked) ||
-            (page.pageType === "Group" && page.name.toLowerCase() === query.toLowerCase())
-          );
-        })
-        .map((page) => {
-          return {
-            value: page.name,
-            label: (
-              <div key={page.name} value={page.name}>
-                {page.name + ": " + page.title}
-              </div>
-            ),
-          };
-        }),
-    },
   ];
 
   return (
@@ -86,7 +63,7 @@ export default function SearchBar(props) {
     >
       <Input.Search
         size={props.size}
-        placeholder={props.placeholder || "Search for a class or group"}
+        placeholder={props.placeholder || "Search for a class"}
         enterButton
         onPressEnter={() => {
           search(query);

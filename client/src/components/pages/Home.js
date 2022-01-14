@@ -98,7 +98,7 @@ class Home extends Component {
                   <SearchBar
                     size="large"
                     allPages={this.props.allPages}
-                    placeholder={"Search for a " + semester + " class or group!"}
+                    placeholder={"Search for a " + semester + " class!"}
                     redirectPage={this.props.redirectPage}
                     defaultOpen={true}
                   />

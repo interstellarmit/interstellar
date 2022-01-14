@@ -23,7 +23,6 @@ class UserPage extends Component {
       hometown: "",
       advice: "",
       classYear: "",
-      myPages: [],
 
       pageLoaded: false,
     };
@@ -43,7 +42,6 @@ class UserPage extends Component {
         hometown: data.hometown,
         advice: data.advice,
         pageLoaded: true,
-        myPages: data.myPages,
         classYear: data.classYear,
       });
     });
