@@ -1,23 +1,22 @@
-import React, { Component } from "react";
-import { get, post } from "../../utilities";
-
-import InfoTab from "../modules/InfoTab";
-import TabPage from "../modules/TabPage";
-import AddLock from "../modules/AddLock";
-import AddEnterCode from "../modules/AddEnterCode";
-import MySpin from "../modules/MySpin";
-import { socket } from "../../client-socket.js";
-import { Spin, Space, Button, Typography, Layout, PageHeader, Badge, Row, Col, Alert } from "antd";
-import { UserOutlined } from "@ant-design/icons";
-const { Header, Content, Footer, Sider } = Layout;
-const { Title, Text } = Typography;
 import {
-  UserAddOutlined,
-  UserDeleteOutlined,
+  EyeOutlined,
   LockOutlined,
   UnlockOutlined,
-  EyeOutlined,
+  UserAddOutlined,
+  UserDeleteOutlined,
 } from "@ant-design/icons";
+import { Button, Layout, PageHeader, Typography } from "antd";
+import React, { Component } from "react";
+import { socket } from "../../client-socket.js";
+import { post } from "../../utilities";
+import AddEnterCode from "../modules/AddEnterCode";
+import AddLock from "../modules/AddLock";
+import InfoTab from "../modules/InfoTab";
+import MySpin from "../modules/MySpin";
+import TabPage from "../modules/TabPage";
+
+const { Header, Content, Footer, Sider } = Layout;
+const { Title, Text } = Typography;
 class Page extends Component {
   constructor(props) {
     super(props);

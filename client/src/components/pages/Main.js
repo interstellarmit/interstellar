@@ -1,15 +1,13 @@
+import { Layout, Spin } from "antd";
 import React, { Component } from "react";
-import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
-import { get, post } from "../../utilities";
-import { socket } from "../../client-socket.js";
-import { Row, Col, Divider, Spin, Modal, Layout, Button, notification } from "antd";
-
-import MySpin from "../modules/MySpin";
+import { BrowserRouter as Router, Redirect, Switch } from "react-router-dom";
+import { post } from "../../utilities";
+import SideBar from "../modules/SideBar.js";
+import NotFound from "../pages/NotFound.js";
 import Home from "./Home.js";
 import Page from "./Page.js";
 import UserPage from "./UserPage.js";
-import NotFound from "../pages/NotFound.js";
-import SideBar from "../modules/SideBar.js";
+
 const { Header, Content, Footer, Sider } = Layout;
 
 class Main extends Component {
@@ -123,9 +121,15 @@ class Main extends Component {
       );
     }
     if (
-      !["spring-2022", "iap-2022", "fall-2021", "spring-2021", "iap-2021", "fall-2020", "spring-2020"].includes(
-        this.state.semester
-      )
+      ![
+        "spring-2022",
+        "iap-2022",
+        "fall-2021",
+        "spring-2021",
+        "iap-2021",
+        "fall-2020",
+        "spring-2020",
+      ].includes(this.state.semester)
     ) {
       return (
         <h3>

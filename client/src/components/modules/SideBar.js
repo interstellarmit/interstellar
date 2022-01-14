@@ -1,23 +1,20 @@
-import React, { Component, useState } from "react";
-import MediaQuery from "react-responsive";
-import "antd/dist/antd.css";
-import "../../utilities.css";
-//import { redirectPage } from "@reach/router";
-import { Menu, Dropdown, Layout, Select } from "antd";
-const { Option } = Select;
-import SearchBar from "./SearchBar";
 import {
+  BookOutlined,
   HomeOutlined,
   LogoutOutlined,
-  UsergroupAddOutlined,
-  BookOutlined,
   TeamOutlined,
+  UsergroupAddOutlined,
 } from "@ant-design/icons";
+//import { redirectPage } from "@reach/router";
+import { Layout, Menu, Select } from "antd";
+import "antd/dist/antd.css";
+import React from "react";
 import logo from "../../public/logo.png";
-import { get, post } from "../../utilities.js";
-
+import "../../utilities.css";
 import AddGroup from "./AddGroup";
-import Media from "react-media";
+import SearchBar from "./SearchBar";
+const { Option } = Select;
+
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
 

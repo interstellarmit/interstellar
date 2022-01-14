@@ -1,7 +1,4 @@
 import React, { Component } from "react";
-import { get, post } from "../../utilities";
-
-
 
 class Login extends Component {
   constructor(props) {
@@ -15,11 +12,7 @@ class Login extends Component {
   }
 
   render() {
-    return (
-      <>
-        Login
-      </>
-    );
+    return <>Login</>;
   }
 }
 

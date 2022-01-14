@@ -1,41 +1,19 @@
-import React, { Component } from "react";
-import { get, post } from "../../utilities";
-import { socket } from "../../client-socket.js";
 import {
-  Spin,
-  Space,
-  Modal,
-  Switch,
-  Button,
-  Typography,
-  Menu,
-  Layout,
-  Row,
-  Col,
-  Alert,
-  PageHeader,
-  Descriptions,
-  notification,
-} from "antd";
-
-import TabPage from "../modules/TabPage";
-import SearchBar from "../modules/SearchBar";
+  GiftOutlined,
+  HomeOutlined,
+  LaptopOutlined,
+  ReadOutlined,
+  ShopOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
+import { Button, Descriptions, Layout, PageHeader, Switch, Typography } from "antd";
+import React, { Component } from "react";
+import { get } from "../../utilities";
 import EditProfile from "../modules/EditProfile";
 import MultipleSearchBar from "../modules/MultipleSearchBar";
-import MySpin from "../modules/MySpin";
-import {
-  UserOutlined,
-  UserDeleteOutlined,
-  LockOutlined,
-  UnlockOutlined,
-  EyeOutlined,
-  HomeOutlined,
-  TeamOutlined,
-  ReadOutlined,
-  GiftOutlined,
-  ShopOutlined,
-  LaptopOutlined,
-} from "@ant-design/icons";
+import SearchBar from "../modules/SearchBar";
+import TabPage from "../modules/TabPage";
+
 const { Header, Content, Footer, Sider } = Layout;
 const { Title, Text } = Typography;
 class Home extends Component {

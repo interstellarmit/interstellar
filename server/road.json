@@ -1,1 +1,222 @@
-{"coursesOfStudy":["girs","major6-3","major18gm"],"progressOverrides":{"major6-3.2.2":1},"selectedSubjects":[{"units":12,"semester":0,"overrideWarnings":false,"id":"18.01","title":"Calculus"},{"units":12,"semester":0,"overrideWarnings":false,"id":"18.02","title":"Calculus"},{"units":6,"semester":0,"overrideWarnings":false,"id":"6.0001","title":"Introduction to Computer Science Programming in Python"},{"units":12,"semester":0,"overrideWarnings":false,"id":"8.01","title":"Physics I"},{"units":12,"semester":0,"overrideWarnings":false,"id":"6.042","title":"Mathematics for Computer Science"},{"units":12,"semester":1,"overrideWarnings":false,"id":"6.867","title":"Machine Learning"},{"units":12,"semester":1,"overrideWarnings":false,"id":"18.701","title":"Algebra I"},{"units":12,"semester":1,"overrideWarnings":false,"id":"6.046","title":"Design and Analysis of Algorithms"},{"units":12,"semester":1,"overrideWarnings":false,"id":"24.02","title":"Moral Problems and the Good Life"},{"units":12,"semester":3,"overrideWarnings":false,"id":"6.004","title":"Computation Structures"},{"units":12,"semester":3,"overrideWarnings":false,"id":"6.006","title":"Introduction to Algorithms"},{"units":12,"semester":3,"overrideWarnings":false,"id":"6.009","title":"Fundamentals of Programming"},{"units":12,"semester":3,"overrideWarnings":false,"id":"8.02","title":"Physics II"},{"units":12,"semester":3,"overrideWarnings":false,"id":"24.118","title":"Paradox and Infinity"},{"units":12,"semester":3,"overrideWarnings":false,"id":"6.437","title":"Inference and Information"},{"units":3,"semester":3,"overrideWarnings":false,"id":"15.000","title":"Explorations in Management"},{"units":12,"semester":4,"overrideWarnings":false,"id":"18.404","title":"Theory of Computation"},{"units":12,"semester":4,"overrideWarnings":false,"id":"11.011","title":"The Art and Science of Negotiation"},{"units":12,"semester":4,"overrideWarnings":false,"id":"24.211","title":"Theory of Knowledge"},{"units":12,"semester":4,"overrideWarnings":false,"id":"6.036","title":"Introduction to Machine Learning"},{"units":12,"semester":4,"overrideWarnings":false,"id":"7.012","title":"Introductory Biology"},{"units":6,"semester":5,"overrideWarnings":false,"id":"6.148","title":"Web Lab: A Web Programming Class and Competition"},{"units":12,"semester":6,"overrideWarnings":false,"id":"6.033","title":"Computer Systems Engineering"},{"units":9,"semester":6,"overrideWarnings":false,"id":"21M.600","title":"Introduction to Acting"},{"units":12,"semester":6,"overrideWarnings":false,"id":"CI-H HASS-S","title":"Generic CI-H HASS-S"},{"units":12,"semester":6,"overrideWarnings":false,"id":"6.08","title":"Introduction to EECS via Interconnected Embedded Systems"},{"units":12,"semester":6,"overrideWarnings":false,"id":"11.111","title":"Leadership in Negotiation: Advanced Applications"},{"units":12,"semester":7,"overrideWarnings":false,"id":"6.809","title":"Interactive Music Systems"},{"units":12,"semester":7,"overrideWarnings":false,"id":"3.091","title":"Introduction to Solid-State Chemistry"},{"units":12,"semester":7,"overrideWarnings":false,"id":"14.12","title":"Economic Applications of Game Theory"},{"units":15,"semester":7,"overrideWarnings":false,"id":"6.031","title":"Elements of Software Construction"},{"units":12,"semester":9,"overrideWarnings":false,"id":"18.03","title":"Differential Equations"},{"units":12,"semester":9,"overrideWarnings":false,"id":"18.204","title":"Undergraduate Seminar in Discrete Mathematics"},{"units":15,"semester":9,"overrideWarnings":false,"id":"18.200","title":"Principles of Discrete Applied Mathematics"},{"units":9,"semester":9,"overrideWarnings":false,"id":"6.UAT","title":"Oral Communication"}],"progressAssertions":{}}
+{
+  "coursesOfStudy": ["girs", "major6-3", "major18gm"],
+  "progressOverrides": { "major6-3.2.2": 1 },
+  "selectedSubjects": [
+    { "units": 12, "semester": 0, "overrideWarnings": false, "id": "18.01", "title": "Calculus" },
+    { "units": 12, "semester": 0, "overrideWarnings": false, "id": "18.02", "title": "Calculus" },
+    {
+      "units": 6,
+      "semester": 0,
+      "overrideWarnings": false,
+      "id": "6.0001",
+      "title": "Introduction to Computer Science Programming in Python"
+    },
+    { "units": 12, "semester": 0, "overrideWarnings": false, "id": "8.01", "title": "Physics I" },
+    {
+      "units": 12,
+      "semester": 0,
+      "overrideWarnings": false,
+      "id": "6.042",
+      "title": "Mathematics for Computer Science"
+    },
+    {
+      "units": 12,
+      "semester": 1,
+      "overrideWarnings": false,
+      "id": "6.867",
+      "title": "Machine Learning"
+    },
+    { "units": 12, "semester": 1, "overrideWarnings": false, "id": "18.701", "title": "Algebra I" },
+    {
+      "units": 12,
+      "semester": 1,
+      "overrideWarnings": false,
+      "id": "6.046",
+      "title": "Design and Analysis of Algorithms"
+    },
+    {
+      "units": 12,
+      "semester": 1,
+      "overrideWarnings": false,
+      "id": "24.02",
+      "title": "Moral Problems and the Good Life"
+    },
+    {
+      "units": 12,
+      "semester": 3,
+      "overrideWarnings": false,
+      "id": "6.004",
+      "title": "Computation Structures"
+    },
+    {
+      "units": 12,
+      "semester": 3,
+      "overrideWarnings": false,
+      "id": "6.006",
+      "title": "Introduction to Algorithms"
+    },
+    {
+      "units": 12,
+      "semester": 3,
+      "overrideWarnings": false,
+      "id": "6.009",
+      "title": "Fundamentals of Programming"
+    },
+    { "units": 12, "semester": 3, "overrideWarnings": false, "id": "8.02", "title": "Physics II" },
+    {
+      "units": 12,
+      "semester": 3,
+      "overrideWarnings": false,
+      "id": "24.118",
+      "title": "Paradox and Infinity"
+    },
+    {
+      "units": 12,
+      "semester": 3,
+      "overrideWarnings": false,
+      "id": "6.437",
+      "title": "Inference and Information"
+    },
+    {
+      "units": 3,
+      "semester": 3,
+      "overrideWarnings": false,
+      "id": "15.000",
+      "title": "Explorations in Management"
+    },
+    {
+      "units": 12,
+      "semester": 4,
+      "overrideWarnings": false,
+      "id": "18.404",
+      "title": "Theory of Computation"
+    },
+    {
+      "units": 12,
+      "semester": 4,
+      "overrideWarnings": false,
+      "id": "11.011",
+      "title": "The Art and Science of Negotiation"
+    },
+    {
+      "units": 12,
+      "semester": 4,
+      "overrideWarnings": false,
+      "id": "24.211",
+      "title": "Theory of Knowledge"
+    },
+    {
+      "units": 12,
+      "semester": 4,
+      "overrideWarnings": false,
+      "id": "6.036",
+      "title": "Introduction to Machine Learning"
+    },
+    {
+      "units": 12,
+      "semester": 4,
+      "overrideWarnings": false,
+      "id": "7.012",
+      "title": "Introductory Biology"
+    },
+    {
+      "units": 6,
+      "semester": 5,
+      "overrideWarnings": false,
+      "id": "6.148",
+      "title": "Web Lab: A Web Programming Class and Competition"
+    },
+    {
+      "units": 12,
+      "semester": 6,
+      "overrideWarnings": false,
+      "id": "6.033",
+      "title": "Computer Systems Engineering"
+    },
+    {
+      "units": 9,
+      "semester": 6,
+      "overrideWarnings": false,
+      "id": "21M.600",
+      "title": "Introduction to Acting"
+    },
+    {
+      "units": 12,
+      "semester": 6,
+      "overrideWarnings": false,
+      "id": "CI-H HASS-S",
+      "title": "Generic CI-H HASS-S"
+    },
+    {
+      "units": 12,
+      "semester": 6,
+      "overrideWarnings": false,
+      "id": "6.08",
+      "title": "Introduction to EECS via Interconnected Embedded Systems"
+    },
+    {
+      "units": 12,
+      "semester": 6,
+      "overrideWarnings": false,
+      "id": "11.111",
+      "title": "Leadership in Negotiation: Advanced Applications"
+    },
+    {
+      "units": 12,
+      "semester": 7,
+      "overrideWarnings": false,
+      "id": "6.809",
+      "title": "Interactive Music Systems"
+    },
+    {
+      "units": 12,
+      "semester": 7,
+      "overrideWarnings": false,
+      "id": "3.091",
+      "title": "Introduction to Solid-State Chemistry"
+    },
+    {
+      "units": 12,
+      "semester": 7,
+      "overrideWarnings": false,
+      "id": "14.12",
+      "title": "Economic Applications of Game Theory"
+    },
+    {
+      "units": 15,
+      "semester": 7,
+      "overrideWarnings": false,
+      "id": "6.031",
+      "title": "Elements of Software Construction"
+    },
+    {
+      "units": 12,
+      "semester": 9,
+      "overrideWarnings": false,
+      "id": "18.03",
+      "title": "Differential Equations"
+    },
+    {
+      "units": 12,
+      "semester": 9,
+      "overrideWarnings": false,
+      "id": "18.204",
+      "title": "Undergraduate Seminar in Discrete Mathematics"
+    },
+    {
+      "units": 15,
+      "semester": 9,
+      "overrideWarnings": false,
+      "id": "18.200",
+      "title": "Principles of Discrete Applied Mathematics"
+    },
+    {
+      "units": 9,
+      "semester": 9,
+      "overrideWarnings": false,
+      "id": "6.UAT",
+      "title": "Oral Communication"
+    }
+  ],
+  "progressAssertions": {}
+}

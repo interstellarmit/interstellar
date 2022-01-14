@@ -1,23 +1,17 @@
-import React, { Component } from "react";
-import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
-import NotFound from "./pages/NotFound.js";
-import SideBar from "./modules/SideBar.js";
-import Public from "./pages/Public.js";
-import Home from "./pages/Home.js";
-import Page from "./pages/Page.js";
-import Main from "./pages/Main.js";
-import MySpin from "./modules/MySpin";
-import Confirmation from "./pages/Confirmation.js";
-import SignContract from "./pages/SignContract.js";
-
+import { Layout, Modal, notification, Spin } from "antd";
 import "antd/dist/antd.css";
-import "../utilities.css";
-import { Row, Col, Divider, Spin, Modal, Layout, Button, notification } from "antd";
-
-const { Header, Content, Footer, Sider } = Layout;
-
+import React, { Component } from "react";
+import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom";
 import { socket } from "../client-socket.js";
 import { get, post } from "../utilities";
+import "../utilities.css";
+import SideBar from "./modules/SideBar.js";
+import Confirmation from "./pages/Confirmation.js";
+import Main from "./pages/Main.js";
+import Public from "./pages/Public.js";
+import SignContract from "./pages/SignContract.js";
+
+const { Header, Content, Footer, Sider } = Layout;
 
 /**
  * Define the "App" component as a class.

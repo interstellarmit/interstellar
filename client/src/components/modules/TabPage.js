@@ -1,6 +1,6 @@
-import React, { Component, useState, useEffect } from "react";
-import { BrowserRouter as Router, Route, NavLink, Switch } from "react-router-dom";
 import { Tabs } from "antd";
+import React from "react";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 const { TabPane } = Tabs;
 

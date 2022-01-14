@@ -1,6 +1,6 @@
-import React, { Component, useState } from "react";
-import { Avatar } from "antd";
 import { UserOutlined } from "@ant-design/icons";
+import { Avatar } from "antd";
+import React from "react";
 
 export default function ProfilePic(props) {
   if ((props.user.name || "").startsWith("Anonymous")) return <Avatar icon={<UserOutlined />} />;

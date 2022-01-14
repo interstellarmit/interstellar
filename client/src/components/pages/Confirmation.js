@@ -1,7 +1,7 @@
+import { Button, Col, Input, Row } from "antd";
 import React, { Component } from "react";
-import { get, post } from "../../utilities";
-import { Row, Col, Form, Input, Button, Checkbox } from "antd";
 import logo from "../../../dist/favicon.png";
+import { post } from "../../utilities";
 
 class Confirmation extends Component {
   constructor(props) {
@@ -17,7 +17,7 @@ class Confirmation extends Component {
   submitForm = () => {
     post("/api/confirmation", { email: this.state.email, token: this.state.tok }).then((res) => {
       if (res.msg) {
-        this.setState({ msg: res.msg })
+        this.setState({ msg: res.msg });
       }
     });
   };
@@ -55,7 +55,14 @@ class Confirmation extends Component {
             <br />
             <Button onClick={this.submitForm}>Confirm</Button>
             <br />
-            {this.state.msg ? <>{this.state.msg}<a href={"/"}> Return to home</a></> : ""}
+            {this.state.msg ? (
+              <>
+                {this.state.msg}
+                <a href={"/"}> Return to home</a>
+              </>
+            ) : (
+              ""
+            )}
           </Col>
         </Row>
       </>

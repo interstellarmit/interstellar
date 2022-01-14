@@ -1,5 +1,5 @@
-import React, { Component, useState } from "react";
-import { List, Modal, Row, Col, Button, Form, Input, DatePicker, Checkbox } from "antd";
+import { Button, Form, Input, Modal } from "antd";
+import React from "react";
 import { post } from "../../utilities";
 
 const { TextArea } = Input;
@@ -7,7 +7,6 @@ const { TextArea } = Input;
 export default function EditProfile(props) {
   const [form] = Form.useForm();
   let onFinish = (fieldsValue) => {
-
     // post("/api/setCurLoc", { curLoc: fieldsValue.curLoc }).then((data) => {
     //   if (data.setCurLoc) {
     //     // console.log(data.setCurLoc)
@@ -55,7 +54,7 @@ export default function EditProfile(props) {
       form.resetFields();
       props.setProfileModal(false);
       window.location.reload(false);
-    })
+    });
   };
 
   const layout = {
@@ -77,7 +76,11 @@ export default function EditProfile(props) {
       }}
       footer={null}
     >
-      <Form {...layout} form={form} name={"Edit Profile"} onFinish={onFinish}
+      <Form
+        {...layout}
+        form={form}
+        name={"Edit Profile"}
+        onFinish={onFinish}
         initialValues={{
           curLoc: props.curLoc,
           hometown: props.hometown,

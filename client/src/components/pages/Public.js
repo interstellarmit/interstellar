@@ -1,20 +1,12 @@
-import React, { Component } from "react";
-
-import { get, post } from "../../utilities";
-import { List, Space, Modal, Row, Col, Button, Form, Input, DatePicker, Checkbox } from "antd";
-import { CalendarOutlined, TeamOutlined, BookOutlined } from "@ant-design/icons";
-
+import { Button, Col, Row } from "antd";
+import React from "react";
+import logo from "../../public/logo.png";
 import "../../utilities.css";
 
-import logo from "../../public/logo.png";
-import public1 from "../../public/public1-removebg-preview.png";
-
 export default function Public(props) {
-
   return (
     <div style={{ width: "100%", height: "100vh" }}>
       <Row>
-
         <Col span={24}>
           <div
             style={{

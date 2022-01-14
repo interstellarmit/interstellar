@@ -1,8 +1,7 @@
-import React, { useState } from "react";
-import { AutoComplete, Input, Select, Button } from "antd";
-import Search from "antd/lib/input/Search";
-const { Option, OptGroup } = Select;
 import { SendOutlined } from "@ant-design/icons";
+import { Button, Select } from "antd";
+import React, { useState } from "react";
+const { Option, OptGroup } = Select;
 export default function MultipleSearchBar(props) {
   const [query, setQuery] = useState("");
   const [classList, setClassList] = useState([]);

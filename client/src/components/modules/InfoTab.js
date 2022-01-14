@@ -1,7 +1,7 @@
-import React, { Component, useState, useEffect } from "react";
-import { List, Typography, Row, Col, Rate, Divider } from "antd";
-const { Title, Text } = Typography;
+import { Col, Rate, Row, Typography } from "antd";
+import React, { useEffect } from "react";
 import UserList from "./UserList";
+const { Title, Text } = Typography;
 
 export default function InfoTab(props) {
   useEffect(() => {

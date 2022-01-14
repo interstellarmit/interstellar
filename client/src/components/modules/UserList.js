@@ -1,10 +1,8 @@
-import React, { Component, useState } from "react";
-import { List, Empty, ConfigProvider, Row, Col, Menu } from "antd";
-import ProfilePic from "./ProfilePic";
-import { get, post } from "../../utilities";
-import { Button } from "antd";
-
 import { UserOutlined } from "@ant-design/icons";
+import { Button, ConfigProvider, Empty, List } from "antd";
+import React from "react";
+import { post } from "../../utilities";
+import ProfilePic from "./ProfilePic";
 
 export default function UserList(props) {
   const [adminIds, setAdminIds] = React.useState(props.adminIds);

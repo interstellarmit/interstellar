@@ -1,8 +1,8 @@
+import { ConfigProvider, Empty, Input, List } from "antd";
 import React, { Component } from "react";
-import { get, post } from "../../utilities";
-import ProfilePic from "./ProfilePic";
-import { List, Avatar, Input, notification, ConfigProvider, Empty } from "antd";
 import { socket } from "../../client-socket.js";
+import { post } from "../../utilities";
+import ProfilePic from "./ProfilePic";
 
 class Chat extends Component {
   constructor(props) {

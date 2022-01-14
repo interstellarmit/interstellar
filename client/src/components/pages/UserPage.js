@@ -1,44 +1,10 @@
+import { Descriptions, Layout, PageHeader, Typography } from "antd";
 import React, { Component } from "react";
-import { get, post } from "../../utilities";
-
-import InfoTab from "../modules/InfoTab";
-import TabPage from "../modules/TabPage";
-import AddLock from "../modules/AddLock";
-import AddEnterCode from "../modules/AddEnterCode";
+import { post } from "../../utilities";
 import MySpin from "../modules/MySpin";
-import { socket } from "../../client-socket.js";
-import {
-  Spin,
-  Space,
-  Button,
-  Typography,
-  Layout,
-  PageHeader,
-  Badge,
-  Row,
-  Col,
-  Alert,
-  Menu,
-  Descriptions,
-} from "antd";
 
-import { UserOutlined } from "@ant-design/icons";
 const { Header, Content, Footer, Sider } = Layout;
 const { Title, Text } = Typography;
-import {
-  UserAddOutlined,
-  UserDeleteOutlined,
-  LockOutlined,
-  UnlockOutlined,
-  EyeOutlined,
-  HomeOutlined,
-  TeamOutlined,
-  ReadOutlined,
-  GiftOutlined,
-  ShopOutlined,
-  LaptopOutlined,
-} from "@ant-design/icons";
-import DescriptionsItem from "antd/lib/descriptions/Item";
 
 class UserPage extends Component {
   constructor(props) {

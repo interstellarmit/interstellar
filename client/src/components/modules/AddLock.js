@@ -1,5 +1,5 @@
-import React, { Component, useState } from "react";
-import { List, Modal, Row, Col, Button, Form, Input, DatePicker, Checkbox } from "antd";
+import { Button, Form, Input, Modal } from "antd";
+import React from "react";
 export default function AddLock(props) {
   const [form] = Form.useForm();
   let onFinish = (fieldsValue) => {
