@@ -231,16 +231,16 @@ class Home extends Component {
           <div style={{ bottom: "10px", padding: "10px 50px 10px 50px" }}>
             <center>
               <div style={{ fontSize: "10px" }}>
-                Thanks to
+                Thanks to{" "}
                 <a href="https://hacklodge.org/" target="_blank">
                   Hacklodge
                 </a>
-                {", "}
+                {" and "}
                 <a href="https://fireroad.mit.edu/" target="_blank">
                   FireRoad
-                </a>
+                </a>{" "}
                 for support and class information. This is not a catalog. Please share any bugs or
-                feedback
+                feedback{" "}
                 <a href="https://forms.gle/ZSdrfPZfpwngxQ3aA" target="_blank">
                   here
                 </a>
