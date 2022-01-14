@@ -25,7 +25,7 @@ class App extends Component {
       tryingToLogin: true,
 
       loading: false,
-=    };
+    };
   }
 
   componentDidMount() {
@@ -172,8 +172,6 @@ class App extends Component {
 
     return (
       <div>
-    
-        
         {!this.state.signedContract ? (
           <SignContract logout={this.logout} signContract={this.signContract} />
         ) : (
