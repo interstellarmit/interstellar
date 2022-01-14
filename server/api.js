@@ -142,7 +142,6 @@ router.get("/roads", fireroad.roads);
 router.post("/initsocket", (req, res) => {
   // do nothing if user not logged in
   if (req.user) {
-    socket.addUser(req.user, socket.getSocketFromSocketID(req.body.socketid));
     res.send({ init: true });
   } else res.send({ init: false });
 });

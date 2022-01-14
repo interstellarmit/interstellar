@@ -2,7 +2,6 @@ import { Layout, Modal, notification, Spin } from "antd";
 import "antd/dist/antd.css";
 import React, { Component } from "react";
 import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom";
-import { socket } from "../client-socket.js";
 import { get, post } from "../utilities";
 import "../utilities.css";
 import SideBar from "./modules/SideBar.js";
@@ -62,31 +61,6 @@ class App extends Component {
         });
       } else {
         this.setState({ tryingToLogin: false });
-      }
-    });
-    socket.on("reconnect_failed", () => {
-      this.setState({ disconnect: true });
-    });
-    socket.on("disconnect", (reason) => {
-      console.log(reason);
-      if (reason === "io server disconnect") {
-        this.setState({ disconnect: true });
-      }
-    });
-    socket.on("createdPage", (data) => {
-      if (!this.state.userId) return;
-      let allPages = this.state.allPages.concat([]);
-
-      if (
-        !allPages
-          .map((page) => {
-            return page._id;
-          })
-          .includes(data.page._id)
-      ) {
-        allPages.push(data.page);
-
-        this.setState({ allPages: allPages });
       }
     });
   }

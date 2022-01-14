@@ -1,6 +1,5 @@
 import { ConfigProvider, Empty, Input, List } from "antd";
 import React, { Component } from "react";
-import { socket } from "../../client-socket.js";
 import { post } from "../../utilities";
 import ProfilePic from "./ProfilePic";
 
@@ -15,19 +14,7 @@ class Chat extends Component {
     };
   }
 
-  componentDidMount() {
-    socket.on("message", (data) => {
-      if (data.pageId !== this.props.pageId) return;
-      let messages = this.state.messages;
-      messages.push({
-        userId: data.userId,
-        name: data.name,
-        text: data.text,
-        pageId: data.pageId,
-      });
-      this.setState({ messages: messages });
-    });
-  }
+  componentDidMount() {}
 
   render() {
     return (

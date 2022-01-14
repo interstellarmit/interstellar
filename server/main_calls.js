@@ -62,10 +62,6 @@ createNewPage = (req, res) => {
         sameAs: req.body.sameAs || "",
       });
       page.save().then((pg) => {
-        socket.getSocketFromUserID(req.user._id).emit("createdPage", {
-          page: page,
-          userId: req.user._id,
-        });
         res.send({ created: true, pageId: pg._id, name: page.name });
       });
     });
@@ -212,26 +208,19 @@ viewProfile = (req, res) => {
 joinPage = (req, res) => {
   //console.log("joining page with user ");
   //console.log(req.user);
-  if (!req.user || !req.user._id || !socket.getSocketFromUserID(req.user._id)) {
+  if (!req.user || !req.user._id) {
     console.log("broken", req.user);
     res.send({ broken: true });
     return;
   }
 
   Page.findOne({ name: req.body.pageName }).then((page) => {
-    if (page) {
-      socket.getSocketFromUserID(req.user._id).join("Page: " + page._id);
-    }
-
     User.findById(req.user._id).then(async (user) => {
       let pageArr = [];
 
       if (req.body.home) {
         pageArr = user.pageIds.map((pg) => {
           return pg.pageId;
-        });
-        pageArr.forEach((onePageId) => {
-          socket.getSocketFromUserID(req.user._id).join("Page: " + onePageId);
         });
       } else {
         pageArr = [page._id];
@@ -326,7 +315,6 @@ leavePage = (req, res) => {
     return;
   }
   Page.findOne({ name: req.body.pageName }).then((page) => {
-    socket.getSocketFromUserID(req.user._id).leave("Page: " + page._id);
     res.send({});
   });
 };

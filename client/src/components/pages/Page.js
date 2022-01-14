@@ -7,7 +7,6 @@ import {
 } from "@ant-design/icons";
 import { Button, Layout, PageHeader, Typography } from "antd";
 import React, { Component } from "react";
-import { socket } from "../../client-socket.js";
 import { post } from "../../utilities";
 import AddEnterCode from "../modules/AddEnterCode";
 import AddLock from "../modules/AddLock";
@@ -52,29 +51,6 @@ class Page extends Component {
   componentDidMount() {
     this.joinPage();
     // remember -- api calls go here!
-
-    socket.on("userJoinedPage", (data) => {
-      if (!this.state.pageLoaded) return;
-      if (this.state.page._id !== data.pageId) return;
-      if (this.props.semester !== data.semester) return;
-      let users = this.state.users;
-      if (
-        users.filter((user) => {
-          return user.userId === data.user.userId;
-        }).length > 0
-      )
-        return;
-      users.push(data.user);
-      this.setState({ users: users });
-    });
-
-    socket.on("locked", (data) => {
-      if (!this.state.pageLoaded) return;
-      if (data.pageId !== this.state.page._id) return;
-      let page = this.state.page;
-      page.locked = data.locked;
-      this.setState({ page: page });
-    });
   }
 
   componentDidUpdate(prevProps, prevState) {
