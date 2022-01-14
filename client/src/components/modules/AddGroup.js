@@ -126,9 +126,11 @@ export default function AddGroup(props) {
           <Input placeholder={"Optional password for your group"} />
         </Form.Item>
 
-        <Form.Item>
-          <div style={{ color: "red" }}>{message}</div>
-        </Form.Item>
+        {message && (
+          <Form.Item>
+            <div style={{ color: "red" }}>{message}</div>
+          </Form.Item>
+        )}
         <Form.Item {...tailLayout}>
           <Button key="submit" type="primary" htmlType="submit">
             Submit

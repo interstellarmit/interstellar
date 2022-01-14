@@ -138,10 +138,6 @@ class App extends Component {
     this.setState({ redirectPage: link });
   };
 
-  logState = () => {
-    console.log(this.state);
-  };
-
   disconnect = () => {
     this.setState({ disconnect: true });
   };
