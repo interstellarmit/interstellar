@@ -1,4 +1,4 @@
-import { Layout, notification, Spin } from "antd";
+import { Layout, Spin } from "antd";
 import "antd/dist/antd.css";
 import React, { Component } from "react";
 import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom";
@@ -111,10 +111,6 @@ class App extends Component {
     });
   };
 
-  notify = (data) => {
-    this.setState({ notify: data });
-  };
-
   render() {
     if (!this.state.userId || !this.state.allPages) {
       if (this.state.tryingToLogin)
@@ -161,13 +157,6 @@ class App extends Component {
           <Redirect to={page} />
         </Router>
       );
-    }
-
-    if (this.state.notify) {
-      if (this.state.oldKey) notification.close(this.state.oldKey);
-      let key = new Date().toString();
-      notification.info(Object.assign(this.state.notify, { key: key }));
-      this.setState({ notify: undefined, oldKey: key });
     }
 
     return (

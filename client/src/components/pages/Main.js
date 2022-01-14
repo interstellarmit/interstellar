@@ -82,10 +82,6 @@ class Main extends Component {
     });
   };
 
-  notify = (data) => {
-    this.setState({ notify: data });
-  };
-
   render() {
     if (this.state.redirectPage !== "") {
       let page = this.state.redirectPage;
@@ -179,7 +175,6 @@ class Main extends Component {
                     setSeeHelpText={this.props.setSeeHelpText}
                     addClasses={this.addClasses}
                     email={this.props.state.email}
-                    notify={this.notify}
                     semester={this.state.semester}
                   />
                   <Page
