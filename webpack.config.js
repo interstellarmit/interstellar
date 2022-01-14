@@ -64,9 +64,9 @@ module.exports = {
   plugins: [new webpack.HotModuleReplacementPlugin()],
   devServer: {
     historyApiFallback: {
-      disableDotRule: true
+      disableDotRule: true,
     },
-    contentBase: "./client/dist",
+    static: "./client/dist",
     hot: true,
     proxy: {
       "/api": "http://localhost:3000",

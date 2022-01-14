@@ -20,15 +20,8 @@ const main_calls = require("./main_calls");
 
 // api endpoints: all these paths will be prefixed with "/api/"
 const router = express.Router();
-const { check, validationResult } = require("express-validator/check");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const sgMail = require("@sendgrid/mail");
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 //initialize socket
 const socket = require("./server-socket");
-const axios = require("axios");
-const sampleRoad = require("./road.json");
 //signin/user stuff
 router.get("/signUpLogin", auth.signUpLogin);
 

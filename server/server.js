@@ -30,7 +30,6 @@ const path = require("path"); // provide utilities for working with file and dir
 const bodyParser = require("body-parser");
 var fs = require("fs");
 // var Schema = mongoose.Schema;
-var multer = require("multer");
 
 const api = require("./api");
 const auth = require("./auth");

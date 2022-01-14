@@ -9,9 +9,11 @@ import Main from "./pages/Main.js";
 import MySpin from "./modules/MySpin";
 import Confirmation from "./pages/Confirmation.js";
 import SignContract from "./pages/SignContract.js";
+
+import "antd/dist/antd.css";
 import "../utilities.css";
 import { Row, Col, Divider, Spin, Modal, Layout, Button, notification } from "antd";
-import "antd/dist/antd.css";
+
 const { Header, Content, Footer, Sider } = Layout;
 
 import { socket } from "../client-socket.js";
