@@ -13,7 +13,7 @@ const { Content } = Layout;
 class Main extends Component {
   constructor(props) {
     super(props);
-    let semester = this.props.computedMatch.params.semester || "fall-2021";
+    let semester = this.props.computedMatch.params.semester || "spring-2022";
     // Initialize Default State
     this.state = { semester: semester, allPages: [], redirectPage: "" };
   }

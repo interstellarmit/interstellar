@@ -177,7 +177,7 @@ class App extends Component {
               <Route
                 default
                 render={() => {
-                  return <Redirect to="/fall-2021" />;
+                  return <Redirect to="/spring-2022" />;
                 }}
               />
             </Switch>

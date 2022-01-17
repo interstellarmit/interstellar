@@ -52,9 +52,9 @@ let getAllPages = async (semester) => {
         // get classes that are available this semester
         //console.log(page);
         if (
-          semester === "fall-2021" &&
+          semester === "spring-2022" &&
           page.pageType === "Class" &&
-          page.lastUpdated !== "fall-2021"
+          page.lastUpdated !== "spring-2022"
         )
           return;
         if (page.pageType === "Class" && term === "spring" && !page.offered_spring) return;
@@ -103,7 +103,7 @@ router.post("/updateSemester", async (req, res) => {
     res.send({ broken: true });
     return;
   }
-  let semester = req.body.semester || "fall-2021";
+  let semester = req.body.semester || "spring-2022";
   let allPages = await getAllPages(semester);
 
   let user = await User.findById(req.user._id);
@@ -174,7 +174,7 @@ router.post("/sameAs", auth.ensureLoggedIn, (req, res) => {
 
 router.post("/addClasses", auth.ensureLoggedIn, (req, res) => {
   let pageNames = req.body.pageNames;
-  let semester = req.body.semester || "fall-2021";
+  let semester = req.body.semester || "spring-2022";
   let userPageIds = [];
   let addPage = (i) => {
     if (i >= pageNames.length) {

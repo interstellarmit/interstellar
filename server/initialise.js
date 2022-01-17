@@ -48,7 +48,7 @@ let addCourse = async (course, currentSem) => {
         lastUpdated: currentSem,
       })
     );
-    //console.log(newCourse);
+    console.log(newCourse);
     await newCourse.save();
   }
 };

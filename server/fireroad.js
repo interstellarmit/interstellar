@@ -33,7 +33,7 @@ async function sync(req, res) {
               if (!isUserPage) {
                 user.pageIds.push({
                   pageId: page._id + "",
-                  semester: "fall-2021",
+                  semester: "spring-2022",
                 });
               }
               return page;
