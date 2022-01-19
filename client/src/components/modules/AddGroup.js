@@ -10,13 +10,11 @@ export default function AddGroup(props) {
       name: fieldsValue.name,
       title: fieldsValue.title,
       description: fieldsValue.description,
-      locked: fieldsValue.joinCode ? fieldsValue.joinCode.length > 0 : false,
-      joinCode: fieldsValue.joinCode || "",
     }).then((data) => {
       if (data.created) {
         post("/api/addSelfToPage", {
           pageId: data.pageId,
-          joinCode: fieldsValue.joinCode || "",
+          inviteCode: data.inviteCode || "",
         }).then((data2) => {
           if (data2.added) {
             let newPageIds = props.pageIds.concat([]);
@@ -112,18 +110,6 @@ export default function AddGroup(props) {
           ]}
         >
           <Input />
-        </Form.Item>
-        <Form.Item
-          name="joinCode"
-          label="Join Code"
-          rules={[
-            {
-              max: 500,
-              message: "Join code must be at most 500 characters",
-            },
-          ]}
-        >
-          <Input placeholder={"Optional password for your group"} />
         </Form.Item>
 
         {message && (

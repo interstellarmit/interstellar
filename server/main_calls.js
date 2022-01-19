@@ -36,6 +36,15 @@ createNewPage = (req, res) => {
   name = name.replace(/ /g, "_");
   name = name.replace(/[^a-zA-Z0-9-_]/g, "_");
 
+  function getRandomString(length) {
+    var randomChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    var result = "";
+    for (var i = 0; i < length; i++) {
+      result += randomChars.charAt(Math.floor(Math.random() * randomChars.length));
+    }
+    return result;
+  }
+
   if (req.user.isSiteAdmin || req.body.pageType === "Group") {
     Page.findOne({ name: new RegExp("^" + name + "$", "i") }).then((thepage) => {
       if (thepage) {
@@ -48,13 +57,12 @@ createNewPage = (req, res) => {
         title: req.body.title,
         description: req.body.description,
         professor: req.body.professor,
+        inviteCode: getRandomString(5),
         adminIds: [req.user._id],
-        locked: req.body.locked,
-        joinCode: req.body.joinCode || "",
         sameAs: req.body.sameAs || "",
       });
       page.save().then((pg) => {
-        res.send({ created: true, pageId: pg._id, name: page.name });
+        res.send({ created: true, pageId: pg._id, name: page.name, inviteCode: pg.inviteCode });
       });
     });
   } else {
@@ -81,7 +89,7 @@ let pageIncludes = (list, one) => {
 
 addSelfToPage = (req, res) => {
   Page.findById(req.body.pageId).then((page) => {
-    if (!page.locked || (page.locked && page.joinCode === req.body.joinCode)) {
+    if (page.pageType === "Class" || page.inviteCode === req.body.inviteCode) {
       User.findById(req.user._id).then((user) => {
         let semester = page.pageType === "Group" ? "All" : req.body.semester || "spring-2022";
         if (pageIncludes(user.pageIds, { pageId: page._id, semester: semester })) {
@@ -267,8 +275,8 @@ joinPage = (req, res) => {
           res.send(returnValue);
         } else {
           res.send({
-            users: page.locked ? [] : condensedUsers,
-            page: Object.assign(page, { joinCode: "INVISIBLE" }),
+            users: page.pageType === "Group" ? [] : condensedUsers,
+            page: Object.assign(page, { inviteCode: "INVISIBLE" }),
             inPage: false,
             hostName: admin,
           });
@@ -296,24 +304,6 @@ leavePage = (req, res) => {
   }
   Page.findOne({ name: req.body.pageName }).then((page) => {
     res.send({});
-  });
-};
-
-setJoinCode = (req, res) => {
-  if (req.body.lock && (req.body.code.length > 500 || req.body.code.length < 1)) {
-    res.send({ setCode: false });
-    return;
-  }
-  Page.findById(req.body.pageId).then((page) => {
-    if (req.user.isSiteAdmin || page.adminIds.includes(req.user._id)) {
-      page.locked = req.body.lock;
-      page.joinCode = req.body.lock ? req.body.code : "";
-      page.save().then(() => {
-        res.send({ setCode: true });
-      });
-    } else {
-      res.send({ setCode: false });
-    }
   });
 };
 
@@ -441,7 +431,6 @@ module.exports = {
   joinPage,
   viewProfile,
   leavePage,
-  setJoinCode,
   getRedirectLink,
   setVisible,
   setProfileVisible,

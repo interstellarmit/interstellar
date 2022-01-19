@@ -61,13 +61,6 @@ export default function InfoTab(props) {
                 .replace(new RegExp("<([^>])*>", "g"), "")}
             </Text>
           </Row>
-          <Row>
-            {props.page.pageType === "Group" && !props.page.locked ? (
-              <Text style={{ fontStyle: "italic" }}>{"This is a public group."}</Text>
-            ) : (
-              <></>
-            )}
-          </Row>
         </Col>
         <Col span={12} style={{ height: "100%" }}>
           <UserList

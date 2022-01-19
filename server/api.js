@@ -34,7 +34,7 @@ let getAllPages = async (semester) => {
   let pagesGroups = await Page.find({
     pageType: "Group",
   }).select(
-    "lastUpdated name _id title locked pageType numPeople is_historical not_offered_year offered_spring offered_fall offered_IAP offered_summer"
+    "lastUpdated name _id title pageType numPeople is_historical not_offered_year offered_spring offered_fall offered_IAP offered_summer"
   );
 
   let allPages = [];
@@ -44,7 +44,7 @@ let getAllPages = async (semester) => {
     let pagesClasses = await Page.find({
       pageType: "Class",
     }).select(
-      "lastUpdated name _id title locked pageType numPeople is_historical not_offered_year offered_spring offered_fall offered_IAP offered_summer"
+      "lastUpdated name _id title pageType numPeople is_historical not_offered_year offered_spring offered_fall offered_IAP offered_summer"
     );
 
     await Promise.all(
@@ -75,7 +75,6 @@ let getAllPages = async (semester) => {
           name: page.name,
           title: page.title,
           pageType: page.pageType,
-          locked: page.locked,
           numPeople: page.numPeople,
         });
       })
@@ -91,7 +90,6 @@ let getAllPages = async (semester) => {
         name: page.name,
         title: page.title,
         pageType: page.pageType,
-        locked: page.locked,
         numPeople: page.numPeople,
       });
     })
@@ -146,7 +144,6 @@ router.post("/joinPage", auth.ensureLoggedIn, main_calls.joinPage);
 router.post("/viewProfile", auth.ensureLoggedIn, main_calls.viewProfile);
 router.post("/removeSelfFromPage", auth.ensureLoggedIn, main_calls.removeSelfFromPage);
 router.post("/leavePage", auth.ensureLoggedIn, main_calls.leavePage);
-router.post("/setJoinCode", auth.ensureLoggedIn, main_calls.setJoinCode);
 router.post("/getRedirectLink", main_calls.getRedirectLink);
 router.post("/setVisible", auth.ensureLoggedIn, main_calls.setVisible);
 router.post("/setProfileVisible", auth.ensureLoggedIn, main_calls.setProfileVisible);
@@ -190,8 +187,8 @@ router.post("/addClasses", auth.ensureLoggedIn, (req, res) => {
       return;
     }
     let pageName = pageNames[i];
-    Page.findOne({ name: pageName }).then((page) => {
-      if (!page.locked || (page.locked && page.joinCode === req.body.joinCode)) {
+    Page.findOne({ name: pageName, pageType: "Class" }).then((page) => {
+      if (page.pageType === "Class") {
         User.findById(req.user._id).then((user) => {
           if (!user.pageIds.includes(page._id)) {
             user.pageIds.push({ pageId: page._id + "", semester: semester });

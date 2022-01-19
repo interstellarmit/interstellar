@@ -1,34 +1,49 @@
-import {
-  EyeOutlined,
-  LockOutlined,
-  UnlockOutlined,
-  UserAddOutlined,
-  UserDeleteOutlined,
-} from "@ant-design/icons";
-import { Button, Layout, PageHeader, Typography } from "antd";
+import { EyeOutlined, LinkOutlined, UserAddOutlined, UserDeleteOutlined } from "@ant-design/icons";
+import { Button, Input, Layout, Modal, PageHeader, Typography } from "antd";
 import React, { Component } from "react";
 import { post } from "../../utilities";
-import AddEnterCode from "../modules/AddEnterCode";
-import AddLock from "../modules/AddLock";
 import InfoTab from "../modules/InfoTab";
 import MySpin from "../modules/MySpin";
 import TabPage from "../modules/TabPage";
 
 const { Header, Content, Footer, Sider } = Layout;
-const { Title, Text } = Typography;
+const { Title, Paragraph } = Typography;
 class Page extends Component {
   constructor(props) {
     super(props);
     let selectedPage = this.props.computedMatch.params.selectedPage;
+    let code = this.props.location.search.substring(6);
     this.state = {
       pageName: selectedPage,
       users: [],
       page: {},
       pageLoaded: false,
-      lockModal: false,
+      inviteCode: code,
     };
     props.updateSelectedPageName(selectedPage);
   }
+
+  showInviteModal = () => {
+    if (!this.state.inPage && this.state.inviteCode) {
+      Modal.confirm({
+        title: (
+          <div>
+            You have been invited to{" "}
+            <span style={{ color: "#396dff", fontWeight: 900 }}>
+              {this.state.page.name || "Group"}
+            </span>
+          </div>
+        ),
+        content: `All members of ${this.state.page.name} will be able to see your classes`,
+        okText: `Join ${this.state.page.name}`,
+        cancelText: `Decline Invitation`,
+        onOk: () => {
+          this.addSelfToPage(this.state.page._id);
+        },
+      });
+    }
+  };
+
   joinPage() {
     post("/api/joinPage", { pageName: this.state.pageName, semester: this.props.semester }).then(
       (data) => {
@@ -36,14 +51,19 @@ class Page extends Component {
           this.props.logout();
           return;
         }
-        this.setState({
-          users: data.users || [],
-          page: data.page,
-          pageLoaded: true,
-          inPage: data.inPage,
-          showClasses: data.page.showClasses,
-          hostName: data.hostName,
-        });
+        this.setState(
+          {
+            users: data.users || [],
+            page: data.page,
+            pageLoaded: true,
+            inPage: data.inPage,
+            showClasses: data.page.showClasses,
+            hostName: data.hostName,
+          },
+          () => {
+            this.showInviteModal();
+          }
+        );
       }
     );
   }
@@ -60,26 +80,10 @@ class Page extends Component {
     }
   }
 
-  setLockModal = (bol) => {
-    this.setState({ lockModal: bol });
-  };
-
-  setLockCode = (lock, code) => {
-    post("/api/setJoinCode", { lock: lock, code: code, pageId: this.state.page._id }).then(
-      (data) => {
-        if (data.setCode) {
-          let page = this.state.page;
-          page.locked = lock;
-          this.setState({ page: page });
-        }
-      }
-    );
-  };
-
-  addSelfToPage = (id, joinCode = "") => {
+  addSelfToPage = (id) => {
     post("/api/addSelfToPage", {
       pageId: id,
-      joinCode: joinCode,
+      inviteCode: this.state.inviteCode,
       semester: this.props.semester,
     }).then((data) => {
       if (data.added) {
@@ -127,30 +131,66 @@ class Page extends Component {
       <Button
         type="primary"
         onClick={() => {
-          this.state.page.locked
-            ? this.setState({ enterCodeModal: true })
-            : this.addSelfToPage(this.state.page._id);
+          if (this.state.page.pageType === "Class") {
+            this.addSelfToPage(this.state.page._id);
+          } else if (this.state.inviteCode) {
+            this.showInviteModal();
+          } else {
+            Modal.info({
+              title: (
+                <div>
+                  Contact{" "}
+                  <span style={{ color: "#396dff", fontWeight: 900 }}>
+                    {this.state.hostName || "a member of the group"}
+                  </span>{" "}
+                  for the invite link
+                </div>
+              ),
+              onOk() {},
+            });
+          }
         }}
       >
         <UserAddOutlined /> Join {this.state.page.pageType}
       </Button>
     );
 
-    let lockButton = (
+    let inviteButton = (
       <Button
         onClick={() => {
-          this.state.page.locked ? this.setLockCode(false, "") : this.setLockModal(true);
+          const url = `${window.location.host}/${
+            this.props.semester
+          }/${this.state.page.pageType.toLowerCase()}/${this.state.page.name}?code=${
+            this.state.page?.inviteCode
+          }`;
+          navigator.clipboard.writeText(url);
+          Modal.success({
+            title: (
+              <div>
+                Invite link to{" "}
+                <span style={{ color: "#396dff", fontWeight: 900 }}>
+                  {this.state.page.name || "your group"}
+                </span>{" "}
+                copied to clipboard
+              </div>
+            ),
+            content: (
+              <>
+                <Input
+                  size="large"
+                  placeholder="Invite Link"
+                  suffix={<LinkOutlined />}
+                  value={url}
+                />
+              </>
+            ),
+            onOk() {},
+          });
         }}
       >
-        {this.state.page.locked ? (
-          <React.Fragment>
-            <LockOutlined /> Locked
-          </React.Fragment>
-        ) : (
-          <React.Fragment>
-            <UnlockOutlined /> Unlocked
-          </React.Fragment>
-        )}
+        <React.Fragment>
+          <LinkOutlined /> Invite Link
+        </React.Fragment>
       </Button>
     );
 
@@ -199,25 +239,12 @@ class Page extends Component {
           )
 
             .concat([this.state.inPage ? removeClassButton : addClassButton])
-            .concat(isPageAdmin ? [lockButton] : [])}
+            .concat(
+              this.state.inPage && this.state.page.pageType === "Group" ? [inviteButton] : []
+            )}
           title={this.state.page.name}
           subTitle={this.state.page.title}
         ></PageHeader>
-        <AddLock
-          lockModal={this.state.lockModal}
-          setLockModal={this.setLockModal}
-          setLockCode={this.setLockCode}
-        />
-        <AddEnterCode
-          enterCodeModal={this.state.enterCodeModal}
-          setEnterCodeModal={(bool) => {
-            this.setState({ enterCodeModal: bool });
-          }}
-          addSelfToPage={this.addSelfToPage}
-          pageId={this.state.page._id}
-          hostName={this.state.hostName}
-        />
-
         <Content
           style={{
             padding: "0px 30px 30px 30px",

@@ -130,7 +130,27 @@ resetContracts = async () => {
   console.log("reset all the contracts");
 };
 
+addInviteCodes = async () => {
+  function getRandomString(length) {
+    var randomChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    var result = "";
+    for (var i = 0; i < length; i++) {
+      result += randomChars.charAt(Math.floor(Math.random() * randomChars.length));
+    }
+    return result;
+  }
+  let groups = await Page.find({ pageType: "Group" });
+  await Promise.all(
+    groups.map((group) => {
+      group.inviteCode = getRandomString(5);
+      return group.save();
+    })
+  );
+  console.log("changed all the invite codes");
+};
+
 module.exports = {
   initialiseClasses,
   resetContracts,
+  addInviteCodes,
 };

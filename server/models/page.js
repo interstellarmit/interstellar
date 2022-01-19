@@ -8,6 +8,7 @@ const PageSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  inviteCode: String,
   professor: String,
   rating: Number,
   in_class_hours: Number,
@@ -36,14 +37,7 @@ const PageSchema = new mongoose.Schema({
   schedule: String,
   not_offered_year: String,
   adminIds: [String],
-  locked: {
-    type: Boolean,
-    default: false,
-  },
-  joinCode: {
-    type: String,
-    default: "",
-  },
+
   showClasses: {
     type: Boolean,
     default: true,

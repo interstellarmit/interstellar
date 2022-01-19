@@ -108,6 +108,7 @@ const server = http.Server(app);
 server.listen(port, () => {
   //CAREFUL THIS (initialise.js) CLEARES ALL THE CLASSES!
   //initialise.initialiseClasses("spring-2022");
+  //initialise.addInviteCodes();
   //careful this resets all constracts
   //initialise.resetContracts();
   console.log(`Server running on port: ${port}`);

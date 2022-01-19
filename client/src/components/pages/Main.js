@@ -60,7 +60,6 @@ class Main extends Component {
 
   addClasses = (classList) => {
     post("/api/addClasses", {
-      joinCode: "",
       pageNames: classList,
       semester: this.state.semester,
     }).then((res) => {
