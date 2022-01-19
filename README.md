@@ -16,5 +16,5 @@ We upgraded the site in Fall 2020 to include (in master branch):
 - Share resources: share useful links, study guides, and class due dates
 - Student-only forum: ask questions in a forum related to your class or group, or just to post memes that aren’t Piazza-friendly
 
-Currently (in new-interstellar branch), we axed some features and the site now lets you see the courseroads (what MIT courses your friends are planning on taking/have taken in past and future semesters) of your friends, as well as see who you will share classes with. 
+Currently, we axed some features and the site now lets you see the courseroads (what MIT courses your friends are planning on taking/have taken in past and future semesters) of your friends, as well as see who you will share classes with. 
 
