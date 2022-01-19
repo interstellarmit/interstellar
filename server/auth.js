@@ -56,7 +56,16 @@ const signUpLogin = async (req, res) => {
       errors: errors.array(),
     });
   }
-  const { code } = req.query;
+  console.log("LINK");
+  console.log(req.query.returnLink);
+  const parts = req.query.returnLink.split("?code=");
+  const returnLink =
+    parts[0].indexOf("?link") >= 0
+      ? parts[0] + "&code=" + parts[1]
+      : parts[0] + "?code=" + parts[1];
+  console.log(returnLink);
+  const code = parts[1].substring(parts[1].indexOf("&"));
+
   const { name, email, password, accessToken } = await fetchUserInfo(code);
   console.log(name, email, password, accessToken);
   try {
@@ -67,7 +76,7 @@ const signUpLogin = async (req, res) => {
       user.accessToken = accessToken;
       user.save().then((user) => {
         req.session.user = user;
-        return res.redirect("/");
+        return res.redirect(returnLink);
       });
     } else {
       //let schoolEmail = encodeURI(email.split("@")[1].replace(/ /g, "_"));
@@ -79,7 +88,7 @@ const signUpLogin = async (req, res) => {
         isVerified: true,
       });
       console.log(user);
-      await user.save(function (err) {
+      await user.save(function(err) {
         if (err) {
           console.log(err);
           return res.status(500).send({ msg: err.message });
@@ -87,7 +96,7 @@ const signUpLogin = async (req, res) => {
       });
 
       req.session.user = user;
-      return res.redirect("/");
+      return res.redirect(returnLink);
     }
   } catch (err) {
     console.log(err.message);

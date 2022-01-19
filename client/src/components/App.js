@@ -1,11 +1,10 @@
-import { Layout, Spin } from "antd";
+import { Layout, Modal } from "antd";
 import "antd/dist/antd.css";
 import React, { Component } from "react";
 import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom";
 import { get, post } from "../utilities";
 import "../utilities.css";
 import SideBar from "./modules/SideBar.js";
-import Confirmation from "./pages/Confirmation.js";
 import Main from "./pages/Main.js";
 import Public from "./pages/Public.js";
 import SignContract from "./pages/SignContract.js";
@@ -18,7 +17,6 @@ class App extends Component {
 
     this.state = {
       userId: undefined,
-      allPages: [],
       school: "",
 
       redirectPage: "",
@@ -29,6 +27,10 @@ class App extends Component {
   }
 
   componentDidMount() {
+    this.initialiseUser();
+  }
+
+  initialiseUser() {
     get("/api/whoami").then((user) => {
       if (user._id) {
         // they are registed in the database, and currently logged in.
@@ -46,9 +48,9 @@ class App extends Component {
           restaurant: user.restaurant,
           advice: user.advice,
           funFact: user.funFact,
-          seeHelpText: user.seeHelpText,
           signedContract: user.signedContract,
           classYear: user.classYear,
+          tryingToLogin: false,
         });
       } else {
         this.setState({ tryingToLogin: false });
@@ -61,11 +63,14 @@ class App extends Component {
   */
 
   handleLogin = () => {
+    let oldLink = window.location.pathname + window.location.search;
     let link = window.location.origin.replace("http:", "https:") + "/api/signUpLogin";
     if (link.includes("localhost:5000")) link = window.location.origin + "/api/signUpLogin";
+    link += "?returnLink=" + encodeURIComponent(oldLink);
     let encodedLink = encodeURIComponent(link);
 
     post("/api/getRedirectLink", {}).then((ret) => {
+      console.log(ret.link);
       window.location.href = ret.link + "login?redirect=" + encodedLink;
     });
   };
@@ -92,13 +97,6 @@ class App extends Component {
     });
   };
 
-  setSeeHelpText = (bool) => {
-    post("/api/setSeeHelpText", { seeHelpText: bool }).then((data) => {
-      if (data.setSeeHelpText) {
-        this.setState({ seeHelpText: bool });
-      }
-    });
-  };
   redirectPage = (link) => {
     this.setState({ redirectPage: link });
   };
@@ -111,42 +109,16 @@ class App extends Component {
   };
 
   render() {
-    if (!this.state.userId || !this.state.allPages) {
-      if (this.state.tryingToLogin)
-        return (
-          <Layout style={{ minHeight: "100vh" }}>
-            <SideBar notLoggedIn={true} />
-
-            <Layout className="site-layout">
-              <Content>
-                <Spin spinning={true}>
-                  <Layout
-                    style={{ background: "rgba(255, 255, 255, 1)", height: "100vh" }}
-                  ></Layout>
-                </Spin>
-              </Content>
-            </Layout>
-          </Layout>
-        );
+    if (this.state.tryingToLogin)
       return (
-        <>
-          <Router>
-            <Switch>
-              <Confirmation path="/confirmation/:token"></Confirmation>
-              <Public
-                visible={true}
-                profileVisible={true}
-                handleLogin={this.handleLogin}
-                logout={this.logout}
-                me={this.me}
-                loginMessage={this.state.loginMessage}
-                signUpMessage={this.state.signUpMessage}
-              />
-            </Switch>
-          </Router>
-        </>
+        <Layout style={{ minHeight: "100vh" }}>
+          <SideBar notLoggedIn={true} />
+
+          <Layout className="site-layout">
+            <Content></Content>
+          </Layout>
+        </Layout>
       );
-    }
 
     if (this.state.redirectPage !== "") {
       let page = this.state.redirectPage;
@@ -160,28 +132,40 @@ class App extends Component {
 
     return (
       <div>
-        {!this.state.signedContract ? (
+        {!this.state.signedContract && false ? (
           <SignContract logout={this.logout} signContract={this.signContract} />
         ) : (
-          <Router>
-            <Switch>
-              <Main
-                path="/:semester"
-                state={this.state}
-                redirectPage={this.redirectPage}
-                setVisible={this.setVisible}
-                setProfileVisible={this.setProfileVisible}
-                setSeeHelpText={this.setSeeHelpText}
-                logout={this.logout}
-              />
-              <Route
-                default
-                render={() => {
-                  return <Redirect to="/spring-2022" />;
-                }}
-              />
-            </Switch>
-          </Router>
+          <>
+            <Router>
+              <Switch>
+                <Main
+                  path="/:semester"
+                  state={this.state}
+                  redirectPage={this.redirectPage}
+                  setVisible={this.setVisible}
+                  setProfileVisible={this.setProfileVisible}
+                  logout={this.logout}
+                />
+                <Route
+                  default
+                  render={() => {
+                    return <Redirect to="/spring-2022" />;
+                  }}
+                />
+              </Switch>
+            </Router>
+            {!this.state.userId && (
+              <Modal
+                visible
+                footer={null}
+                closable={false}
+                bodyStyle={{ padding: "20px", borderRadius: "20px", border: "10px solid #4090F7" }}
+                className="radius-20"
+              >
+                <Public handleLogin={this.handleLogin} />
+              </Modal>
+            )}
+          </>
         )}
       </div>
     );

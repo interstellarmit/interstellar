@@ -1,4 +1,4 @@
-import { Layout, Spin } from "antd";
+import { Layout } from "antd";
 import React, { Component } from "react";
 import { BrowserRouter as Router, Redirect, Switch } from "react-router-dom";
 import { post } from "../../utilities";
@@ -20,12 +20,7 @@ class Main extends Component {
 
   componentDidMount() {
     this.setState({ pageIds: [] }, () => {
-      //console.log("Changing semester to ")
       post("/api/updateSemester", { semester: this.state.semester }).then((res) => {
-        if (res.broken) {
-          this.props.logout();
-          return;
-        }
         this.setState({
           allPages: res.allPages,
           pageIds: res.pageIds,
@@ -120,6 +115,7 @@ class Main extends Component {
           updatePageIds={this.updatePageIds}
           allPages={this.state.allPages}
           myPages={myPages}
+          loggedIn={this.props.state.userId}
           selectedPageName={this.state.selectedPageName}
           redirectPage={this.redirectPage}
           redirectPageOverall={this.props.redirectPage}
@@ -131,101 +127,86 @@ class Main extends Component {
         />
         <Layout className="site-layout">
           <Content>
-            <Spin spinning={this.state.loading}>
-              <Router>
-                <Switch>
-                  <Home
-                    key={this.state.semester}
-                    exact
-                    path={[
-                      "/",
-                      "/dashboard",
-                      "/settings",
-                      "/admin",
-                      "/profile",
-                      "/dueDateAdmin",
-                    ].map((s) => {
+            <Router>
+              <Switch>
+                <Home
+                  key={this.state.semester}
+                  exact
+                  path={["/", "/dashboard", "/settings", "/admin", "/profile", "/dueDateAdmin"].map(
+                    (s) => {
                       return "/:semester" + s;
-                    })}
-                    updateSelectedPageName={this.updateSelectedPageName}
-                    user={{
-                      userId: this.props.state.userId,
-                      name: this.props.state.visible ? this.props.state.name : "Anonymous (Me)",
-                    }}
-                    redirectPage={this.redirectPage}
-                    myPages={myPages}
-                    allPages={this.state.allPages}
-                    isSiteAdmin={this.props.state.isSiteAdmin}
-                    logout={this.logout}
-                    visible={this.props.state.visible}
-                    setVisible={this.props.setVisible}
-                    profileVisible={this.props.state.profileVisible}
-                    setProfileVisible={this.props.setProfileVisible}
-                    hometown={this.props.state.hometown}
-                    curLoc={this.props.state.curLoc}
-                    bio={this.props.state.bio}
-                    activities={this.props.state.activities}
-                    classYear={this.props.state.classYear}
-                    restaurant={this.props.state.restaurant}
-                    advice={this.props.state.advice}
-                    funFact={this.props.state.funFact}
-                    seeHelpText={this.props.state.seeHelpText}
-                    setSeeHelpText={this.props.setSeeHelpText}
-                    addClasses={this.addClasses}
-                    email={this.props.state.email}
-                    semester={this.state.semester}
-                  />
-                  <Page
-                    key={this.state.semester}
-                    path={"/:semester/class/:selectedPage"}
-                    pageIds={this.state.pageIds}
-                    updatePageIds={this.updatePageIds}
-                    updateSelectedPageName={this.updateSelectedPageName}
-                    user={{
-                      userId: this.props.state.userId,
-                      name: this.props.state.visible ? this.props.state.name : "Anonymous (Me)",
-                    }}
-                    redirectPage={this.redirectPage}
-                    isSiteAdmin={this.props.state.isSiteAdmin}
-                    logout={this.logout}
-                    visible={this.props.state.visible}
-                    seeHelpText={this.props.state.seeHelpText}
-                    setSeeHelpText={this.props.setSeeHelpText}
-                    semester={this.state.semester}
-                  />
-                  <Page
-                    path={"/:semester/group/:selectedPage"}
-                    pageIds={this.state.pageIds}
-                    updatePageIds={this.updatePageIds}
-                    updateSelectedPageName={this.updateSelectedPageName}
-                    user={{ userId: this.props.state.userId, name: this.props.state.name }}
-                    redirectPage={this.redirectPage}
-                    allPages={this.state.allPages}
-                    isSiteAdmin={this.props.state.isSiteAdmin}
-                    seeHelpText={this.props.state.seeHelpText}
-                    setSeeHelpText={this.props.setSeeHelpText}
-                    logout={this.logout}
-                    semester={this.state.semester}
-                  />
-                  <UserPage
-                    style={{ height: "100%" }}
-                    path={"/:semester/user/:selectedPage"}
-                    pageIds={this.state.pageIds}
-                    updatePageIds={this.updatePageIds}
-                    updateSelectedPageName={this.updateSelectedPageName}
-                    user={{ userId: this.props.state.userId, name: this.props.state.name }}
-                    redirectPage={this.redirectPage}
-                    allPages={this.state.allPages}
-                    isSiteAdmin={this.props.state.isSiteAdmin}
-                    seeHelpText={this.props.state.seeHelpText}
-                    setSeeHelpText={this.props.setSeeHelpText}
-                    logout={this.logout}
-                    semester={this.state.semester}
-                  />
-                  <NotFound default />
-                </Switch>
-              </Router>
-            </Spin>
+                    }
+                  )}
+                  updateSelectedPageName={this.updateSelectedPageName}
+                  user={{
+                    userId: this.props.state.userId,
+                    name: this.props.state.visible ? this.props.state.name : "Anonymous (Me)",
+                  }}
+                  redirectPage={this.redirectPage}
+                  myPages={myPages}
+                  allPages={this.state.allPages}
+                  isSiteAdmin={this.props.state.isSiteAdmin}
+                  logout={this.logout}
+                  visible={this.props.state.visible}
+                  setVisible={this.props.setVisible}
+                  profileVisible={this.props.state.profileVisible}
+                  setProfileVisible={this.props.setProfileVisible}
+                  hometown={this.props.state.hometown}
+                  curLoc={this.props.state.curLoc}
+                  bio={this.props.state.bio}
+                  activities={this.props.state.activities}
+                  classYear={this.props.state.classYear}
+                  restaurant={this.props.state.restaurant}
+                  advice={this.props.state.advice}
+                  funFact={this.props.state.funFact}
+                  addClasses={this.addClasses}
+                  email={this.props.state.email}
+                  semester={this.state.semester}
+                />
+                <Page
+                  key={this.state.semester}
+                  path={"/:semester/class/:selectedPage"}
+                  pageIds={this.state.pageIds}
+                  updatePageIds={this.updatePageIds}
+                  updateSelectedPageName={this.updateSelectedPageName}
+                  user={{
+                    userId: this.props.state.userId,
+                    name: this.props.state.visible ? this.props.state.name : "Anonymous (Me)",
+                  }}
+                  redirectPage={this.redirectPage}
+                  isSiteAdmin={this.props.state.isSiteAdmin}
+                  logout={this.logout}
+                  visible={this.props.state.visible}
+                  semester={this.state.semester}
+                />
+                <Page
+                  path={"/:semester/group/:selectedPage"}
+                  pageIds={this.state.pageIds}
+                  updatePageIds={this.updatePageIds}
+                  updateSelectedPageName={this.updateSelectedPageName}
+                  user={{ userId: this.props.state.userId, name: this.props.state.name }}
+                  redirectPage={this.redirectPage}
+                  allPages={this.state.allPages}
+                  isSiteAdmin={this.props.state.isSiteAdmin}
+                  logout={this.logout}
+                  semester={this.state.semester}
+                />
+                <UserPage
+                  style={{ height: "100%" }}
+                  path={"/:semester/user/:selectedPage"}
+                  pageIds={this.state.pageIds}
+                  updatePageIds={this.updatePageIds}
+                  updateSelectedPageName={this.updateSelectedPageName}
+                  user={{ userId: this.props.state.userId, name: this.props.state.name }}
+                  redirectPage={this.redirectPage}
+                  allPages={this.state.allPages}
+                  isSiteAdmin={this.props.state.isSiteAdmin}
+                  logout={this.logout}
+                  semester={this.state.semester}
+                />
+                <NotFound default />
+              </Switch>
+            </Router>
           </Content>
         </Layout>
       </Layout>

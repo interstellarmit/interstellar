@@ -25,7 +25,6 @@ export default function TabPage(props) {
                   defaultActiveKey={match.params.routeLink || props.defaultRouterLink}
                   onChange={(key) => {
                     if (key === "forum") {
-                      // console.log("clear");
                       props.clearForumCounter();
                     }
                     history.push(url + "/" + key);

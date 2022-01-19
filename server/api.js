@@ -97,23 +97,23 @@ let getAllPages = async (semester) => {
   return allPages.concat(myGroups);
 };
 router.post("/updateSemester", async (req, res) => {
-  if (!req.user || !req.user._id) {
-    res.send({ broken: true });
-    return;
-  }
   let semester = req.body.semester || "spring-2022";
   let allPages = await getAllPages(semester);
 
-  let user = await User.findById(req.user._id);
-  let pageIds = user.pageIds
-    .filter((id) => {
-      return id.semester === semester || id.semester === "All";
-    })
-    .map((id) => {
-      return id.pageId;
-    });
+  if (!req.user || !req.user._id) {
+    res.send({ pageIds: [], allPages });
+  } else {
+    let user = await User.findById(req.user._id);
+    let pageIds = user.pageIds
+      .filter((id) => {
+        return id.semester === semester || id.semester === "All";
+      })
+      .map((id) => {
+        return id.pageId;
+      });
 
-  res.send({ pageIds: pageIds, allPages: allPages });
+    res.send({ pageIds: pageIds, allPages });
+  }
 });
 
 router.post("/signContract", auth.ensureLoggedIn, auth.signContract);
@@ -140,16 +140,13 @@ router.get("/roads", fireroad.roads);
 
 router.post("/createNewPage", auth.ensureLoggedIn, main_calls.createNewPage);
 router.post("/addSelfToPage", auth.ensureLoggedIn, main_calls.addSelfToPage);
-router.post("/joinPage", auth.ensureLoggedIn, main_calls.joinPage);
+router.post("/joinPage", main_calls.joinPage);
 router.post("/viewProfile", auth.ensureLoggedIn, main_calls.viewProfile);
 router.post("/removeSelfFromPage", auth.ensureLoggedIn, main_calls.removeSelfFromPage);
-router.post("/leavePage", auth.ensureLoggedIn, main_calls.leavePage);
 router.post("/getRedirectLink", main_calls.getRedirectLink);
 router.post("/setVisible", auth.ensureLoggedIn, main_calls.setVisible);
 router.post("/setProfileVisible", auth.ensureLoggedIn, main_calls.setProfileVisible);
-router.post("/setShowClasses", auth.ensureLoggedIn, main_calls.setShowClasses);
 router.post("/addRemoveAdmin", auth.ensureLoggedIn, main_calls.addRemoveAdmin);
-router.get("/allClasses", auth.ensureLoggedIn, main_calls.allClasses);
 router.post("/editProfile", auth.ensureLoggedIn, main_calls.editProfile);
 router.post("/sameAs", auth.ensureLoggedIn, (req, res) => {
   if (req.user.isSiteAdmin) {

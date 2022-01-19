@@ -8,7 +8,7 @@ export default function InfoTab(props) {
     document.getElementsByClassName("ant-tabs-content")[0].style.height = "100%";
   });
   let users = props.users.filter((user) => {
-    return user.userId !== props.user.userId;
+    return user.userId !== props.user.userId || !user.userId;
   });
   if (props.inPage) {
     users.push(Object.assign(props.user, { pageIds: props.pageIds }));
@@ -66,7 +66,6 @@ export default function InfoTab(props) {
           <UserList
             users={users}
             allPages={props.allPages}
-            showClasses={props.showClasses}
             pageIds={props.pageIds}
             page={props.page}
             adminIds={props.page.adminIds}

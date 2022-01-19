@@ -34,7 +34,6 @@ export default function UserList(props) {
           renderItem={(user) => {
             return (
               <List.Item
-                style={{ cursor: "pointer" }}
                 actions={
                   props.adminIds && props.isSiteAdmin && !props.dashboard
                     ? [
@@ -45,7 +44,6 @@ export default function UserList(props) {
                               userId: user.userId,
                               pageId: props.page._id,
                             }).then((data) => {
-                              //console.log(data);
                               if (data.success) {
                                 if (adminIds.includes(user.userId)) {
                                   let newAdminIds = adminIds.filter((id) => {
@@ -70,15 +68,20 @@ export default function UserList(props) {
                 }
               >
                 <List.Item.Meta
-                  avatar={<ProfilePic user={user} />}
+                  avatar={
+                    <ProfilePic
+                      user={user}
+                      onClick={
+                        user.userId &&
+                        (() => {
+                          props.redirectPage("/user/" + user.userId);
+                        })
+                      }
+                    />
+                  }
                   title={user.name}
-                  onClick={() => {
-                    //console.log("clicked?");
-                    props.redirectPage("/user/" + user.userId);
-                    // this.props.redirectPage("/" + page.pageType.toLowerCase() + "/" + page.name);
-                  }}
                   description={
-                    props.allPages && props.showClasses && user.pageIds
+                    props.allPages && user.pageIds
                       ? user.pageIds
                           .map((id) => {
                             return props.allPages.find((pg) => {

@@ -8,7 +8,6 @@ export default function MultipleSearchBar(props) {
 
   let search = () => {
     if (classList.length === 0) return;
-    //console.log("what's good");
     props.addClasses(classList);
   };
   if (props.collapsed) {

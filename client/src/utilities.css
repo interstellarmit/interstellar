@@ -46,6 +46,10 @@ form {
   display: flex;
 }
 
+.radius-20 .ant-modal-content {
+  border-radius: 20px;
+}
+
 .u-flexColumn {
   display: flex;
   flex-direction: column;

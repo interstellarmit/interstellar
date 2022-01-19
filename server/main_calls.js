@@ -195,24 +195,8 @@ viewProfile = (req, res) => {
 };
 
 joinPage = (req, res) => {
-  if (!req.user || !req.user._id) {
-    console.log("broken", req.user);
-    res.send({ broken: true });
-    return;
-  }
-
   Page.findOne({ name: req.body.pageName }).then((page) => {
-    User.findById(req.user._id).then(async (user) => {
-      let pageArr = [];
-
-      if (req.body.home) {
-        pageArr = user.pageIds.map((pg) => {
-          return pg.pageId;
-        });
-      } else {
-        pageArr = [page._id];
-      }
-
+    User.findById(req.user?._id || undefined).then(async (user) => {
       let admin = undefined;
       if (page) admin = page.adminIds.length > 0 ? page.adminIds[0] : undefined;
       if (admin) {
@@ -220,12 +204,12 @@ joinPage = (req, res) => {
         admin = admin ? admin.name : undefined;
       }
 
-      User.find({ "pageIds.pageId": { $in: pageArr } }, async (err, users) => {
+      User.find({ "pageIds.pageId": { $in: [page._id] } }, async (err, users) => {
         //console.log("LENGTH" + users.length);
         users = users.filter((user) => {
           return user.pageIds.find((id) => {
             return (
-              pageArr
+              [page._id]
                 .map((s) => {
                   return s + "";
                 })
@@ -235,12 +219,14 @@ joinPage = (req, res) => {
           });
         });
         let condensedUsers = users.map((singleUser) => {
-          if ((req.body.home || page.pageType === "Class") && !singleUser.visible)
-            return { userId: singleUser._id, name: "Anonymous" };
+          if (page.pageType === "Class" && !singleUser.visible) return { name: "Anonymous" };
           return { userId: singleUser._id, name: singleUser.name };
         });
+        let anonymousUsers = users.map((singleUser) => {
+          return { name: "Anonymous" };
+        });
         let inPageUsers = users.map((singleUser) => {
-          if (!req.body.home && page.pageType === "Group") {
+          if (page.pageType === "Group") {
             return {
               userId: singleUser._id,
               name: singleUser.name,
@@ -254,7 +240,7 @@ joinPage = (req, res) => {
             };
           }
           if ((req.body.home || page.pageType === "Class") && !singleUser.visible)
-            return { userId: singleUser._id, name: "Anonymous" };
+            return { name: "Anonymous" };
           return { userId: singleUser._id, name: singleUser.name };
         });
         if (page) {
@@ -263,7 +249,7 @@ joinPage = (req, res) => {
         }
         let semester =
           page && page.pageType === "Group" ? "All" : req.body.semester || "spring-2022";
-        if (req.body.home || pageIncludes(user.pageIds, { pageId: page._id, semester: semester })) {
+        if (req.user?._id && pageIncludes(user.pageIds, { pageId: page._id, semester: semester })) {
           let returnValue = {
             users: inPageUsers,
             inPage: true,
@@ -275,7 +261,7 @@ joinPage = (req, res) => {
           res.send(returnValue);
         } else {
           res.send({
-            users: page.pageType === "Group" ? [] : condensedUsers,
+            users: page.pageType === "Group" || !req.user?._id ? anonymousUsers : condensedUsers,
             page: Object.assign(page, { inviteCode: "INVISIBLE" }),
             inPage: false,
             hostName: admin,
@@ -283,27 +269,6 @@ joinPage = (req, res) => {
         }
       });
     });
-  });
-};
-
-/*
-leavePage
-Input (req.body): {
-  schoolId: String
-  pageName: String,
-}
-Precondition: User is on the page 
-Socket: 
-Returns: {}
-Description: Removes you from the lounge, if you are in one (by calling removeSelfFromLounge). 
-*/
-leavePage = (req, res) => {
-  if (req.body.home) {
-    res.send({});
-    return;
-  }
-  Page.findOne({ name: req.body.pageName }).then((page) => {
-    res.send({});
   });
 };
 
@@ -325,19 +290,6 @@ setProfileVisible = (req, res) => {
     user.profileVisible = req.body.profileVisible;
     user.save().then(() => {
       res.send({ setProfileVisible: true });
-    });
-  });
-};
-
-setShowClasses = (req, res) => {
-  Page.findById(req.body.pageId).then((page) => {
-    if (!req.user.isSiteAdmin && !page.adminIds.includes(req.user._id)) {
-      res.send({ set: false });
-      return;
-    }
-    page.showClasses = req.body.showClasses;
-    page.save().then(() => {
-      res.send({ set: true });
     });
   });
 };
@@ -375,34 +327,6 @@ addRemoveAdmin = (req, res) => {
   });
 };
 
-async function allClasses(req, res) {
-  try {
-    User.findById(req.user._id).then(async (user) => {
-      const classes = [];
-      await Promise.all(
-        user.pageIds.map(async (pageInfo) => {
-          const page = await Page.findById(pageInfo.pageId);
-          if (!page) {
-            console.log(pageInfo, "not found");
-            return;
-          }
-          classes.push(page.name);
-          return page;
-        })
-      );
-      console.log(classes);
-      if (!user.profileVisible) {
-        res.send({});
-      } else {
-        res.send({ classes });
-      }
-    });
-  } catch (err) {
-    console.log(err.message);
-    res.status(500).send({ msg: "Error in fetching user classes" });
-  }
-}
-
 async function editProfile(req, res) {
   try {
     const fieldsValue = req.body.fieldsValue;
@@ -430,12 +354,9 @@ module.exports = {
   removeSelfFromPage,
   joinPage,
   viewProfile,
-  leavePage,
   getRedirectLink,
   setVisible,
   setProfileVisible,
-  setShowClasses,
   addRemoveAdmin,
-  allClasses,
   editProfile,
 };

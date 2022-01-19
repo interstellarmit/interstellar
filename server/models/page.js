@@ -37,11 +37,6 @@ const PageSchema = new mongoose.Schema({
   schedule: String,
   not_offered_year: String,
   adminIds: [String],
-
-  showClasses: {
-    type: Boolean,
-    default: true,
-  },
   lastUpdated: {
     type: String,
     default: "spring-2021",

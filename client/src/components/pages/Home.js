@@ -8,7 +8,6 @@ import {
 } from "@ant-design/icons";
 import { Button, Descriptions, Layout, PageHeader, Switch } from "antd";
 import React, { Component } from "react";
-import { get } from "../../utilities";
 import EditProfile from "../modules/EditProfile";
 import MultipleSearchBar from "../modules/MultipleSearchBar";
 import SearchBar from "../modules/SearchBar";
@@ -21,19 +20,12 @@ class Home extends Component {
     // Initialize Default State
     this.state = {
       profileModal: false,
-      classes: undefined,
     };
     props.updateSelectedPageName("");
   }
 
   componentDidMount() {
     document.getElementsByClassName("ant-tabs-content")[0].style.height = "100%";
-    get("/api/allClasses").then((data) => {
-      if (data.classes) {
-        const classString = data.classes;
-        this.setState({ classes: classString });
-      }
-    });
   }
 
   setProfileModal = (bool) => {

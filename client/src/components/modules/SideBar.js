@@ -157,15 +157,17 @@ export default function SideBar(props) {
               </Menu.Item>
             </SubMenu>
 
-            <Menu.Item
-              key=".log!!out."
-              onClick={() => {
-                props.logout();
-              }}
-              icon={<LogoutOutlined />}
-            >
-              Logout
-            </Menu.Item>
+            {props.loggedIn && (
+              <Menu.Item
+                key=".log!!out."
+                onClick={() => {
+                  props.logout();
+                }}
+                icon={<LogoutOutlined />}
+              >
+                Logout
+              </Menu.Item>
+            )}
 
             {/* <Menu.Item
             key=".log!!state."

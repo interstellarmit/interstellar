@@ -143,6 +143,7 @@ addInviteCodes = async () => {
   await Promise.all(
     groups.map((group) => {
       group.inviteCode = getRandomString(5);
+      group.joinCode = "NO";
       return group.save();
     })
   );

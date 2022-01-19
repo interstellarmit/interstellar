@@ -1,4 +1,4 @@
-import { EyeOutlined, LinkOutlined, UserAddOutlined, UserDeleteOutlined } from "@ant-design/icons";
+import { LinkOutlined, UserAddOutlined, UserDeleteOutlined } from "@ant-design/icons";
 import { Button, Input, Layout, Modal, PageHeader, Typography } from "antd";
 import React, { Component } from "react";
 import { post } from "../../utilities";
@@ -12,7 +12,9 @@ class Page extends Component {
   constructor(props) {
     super(props);
     let selectedPage = this.props.computedMatch.params.selectedPage;
-    let code = this.props.location.search.substring(6);
+    let code = window.location.search;
+    const params = new URLSearchParams(code);
+    code = params.get("link");
     this.state = {
       pageName: selectedPage,
       users: [],
@@ -24,7 +26,7 @@ class Page extends Component {
   }
 
   showInviteModal = () => {
-    if (!this.state.inPage && this.state.inviteCode) {
+    if (!this.state.inPage && this.state.inviteCode && this.props.user.userId) {
       Modal.confirm({
         title: (
           <div>
@@ -47,17 +49,12 @@ class Page extends Component {
   joinPage() {
     post("/api/joinPage", { pageName: this.state.pageName, semester: this.props.semester }).then(
       (data) => {
-        if (data.broken) {
-          this.props.logout();
-          return;
-        }
         this.setState(
           {
             users: data.users || [],
             page: data.page,
             pageLoaded: true,
             inPage: data.inPage,
-            showClasses: data.page.showClasses,
             hostName: data.hostName,
           },
           () => {
@@ -160,7 +157,7 @@ class Page extends Component {
         onClick={() => {
           const url = `${window.location.host}/${
             this.props.semester
-          }/${this.state.page.pageType.toLowerCase()}/${this.state.page.name}?code=${
+          }/${this.state.page.pageType.toLowerCase()}/${this.state.page.name}?link=${
             this.state.page?.inviteCode
           }`;
           navigator.clipboard.writeText(url);
@@ -206,23 +203,7 @@ class Page extends Component {
           className="site-layout-sub-header-background"
           style={{ padding: "20px 30px 0px 30px", background: "#fff" }}
           extra={(this.state.page.pageType === "Group"
-            ? [
-                <Button
-                  icon={<EyeOutlined />}
-                  onClick={() => {
-                    let sc = this.state.showClasses;
-                    post("/api/setShowClasses", {
-                      pageId: this.state.page._id,
-                      showClasses: !sc,
-                    }).then((data) => {
-                      if (data.set) this.setState({ showClasses: !sc });
-                    });
-                  }}
-                  disabled={!isPageAdmin}
-                >
-                  {!this.state.showClasses ? "Classes Hidden" : "Classes Visible"}
-                </Button>,
-              ]
+            ? []
             : [
                 sameAs.length > 0 ? (
                   <Button
@@ -267,7 +248,6 @@ class Page extends Component {
               pageIds={this.props.pageIds}
               allPages={this.props.allPages}
               isSiteAdmin={this.props.isSiteAdmin}
-              showClasses={this.state.showClasses}
               redirectPage={this.props.redirectPage}
             />
           </TabPage>

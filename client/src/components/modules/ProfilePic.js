@@ -8,5 +8,9 @@ export default function ProfilePic(props) {
     return name[0];
   });
   initials = initials[0] + initials[initials.length - 1];
-  return <Avatar size={props.size}>{initials}</Avatar>;
+  return (
+    <Avatar style={{ cursor: "pointer" }} size={props.size} onClick={props.onClick}>
+      {initials}
+    </Avatar>
+  );
 }
