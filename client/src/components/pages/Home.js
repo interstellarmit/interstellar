@@ -144,7 +144,7 @@ class Home extends Component {
                 </div>
               </div>
 
-              <div style={{ overflowY: "scroll", height: "100%" }}>
+              <div style={{ overflowY: "auto", height: "100%" }}>
                 <Descriptions
                   column={1}
                   bordered={anyInfo}

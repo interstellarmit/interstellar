@@ -9,6 +9,7 @@ import {
 import { Layout, Menu, Select } from "antd";
 import "antd/dist/antd.css";
 import React from "react";
+import { useMediaQuery } from "react-responsive";
 import logo from "../../public/logo.png";
 import "../../utilities.css";
 import AddGroup from "./AddGroup";
@@ -19,13 +20,14 @@ const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
 
 export default function SideBar(props) {
+  const isMobile = useMediaQuery({ query: `(max-width: 760px)` });
   let myPages = props.myPages
     ? props.myPages.sort((a, b) => {
         return a.name.localeCompare(b.name);
       })
     : [];
   const [addGroup, setAddGroup] = React.useState(false);
-  const [collapsed, setCollapsed] = React.useState(false);
+  const [collapsed, setCollapsed] = React.useState(isMobile);
   return (
     <Sider
       collapsible
@@ -80,21 +82,23 @@ export default function SideBar(props) {
             collapsed={collapsed}
             allPages={props.allPages}
           />
-          <Select
-            defaultValue={props.semester}
-            onChange={(value) => {
-              props.changeSemester(value);
-            }}
-            style={{ width: "calc(100% - 32px)", margin: "0px 16px 16px 16px" }}
-          >
-            <Option value="spring-2022">Spring 2022</Option>
-            <Option value="iap-2022">IAP 2022</Option>
-            <Option value="fall-2021">Fall 2021</Option>
-            <Option value="spring-2021">Spring 2021</Option>
-            <Option value="iap-2021">IAP 2021</Option>
-            <Option value="fall-2020">Fall 2020</Option>
-            <Option value="spring-2020">Spring 2020</Option>
-          </Select>
+          {!collapsed && (
+            <Select
+              defaultValue={props.semester}
+              onChange={(value) => {
+                props.changeSemester(value);
+              }}
+              style={{ width: "calc(100% - 32px)", margin: "0px 16px 16px 16px" }}
+            >
+              <Option value="spring-2022">Spring 2022</Option>
+              <Option value="iap-2022">IAP 2022</Option>
+              <Option value="fall-2021">Fall 2021</Option>
+              <Option value="spring-2021">Spring 2021</Option>
+              <Option value="iap-2021">IAP 2021</Option>
+              <Option value="fall-2020">Fall 2020</Option>
+              <Option value="spring-2020">Spring 2020</Option>
+            </Select>
+          )}
 
           <Menu
             theme="light"
