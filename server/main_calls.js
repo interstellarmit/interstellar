@@ -199,7 +199,9 @@ viewProfile = (req, res) => {
 joinPage = (req, res) => {
   Page.findOne({ name: req.body.pageName }).then((page) => {
     User.findById(req.user?._id || undefined).then(async (user) => {
-      if (user) console.log(`${user.name} viewing page ${page?.name}`);
+      if (user) {
+        console.log(`${user.name} viewing page ${page?.name || req.body.pageName || "undefined?"}`);
+      }
       let admin = undefined;
       if (page) admin = page.adminIds.length > 0 ? page.adminIds[0] : undefined;
       if (admin) {
