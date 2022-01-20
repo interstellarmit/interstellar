@@ -109,7 +109,7 @@ class Main extends Component {
       return this.state.pageIds.includes(page._id + "");
     });
     return (
-      <Layout style={{ minHeight: "100vh" }}>
+      <Layout style={{ minHeight: "100vh", maxHeight: "100vh", overflow: "hidden" }}>
         <SideBar
           pageIds={this.state.pageIds}
           updatePageIds={this.updatePageIds}

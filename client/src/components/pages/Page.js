@@ -234,7 +234,7 @@ class PageClassComponent extends Component {
           }}
         >
           <TabPage
-            labels={["Info"]}
+            labels={[this.props.isMobile ? this.state.page.title : "Info"]}
             isMobile={this.props.isMobile}
             routerLinks={["info"]}
             defaultRouterLink={"info"}
