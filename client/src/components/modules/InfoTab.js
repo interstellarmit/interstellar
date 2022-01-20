@@ -71,10 +71,10 @@ export default function InfoTab(props) {
     />
   );
   return isMobile ? (
-    <>
+    <div style={{ height: "100%", overflow: "auto" }}>
       <div style={{ maxHeight: "calc(50% - 20px)", overflow: "auto" }}>{leftHalf}</div>
       <div style={{ paddingTop: "20px" }}>{rightHalf}</div>
-    </>
+    </div>
   ) : (
     <>
       <Row style={{ height: "100%" }} gutter={[16, 16]}>
