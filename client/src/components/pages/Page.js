@@ -1,5 +1,5 @@
 import { LinkOutlined, UserAddOutlined, UserDeleteOutlined } from "@ant-design/icons";
-import { Button, Layout, Modal, PageHeader, Typography } from "antd";
+import { Button, Input, Layout, Modal, PageHeader, Typography } from "antd";
 import React, { Component } from "react";
 import { useMediaQuery } from "react-responsive";
 import { post } from "../../utilities";
@@ -185,14 +185,13 @@ class PageClassComponent extends Component {
               onOk() {},
             });
           };
-          navigator.clipboard.writeText(url).then(
-            () => {
+          try {
+            navigator.clipboard.writeText(url).then(() => {
               showModal(true);
-            },
-            () => {
-              showModal(false);
-            }
-          );
+            });
+          } catch {
+            showModal(false);
+          }
         }}
       >
         <React.Fragment>

@@ -131,7 +131,7 @@ class App extends Component {
     }
 
     return (
-      <div>
+      <div style={{ maxHeight: "100vh", overflow: "hidden" }}>
         {!this.state.signedContract && false ? (
           <SignContract logout={this.logout} signContract={this.signContract} />
         ) : (
