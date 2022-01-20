@@ -1,5 +1,5 @@
 import { LinkOutlined, UserAddOutlined, UserDeleteOutlined } from "@ant-design/icons";
-import { Button, Input, Layout, Modal, PageHeader, Typography } from "antd";
+import { Button, Layout, Modal, PageHeader, Typography } from "antd";
 import React, { Component } from "react";
 import { useMediaQuery } from "react-responsive";
 import { post } from "../../utilities";
@@ -160,29 +160,39 @@ class PageClassComponent extends Component {
           }/${this.state.page.pageType.toLowerCase()}/${this.state.page.name}?link=${
             this.state.page?.inviteCode
           }`;
-          navigator.clipboard.writeText(url);
-          Modal.success({
-            title: (
-              <div>
-                Invite link to{" "}
-                <span style={{ color: "#396dff", fontWeight: 900 }}>
-                  {this.state.page.name || "your group"}
-                </span>{" "}
-                copied to clipboard
-              </div>
-            ),
-            content: (
-              <>
-                <Input
-                  size="large"
-                  placeholder="Invite Link"
-                  suffix={<LinkOutlined />}
-                  value={url}
-                />
-              </>
-            ),
-            onOk() {},
-          });
+
+          const showModal = (copiedToClipboard) => {
+            Modal.success({
+              title: (
+                <div>
+                  Invite link to{" "}
+                  <span style={{ color: "#396dff", fontWeight: 900 }}>
+                    {this.state.page.name || "your group"}
+                  </span>
+                  {copiedToClipboard && " copied to clipboard"}
+                </div>
+              ),
+              content: (
+                <>
+                  <Input
+                    size="large"
+                    placeholder="Invite Link"
+                    suffix={<LinkOutlined />}
+                    value={url}
+                  />
+                </>
+              ),
+              onOk() {},
+            });
+          };
+          navigator.clipboard.writeText(url).then(
+            () => {
+              showModal(true);
+            },
+            () => {
+              showModal(false);
+            }
+          );
         }}
       >
         <React.Fragment>
