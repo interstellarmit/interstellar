@@ -25,7 +25,7 @@ export default function UserList(props) {
     <div style={{ maxHeight: "100%", overflow: "auto" }}>
       <ConfigProvider
         renderEmpty={() => {
-          return <Empty description="No users" />;
+          return <Empty description="No students" />;
         }}
       >
         <List
