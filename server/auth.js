@@ -85,7 +85,7 @@ const signUpLogin = async (req, res) => {
       //console.log(user);
       await user.save(function(err) {
         if (err) {
-          console.log(err);
+          console.log(err.message);
           return res.status(500).send({ msg: err.message });
         }
       });
