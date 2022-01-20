@@ -35,24 +35,35 @@ class App extends Component {
     get("/api/whoami").then((user) => {
       if (user._id) {
         // they are registed in the database, and currently logged in.
-        this.setState({
-          userId: user._id,
-          name: user.name,
-          isSiteAdmin: user.isSiteAdmin,
-          email: user.email,
-          visible: user.visible,
-          profileVisible: user.profileVisible,
-          curLoc: user.curLoc,
-          hometown: user.hometown,
-          bio: user.bio,
-          activities: user.activities,
-          restaurant: user.restaurant,
-          advice: user.advice,
-          funFact: user.funFact,
-          signedContract: user.signedContract,
-          classYear: user.classYear,
-          tryingToLogin: false,
-        });
+        if (!user.email || user.name === "No Name") {
+          Modal.warning({
+            title: "Sorry, there has been an error",
+            content:
+              "Please contact the interstellar team (Akshaj Kadaveru, Daniel Sun, Vivek Bhupatiraju, or Guang Cui). You can email akshajk@mit.edu.",
+            onOk: () => {
+              this.logout();
+            },
+          });
+        } else {
+          this.setState({
+            userId: user._id,
+            name: user.name,
+            isSiteAdmin: user.isSiteAdmin,
+            email: user.email,
+            visible: user.visible,
+            profileVisible: user.profileVisible,
+            curLoc: user.curLoc,
+            hometown: user.hometown,
+            bio: user.bio,
+            activities: user.activities,
+            restaurant: user.restaurant,
+            advice: user.advice,
+            funFact: user.funFact,
+            signedContract: user.signedContract,
+            classYear: user.classYear,
+            tryingToLogin: false,
+          });
+        }
       } else {
         this.setState({ tryingToLogin: false });
       }
@@ -142,8 +153,7 @@ class App extends Component {
                 <Route
                   path="/redirect"
                   render={() => {
-                    console.log(this.props.cookies.get("redirectLink"));
-                    return <Redirect to={this.props.cookies.get("redirectLink")} />;
+                    return <Redirect to={this.props.cookies?.get("redirectLink") || "/"} />;
                   }}
                 />
                 <Main
