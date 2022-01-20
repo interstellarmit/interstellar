@@ -33,6 +33,7 @@
     "mongoose": "^5.11.9",
     "nodemon": "^2.0.6",
     "react": "^16.14.0",
+    "react-cookie": "^4.1.1",
     "react-dom": "^16.14.0",
     "react-dropdown": "^1.9.2",
     "react-google-login": "^5.2.1",
@@ -42,6 +43,7 @@
     "sendgrid": "^5.2.3",
     "socket.io": "^2.3.0",
     "socket.io-client": "^2.3.1",
+    "universal-cookie": "^4.0.4",
     "url-loader": "^4.1.1"
   },
   "devDependencies": {

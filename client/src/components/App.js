@@ -1,6 +1,7 @@
 import { Layout, Modal } from "antd";
 import "antd/dist/antd.css";
 import React, { Component } from "react";
+import { withCookies } from "react-cookie";
 import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom";
 import { get, post } from "../utilities";
 import "../utilities.css";
@@ -66,10 +67,10 @@ class App extends Component {
     let oldLink = window.location.pathname + window.location.search;
     let link = window.location.origin.replace("http:", "https:") + "/api/signUpLogin";
     if (link.includes("localhost:5000")) link = window.location.origin + "/api/signUpLogin";
-    link += "?returnLink=" + encodeURIComponent(oldLink);
     let encodedLink = encodeURIComponent(link);
 
-    post("/api/getRedirectLink", {}).then((ret) => {
+    this.props.cookies.set("redirectLink", oldLink, { path: "/" });
+    post("/api/getRedirectLink").then((ret) => {
       console.log(ret.link);
       window.location.href = ret.link + "login?redirect=" + encodedLink;
     });
@@ -138,6 +139,13 @@ class App extends Component {
           <>
             <Router>
               <Switch>
+                <Route
+                  path="/redirect"
+                  render={() => {
+                    console.log(this.props.cookies.get("redirectLink"));
+                    return <Redirect to={this.props.cookies.get("redirectLink")} />;
+                  }}
+                />
                 <Main
                   path="/:semester"
                   state={this.state}
@@ -146,6 +154,7 @@ class App extends Component {
                   setProfileVisible={this.setProfileVisible}
                   logout={this.logout}
                 />
+
                 <Route
                   default
                   render={() => {
@@ -172,4 +181,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default withCookies(App);

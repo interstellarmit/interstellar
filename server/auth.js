@@ -56,27 +56,21 @@ const signUpLogin = async (req, res) => {
       errors: errors.array(),
     });
   }
-  console.log("LINK");
-  console.log(req.query.returnLink);
-  const parts = req.query.returnLink.split("?code=");
-  const returnLink =
-    parts[0].indexOf("?link") >= 0
-      ? parts[0] + "&code=" + parts[1]
-      : parts[0] + "?code=" + parts[1];
-  console.log(returnLink);
-  const code = parts[1].substring(parts[1].indexOf("&"));
+
+  const { code } = req.query;
 
   const { name, email, password, accessToken } = await fetchUserInfo(code);
-  console.log(name, email, password, accessToken);
+  //console.log(name, email, password, accessToken);
   try {
     let user = await User.findOne({
       email: email,
     });
     if (user) {
       user.accessToken = accessToken;
+      console.log(`${name} logged in`);
       user.save().then((user) => {
         req.session.user = user;
-        return res.redirect(returnLink);
+        return res.redirect("/redirect");
       });
     } else {
       //let schoolEmail = encodeURI(email.split("@")[1].replace(/ /g, "_"));
@@ -87,7 +81,8 @@ const signUpLogin = async (req, res) => {
         accessToken: accessToken,
         isVerified: true,
       });
-      console.log(user);
+      console.log(`${name} registered`);
+      //console.log(user);
       await user.save(function(err) {
         if (err) {
           console.log(err);
@@ -96,7 +91,7 @@ const signUpLogin = async (req, res) => {
       });
 
       req.session.user = user;
-      return res.redirect(returnLink);
+      return res.redirect("/redirect");
     }
   } catch (err) {
     console.log(err.message);
@@ -116,7 +111,7 @@ async function signContract(req, res) {
           res.send({ user });
         });
       }
-      console.log(req.body);
+      //console.log(req.body);
       let id = req.body.roadId || undefined;
       if (id) {
         let road = await axios({
@@ -124,7 +119,7 @@ async function signContract(req, res) {
           headers: { Authorization: "Bearer " + req.user.accessToken },
         });
         let contents = road.data.file.contents;
-        console.log(contents);
+        // console.log(contents);
         await Promise.all(
           contents.selectedSubjects.map(async (subject) => {
             try {
@@ -156,7 +151,7 @@ async function signContract(req, res) {
             }
           })
         );
-        console.log(user);
+        // console.log(user);
         user.markModified("pageIds");
         user.save().then((user) => {
           res.send({ user });

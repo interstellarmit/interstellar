@@ -100,6 +100,7 @@ addSelfToPage = (req, res) => {
             semester: semester,
           });
           user.save().then(() => {
+            console.log(`${user.name} added self to page ${page.name}`);
             res.send({ added: true });
           });
         }
@@ -133,6 +134,7 @@ removeSelfFromPage = (req, res) => {
         });
 
         user.save().then(() => {
+          console.log(`${user.name} removed self from page ${page.name}`);
           res.send({ removed: true });
         });
       } else {
@@ -197,6 +199,7 @@ viewProfile = (req, res) => {
 joinPage = (req, res) => {
   Page.findOne({ name: req.body.pageName }).then((page) => {
     User.findById(req.user?._id || undefined).then(async (user) => {
+      if (user) console.log(`${user.name} viewing page ${page.name}`);
       let admin = undefined;
       if (page) admin = page.adminIds.length > 0 ? page.adminIds[0] : undefined;
       if (admin) {
