@@ -72,10 +72,8 @@ export default function InfoTab(props) {
   );
   return isMobile ? (
     <>
-      <div style={{ maxHeight: "calc(50vh - 75px)", overflow: "auto", paddingBottom: "20px" }}>
-        {leftHalf}
-      </div>
-      {rightHalf}
+      <div style={{ maxHeight: "calc(50% - 20px)", overflow: "auto" }}>{leftHalf}</div>
+      <div style={{ paddingTop: "20px" }}>{rightHalf}</div>
     </>
   ) : (
     <>

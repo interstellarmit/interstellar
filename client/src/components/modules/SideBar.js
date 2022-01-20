@@ -32,9 +32,10 @@ export default function SideBar(props) {
     <Sider
       collapsible
       collapsed={collapsed}
+      collapsedWidth={50}
       onCollapse={setCollapsed}
-      width={"20%"}
-      style={{ overflow: "auto", height: "100vh" }}
+      width={isMobile ? "100%" : "20%"}
+      style={{ overflow: "auto" }}
       theme={"light"}
     >
       {collapsed ? (
@@ -103,7 +104,7 @@ export default function SideBar(props) {
           <Menu
             theme="light"
             selectedKeys={[props.selectedPageName === "" ? ".ho!!me." : props.selectedPageName]}
-            defaultOpenKeys={["c", "g"]}
+            defaultOpenKeys={!isMobile ? ["c", "g"] : []}
             mode="inline"
           >
             <Menu.Item

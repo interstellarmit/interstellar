@@ -19,6 +19,7 @@ export default function TabPage(props) {
             return (
               <Switch>
                 <Tabs
+                  size={props.isMobile && "small"}
                   style={{
                     height: "100%",
                   }}

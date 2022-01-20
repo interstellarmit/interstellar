@@ -1,14 +1,14 @@
 import { LinkOutlined, UserAddOutlined, UserDeleteOutlined } from "@ant-design/icons";
 import { Button, Input, Layout, Modal, PageHeader, Typography } from "antd";
 import React, { Component } from "react";
+import { useMediaQuery } from "react-responsive";
 import { post } from "../../utilities";
 import InfoTab from "../modules/InfoTab";
 import MySpin from "../modules/MySpin";
 import TabPage from "../modules/TabPage";
-
 const { Header, Content, Footer, Sider } = Layout;
 const { Title, Paragraph } = Typography;
-class Page extends Component {
+class PageClassComponent extends Component {
   constructor(props) {
     super(props);
     let selectedPage = this.props.computedMatch.params.selectedPage;
@@ -224,7 +224,7 @@ class Page extends Component {
               this.state.inPage && this.state.page.pageType === "Group" ? [inviteButton] : []
             )}
           title={this.state.page.name}
-          subTitle={this.state.page.title}
+          subTitle={!this.props.isMobile && this.state.page.title}
         ></PageHeader>
         <Content
           style={{
@@ -235,6 +235,7 @@ class Page extends Component {
         >
           <TabPage
             labels={["Info"]}
+            isMobile={this.props.isMobile}
             routerLinks={["info"]}
             defaultRouterLink={"info"}
             page={this.state.page}
@@ -257,4 +258,8 @@ class Page extends Component {
   }
 }
 
-export default Page;
+export default function Page(props) {
+  const isMobile = useMediaQuery({ query: `(max-width: 760px)` });
+
+  return <PageClassComponent {...props} isMobile={isMobile} />;
+}
