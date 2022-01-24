@@ -27,16 +27,12 @@ export default function MultipleSearchBar(props) {
         .map((page) => {
           return {
             value: page.name,
-            label: (
-              <div key={page.name} value={page.name}>
-                {page.title === ""
+            label: (page.title === ""
                   ? page.name
                   : page.name +
                     ": " +
-                    page.title +
-                    (page.numPeople > 0 && false ? " (" + page.numPeople + ")" : "")}
-              </div>
-            ),
+                    page.title)
+            
           };
         }),
     } /*,
