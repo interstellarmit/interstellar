@@ -91,13 +91,9 @@ export default function SideBar(props) {
               }}
               style={{ width: "calc(100% - 32px)", margin: "0px 16px 16px 16px" }}
             >
-              <Option value="spring-2022">Spring 2022</Option>
-              <Option value="iap-2022">IAP 2022</Option>
-              <Option value="fall-2021">Fall 2021</Option>
-              <Option value="spring-2021">Spring 2021</Option>
-              <Option value="iap-2021">IAP 2021</Option>
-              <Option value="fall-2020">Fall 2020</Option>
-              <Option value="spring-2020">Spring 2020</Option>
+              {(props.listOfSemesters || []).map((s) => (
+                <Option value={s.id}>{s.name}</Option>
+              ))}
             </Select>
           )}
 

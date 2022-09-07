@@ -8,7 +8,7 @@
 */
 
 const express = require("express");
-
+require("dotenv").config();
 // import models so we can interact with the database
 const User = require("./models/user");
 const Page = require("./models/page");
@@ -52,9 +52,9 @@ let getAllPages = async (semester) => {
         // get classes that are available this semester
         //console.log(page);
         if (
-          semester === "spring-2022" &&
+          semester === process.env.CURRENT_SEMESTER &&
           page.pageType === "Class" &&
-          page.lastUpdated !== "spring-2022"
+          page.lastUpdated !== process.env.CURRENT_SEMESTER
         )
           return;
         if (page.pageType === "Class" && term === "spring" && !page.offered_spring) return;
@@ -97,7 +97,7 @@ let getAllPages = async (semester) => {
   return allPages.concat(myGroups);
 };
 router.post("/updateSemester", async (req, res) => {
-  let semester = req.body.semester || "spring-2022";
+  let semester = req.body.semester || process.env.CURRENT_SEMESTER;
   let allPages = await getAllPages(semester);
 
   if (!req.user || !req.user._id) {
@@ -168,7 +168,7 @@ router.post("/sameAs", auth.ensureLoggedIn, (req, res) => {
 
 router.post("/addClasses", auth.ensureLoggedIn, (req, res) => {
   let pageNames = req.body.pageNames;
-  let semester = req.body.semester || "spring-2022";
+  let semester = req.body.semester || process.env.CURRENT_SEMESTER;
   let userPageIds = [];
   let addPage = (i) => {
     if (i >= pageNames.length) {
@@ -209,6 +209,10 @@ router.post("/addClasses", auth.ensureLoggedIn, (req, res) => {
     });
   };
   addPage(0);
+});
+
+router.post("/updateSemester", auth.ensureLoggedIn, (req, res) => {
+  if (!req.user.isSiteAdmin) return;
 });
 
 // anything else falls to this "not found" case

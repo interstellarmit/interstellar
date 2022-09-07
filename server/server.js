@@ -107,7 +107,7 @@ const server = http.Server(app);
 
 server.listen(port, () => {
   //CAREFUL THIS (initialise.js) CLEARES ALL THE CLASSES!
-  //initialise.initialiseClasses("spring-2022");
+  //initialise.initialiseClasses(process.env.CURRENT_SEMESTER);
   //initialise.addInviteCodes();
   //careful this resets all constracts
   //initialise.resetContracts();

@@ -13,7 +13,7 @@ const { Content } = Layout;
 class Main extends Component {
   constructor(props) {
     super(props);
-    let semester = this.props.computedMatch.params.semester || "spring-2022";
+    let semester = this.props.computedMatch.params.semester || "fall-2022";
     // Initialize Default State
     this.state = { semester: semester, allPages: [], redirectPage: "" };
   }
@@ -86,17 +86,7 @@ class Main extends Component {
         </Router>
       );
     }
-    if (
-      ![
-        "spring-2022",
-        "iap-2022",
-        "fall-2021",
-        "spring-2021",
-        "iap-2021",
-        "fall-2020",
-        "spring-2020",
-      ].includes(this.state.semester)
-    ) {
+    if (!this.props.listOfSemesters.map((s) => s.id).includes(this.state.semester)) {
       return (
         <h3>
           {"Sorry, " +
@@ -112,6 +102,7 @@ class Main extends Component {
       <Layout style={{ minHeight: "100vh", maxHeight: "100vh", overflow: "hidden" }}>
         <SideBar
           pageIds={this.state.pageIds}
+          listOfSemesters={this.props.listOfSemesters}
           updatePageIds={this.updatePageIds}
           allPages={this.state.allPages}
           myPages={myPages}

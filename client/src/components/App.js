@@ -11,7 +11,19 @@ import Public from "./pages/Public.js";
 import SignContract from "./pages/SignContract.js";
 
 const { Header, Content, Footer, Sider } = Layout;
-
+const currentSemester = "fall-2022";
+const listOfSemesters = [
+  { name: "Spring 2020", id: "spring-2020" },
+  { name: "Fall 2020", id: "fall-2020" },
+  { name: "IAP 2021", id: "iap-2021" },
+  { name: "Spring 2021", id: "spring-2021" },
+  { name: "Fall 2021", id: "fall-2021" },
+  { name: "IAP 2022", id: "iap-2022" },
+  { name: "Spring 2022", id: "spring-2022" },
+  { name: "Fall 2022", id: "fall-2022" },
+  { name: "IAP 2023", id: "iap-2023" },
+  { name: "Spring 2023", id: "spring-2023" },
+].reverse();
 class App extends Component {
   constructor(props) {
     super(props);
@@ -163,12 +175,13 @@ class App extends Component {
                   setVisible={this.setVisible}
                   setProfileVisible={this.setProfileVisible}
                   logout={this.logout}
+                  listOfSemesters={listOfSemesters}
                 />
 
                 <Route
                   default
                   render={() => {
-                    return <Redirect to="/spring-2022" />;
+                    return <Redirect to={"/" + currentSemester} />;
                   }}
                 />
               </Switch>

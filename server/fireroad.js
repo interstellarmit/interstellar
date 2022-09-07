@@ -2,7 +2,7 @@ const User = require("./models/user");
 const Page = require("./models/page");
 
 const axios = require("axios");
-
+require("dotenv").config();
 async function sync(req, res) {
   try {
     let roadData = await axios({
@@ -33,7 +33,7 @@ async function sync(req, res) {
               if (!isUserPage) {
                 user.pageIds.push({
                   pageId: page._id + "",
-                  semester: "spring-2022",
+                  semester: process.env.CURRENT_SEMESTER,
                 });
               }
               return page;
