@@ -11,7 +11,7 @@ import Public from "./pages/Public.js";
 import SignContract from "./pages/SignContract.js";
 
 const { Header, Content, Footer, Sider } = Layout;
-const currentSemester = "fall-2022";
+const currentSemester = "spring-2023";
 const listOfSemesters = [
   { name: "Spring 2020", id: "spring-2020" },
   { name: "Fall 2020", id: "fall-2020" },
@@ -23,6 +23,12 @@ const listOfSemesters = [
   { name: "Fall 2022", id: "fall-2022" },
   { name: "IAP 2023", id: "iap-2023" },
   { name: "Spring 2023", id: "spring-2023" },
+  { name: "Fall 2023", id: "fall-2023" },
+  { name: "IAP 2024", id: "iap-2024" },
+  { name: "Spring 2024", id: "spring-2024" },
+  { name: "Fall 2024", id: "fall-2024" },
+  { name: "IAP 2025", id: "iap-2025" },
+  { name: "Spring 2025", id: "spring-2025" },
 ].reverse();
 class App extends Component {
   constructor(props) {
