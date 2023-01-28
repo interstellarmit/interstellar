@@ -95,7 +95,7 @@ class App extends Component {
   handleLogin = () => {
     let oldLink = window.location.pathname + window.location.search;
     let link = window.location.origin.replace("http:", "https:") + "/api/signUpLogin";
-    if (link.includes("localhost:5000")) link = window.location.origin + "/api/signUpLogin";
+    if (link.includes("localhost:5000") || link.includes("localhost:3000")) link = window.location.origin + "/api/signUpLogin"; // TODO: There has to be a better way to detect if we're running a dev build
     let encodedLink = encodeURIComponent(link);
 
     this.props.cookies.set("redirectLink", oldLink, { path: "/" });

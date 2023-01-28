@@ -1,0 +1,23 @@
+version: "3.9"
+
+services:
+  web-dev:
+    build:
+      context: .
+      args:
+        - BUILD_MODE=development
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo-dev
+    environment:
+      - FIREROAD_LINK=https://fireroad-dev.mit.edu/
+      - DATABASE_NAME=dev
+      - ATLAS_SRV=mongodb://root:example@mongo-dev:27017
+      - ENV=development
+  mongo-dev:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
