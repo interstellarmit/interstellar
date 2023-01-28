@@ -18,3 +18,28 @@ We upgraded the site in Fall 2020 to include (in master branch):
 
 Currently, we axed some features and the site now lets you see the courseroads (what MIT courses your friends are planning on taking/have taken in past and future semesters) of your friends, as well as see who you will share classes with. 
 
+
+## Development
+
+## Installing
+
+### Requirements
+- [mongoDB](https://www.mongodb.com/)
+- [nodejs 16.0.0](https://nodejs.org/en/)
+
+### Getting it up and running
+
+#### Server
+1. From repo root, install packages with `npm install`
+1. Start mongodb with `mongod --dbpath <path_to_repo_root>/mongodump-test-db`
+1. Create a `.env` file in the repository root, and place the following in it:
+```ini
+ATLAS_SRV="mongodb://127.0.0.1:27017"
+DATABASE_NAME="test"
+FIREROAD_LINK="https://fireroad-dev.mit.edu/"
+```
+1. In another terminal, run `npm start`
+
+#### Client
+1. From repo root, run `npm run start` to start a server providing the client
+1. Navigate to the indicated address (probably `http://localhost:5000/`)
