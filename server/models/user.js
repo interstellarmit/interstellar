@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const UserSchema = new mongoose.Schema({
   name: String,
@@ -35,33 +35,33 @@ const UserSchema = new mongoose.Schema({
   },
   hometown: {
     type: String,
-    default: "",
+    default: '',
   },
   curLoc: {
     type: String,
-    default: "",
+    default: '',
   },
   bio: {
     type: String,
-    default: "",
+    default: '',
   },
   activities: {
     type: String,
-    default: "",
+    default: '',
   },
   restaurant: {
     type: String,
-    default: "",
+    default: '',
   },
   advice: {
     type: String,
-    default: "",
+    default: '',
   },
   funFact: {
     type: String,
-    default: "",
+    default: '',
   },
 });
 
 // compile model from schema
-module.exports = mongoose.model("user", UserSchema);
+module.exports = mongoose.model('user', UserSchema);

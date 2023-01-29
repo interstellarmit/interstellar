@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const SemesterSchema = new mongoose.Schema({
   name: String, // "Fall 2017"
@@ -7,4 +7,4 @@ const SemesterSchema = new mongoose.Schema({
 });
 
 // compile model from schema
-module.exports = mongoose.model("semester", SemesterSchema);
+module.exports = mongoose.model('semester', SemesterSchema);

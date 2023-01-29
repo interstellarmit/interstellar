@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const PageSchema = new mongoose.Schema({
   pageType: String, // (ex: either "Class" or "Group"),
@@ -39,9 +39,9 @@ const PageSchema = new mongoose.Schema({
   adminIds: [String],
   lastUpdated: {
     type: String,
-    default: "spring-2021",
+    default: 'spring-2021',
   },
 });
 
 // compile model from schema
-module.exports = mongoose.model("page", PageSchema);
+module.exports = mongoose.model('page', PageSchema);

@@ -16,9 +16,10 @@ RUN npm install
 # Bundle app source
 COPY . .
 
-ARG BUILD_MODE=development
 # build with webpack
-RUN npx webpack build --config ./webpack.config.js --mode $BUILD_MODE
+ARG ENV=development
+ENV ENV=${ENV}
+RUN npx webpack build --config ./webpack.config.js --mode ${ENV} --env ENV=${ENV}
 
 
 EXPOSE 3000

@@ -1,7 +1,7 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const LinkSchema = new mongoose.Schema({
   link: String,
 });
 
-module.exports = mongoose.model("link", LinkSchema);
+module.exports = mongoose.model('link', LinkSchema);

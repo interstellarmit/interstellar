@@ -14,43 +14,43 @@ function formatParams(params) {
   // map it to a new array of URL string encoded key,value pairs
   // join all the url params using an ampersand (&).
   return Object.keys(params)
-    .map((key) => key + "=" + encodeURIComponent(params[key]))
-    .join("&");
+    .map((key) => `${key}=${encodeURIComponent(params[key])}`)
+    .join('&');
 }
 
 // convert a fetch result to a JSON object with error handling for fetch and json errors
 function convertToJSON(res) {
   if (!res.ok) {
-    throw `API request failed with response status ${res.status} and text: ${res.statusText}`;
+    throw Error(`API request failed with response status ${res.status} and text: ${res.statusText}`);
   }
 
   return res
     .clone() // clone so that the original is still readable for debugging
     .json() // start converting to JSON object
-    .catch((error) => {
+    .catch(() => {
       // throw an error containing the text that couldn't be converted to JSON
-      return res.text().then((text) => {
-        throw `API request's result could not be converted to a JSON object: \n${text}`;
+      res.text().then((text) => {
+        throw Error(`API request's result could not be converted to a JSON object: \n${text}`);
       });
     });
 }
 
 // Helper code to make a get request. Default parameter of empty JSON Object for params.
 // Returns a Promise to a JSON Object.
-export function get(endpoint, params = {}, token = "") {
-  const fullPath = endpoint + "?" + formatParams(params);
+export function get(endpoint, params = {}, token = '') {
+  const fullPath = `${endpoint}?${formatParams(params)}`;
   return fetch(endpoint, {
-    method: "get",
+    method: 'get',
     headers: {
-      "Content-type": "application/json",
-      token: token,
+      'Content-type': 'application/json',
+      token,
     },
     query: JSON.stringify(params),
   })
     .then(convertToJSON)
     .catch((error) => {
       // give a useful error message
-      throw `GET request to ${fullPath} failed with error:\n${error}`;
+      throw Error(`GET request to ${fullPath} failed with error:\n${error}`);
     });
 }
 
@@ -58,13 +58,13 @@ export function get(endpoint, params = {}, token = "") {
 // Returns a Promise to a JSON Object.
 export function post(endpoint, params = {}) {
   return fetch(endpoint, {
-    method: "post",
-    headers: { "Content-type": "application/json" },
+    method: 'post',
+    headers: { 'Content-type': 'application/json' },
     body: JSON.stringify(params),
   })
     .then(convertToJSON) // convert result to JSON object
     .catch((error) => {
       // give a useful error message
-      throw `POST request to ${endpoint} failed with error:\n${error}`;
+      throw Error(`POST request to ${endpoint} failed with error:\n${error}`);
     });
 }

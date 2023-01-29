@@ -5,7 +5,7 @@ services:
     build:
       context: .
       args:
-        - BUILD_MODE=development
+        - ENV=development
     ports:
       - "3000:3000"
     depends_on:
@@ -14,7 +14,6 @@ services:
       - FIREROAD_LINK=https://fireroad-dev.mit.edu/
       - DATABASE_NAME=dev
       - ATLAS_SRV=mongodb://root:example@mongo-dev:27017
-      - ENV=development
   mongo-dev:
     image: mongo
     restart: always
