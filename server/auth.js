@@ -67,6 +67,7 @@ const signUpLogin = async (req, res) => {
     });
     if (user) {
       user.accessToken = accessToken;
+      user.name = name;
       console.log(`${name} logged in`);
       user.save().then((user) => {
         req.session.user = user;
