@@ -1,3 +1,5 @@
+# The up-to-date version of Interstellar can be found here: https://github.com/sipb/interstellar
+
 # Interstellar
 
 
