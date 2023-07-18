@@ -94,8 +94,10 @@ class App extends Component {
 
   handleLogin = () => {
     let oldLink = window.location.pathname + window.location.search;
-    let link = window.location.origin.replace("http:", "https:") + "/api/signUpLogin";
-    if (link.includes("localhost:5000")) link = window.location.origin + "/api/signUpLogin";
+    let link = window.location.origin + "/api/signUpLogin";
+    if (ENV != "development") {
+      let link = link.replace("http:", "https:")
+    }
     let encodedLink = encodeURIComponent(link);
 
     this.props.cookies.set("redirectLink", oldLink, { path: "/" });
